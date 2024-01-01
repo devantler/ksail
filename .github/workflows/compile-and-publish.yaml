@@ -14,13 +14,12 @@ jobs:
         uses: actions/checkout@v4
       - name: ⚙️ Setup shc
         run: |
-          sudo add-apt-repository ppa:neurobin/ppa
-          sudo apt-get update -y
-          sudo apt-get install shc -y
+          sudo apt-get update
+          sudo apt-get install shc
       - name: ✍🏻 Update version
         run: perl -i -pe 's/VERSION=.*/VERSION="${{ github.ref_name }}"' ksail.sh
 
-      - name: 📦 Compile
+      - name: 🔨 Compile
         run: |
           shc -f ksail.sh -o ksail
       - name: 📦 Publish
