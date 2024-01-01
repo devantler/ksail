@@ -6,6 +6,7 @@ function main() {
       exit 1
     fi
   }
+
   function define_colors() {
     RED='\033[1;31m'
     GREEN='\033[1;32m'
@@ -14,12 +15,14 @@ function main() {
     PURPLE='\033[1;35m'
     WHITE='\033[0m'
   }
+
   function define_font_types() {
     NORMAL=$(tput sgr0)
     BOLD=$(tput bold)
     ITALIC=$(tput sitm)
     UNDERLINE=$(tput smul)
   }
+
   function help() {
     function help_no_arg() {
       echo "Usage:"
@@ -81,8 +84,6 @@ function main() {
     if [ -z "${1}" ]; then
       help_no_arg
     else
-      local command=${1}
-
       while [ $# -gt 0 ]; do
         case "$1" in
         up)
@@ -109,18 +110,25 @@ function main() {
       done
     fi
   }
+
   function run() {
+    function version() {
+      echo "KSail 0.0.1"
+    }
+
     function run_no_arg() {
       function introduction() {
-        echo -e "⛴️   ${BOLD}${UNDERLINE}Welcome to ${BLUE}KSail${WHITE}   ⛴️${NORMAL}"
+        echo -e "⛴️ 🐳   ${BOLD}${UNDERLINE}Welcome to ${BLUE}KSail${WHITE}   ⛴️ 🐳${NORMAL}"
+        echo "                                     . . ."
+        echo "                __/___                 ."
+        echo '          _____/______|             ___:____     |"\/"|'
+        echo "  _______/_____\_______\_____     ,'        \`.    \  /"
+        echo "  \    k8s       < < <       |    |  ^        \___/  |"
+        echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~^~^~^~^~^~^~^~^~^~^~^~"
         echo
         echo -e "${BLUE}KSail${WHITE} can help you provision ${GREEN}GitOps enabled K8s environments${WHITE} in ${BLUE}Docker${WHITE}."
         echo
-        echo "ℹ️ Info:"
-        echo "- KSail is not meant for production use."
-        echo
       }
-
       introduction
       help
     }
@@ -217,6 +225,7 @@ function main() {
         fi
         echo
       }
+
       function create_oci_registries() {
         function check_registry_exists() {
           local registry_name=${1}
@@ -337,24 +346,24 @@ function main() {
         function add_sops_gpg_key() {
           echo "🔐 Adding SOPS GPG key"
           kubectl create namespace flux-system
-          if [[ -z ${SOPS_GPG_KEY} ]]; then
-            gpg --export-secret-keys --armor "F78D523ADB73F206EA60976DED58208970F326C8" |
-              kubectl create secret generic sops-gpg \
-                --namespace=flux-system \
-                --from-file=sops.asc=/dev/stdin || {
-              echo "🚨 SOPS GPG key creation failed. Exiting..."
-              exit 1
-            }
+          if [[ -z ${KSAIL_SOPS_GPG_KEY} ]]; then
+            # TODO: Create new SOPS GPG key and set it to the KSAIL_SOPS_GPG_KEY variable
+            gpg --batch --passphrase '' --quick-gen-key ksail default default
+            local fingerprint
+            fingerprint=$(gpg --list-keys -uid ksail | grep '^      *' | tr -d ' ')
+            export KSAIL_SOPS_GPG_KEY
+            KSAIL_SOPS_GPG_KEY=$(gpg--export-secret-keys --armor "$fingerprint")
           else
             kubectl create secret generic sops-gpg \
               --namespace=flux-system \
-              --from-literal=sops.asc="${SOPS_GPG_KEY}" ||
+              --from-literal=sops.asc="${KSAIL_SOPS_GPG_KEY}" ||
               {
                 echo "🚨 SOPS GPG key creation failed. Exiting..."
                 exit 1
               }
           fi
         }
+
         function install_flux() {
           local cluster_name=${1}
           local docker_gateway_ip=${2}
@@ -390,6 +399,11 @@ function main() {
             exit 1
           }
         }
+
+        function provision_k3d_cluster() {
+          echo
+        }
+
         function provision_talos_cluster() {
           local cluster_name=${1}
           local docker_gateway_ip
@@ -411,27 +425,14 @@ function main() {
             echo "🚨 Cluster creation failed. Exiting..."
             exit 1
           }
-          talosctl config nodes 10.5.0.2 10.5.0.3 || {
-            echo "🚨 Cluster configuration failed. Exiting..."
-            exit 1
-          }
+          # talosctl config nodes 10.5.0.2 10.5.0.3 || {
+          #   echo "🚨 Cluster configuration failed. Exiting..."
+          #   exit 1
+          # }
 
-          echo "🩹 Patch ${cluster_name} cluster"
-          talosctl patch mc --patch @./../talos/cluster/rotate-server-certificates.yaml || {
-            echo "🚨 Cluster patching failed. Exiting..."
-            exit 1
-          }
-
-          add_sops_gpg_key || {
-            echo "🚨 SOPS GPG key creation failed. Exiting..."
-            exit 1
-          }
-          install_flux "$cluster_name" "$docker_gateway_ip" || {
-            echo "🚨 Flux installation failed. Exiting..."
-            exit 1
-          }
-          echo
+          # TODO: Add support for Talos patching
         }
+
         local cluster_name=${1}
         local backend=${2}
         local path=${3}
@@ -444,12 +445,57 @@ function main() {
           echo "🚫 Unsupported backend. Exiting..."
           exit 1
         fi
+        add_sops_gpg_key || {
+          echo "🚨 SOPS GPG key creation failed. Exiting..."
+          exit 1
+        }
+        install_flux "$cluster_name" "$docker_gateway_ip" || {
+          echo "🚨 Flux installation failed. Exiting..."
+          exit 1
+        }
+        echo
       }
 
-      local cluster_name="ksail"
-      local backend="talos"
-      local path="./"
-      if [ -n "$2" ]; then
+      local cluster_name
+      local backend
+      local path
+      if [ -z "$2" ]; then
+        echo -e "${BOLD}What would you like to name your cluster? (default: ${GREEN}ksail${WHITE})${NORMAL}"
+        read -r cluster_name
+        if [ -z "$cluster_name" ]; then
+          cluster_name="ksail"
+        fi
+        echo
+
+        # Select backend using arrow keys. Default is k3d.
+        echo -e "${BOLD}What backend would you like to use?${NORMAL}"
+        PS3="Your selection: "
+        options=("k3d" "talos")
+        select opt in "${options[@]}"; do
+          case $opt in
+          "k3d")
+            backend="k3d"
+            break
+            ;;
+          "talos")
+            backend="talos"
+            break
+            ;;
+          *)
+            echo "🚫 Invalid option: $REPLY."
+            echo "   You must type the number of the option you want to select."
+            echo
+            ;;
+          esac
+        done
+
+        echo -e "${BOLD}What is the path to your flux kustomization manifests? (default: ${GREEN}./${WHITE})${NORMAL}"
+        read -r path
+        if [ -z "$path" ]; then
+          path="./"
+        fi
+        echo
+      else
         local OPTIND=2
         while getopts ":hn:b:p:" flag; do
           case "${flag}" in
@@ -496,6 +542,30 @@ function main() {
       echo "verify"
     }
 
+    function run_args() {
+      if [[ "$1" != "-"* ]]; then
+        echo "🚫 Unknown flag: $1"
+        exit 1
+      fi
+      while getopts ":hv" flag; do
+        case "${flag}" in
+        h)
+          help
+          ;;
+        v)
+          version "0.0.1"
+          ;;
+        \?)
+          echo "🚫 Unknown flag: $1"
+          exit 1
+          ;;
+        *)
+          shift
+          ;;
+        esac
+      done
+    }
+
     if [ $# -eq 0 ]; then
       run_no_arg
     fi
@@ -523,27 +593,7 @@ function main() {
         exit
         ;;
       *)
-        if [[ "$1" != "-"* ]]; then
-          echo "🚫 Unknown flag: $1"
-          exit 1
-        fi
-        while getopts ":hv" flag; do
-          case "${flag}" in
-          h)
-            help
-            ;;
-          v)
-            echo "KSail version 0.0.1"
-            ;;
-          \?)
-            echo "🚫 Unknown flag: $1"
-            exit 1
-            ;;
-          *)
-            shift
-            ;;
-          esac
-        done
+        run_args "$@"
         exit
         ;;
       esac
