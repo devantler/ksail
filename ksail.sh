@@ -127,13 +127,13 @@ function main() {
         talosctl config context default
         talosctl config remove "${cluster_name}" -y
         kubectl config unset current-context
-        if [[ $(kubectl config get-contexts -o name | grep admin@"${cluster_name}") ]]; then
+        if kubectl config get-contexts -o name | grep admin@"${cluster_name}"; then
           kubectl config delete-context admin@"${cluster_name}"
         fi
-        if [[ $(kubectl config get-clusters | grep "${cluster_name}") ]]; then
+        if kubectl config get-clusters | grep "${cluster_name}"; then
           kubectl config delete-cluster "${cluster_name}"
         fi
-        if [[ $(kubectl config get-users | grep admin@"${cluster_name}") ]]; then
+        if kubectl config get-users | grep admin@"${cluster_name}"; then
           kubectl config delete-user admin@"${cluster_name}"
         fi
       }
@@ -141,7 +141,6 @@ function main() {
       local cluster_name=${1}
       local backend=${2}
 
-      # Check which backend
       echo "🔥 Delete ${cluster_name} cluster"
       if [[ "$backend" == "k3d" ]]; then
         destroy_k3d_cluster "$cluster_name"
@@ -180,7 +179,7 @@ function main() {
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         (
           echo
-          echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"'
+          echo "eval '$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)'"
         ) >>/home/runner/.bashrc
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
         echo "📦✅ Homebrew installed"
@@ -384,7 +383,6 @@ function main() {
           echo "🔐 Adding SOPS GPG key"
           kubectl create namespace flux-system
           if [[ -z ${KSAIL_SOPS_GPG_KEY} ]]; then
-            # TODO: Create new SOPS GPG key and set it to the KSAIL_SOPS_GPG_KEY variable
             gpg --batch --passphrase '' --quick-gen-key ksail default default
             local fingerprint
             fingerprint=$(gpg --list-keys -uid ksail | grep '^      *' | tr -d ' ')
@@ -496,9 +494,9 @@ function main() {
         echo
       }
 
-      local cluster_name
-      local backend
-      local path
+      local cluster_name="ksail"
+      local backend="k3d"
+      local path="./"
       if [ -z "$2" ]; then
         echo -e "${BOLD}What would you like to name your cluster? (default: ${GREEN}ksail${WHITE})${NORMAL}"
         read -r cluster_name
@@ -531,8 +529,12 @@ function main() {
         fi
         echo
       else
+        if [[ "$2" != "-"* ]]; then
+          echo "🚫 Unknown flag: $2"
+          exit 1
+        fi
         local OPTIND=2
-        while getopts ":hn:b:p:" flag; do
+        while getopts "hn:b:p:" flag; do
           case "${flag}" in
           h)
             help up
@@ -546,7 +548,6 @@ function main() {
             ;;
           p)
             path=${OPTARG}
-            shift
             ;;
           *)
             echo "🚫 Unknown flag: $2"
@@ -554,15 +555,12 @@ function main() {
             ;;
           esac
         done
-        if [[ "$2" != "-"* ]]; then
-          echo "🚫 Unknown flag: $2"
-          exit 1
-        fi
       fi
 
       check_if_docker_is_running
       create_oci_registries
       destroy_cluster "$cluster_name" "$backend"
+      echo
       provision_cluster "$cluster_name" "$backend" "$path"
     }
 
