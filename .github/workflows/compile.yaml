@@ -17,6 +17,9 @@ jobs:
           sudo add-apt-repository ppa:neurobin/ppa
           sudo apt-get update -y
           sudo apt-get install shc -y
+      - name: ✍🏻 Update version
+        run: perl -i -pe 's/VERSION=.*/VERSION="${{ github.ref_name }}"' ksail.sh
+
       - name: 📦 Compile
         run: |
           shc -f ksail.sh -o ksail

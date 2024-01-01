@@ -108,7 +108,7 @@ function help() {
 }
 
 function version() {
-  echo "KSail 0.0.1"
+  echo "KSail $VERSION"
 }
 
 function destroy_k3d_cluster() {
@@ -710,7 +710,7 @@ function run_args() {
       help
       ;;
     v)
-      version "0.0.1"
+      version
       ;;
     \?)
       echo "🚫 Unknown flag: $1"
@@ -766,4 +766,5 @@ function main() {
   run "$@"
 }
 
+VERSION="0.0.1"
 main "$@"
