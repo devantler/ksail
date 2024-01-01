@@ -47,7 +47,8 @@ function main() {
       echo "Flags:"
       echo -e "  -n, --name      name of the cluster (${GREEN}ksail${WHITE})"
       echo -e "  -b, --backend   k8s-in-docker backend (talos)"
-      echo -e "  -p, --path      path to the flux kustomization manifests (${GREEN}./${WHITE})"
+      echo -e "  -mp, --manifests_path  path to the manifests files root directory (${GREEN}./k8s${WHITE})"
+      echo -e "  -fp, --flux_path      path to the flux kustomization manifests (${GREEN}./k8s/clusters/${cluster_name}/flux${WHITE})"
       echo
       echo "⚠️ Warnings:"
       echo -e "- The clusters created by KSail are not meant for production use."
@@ -145,11 +146,25 @@ function main() {
       if [[ "$backend" == "k3d" ]]; then
         destroy_k3d_cluster "$cluster_name"
       elif [[ "$backend" == "talos" ]]; then
-        destroy_talos_cluster "$cluster_name" "$path"
+        destroy_talos_cluster "$cluster_name" "$flux_path"
       else
         echo "🚫 Unsupported backend. Exiting..."
         exit 1
       fi
+    }
+
+    function update_cluster() {
+      local cluster_name=${1}
+      local manifests_path=${2}
+      local time
+      time=$(date +%s)
+      echo "🗳️ Push OCI artifact to Docker"
+      flux push artifact oci://localhost:5050/"${cluster_name}":"$time" \
+        --path="${manifests_path}" \
+        --source="$(git config --get remote.origin.url)" \
+        --revision="$(git branch --show-current)@sha1:$(git rev-parse HEAD)"
+      flux tag artifact oci://localhost:5050/"${cluster_name}":"$time" \
+        --tag latest
     }
 
     function run_no_arg() {
@@ -259,7 +274,6 @@ function main() {
           echo "🐳🚨 Docker is not running. Exiting..."
           exit 1
         fi
-        echo
       }
 
       function create_oci_registries() {
@@ -375,7 +389,6 @@ function main() {
             exit 1
           }
         fi
-        echo
       }
 
       function provision_cluster() {
@@ -429,7 +442,7 @@ function main() {
 
           flux create kustomization flux-system \
             --source=OCIRepository/flux-system \
-            --path=./clusters/docker/flux || {
+            --path="${flux_path}" || {
             echo "🚨 Flux kustomization creation failed. Exiting..."
             exit 1
           }
@@ -473,12 +486,12 @@ function main() {
 
         local cluster_name=${1}
         local backend=${2}
-        local path=${3}
+        local flux_path=${3}
 
         if [[ "$backend" == "k3d" ]]; then
           provision_k3d_cluster "$cluster_name"
         elif [[ "$backend" == "talos" ]]; then
-          provision_talos_cluster "$cluster_name" "$path"
+          provision_talos_cluster "$cluster_name" "$flux_path"
         else
           echo "🚫 Unsupported backend. Exiting..."
           exit 1
@@ -496,7 +509,8 @@ function main() {
 
       local cluster_name="ksail"
       local backend="k3d"
-      local path="./"
+      local manifests_path="./k8s"
+      local flux_path="./k8s/clusters/${cluster_name}/flux"
       if [ -z "$2" ]; then
         echo -e "${BOLD}What would you like to name your cluster? (default: ${GREEN}ksail${WHITE})${NORMAL}"
         read -r cluster_name
@@ -522,10 +536,16 @@ function main() {
           esac
         done
 
-        echo -e "${BOLD}What is the path to your flux kustomization manifests? (default: ${GREEN}./${WHITE})${NORMAL}"
-        read -r path
-        if [ -z "$path" ]; then
-          path="./"
+        echo -e "${BOLD}What is the path to your manifests files root directory? (default: ${GREEN}./k8s${WHITE})${NORMAL}"
+        read -r manifests_path
+        if [ -z "$manifests_path" ]; then
+          manifests_path="./k8s"
+        fi
+
+        echo -e "${BOLD}What is the path to your flux kustomization manifests? (default: ${GREEN}./k8s/clusters/${cluster_name}/flux${WHITE})${NORMAL}"
+        read -r flux_path
+        if [ -z "$flux_path" ]; then
+          flux_path="./"
         fi
         echo
       else
@@ -534,7 +554,7 @@ function main() {
           exit 1
         fi
         local OPTIND=2
-        while getopts "hn:b:p:" flag; do
+        while getopts "hn:b:m:f:" flag; do
           case "${flag}" in
           h)
             help up
@@ -546,8 +566,11 @@ function main() {
           b)
             backend=${OPTARG}
             ;;
-          p)
-            path=${OPTARG}
+          m)
+            manifests_path=${OPTARG}
+            ;;
+          f)
+            flux_path=${OPTARG}
             ;;
           *)
             echo "🚫 Unknown flag: $2"
@@ -557,11 +580,11 @@ function main() {
         done
       fi
 
-      check_if_docker_is_running
-      create_oci_registries
-      destroy_cluster "$cluster_name" "$backend"
-      echo
-      provision_cluster "$cluster_name" "$backend" "$path"
+      check_if_docker_is_running && echo
+      create_oci_registries && echo
+      update_cluster "$cluster_name" "$manifests_path" && echo
+      destroy_cluster "$cluster_name" "$backend" && echo
+      provision_cluster "$cluster_name" "$backend" "$flux_path"
     }
 
     function run_down() {
@@ -660,36 +683,36 @@ function main() {
 
     if [ $# -eq 0 ]; then
       run_no_arg
+    else
+      while [ $# -gt 0 ]; do
+        case "$1" in
+        install)
+          run_install
+          exit
+          ;;
+        up)
+          run_up "$@"
+          exit
+          ;;
+        down)
+          run_down "$@"
+          exit
+          ;;
+        validate)
+          run_validate "$@"
+          exit
+          ;;
+        verify)
+          run_verify "$@"
+          exit
+          ;;
+        *)
+          run_args "$@"
+          exit
+          ;;
+        esac
+      done
     fi
-
-    while [ $# -gt 0 ]; do
-      case "$1" in
-      install)
-        run_install
-        exit
-        ;;
-      up)
-        run_up "$@"
-        exit
-        ;;
-      down)
-        run_down "$@"
-        exit
-        ;;
-      validate)
-        run_validate "$@"
-        exit
-        ;;
-      verify)
-        run_verify "$@"
-        exit
-        ;;
-      *)
-        run_args "$@"
-        exit
-        ;;
-      esac
-    done
   }
 
   check_os
