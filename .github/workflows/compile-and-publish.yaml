@@ -17,7 +17,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install shc
       - name: ✍🏻 Update version
-        run: perl -i -pe 's/VERSION=.*/VERSION="${{ github.ref_name }}"' ksail.sh
+        run: perl -i -pe 's/VERSION=.*/VERSION="${{ github.ref_name }}"/g' ksail.sh
 
       - name: 🔨 Compile
         run: |
