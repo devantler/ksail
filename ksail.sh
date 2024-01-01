@@ -156,12 +156,12 @@ function main() {
     function run_no_arg() {
       function introduction() {
         echo -e "⛴️ 🐳   ${BOLD}${UNDERLINE}Welcome to ${BLUE}KSail${WHITE}   ⛴️ 🐳${NORMAL}"
-        echo "                                     . . ."
-        echo "                __/___                 ."
-        echo '          _____/______|             ___:____     |"\/"|'
+        echo -e "                                     ${BLUE}. . .${WHITE}"
+        echo -e "                __/___                 ${BLUE}:${WHITE}"
+        echo -e "          _____/______|             ___${BLUE}|${WHITE}____     |\"\\/\"|"
         echo "  _______/_____\_______\_____     ,'        \`.    \  /"
         echo -e "  \               ${ITALIC}KSail${NORMAL}      |    |  ^        \___/  |"
-        echo "~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~"
+        echo -e "${BLUE}~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~${WHITE}"
         echo
         echo -e "${BLUE}KSail${WHITE} can help you provision ${GREEN}GitOps enabled K8s environments${WHITE} in ${BLUE}Docker${WHITE}."
         echo
