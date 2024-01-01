@@ -160,8 +160,8 @@ function main() {
         echo "                __/___                 ."
         echo '          _____/______|             ___:____     |"\/"|'
         echo "  _______/_____\_______\_____     ,'        \`.    \  /"
-        echo "  \    k8s       < < <       |    |  ^        \___/  |"
-        echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~^~^~^~^~^~^~^~^~^~^~^~"
+        echo -e "  \               ${ITALIC}KSail${NORMAL}      |    |  ^        \___/  |"
+        echo "~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~"
         echo
         echo -e "${BLUE}KSail${WHITE} can help you provision ${GREEN}GitOps enabled K8s environments${WHITE} in ${BLUE}Docker${WHITE}."
         echo
