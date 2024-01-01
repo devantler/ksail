@@ -45,10 +45,10 @@ function main() {
       echo "  ksail up [FLAGS]"
       echo
       echo "Flags:"
-      echo -e "  -n, --name      name of the cluster (${GREEN}ksail${WHITE})"
-      echo -e "  -b, --backend   k8s-in-docker backend (talos)"
-      echo -e "  -mp, --manifests_path  path to the manifests files root directory (${GREEN}./k8s${WHITE})"
-      echo -e "  -fp, --flux_path      path to the flux kustomization manifests (${GREEN}./k8s/clusters/${cluster_name}/flux${WHITE})"
+      echo -e "  -n   name of the cluster (${GREEN}ksail${WHITE})"
+      echo -e "  -b   k8s-in-docker backend (${GREEN}k3d${WHITE}, talos)"
+      echo -e "  -m   path to the manifests files root directory (${GREEN}./k8s${WHITE})"
+      echo -e "  -f   path to the flux kustomization manifests (${GREEN}./k8s/clusters/${PURPLE}<cluster-name>${GREEN}/flux${WHITE})"
       echo
       echo "⚠️ Warnings:"
       echo -e "- The clusters created by KSail are not meant for production use."
@@ -232,14 +232,6 @@ function main() {
         echo "📦✅ Docker installed"
       fi
 
-      if command -v talosctl &>/dev/null; then
-        echo "📦✅ Talosctl already installed. Skipping..."
-      else
-        echo "📦🔨 Installing Talosctl"
-        brew install siderolabs/talos/talosctl
-        echo "📦✅ Talosctl installed"
-      fi
-
       if command -v flux &>/dev/null; then
         echo "📦✅ Flux already installed. Skipping..."
       else
@@ -263,6 +255,40 @@ function main() {
         brew install kubectl
         echo "📦✅ Kubectl installed"
       fi
+      echo
+
+      echo -e "${BOLD}Which backend would you like to install?${NORMAL}"
+      PS3="Your selection: "
+      options=("k3d" "talos")
+      select opt in "${options[@]}"; do
+        case $opt in
+        "k3d")
+          if command -v k3d &>/dev/null; then
+            echo "📦✅ k3d already installed. Skipping..."
+          else
+            echo "📦🔨 Installing k3d"
+            brew install k3d
+            echo "📦✅ k3d installed"
+          fi
+          break
+          ;;
+        "talos")
+          if command -v talosctl &>/dev/null; then
+            echo "📦✅ talosctl already installed. Skipping..."
+          else
+            echo "📦🔨 Installing talosctl"
+            brew install talosctl
+            echo "📦✅ talosctl installed"
+          fi
+          break
+          ;;
+        *)
+          echo "🚫 Invalid option: $REPLY."
+          echo "   You must type the number of the option you want to select."
+          echo
+          ;;
+        esac
+      done
     }
 
     function run_up() {
@@ -624,7 +650,7 @@ function main() {
         while getopts ":hn:b:p:" flag; do
           case "${flag}" in
           h)
-            help up
+            help down
             exit
             ;;
           n)
