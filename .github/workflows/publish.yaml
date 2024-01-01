@@ -1,0 +1,20 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  Publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📑 Checkout
+        uses: actions/checkout@v4
+      - name: ✍🏻 Update version
+        run: perl -i -pe 's/VERSION=.*/VERSION="${{ github.ref_name }}"/g' ksail
+      - name: 📦 Publish
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ksail
