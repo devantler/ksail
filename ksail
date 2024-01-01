@@ -766,5 +766,5 @@ function main() {
   run "$@"
 }
 
-VERSION="v0.0.0"
+VERSION="dev"
 main "$@"
