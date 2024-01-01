@@ -46,11 +46,8 @@ function main() {
       echo
       echo "Flags:"
       echo -e "  -n, --name      name of the cluster (${GREEN}ksail${WHITE})"
-      echo -e "  -b, --backend   k8s-in-docker backend (${GREEN}k3d${WHITE}, talos)"
+      echo -e "  -b, --backend   k8s-in-docker backend (talos)"
       echo -e "  -p, --path      path to the flux kustomization manifests (${GREEN}./${WHITE})"
-      echo
-      echo "ℹ️ Info:"
-      echo "- If the k3d backend is used, all docker resources will be prefixed with 'k3d-'. This is a naming pattern that k3d uses for a variety of its features."
       echo
       echo "⚠️ Warnings:"
       echo -e "- The clusters created by KSail are not meant for production use."
@@ -62,7 +59,7 @@ function main() {
       echo
       echo "Flags:"
       echo -e "  -n, --name      name of the cluster (${GREEN}ksail${WHITE})"
-      echo -e "  -b, --backend   k8s-in-docker backend (k3d, ${GREEN}talos${WHITE})"
+      echo -e "  -b, --backend   k8s-in-docker backend (talos)"
     }
 
     function help_validate_arg() {
@@ -114,6 +111,46 @@ function main() {
   function run() {
     function version() {
       echo "KSail 0.0.1"
+    }
+
+    function destroy_cluster() {
+      function destroy_k3d_cluster() {
+        local cluster_name=${1}
+        k3d cluster delete "$cluster_name" || {
+          echo "🚨 Cluster deletion failed. Exiting..."
+          exit 1
+        }
+      }
+
+      function destroy_talos_cluster() {
+        talosctl cluster destroy --name "${cluster_name}" --force
+        talosctl config context default
+        talosctl config remove "${cluster_name}" -y
+        kubectl config unset current-context
+        if [[ $(kubectl config get-contexts -o name | grep admin@"${cluster_name}") ]]; then
+          kubectl config delete-context admin@"${cluster_name}"
+        fi
+        if [[ $(kubectl config get-clusters | grep "${cluster_name}") ]]; then
+          kubectl config delete-cluster "${cluster_name}"
+        fi
+        if [[ $(kubectl config get-users | grep admin@"${cluster_name}") ]]; then
+          kubectl config delete-user admin@"${cluster_name}"
+        fi
+      }
+
+      local cluster_name=${1}
+      local backend=${2}
+
+      # Check which backend
+      echo "🔥 Delete ${cluster_name} cluster"
+      if [[ "$backend" == "k3d" ]]; then
+        destroy_k3d_cluster "$cluster_name"
+      elif [[ "$backend" == "talos" ]]; then
+        destroy_talos_cluster "$cluster_name" "$path"
+      else
+        echo "🚫 Unsupported backend. Exiting..."
+        exit 1
+      fi
     }
 
     function run_no_arg() {
@@ -352,7 +389,7 @@ function main() {
             local fingerprint
             fingerprint=$(gpg --list-keys -uid ksail | grep '^      *' | tr -d ' ')
             export KSAIL_SOPS_GPG_KEY
-            KSAIL_SOPS_GPG_KEY=$(gpg--export-secret-keys --armor "$fingerprint")
+            KSAIL_SOPS_GPG_KEY=$(gpg --export-secret-keys --armor "$fingerprint")
           else
             kubectl create secret generic sops-gpg \
               --namespace=flux-system \
@@ -401,7 +438,10 @@ function main() {
         }
 
         function provision_k3d_cluster() {
-          echo
+          k3d cluster create --config "${cluster_name}"-k3d-config.yaml || {
+            echo "🚨 Cluster creation failed. Exiting..."
+            exit 1
+          }
         }
 
         function provision_talos_cluster() {
@@ -467,16 +507,11 @@ function main() {
         fi
         echo
 
-        # Select backend using arrow keys. Default is k3d.
         echo -e "${BOLD}What backend would you like to use?${NORMAL}"
         PS3="Your selection: "
-        options=("k3d" "talos")
+        options=("talos")
         select opt in "${options[@]}"; do
           case $opt in
-          "k3d")
-            backend="k3d"
-            break
-            ;;
           "talos")
             backend="talos"
             break
@@ -527,11 +562,70 @@ function main() {
 
       check_if_docker_is_running
       create_oci_registries
+      destroy_cluster "$cluster_name" "$backend"
       provision_cluster "$cluster_name" "$backend" "$path"
     }
 
     function run_down() {
-      echo "down"
+      local cluster_name
+      local backend
+      if [ -z "$2" ]; then
+        echo -e "${BOLD}Which cluster would you like to destroy?"
+        while true; do
+          read -r cluster_name
+          if [[ -z "$cluster_name" ]]; then
+            echo "🚫 You must enter a cluster name."
+            echo
+          else
+            break
+          fi
+        done
+        echo
+
+        echo -e "${BOLD}What backend does the cluster use?${NORMAL}"
+        PS3="Your selection: "
+        options=("talos")
+        select opt in "${options[@]}"; do
+          case $opt in
+          "talos")
+            backend="talos"
+            break
+            ;;
+          *)
+            echo "🚫 Invalid option: $REPLY."
+            echo "   You must type the number of the option you want to select."
+            echo
+            ;;
+          esac
+        done
+      else
+        local OPTIND=2
+        while getopts ":hn:b:p:" flag; do
+          case "${flag}" in
+          h)
+            help up
+            exit
+            ;;
+          n)
+            cluster_name=${OPTARG}
+            ;;
+          b)
+            backend=${OPTARG}
+            ;;
+          *)
+            echo "🚫 Unknown flag: $2"
+            exit 1
+            ;;
+          esac
+        done
+        if [[ "$2" != "-"* ]]; then
+          echo "🚫 Unknown flag: $2"
+          exit 1
+        fi
+      fi
+
+      check_if_docker_is_running
+      destroy_cluster "$cluster_name" "$backend"
     }
 
     function run_validate() {
