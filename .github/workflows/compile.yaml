@@ -1,0 +1,26 @@
+name: Compile and publish
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  compile-and-publish:
+    name: Compile and publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📑 Checkout
+        uses: actions/checkout@v4
+      - name: ⚙️ Setup shc
+        run: |
+          sudo add-apt-repository ppa:neurobin/ppa
+          sudo apt-get update -y
+          sudo apt-get install shc -y
+      - name: 📦 Compile
+        run: |
+          shc -f ksail.sh -o ksail
+      - name: 📦 Publish
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ksail
