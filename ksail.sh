@@ -146,7 +146,7 @@ function main() {
       if [[ "$backend" == "k3d" ]]; then
         destroy_k3d_cluster "$cluster_name"
       elif [[ "$backend" == "talos" ]]; then
-        destroy_talos_cluster "$cluster_name" "$flux_path"
+        destroy_talos_cluster "$cluster_name"
       else
         echo "🚫 Unsupported backend. Exiting..."
         exit 1
@@ -441,6 +441,7 @@ function main() {
         function install_flux() {
           local cluster_name=${1}
           local docker_gateway_ip=${2}
+          local flux_path=${3}
           echo "🚀 Installing Flux"
           flux check --pre || {
             echo "🚨 Flux prerequisites check failed. Exiting..."
@@ -517,7 +518,7 @@ function main() {
         if [[ "$backend" == "k3d" ]]; then
           provision_k3d_cluster "$cluster_name"
         elif [[ "$backend" == "talos" ]]; then
-          provision_talos_cluster "$cluster_name" "$flux_path"
+          provision_talos_cluster "$cluster_name"
         else
           echo "🚫 Unsupported backend. Exiting..."
           exit 1
@@ -526,7 +527,7 @@ function main() {
           echo "🚨 SOPS GPG key creation failed. Exiting..."
           exit 1
         }
-        install_flux "$cluster_name" "$docker_gateway_ip" || {
+        install_flux "$cluster_name" "$docker_gateway_ip" "$flux_path" || {
           echo "🚨 Flux installation failed. Exiting..."
           exit 1
         }
