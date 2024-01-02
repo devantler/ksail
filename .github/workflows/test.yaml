@@ -11,4 +11,4 @@ jobs:
       - name: 📑 Checkout
         uses: actions/checkout@v4
       - name: 🧪⛴️🐳 Test Ksail
-        run: sh ./ksail_test
+        run: bash ksail_test
