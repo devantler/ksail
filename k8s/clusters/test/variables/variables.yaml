@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: variables
+data:
+  cluster_domain: hl
+  cluster_issuer_name: selfsigned-cluster-issuer

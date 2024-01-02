@@ -1,17 +1,48 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infrastructure
+  name: infrastructure-services
   namespace: flux-system
 spec:
   interval: 1m
+  dependsOn:
+    - name: variables
   sourceRef:
     kind: OCIRepository
     name: flux-system
-  path: ./clusters/infrastructure
+  path: ./clusters/test/infrastructure/services
   prune: true
   wait: true
   decryption:
     provider: sops
     secretRef:
       name: sops-gpg
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: variables
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infrastructure-configs
+  namespace: flux-system
+spec:
+  interval: 1m
+  dependsOn:
+    - name: variables
+    - name: infrastructure-services
+  sourceRef:
+    kind: OCIRepository
+    name: flux-system
+  path: ./clusters/test/infrastructure/configs
+  prune: true
+  wait: true
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-gpg
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: variables

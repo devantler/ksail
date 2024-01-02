@@ -1,134 +1,134 @@
 #!/bin/bash
 
 function test_introduction() {
-  echo "🧪 Testing 'ksail'"
+  echo -n "🧪 Testing 'ksail'"
   ./ksail >/dev/null || {
-    echo "❌ Testing 'ksail' failed"
+    echo "❌ failed"
     exit 1
   }
-  echo "✅ Testing 'ksail' passed"
+  echo "✅ passed"
 }
 
 function test_help_flag() {
-  echo "🧪 Testing 'ksail -h'"
+  echo -n "🧪 Testing 'ksail -h'"
   ./ksail -h >/dev/null || {
-    echo "❌ Testing 'ksail -h' failed"
+    echo "❌ failed"
     exit 1
   }
-  echo "✅ Testing 'ksail -h' passed"
+  echo "✅ passed"
 
-  echo "🧪 Testing 'ksail up'"
+  echo -n "🧪 Testing 'ksail up'"
   ./ksail up >/dev/null || {
-    echo "❌ Testing 'ksail up' failed"
+    echo "❌ failed"
     exit 1
   }
-  echo "✅ Testing 'ksail up' passed"
+  echo "✅ passed"
 
-  echo "🧪 Testing 'ksail up -h'"
+  echo -n "🧪 Testing 'ksail up -h'"
   ./ksail up -h >/dev/null || {
-    echo "❌ Testing 'ksail up -h' failed"
+    echo "❌ failed"
     exit 1
   }
-  echo "✅ Testing 'ksail up -h' passed"
+  echo "✅ passed"
 
-  echo "🧪 Testing 'ksail up k3d -h'"
+  echo -n "🧪 Testing 'ksail up k3d -h'"
   ./ksail up k3d -h >/dev/null || {
-    echo "❌ Testing 'ksail up k3d -h' failed"
+    echo "❌ failed"
     exit 1
   }
-  echo "✅ Testing 'ksail up k3d -h' passed"
+  echo "✅ passed"
 
-  echo "🧪 Testing 'ksail up talos -h'"
+  echo -n "🧪 Testing 'ksail up talos -h'"
   ./ksail up talos -h >/dev/null || {
-    echo "❌ Testing 'ksail up talos -h' failed"
+    echo "❌ failed"
     exit 1
   }
-  echo "✅ Testing 'ksail up talos -h' passed"
+  echo "✅ passed"
 
-  echo "🧪 Testing 'ksail down'"
+  echo -n "🧪 Testing 'ksail down'"
   ./ksail down >/dev/null || {
-    echo "❌ Testing 'ksail down' failed"
+    echo "❌ failed"
     exit 1
   }
-  echo "✅ Testing 'ksail down' passed"
+  echo "✅ passed"
 
-  echo "🧪 Testing 'ksail down -h'"
+  echo -n "🧪 Testing 'ksail down -h'"
   ./ksail down -h >/dev/null || {
-    echo "❌ Testing 'ksail down -h' failed"
+    echo "❌ failed"
     exit 1
   }
-  echo "✅ Testing 'ksail down -h' passed"
+  echo "✅ passed"
 
-  echo "🧪 Testing 'ksail down k3d -h'"
+  echo -n "🧪 Testing 'ksail down k3d -h'"
   ./ksail down k3d -h >/dev/null || {
-    echo "❌ Testing 'ksail down k3d -h' failed"
+    echo "❌ failed"
     exit 1
   }
-  echo "✅ Testing 'ksail down k3d -h' passed"
+  echo "✅ passed"
 
-  echo "🧪 Testing 'ksail down talos -h'"
+  echo -n "🧪 Testing 'ksail down talos -h'"
   ./ksail down talos -h >/dev/null || {
-    echo "❌ Testing 'ksail down talos -h' failed"
+    echo "❌ failed"
     exit 1
   }
-  echo "✅ Testing 'ksail down talos -h' passed"
+  echo "✅ passed"
 
-  echo "🧪 Testing 'ksail install'"
+  echo -n "🧪 Testing 'ksail install'"
   ./ksail install >/dev/null || {
-    echo "❌ Testing 'ksail install' failed"
+    echo "❌ failed"
     exit 1
   }
-  echo "✅ Testing 'ksail install' passed"
+  echo "✅ passed"
 
-  echo "🧪 Testing 'ksail install -h'"
+  echo -n "🧪 Testing 'ksail install -h'"
   ./ksail install -h >/dev/null || {
-    echo "❌ Testing 'ksail install -h' failed"
+    echo "❌ failed"
     exit 1
   }
-  echo "✅ Testing 'ksail install -h' passed"
+  echo "✅ passed"
 }
 
 function test_version_flag() {
-  echo "🧪 Testing 'ksail -v'"
+  echo -n "🧪 Testing 'ksail -v'"
   ./ksail -v >/dev/null || {
-    echo "❌ Testing 'ksail -v' failed"
+    echo "❌ failed"
     exit 1
   }
-  echo "✅ Testing 'ksail -v' passed"
+  echo "✅ passed"
 }
 
 function test_install() {
-  echo "🧪 Testing 'ksail install k3d'"
+  echo -n "🧪 Testing 'ksail install k3d'"
   ./ksail install k3d >/dev/null || {
-    echo "❌ Testing 'ksail install k3d' failed"
+    echo "❌ failed"
     exit 1
   }
-  echo "✅ Testing 'ksail install k3d' passed"
+  echo "✅ passed"
 
-  echo "🧪 Testing 'ksail install talos'"
+  echo -n "🧪 Testing 'ksail install talos'"
   ./ksail install talos >/dev/null || {
-    echo "❌ Testing 'ksail install talos' failed"
+    echo "❌ failed"
     exit 1
   }
-  echo "✅ Testing 'ksail install talos' passed"
+  echo "✅ passed"
 }
 
 function test_up() {
-  echo "🧪 Testing 'ksail up k3d -n test'"
-  ./ksail up k3d -n test || {
-    echo "❌ Testing 'ksail up k3d -n test' failed"
+  echo -n "🧪 Testing 'ksail up k3d -n test'"
+  ./ksail up k3d -n test >/dev/null 2>&1 || {
+    echo "❌ failed"
     exit 1
   }
-  echo "✅ Testing 'ksail up k3d -n test' passed"
+  echo "✅ passed"
 }
 
 function test_down() {
-  echo "🧪 Testing 'ksail down k3d -n test'"
+  echo -n "🧪 Testing 'ksail down k3d -n test'"
   ./ksail down k3d -n test >/dev/null 2>&1 || {
-    echo "❌ Testing 'ksail down k3d -n test' failed"
+    echo "❌ failed"
     exit 1
   }
-  echo "✅ Testing 'ksail down k3d -n test' passed"
+  echo "✅ passed"
 }
 
 # Run all the tests
