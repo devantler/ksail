@@ -126,37 +126,36 @@ function main_run_help_down_arg() {
 }
 
 function main_run_help() {
-  if [ -z "${1}" ]; then
+  local help_arg=${1}
+  if [ -z "$help_arg" ]; then
     main_run_help_no_arg
   else
-    while [ $# -gt 0 ]; do
-      case "$1" in
-      install)
-        main_run_help_install_arg "$@"
-        exit
-        ;;
-      up)
-        main_run_help_up_arg "$@"
-        exit
-        ;;
-      up-k3d)
-        main_run_help_up_k3d_arg "$@"
-        exit
-        ;;
-      up-talos)
-        main_run_help_up_talos_arg "$@"
-        exit
-        ;;
-      down)
-        main_run_help_down_arg "$@"
-        exit
-        ;;
-      *)
-        echo "Unknown argument: $1"
-        exit 1
-        ;;
-      esac
-    done
+    case $help_arg in
+    install)
+      main_run_help_install_arg
+      exit
+      ;;
+    up)
+      main_run_help_up_arg
+      exit
+      ;;
+    up-k3d)
+      main_run_help_up_k3d_arg
+      exit
+      ;;
+    up-talos)
+      main_run_help_up_talos_arg
+      exit
+      ;;
+    down)
+      main_run_help_down_arg
+      exit
+      ;;
+    *)
+      echo "🚨 Bad help argument: $help_arg"
+      exit 1
+      ;;
+    esac
   fi
 }
 
