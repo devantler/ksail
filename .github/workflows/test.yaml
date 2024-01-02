@@ -4,6 +4,10 @@ on:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -11,4 +15,7 @@ jobs:
       - name: 📑 Checkout
         uses: actions/checkout@v4
       - name: 🧪 Test
-        run: bash ksail_test
+        run: |
+          export TERM=xterm
+          bash -c "tput -T xterm"
+          ./ksail_test
