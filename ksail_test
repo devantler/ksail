@@ -115,7 +115,7 @@ function test_install() {
 
 function test_up() {
   echo "🧪 Testing 'ksail up k3d -n test'"
-  ./ksail up k3d -n test >/dev/null 2>&1 || {
+  ./ksail up k3d -n test || {
     echo "❌ Testing 'ksail up k3d -n test' failed"
     exit 1
   }
