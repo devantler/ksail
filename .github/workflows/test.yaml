@@ -16,6 +16,4 @@ jobs:
         uses: actions/checkout@v4
       - name: 🧪 Test
         run: |
-          export TERM=xterm
-          bash -c "tput -T xterm"
-          ./ksail_test
+          TERM=xterm bash ksail_test
