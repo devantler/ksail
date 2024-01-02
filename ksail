@@ -478,7 +478,7 @@ function main_run_up_handle_prompts_k3d() {
     if [ -z "$k3d_config_path" ]; then
       k3d_config_path="./${cluster_name}-k3d-config.yaml"
     fi
-    if k3d_config_path=$(realpath "$k3d_config_path"); then
+    if realpath "$k3d_config_path"; then
       break
     else
       echo
@@ -507,7 +507,7 @@ function main_run_up_handle_prompts() {
     if [ -z "$manifests_path" ]; then
       manifests_path="./k8s"
     fi
-    if manifests_path=$(realpath "$manifests_path"); then
+    if realpath "$manifests_path"; then
       break
     else
       echo
@@ -522,7 +522,7 @@ function main_run_up_handle_prompts() {
     if [ -z "$flux_path" ]; then
       flux_path="./clusters/${cluster_name}/flux"
     fi
-    if flux_path=$(realpath "$manifests_path/$flux_path"); then
+    if realpath "$manifests_path/$flux_path"; then
       break
     else
       echo
@@ -548,14 +548,14 @@ function main_run_up_handle_flags() {
       ;;
     m)
       manifests_path=${OPTARG}
-      if ! manifests_path=$(realpath "$manifests_path"); then
+      if ! realpath "$manifests_path"; then
         echo "🚨 Manifests path does not exist. Exiting..."
         exit 1
       fi
       ;;
     f)
       flux_path=${OPTARG}
-      if ! flux_path=$(realpath "$$manifests_path/$flux_path"); then
+      if ! realpath "$$manifests_path/$flux_path"; then
         echo "🚨 Flux path does not exist. Exiting..."
         exit 1
       fi
@@ -566,7 +566,7 @@ function main_run_up_handle_flags() {
         exit 1
       fi
       k3d_config_path=${OPTARG}
-      if ! k3d_config_path=$(realpath "$k3d_config_path"); then
+      if ! realpath "$k3d_config_path"; then
         echo "🚨 K3d config path does not exist. Exiting..."
         exit 1
       fi
@@ -596,16 +596,16 @@ function main_run_up_handle_flags() {
 
 function main_run_up_validate_configuration() {
   echo "🔍 Validating configuration"
-  if ! manifests_path=$(realpath "$manifests_path"); then
+  if ! realpath "$manifests_path"; then
     echo "🚨 Manifests path does not exist. Exiting..."
     exit 1
   fi
-  if ! flux_path=$(realpath "$manifests_path/$flux_path"); then
+  if ! realpath "$manifests_path/$flux_path"; then
     echo "🚨 Flux path does not exist. Exiting..."
     exit 1
   fi
   if [[ "$backend" == "k3d" && -n "$k3d_config_path" ]]; then
-    if ! k3d_config_path=$(realpath "$k3d_config_path"); then
+    if ! realpath "$k3d_config_path"; then
       echo "🚨 K3d config path does not exist. Exiting..."
       exit 1
     fi
