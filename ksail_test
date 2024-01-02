@@ -132,12 +132,12 @@ function test_down() {
 }
 
 function test_validate() {
-  echo "🧪 Testing 'ksail validate'"
+  echo -n "🧪 Testing 'ksail validate'"
   echo "⚠️ Not implemented yet"
 }
 
 function test_verify() {
-  echo "🧪 Testing 'ksail verify'"
+  echo -n "🧪 Testing 'ksail verify'"
   echo "⚠️ Not implemented yet"
 }
 
