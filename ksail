@@ -34,10 +34,10 @@ function main_define_font_types() {
 
 function main_run_global_flags() {
   local flag=$1
-  local arg=$2
+  local help_arg=$2
   case "${flag}" in
   h)
-    main_run_help "$arg"
+    main_run_help "$help_arg"
     exit
     ;;
   \?)
@@ -278,7 +278,7 @@ function main_run_install() {
     exit 1
   elif [[ " ${valid_global_flags[*]} " =~ (^| )${2}( |$) && $# -eq 2 ]] || [[ " ${valid_global_flags[*]} " =~ (^| )${3}( |$) && $# -eq 3 ]]; then
     local OPTIND=$#
-    while getopts "hv" flag; do
+    while getopts "h" flag; do
       main_run_global_flags "$flag" install
     done
   else
@@ -497,7 +497,7 @@ function main_run_up_configure_k3d_cluster_with_prompts() {
 
 function main_run_up_configure_k3d_cluster_with_flags() {
   local OPTIND=3
-  while getopts "chv" flag; do
+  while getopts "c:h" flag; do
     case "${flag}" in
     c)
       k3d_config_path=${OPTARG}
@@ -523,7 +523,7 @@ function main_run_up_configure_talos_cluster_with_prompts() {
 
 function main_run_up_configure_talos_cluster_with_flags() {
   local OPTIND=3
-  while getopts "hv" flag; do
+  while getopts "h" flag; do
     case "${flag}" in
     *)
       main_run_global_flags "$flag" up-talos
@@ -551,7 +551,7 @@ function main_run_up() {
     exit 1
   elif [[ " ${valid_global_flags[*]} " =~ (^| )${2}( |$) ]]; then
     local OPTIND=2
-    while getopts "hv" flag; do
+    while getopts "h" flag; do
       main_run_global_flags "$flag" up
     done
   else
@@ -591,18 +591,13 @@ function main_run_down_configure_with_prompts() {
 
 function main_run_down_configure_with_flags() {
   local OPTIND=3
-  while getopts "hn" flag; do
+  while getopts "hn:" flag; do
     case "${flag}" in
-    h)
-      main_run_help down
-      exit
-      ;;
     n)
       cluster_name=${OPTARG}
       ;;
     *)
-      echo "🚨 Bad parameters: $*"
-      exit 1
+      main_run_global_flags "$flag" down
       ;;
     esac
   done
@@ -615,6 +610,15 @@ function main_run_down() {
   elif [[ ! " ${valid_backends[*]} " =~ (^| )${2}( |$) ]] && [[ ! " ${valid_global_flags[*]} " =~ (^| )${2}( |$) ]]; then
     echo "🚨 Bad parameters: $*"
     exit 1
+  elif [[ " ${valid_global_flags[*]} " =~ (^| )${2}( |$) ]]; then
+    if [ $# -gt 2 ]; then
+      echo "🚨 Bad parameters: $*"
+      exit 1
+    fi
+    local OPTIND=2
+    while getopts "h" flag; do
+      main_run_global_flags "$flag" down
+    done
   else
     local backend=${2}
     if [ $# -eq 2 ]; then
@@ -631,54 +635,91 @@ function main_run_down() {
   fi
 }
 
+function main_run_validate_arg {
+  local arg=${1}
+  if [[ " ${valid_flags[*]} " =~ (^| )${arg}( |$) ]]; then
+    return
+  else
+    echo "🚨 Bad argument: $arg"
+    exit 1
+  fi
+}
+
 function main_run() {
   if [ $# -eq 0 ]; then
     main_run_no_arg
   else
-    if [ $# -gt 0 ]; then
-      case "$1" in
-      install)
-        main_run_install "$@"
-        exit
-        ;;
-      up)
-        main_run_up "$@"
-        exit
-        ;;
-      down)
-        main_run_down "$@"
-        exit
-        ;;
-      update)
-        main_run_update "$@"
-        exit
-        ;;
-      validate)
-        main_run_validate "$@"
-        exit
-        ;;
-      verify)
-        main_run_verify "$@"
-        exit
-        ;;
-      *)
-        local OPTIND=1
-        while getopts "hv" flag; do
-          main_run_global_flags "$flag" ""
-          case "${flag}" in
-          v)
-            main_run_version
-            exit
-            ;;
-          *)
-            echo "🚨 Bad parameters: $*"
-            exit 1
-            ;;
-          esac
-        done
-        ;;
-      esac
-    fi
+    local command=${1}
+    case $command in
+    install)
+      valid_flags=("${valid_global_flags[@]}" "${valid_backends[@]}" install)
+      for arg in "$@"; do
+        main_run_validate_arg "$arg"
+      done
+      main_run_install "$@"
+      exit
+      ;;
+    up)
+      valid_flags=("${valid_global_flags[@]}" "${valid_backends[@]}" up -n -m -f -c)
+      for arg in "$@"; do
+        main_run_validate_arg "$arg"
+      done
+      main_run_up "$@"
+      exit
+      ;;
+    down)
+      valid_flags=("${valid_global_flags[@]}" "${valid_backends[@]}" down -n)
+      for arg in "$@"; do
+        main_run_validate_arg "$arg"
+      done
+      main_run_down "$@"
+      exit
+      ;;
+    update)
+      valid_flags=("${valid_global_flags[@]}" "${valid_backends[@]}" update -n -m)
+      for arg in "$@"; do
+        main_run_validate_arg "$arg"
+      done
+      main_run_update "$@"
+      exit
+      ;;
+    validate)
+      valid_flags=("${valid_global_flags[@]}" validate)
+      for arg in "$@"; do
+        main_run_validate_arg "$arg"
+      done
+      main_run_validate "$@"
+      exit
+      ;;
+    verify)
+      valid_flags=("${valid_global_flags[@]}" "${valid_backends[@]}" verify)
+      for arg in "$@"; do
+        main_run_validate_arg "$arg"
+      done
+      main_run_verify "$@"
+      exit
+      ;;
+    *)
+      valid_flags=("${valid_global_flags[@]}" -v)
+      for arg in "$@"; do
+        main_run_validate_arg "$arg"
+      done
+      local OPTIND=1
+      while getopts "hv" flag; do
+        main_run_global_flags "$flag" ""
+        case "${flag}" in
+        v)
+          main_run_version
+          exit
+          ;;
+        *)
+          echo "🚨 Invalid flag: $flag"
+          exit 1
+          ;;
+        esac
+      done
+      ;;
+    esac
   fi
 }
 
