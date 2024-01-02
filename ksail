@@ -266,7 +266,7 @@ function main_run_install_dependencies() {
   if [[ "$backend" == "k3d" ]]; then
     main_run_install_dependency "k3d"
   elif [[ "$backend" == "talos" ]]; then
-    main_run_install_dependency "talos-systems/talos/talosctl"
+    main_run_install_dependency "talos-systems/talos/talosctl" "talosctl"
   fi
 }
 
