@@ -19,7 +19,7 @@ A kubernetes-in-docker service for provisioning GitOps enabled K8s environments 
 ### Prerequisites
 
 - A Unix or Linux based OS.
-- A Flux kustomization file.
+- A Flux project.
 
 ### Installation
 
