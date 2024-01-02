@@ -515,12 +515,12 @@ function main_run_up_handle_prompts() {
     fi
   done
 
-  echo -e "${BOLD}What is the path to your flux kustomizations? (default: ${GREEN}./k8s/clusters/${cluster_name}/flux${WHITE})${NORMAL}"
+  echo -e "${BOLD}What is the path to your flux kustomizations? (default: ${GREEN}./clusters/${cluster_name}/flux${WHITE})${NORMAL}"
   while true; do
     echo -n "> "
     read -r flux_path
     if [ -z "$flux_path" ]; then
-      flux_path="./k8s/clusters/${cluster_name}/flux"
+      flux_path="./clusters/${cluster_name}/flux"
     fi
     if flux_path=$(realpath "$flux_path"); then
       break
@@ -544,7 +544,7 @@ function main_run_up_handle_flags() {
     case "${flag}" in
     n)
       cluster_name=${OPTARG}
-      flux_path="./k8s/clusters/${cluster_name}/flux"
+      flux_path="./clusters/${cluster_name}/flux"
       ;;
     m)
       manifests_path=${OPTARG}
@@ -617,7 +617,7 @@ function main_run_up() {
   local cluster_name="ksail"
   local backend
   local manifests_path="./k8s"
-  local flux_path="./k8s/clusters/${cluster_name}/flux"
+  local flux_path="./clusters/${cluster_name}/flux"
   local k3d_config_path
   local docker_gateway_ip
   docker_gateway_ip=$(docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}')
