@@ -54,7 +54,7 @@ function main_run_help_up_arg() {
   echo "Flags:"
   echo -e "  -n   name of the cluster (${GREEN}ksail${WHITE})"
   echo -e "  -m   path to the manifests files root directory (${GREEN}./k8s${WHITE})"
-  echo -e "  -f   path to the flux kustomization manifests (${GREEN}./k8s/clusters/${PURPLE}<cluster-name>${GREEN}/flux${WHITE})"
+  echo -e "  -f   path to the flux kustomization manifests (${GREEN}./clusters/${PURPLE}<cluster-name>${GREEN}/flux${WHITE})"
   echo
   echo "ℹ️ Notes:"
   echo -e "  - Backends may have additional flags. Run '${BLUE}ksail up ${PURPLE}<backend>${BLUE} -h${WHITE}' for more information."
@@ -67,7 +67,7 @@ function main_run_help_up_k3d_arg() {
   echo "Flags:"
   echo -e "  -n   name of the cluster (${GREEN}ksail${WHITE})"
   echo -e "  -m   path to the manifests files root directory (${GREEN}./k8s${WHITE})"
-  echo -e "  -f   path to the flux kustomization manifests (${GREEN}./k8s/clusters/${PURPLE}<cluster-name>${GREEN}/flux${WHITE})"
+  echo -e "  -f   path to the flux kustomization manifests (${GREEN}./clusters/${PURPLE}<cluster-name>${GREEN}/flux${WHITE})"
   echo -e "  -c   path to the k3d cluster config file (${GREEN}./${PURPLE}<cluster-name>${GREEN}-k3d-config.yaml${WHITE})"
 }
 
@@ -78,7 +78,7 @@ function main_run_help_up_talos_arg() {
   echo "Flags:"
   echo -e "  -n   name of the cluster (${GREEN}ksail${WHITE})"
   echo -e "  -m   path to the manifests files root directory (${GREEN}./k8s${WHITE})"
-  echo -e "  -f   path to the flux kustomization manifests (${GREEN}./k8s/clusters/${PURPLE}<cluster-name>${GREEN}/flux${WHITE})"
+  echo -e "  -f   path to the flux kustomization manifests (${GREEN}./clusters/${PURPLE}<cluster-name>${GREEN}/flux${WHITE})"
 }
 
 function main_run_help_down_arg() {
