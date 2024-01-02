@@ -522,7 +522,7 @@ function main_run_up_handle_prompts() {
     if [ -z "$flux_path" ]; then
       flux_path="./clusters/${cluster_name}/flux"
     fi
-    if flux_path=$(realpath "$flux_path"); then
+    if flux_path=$(realpath "$manifests_path/$flux_path"); then
       break
     else
       echo
@@ -555,7 +555,7 @@ function main_run_up_handle_flags() {
       ;;
     f)
       flux_path=${OPTARG}
-      if ! flux_path=$(realpath "$flux_path"); then
+      if ! flux_path=$(realpath "$$manifests_path/$flux_path"); then
         echo "🚨 Flux path does not exist. Exiting..."
         exit 1
       fi
@@ -600,7 +600,7 @@ function main_run_up_validate_configuration() {
     echo "🚨 Manifests path does not exist. Exiting..."
     exit 1
   fi
-  if ! flux_path=$(realpath "$flux_path"); then
+  if ! flux_path=$(realpath "$manifests_path/$flux_path"); then
     echo "🚨 Flux path does not exist. Exiting..."
     exit 1
   fi
