@@ -66,6 +66,15 @@ function main_run_help_no_arg() {
   echo "  -v    print version information"
 }
 
+function main_run_help_install_arg() {
+  echo "Usage:"
+  echo "  ksail install <backend>"
+  echo
+  echo "Backends:"
+  echo "  k3d    k3s-in-docker"
+  echo "  talos  talos-in-docker"
+}
+
 function main_run_help_up_arg() {
   echo "Usage:"
   echo -e "  ksail up ${PURPLE}<backend>${WHITE} [flags]"
@@ -122,6 +131,10 @@ function main_run_help() {
   else
     while [ $# -gt 0 ]; do
       case "$1" in
+      install)
+        main_run_help_install_arg "$@"
+        exit
+        ;;
       up)
         main_run_help_up_arg "$@"
         exit
@@ -175,7 +188,7 @@ function main_run_down_destroy_talos_cluster() {
   fi
 }
 
-function update_cluster() {
+function main_run_update() {
   local cluster_name=${1}
   local manifests_path=${2}
   local time
@@ -189,7 +202,7 @@ function update_cluster() {
     --tag latest
 }
 
-function introduction() {
+function main_run_introduction() {
   echo -e "⛴️ 🐳   ${BOLD}${UNDERLINE}Welcome to ${BLUE}KSail${WHITE}   ⛴️ 🐳${NORMAL}"
   echo -e "                                     ${BLUE}. . .${WHITE}"
   echo -e "                __/___                 ${BLUE}:${WHITE}"
@@ -204,12 +217,11 @@ function introduction() {
 
 function main_run_no_arg() {
 
-  introduction
+  main_run_introduction
   main_run_help
 }
 
-function main_run_install() {
-  echo "📦 Installing dependencies"
+function main_run_instal_homebrew() {
   if command -v brew &>/dev/null; then
     echo "📦✅ Homebrew already installed. Updating..."
     brew upgrade
@@ -223,99 +235,61 @@ function main_run_install() {
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
     echo "📦✅ Homebrew installed"
   fi
-
-  if command -v yq &>/dev/null; then
-    echo "📦✅ YQ already installed. Skipping..."
-  else
-    echo "📦🔨 Installing YQ"
-    brew install yq
-    echo "📦✅ YQ installed"
-  fi
-
-  if command -v kubeconform &>/dev/null; then
-    echo "📦✅ Kubeconform already installed. Skipping..."
-  else
-    echo "📦🔨 Installing Kubeconform"
-    brew install kubeconform
-    echo "📦✅ Kubeconform installed"
-  fi
-
-  if command -v kustomize &>/dev/null; then
-    echo "📦✅ Kustomize already installed. Skipping..."
-  else
-    echo "📦🔨 Installing Kustomize"
-    brew install kustomize
-    echo "📦✅ Kustomize installed"
-  fi
-
-  if command -v docker &>/dev/null; then
-    echo "📦✅ Docker already installed. Skipping..."
-  else
-    echo "📦🔨 Installing Docker"
-    brew install --cask docker
-    echo "📦✅ Docker installed"
-  fi
-
-  if command -v flux &>/dev/null; then
-    echo "📦✅ Flux already installed. Skipping..."
-  else
-    echo "📦🔨 Installing Flux"
-    brew install fluxcd/tap/flux
-    echo "📦✅ Flux installed"
-  fi
-
-  if command -v gpg &>/dev/null; then
-    echo "📦✅ GPG already installed. Skipping..."
-  else
-    echo "📦🔨 Installing GPG"
-    brew install gpg
-    echo "📦✅ GPG installed"
-  fi
-
-  if command -v kubectl &>/dev/null; then
-    echo "📦✅ Kubectl already installed. Skipping..."
-  else
-    echo "📦🔨 Installing Kubectl"
-    brew install kubectl
-    echo "📦✅ Kubectl installed"
-  fi
-  echo
-
-  echo -e "${BOLD}Which backend would you like to install?${NORMAL}"
-  PS3="Your selection: "
-  options=("k3d" "talos")
-  select opt in "${options[@]}"; do
-    case $opt in
-    "k3d")
-      if command -v k3d &>/dev/null; then
-        echo "📦✅ k3d already installed. Skipping..."
-      else
-        echo "📦🔨 Installing k3d"
-        brew install k3d
-        echo "📦✅ k3d installed"
-      fi
-      break
-      ;;
-    "talos")
-      if command -v talosctl &>/dev/null; then
-        echo "📦✅ talosctl already installed. Skipping..."
-      else
-        echo "📦🔨 Installing talosctl"
-        brew install talosctl
-        echo "📦✅ talosctl installed"
-      fi
-      break
-      ;;
-    *)
-      echo "🚫 Invalid option: $REPLY."
-      echo "   You must type the number of the option you want to select."
-      echo
-      ;;
-    esac
-  done
 }
 
-function check_if_docker_is_running() {
+function main_run_install_dependency() {
+  local dependency=${1}
+  local command=${2}
+  if [ -z "$command" ]; then
+    command="$dependency"
+  fi
+  echo "📦 Installing $dependency"
+  if command -v "$command" &>/dev/null; then
+    echo "📦✅ $dependency already installed. Skipping..."
+  else
+    echo "📦🔨 Installing $dependency"
+    brew install "$dependency"
+    echo "📦✅ $dependency installed"
+  fi
+}
+
+function main_run_install_dependencies() {
+  local backend=${1}
+  echo "📦 Installing dependencies"
+  main_run_instal_homebrew
+  main_run_install_dependency "yq"
+  main_run_install_dependency "kubeconform"
+  main_run_install_dependency "kustomize"
+  main_run_install_dependency "docker"
+  main_run_install_dependency "fluxcd/tap/flux" "flux"
+  main_run_install_dependency "gpg"
+  main_run_install_dependency "kubectl"
+  if [[ "$backend" == "k3d" ]]; then
+    main_run_install_dependency "k3d"
+  elif [[ "$backend" == "talos" ]]; then
+    main_run_install_dependency "talos-systems/talos/talosctl"
+  fi
+}
+
+function main_run_install() {
+  if [ -z "$2" ]; then
+    main_run_help install
+  elif [[ ! " ${valid_backends[*]} " =~ (^| )${2}( |$) ]] && [[ ! " ${valid_global_flags[*]} " =~ (^| )${2}( |$) ]] || [[ ! " ${valid_global_flags[*]} " =~ (^| )${3}( |$) ]] || [ $# -gt 3 ]; then
+    echo "🚨 Bad parameters: $*"
+    exit 1
+  elif [[ " ${valid_global_flags[*]} " =~ (^| )${2}( |$) && $# -eq 2 ]] || [[ " ${valid_global_flags[*]} " =~ (^| )${3}( |$) && $# -eq 3 ]]; then
+    local OPTIND=$#
+    while getopts "hv" flag; do
+      main_run_global_flags "$flag" install
+    done
+  else
+    local backend=${2}
+    main_run_install_dependencies "$backend"
+  fi
+
+}
+
+function main_run_check_if_docker_is_running() {
   echo "� Checking if Docker is running"
   if docker info &>/dev/null; then
     echo "�✅ Docker is running"
@@ -325,114 +299,29 @@ function check_if_docker_is_running() {
   fi
 }
 
-function create_oci_registries() {
-  function check_registry_exists() {
-    local registry_name=${1}
-    if (docker volume ls | grep -q "${registry_name}") && (docker container ls -a | grep -q "${registry_name}"); then
-      true
-    else
-      false
-    fi
-  }
-  echo "🧮 Adding pull-through registries"
-  if check_registry_exists proxy-docker.io; then
-    echo "🧮✅ Registry 'proxy-docker.io' already exists. Skipping..."
+function check_registry_exists() {
+  local registry_name=${1}
+  if (docker volume ls | grep -q "${registry_name}") && (docker container ls -a | grep -q "${registry_name}"); then
+    true
   else
-    echo "🧮 Creating registry 'proxy-docker.io'"
-    docker run -d -p 5001:5000 \
-      -e REGISTRY_PROXY_REMOTEURL=https://registry-1.docker.io \
-      --restart always \
-      --name proxy-docker.io \
-      --volume proxy-docker.io:/var/lib/registry \
-      registry:2 || {
-      echo "� Registry creation failed. Exiting..."
-      exit 1
-    }
+    false
   fi
+}
 
-  if check_registry_exists proxy-docker-hub.com; then
-    echo "🧮✅ Registry 'proxy-docker-hub.com' already exists. Skipping..."
-  else
-    echo "🧮 Creating registry 'proxy-docker-hub.com'"
-    docker run -d -p 5002:5000 \
-      -e REGISTRY_PROXY_REMOTEURL=https://hub.docker.com \
-      --restart always \
-      --name proxy-docker-hub.com \
-      --volume proxy-docker-hub.com:/var/lib/registry \
-      registry:2 || {
-      echo "� Registry creation failed. Exiting..."
-      exit 1
-    }
-  fi
+function main_run_up_create_oci_registry() {
+  local registry_name=$1
+  local remote_url=$2
+  local port=$3
 
-  if check_registry_exists proxy-registry.k8s.io; then
-    echo "🧮✅ Registry 'proxy-registry.k8s.io' already exists. Skipping..."
+  if check_registry_exists "$registry_name"; then
+    echo "🧮✅ Registry '$registry_name' already exists. Skipping..."
   else
-    echo "🧮 Creating registry 'proxy-registry.k8s.io'"
-    docker run -d -p 5003:5000 \
-      -e REGISTRY_PROXY_REMOTEURL=https://registry.k8s.io \
+    echo "🧮 Creating registry '$registry_name'"
+    docker run -d -p "$port":5000 \
+      -e REGISTRY_PROXY_REMOTEURL="$remote_url" \
       --restart always \
-      --name proxy-registry.k8s.io \
-      --volume proxy-registry.k8s.io:/var/lib/registry \
-      registry:2 || {
-      echo "� Registry creation failed. Exiting..."
-      exit 1
-    }
-  fi
-
-  if check_registry_exists proxy-gcr.io; then
-    echo "🧮✅ Registry 'proxy-gcr.io' already exists. Skipping..."
-  else
-    echo "🧮 Creating registry 'proxy-gcr.io'"
-    docker run -d -p 5004:5000 \
-      -e REGISTRY_PROXY_REMOTEURL=https://gcr.io \
-      --restart always \
-      --name proxy-gcr.io \
-      --volume proxy-gcr.io:/var/lib/registry \
-      registry:2 || {
-      echo "� Registry creation failed. Exiting..."
-      exit 1
-    }
-  fi
-
-  if check_registry_exists proxy-ghcr.io; then
-    echo "🧮✅ Registry 'proxy-ghcr.io' already exists. Skipping..."
-  else
-    echo "🧮 Creating registry 'proxy-ghcr.io'"
-    docker run -d -p 5005:5000 \
-      -e REGISTRY_PROXY_REMOTEURL=https://ghcr.io \
-      --restart always \
-      --name proxy-ghcr.io \
-      --volume proxy-ghcr.io:/var/lib/registry \
-      registry:2 || {
-      echo "� Registry creation failed. Exiting..."
-      exit 1
-    }
-  fi
-
-  if check_registry_exists proxy-quay.io; then
-    echo "🧮✅ Registry 'proxy-quay.io' already exists. Skipping..."
-  else
-    echo "🧮 Creating registry 'proxy-quay.io'"
-    docker run -d -p 5006:5000 \
-      -e REGISTRY_PROXY_REMOTEURL=https://quay.io \
-      --restart always \
-      --name proxy-quay.io \
-      --volume proxy-quay.io:/var/lib/registry \
-      registry:2 || {
-      echo "� Registry creation failed. Exiting..."
-      exit 1
-    }
-  fi
-
-  if check_registry_exists manifests; then
-    echo "🧮✅ Registry 'manifests' already exists. Skipping..."
-  else
-    echo "🧮 Creating registry 'manifests'"
-    docker run -d -p 5050:5000 \
-      --restart always \
-      --name manifests \
-      --volume manifests:/var/lib/registry \
+      --name "$registry_name" \
+      --volume "$registry_name":/var/lib/registry \
       registry:2 || {
       echo "� Registry creation failed. Exiting..."
       exit 1
@@ -440,7 +329,17 @@ function create_oci_registries() {
   fi
 }
 
-function add_sops_gpg_key() {
+function main_run_up_create_oci_registries() {
+  echo "🧮 Adding pull-through registries"
+  main_run_up_create_oci_registry "proxy-docker-hub.com" "https://hub.docker.com" 5002
+  main_run_up_create_oci_registry "proxy-registry.k8s.io" "https://registry.k8s.io" 5003
+  main_run_up_create_oci_registry "proxy-gcr.io" "https://gcr.io" 5004
+  main_run_up_create_oci_registry "proxy-ghcr.io" "https://ghcr.io" 5005
+  main_run_up_create_oci_registry "proxy-quay.io" "https://quay.io" 5006
+  main_run_up_create_oci_registry "manifests" "" 5050
+}
+
+function main_run_up_add_sops_gpg_key() {
   echo "� Adding SOPS GPG key"
   kubectl create namespace flux-system
   if [[ -z ${KSAIL_SOPS_GPG_KEY} ]]; then
@@ -460,7 +359,7 @@ function add_sops_gpg_key() {
   fi
 }
 
-function install_flux() {
+function main_run_up_install_flux() {
   local cluster_name=${1}
   local docker_gateway_ip=${2}
   local flux_path=${3}
@@ -547,7 +446,6 @@ function main_run_up_configure_cluster_with_prompts() {
   if [ -z "$cluster_name" ]; then
     cluster_name="ksail"
   fi
-  echo
 
   echo -e "${BOLD}What is the path to your manifests files root directory? (default: ${GREEN}./k8s${WHITE})${NORMAL}"
   read -r manifests_path
@@ -666,9 +564,9 @@ function main_run_up() {
     elif [[ "$backend" == "talos" ]]; then
       main_run_up_configure_talos_cluster "$@"
     fi
-    check_if_docker_is_running && echo
-    create_oci_registries && echo
-    update_cluster "$cluster_name" "$manifests_path" && echo
+    main_run_check_if_docker_is_running && echo
+    main_run_up_create_oci_registries && echo
+    main_run_update "$cluster_name" "$manifests_path" && echo
     if [[ "$backend" == "k3d" ]]; then
       main_run_down_destroy_k3d_cluster "$cluster_name"
       main_run_up_provision_k3d_cluster "$cluster_name"
@@ -724,7 +622,7 @@ function main_run_down() {
     configure_down_with_flags "$@"
   fi
 
-  check_if_docker_is_running
+  main_run_check_if_docker_is_running
   destroy_cluster "$cluster_name"
 }
 
@@ -732,10 +630,10 @@ function main_run() {
   if [ $# -eq 0 ]; then
     main_run_no_arg
   else
-    while [ $# -gt 0 ]; do
+    if [ $# -gt 0 ]; then
       case "$1" in
       install)
-        main_run_install
+        main_run_install "$@"
         exit
         ;;
       up)
@@ -747,12 +645,18 @@ function main_run() {
         exit
         ;;
       *)
-        while getopts "hv" flag; do
-          main_run_global_flags "$flag" ""
-        done
+        if [[ " ${valid_global_flags[*]} " =~ (^| )${1}( |$) && $# -eq 1 ]]; then
+          local OPTIND=1
+          while getopts "hv" flag; do
+            main_run_global_flags "$flag" ""
+          done
+        else
+          echo "🚨 Bad parameters: $*"
+          exit 1
+        fi
         ;;
       esac
-    done
+    fi
   fi
 }
 
