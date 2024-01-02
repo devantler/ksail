@@ -21,11 +21,11 @@ function main_run_help_no_arg() {
   echo
   echo "Commands:"
   echo "  install     install dependencies"
-  echo "  up          create cluster"
-  echo "  down        destroy cluster"
-  echo "  update      update cluster"
-  echo "  validate    validate cluster"
-  echo "  verify      verify cluster"
+  echo "  up          create cluster (⚠️ unstable)"
+  echo "  down        destroy cluster (⚠️ unstable)"
+  echo "  update      update cluster (⚠️ unstable)"
+  echo "  validate    validate manifest files (⚠️ unstable)"
+  echo "  verify      verify cluster reconciliation (⚠️ unstable)"
   echo
   echo Flags:
   echo "  -v          print version information"
@@ -594,7 +594,7 @@ function main_run_up_handle_flags() {
   fi
 }
 
-function main_run_up_validate_paths() {
+function main_run_up_validate_configuration() {
   echo "🔍 Validating configuration"
   if ! manifests_path=$(realpath "$manifests_path"); then
     echo "🚨 Manifests path does not exist. Exiting..."
@@ -652,7 +652,7 @@ function main_run_up() {
   else
     main_run_up_handle_flags "$@"
   fi
-  main_run_up_validate_paths && echo
+  main_run_up_validate_configuration && echo
   main_run_check_if_docker_is_running && echo
   main_run_up_create_oci_registries && echo
   main_run_update "$cluster_name" "$manifests_path" && echo
@@ -661,7 +661,7 @@ function main_run_up() {
   main_run_up_install_flux "$cluster_name" "$docker_gateway_ip" "$flux_path"
 }
 
-function main_run_down_configure_with_prompts() {
+function main_run_down_handle_prompts() {
   echo -e "${BOLD}Which cluster would you like to destroy?"
   while true; do
     read -r cluster_name
@@ -675,7 +675,7 @@ function main_run_down_configure_with_prompts() {
   echo
 }
 
-function main_run_down_configure_with_flags() {
+function main_run_down_handle_flags() {
   local OPTIND=3
   while getopts "hn:" flag; do
     case "${flag}" in
@@ -701,30 +701,38 @@ function main_run_down_destroy_cluster() {
 
 function main_run_down() {
   local cluster_name="ksail"
-  if [ -z "$2" ]; then
+  local backend
+  if [ $# -eq 1 ]; then
     main_run_help down
-  elif [[ ! " ${valid_backends[*]} " =~ (^| )${2}( |$) ]] && [[ ! " ${valid_global_flags[*]} " =~ (^| )${2}( |$) ]]; then
-    echo "🚨 Bad parameters: $*"
-    exit 1
-  elif [[ " ${valid_global_flags[*]} " =~ (^| )${2}( |$) ]]; then
-    if [ $# -gt 2 ]; then
+  else
+    local command=${2}
+    case $command in
+    k3d)
+      backend=$command
+      ;;
+    talos)
+      backend=$command
+      ;;
+    *)
+      if [ $# -eq 2 ]; then
+        local OPTIND=2
+        if getopts "h" flag; then
+          main_run_global_flags "$flag" down
+        fi
+      fi
       echo "🚨 Bad parameters: $*"
       exit 1
-    fi
-    local OPTIND=2
-    while getopts "h" flag; do
-      main_run_global_flags "$flag" down
-    done
-  else
-    local backend=${2}
-    if [ $# -eq 2 ]; then
-      main_run_down_configure_with_prompts
-    else
-      main_run_down_configure_with_flags "$@"
-    fi
-    main_run_check_if_docker_is_running
-    main_run_down_destroy_cluster "$cluster_name" "$backend"
+      ;;
+    esac
   fi
+  if [ $# -eq 2 ]; then
+    main_run_down_handle_prompts
+  else
+    main_run_down_handle_flags "$@"
+  fi
+  main_run_check_if_docker_is_running
+  main_run_down_destroy_cluster "$cluster_name" "$backend"
+
 }
 
 function main_run() {
