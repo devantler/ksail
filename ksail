@@ -17,7 +17,7 @@ valid_backends=(
 
 function main_run_help_no_arg() {
   echo "Usage:"
-  echo -e "  ksail ${PURPLE}<command>${WHITE} [flag]"
+  echo -e "  ksail ${PURPLE}<command>${WHITE} ${PURPLE}<flag>${WHITE}"
   echo
   echo "Commands:"
   echo "  install     install dependencies"
@@ -45,7 +45,7 @@ function main_run_help_install_arg() {
 
 function main_run_help_up_arg() {
   echo "Usage:"
-  echo -e "  ksail up ${PURPLE}<backend>${WHITE} [flags]"
+  echo -e "  ksail up ${PURPLE}<backend>${WHITE} ${PURPLE}[flags]${WHITE}"
   echo
   echo "Backends:"
   echo "  k3d    k3s-in-docker"
@@ -62,7 +62,7 @@ function main_run_help_up_arg() {
 
 function main_run_help_up_k3d_arg() {
   echo "Usage:"
-  echo " ksail up k3d [flags]"
+  echo -e " ksail up k3d ${PURPLE}[flags]${WHITE}"
   echo
   echo "Flags:"
   echo -e "  -n   name of the cluster (${GREEN}ksail${WHITE})"
@@ -73,7 +73,7 @@ function main_run_help_up_k3d_arg() {
 
 function main_run_help_up_talos_arg() {
   echo "Usage:"
-  echo " ksail up talos [flags]"
+  echo -e " ksail up talos ${PURPLE}[flags]${WHITE}"
   echo
   echo "Flags:"
   echo -e "  -n   name of the cluster (${GREEN}ksail${WHITE})"
@@ -83,7 +83,7 @@ function main_run_help_up_talos_arg() {
 
 function main_run_help_down_arg() {
   echo "Usage:"
-  echo -e "  ksail down ${PURPLE}<backend>${WHITE} [flags]"
+  echo -e "  ksail down ${PURPLE}<backend>${WHITE} ${PURPLE}[flags]${WHITE}"
   echo
   echo "Backends:"
   echo "  k3d    k3s-in-docker"
