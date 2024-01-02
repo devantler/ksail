@@ -57,7 +57,7 @@ Introducing KSail, your new go-to CLI tool for effortlessly managing GitOps-enab
 
 `ksail validate` - Ensure your cluster's manifest files are ready for deployment with the validate command. KSail simplifies the process of linting and validating manifest files, saving you valuable time and effort.
 
-`ksail verify` - With the verify command, you can easily check that your cluster reconciles successfully. KSail streamlines the verification process, making it easier than ever to ensure your cluster is functioning as expected.
+`ksail install` - With the verify command, you can easily check that your cluster reconciles successfully. KSail streamlines the verification process, making it easier than ever to ensure your cluster is functioning as expected.
 
 KSail is more than just a tool - it's your partner in navigating the world of Kubernetes. Get ready to set sail with KSail!
 
