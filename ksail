@@ -2,7 +2,6 @@
 
 valid_global_flags=(
   "-h"
-  "-v"
 )
 
 valid_backends=(
@@ -41,12 +40,8 @@ function main_run_global_flags() {
     main_run_help "$arg"
     exit
     ;;
-  v)
-    main_run_version
-    exit
-    ;;
   \?)
-    echo "🚨 Unknown flag: $1"
+    echo "🚨 Unknown flag: $flag"
     exit 1
     ;;
   esac
@@ -54,16 +49,21 @@ function main_run_global_flags() {
 
 function main_run_help_no_arg() {
   echo "Usage:"
-  echo -e "  ksail ${PURPLE}<command>${WHITE} [flags]"
+  echo -e "  ksail ${PURPLE}<command>${WHITE} [flag]"
   echo
   echo "Commands:"
-  echo "  install    install dependencies"
-  echo "  up         create cluster"
-  echo "  down       destroy cluster"
+  echo "  install     install dependencies"
+  echo "  up          create cluster"
+  echo "  down        destroy cluster"
+  echo "  update      update cluster"
+  echo "  validate    validate cluster"
+  echo "  verify      verify cluster"
+  echo
+  echo Flags:
+  echo "  -v          print version information"
   echo
   echo "Global Flags:"
-  echo "  -h    print help information"
-  echo "  -v    print version information"
+  echo "  -h          print help information"
 }
 
 function main_run_help_install_arg() {
@@ -71,8 +71,8 @@ function main_run_help_install_arg() {
   echo "  ksail install <backend>"
   echo
   echo "Backends:"
-  echo "  k3d    k3s-in-docker"
-  echo "  talos  talos-in-docker"
+  echo "  k3d         k3s-in-docker"
+  echo "  talos       talos-in-docker"
 }
 
 function main_run_help_up_arg() {
@@ -122,7 +122,7 @@ function main_run_help_down_arg() {
   echo "  talos  talos-in-docker"
   echo
   echo "Flags:"
-  echo -e "  -n, --name      name of the cluster (${GREEN}ksail${WHITE})"
+  echo -e "  -n     name of the cluster (${GREEN}ksail${WHITE})"
 }
 
 function main_run_help() {
@@ -286,7 +286,6 @@ function main_run_install() {
     local backend=${2}
     main_run_install_dependencies "$backend"
   fi
-
 }
 
 function main_run_check_if_docker_is_running() {
@@ -549,7 +548,7 @@ function main_run_up() {
   if [ -z "$2" ]; then
     main_run_help up
   elif [[ ! " ${valid_backends[*]} " =~ (^| )${2}( |$) ]] && [[ ! " ${valid_global_flags[*]} " =~ (^| )${2}( |$) ]]; then
-    echo "🚨 Invalid argument or flag: $2"
+    echo "🚨 Bad parameters: $*"
     exit 1
   elif [[ " ${valid_global_flags[*]} " =~ (^| )${2}( |$) ]]; then
     local OPTIND=2
@@ -592,8 +591,8 @@ function main_run_down_configure_with_prompts() {
 }
 
 function main_run_down_configure_with_flags() {
-  local OPTIND=2
-  while getopts ":hn:b:p:" flag; do
+  local OPTIND=3
+  while getopts "hn" flag; do
     case "${flag}" in
     h)
       main_run_help down
@@ -603,15 +602,11 @@ function main_run_down_configure_with_flags() {
       cluster_name=${OPTARG}
       ;;
     *)
-      echo "🚫 Unknown flag: $2"
+      echo "🚨 Bad parameters: $*"
       exit 1
       ;;
     esac
   done
-  if [[ "$2" != "-"* ]]; then
-    echo "🚫 Unknown flag: $2"
-    exit 1
-  fi
 }
 
 function main_run_down() {
@@ -621,11 +616,6 @@ function main_run_down() {
   elif [[ ! " ${valid_backends[*]} " =~ (^| )${2}( |$) ]] && [[ ! " ${valid_global_flags[*]} " =~ (^| )${2}( |$) ]]; then
     echo "🚨 Bad parameters: $*"
     exit 1
-  elif [[ " ${valid_global_flags[*]} " =~ (^| )${2}( |$) ]]; then
-    local OPTIND=2
-    while getopts "hv" flag; do
-      main_run_global_flags "$flag" up
-    done
   else
     local backend=${2}
     if [ $# -eq 2 ]; then
@@ -660,16 +650,33 @@ function main_run() {
         main_run_down "$@"
         exit
         ;;
+      update)
+        main_run_update "$@"
+        exit
+        ;;
+      validate)
+        main_run_validate "$@"
+        exit
+        ;;
+      verify)
+        main_run_verify "$@"
+        exit
+        ;;
       *)
-        if [[ " ${valid_global_flags[*]} " =~ (^| )${1}( |$) && $# -eq 1 ]]; then
-          local OPTIND=1
-          while getopts "hv" flag; do
-            main_run_global_flags "$flag" ""
-          done
-        else
-          echo "🚨 Bad parameters: $*"
-          exit 1
-        fi
+        local OPTIND=1
+        while getopts "hv" flag; do
+          main_run_global_flags "$flag" ""
+          case "${flag}" in
+          v)
+            main_run_version
+            exit
+            ;;
+          *)
+            echo "🚨 Bad parameters: $*"
+            exit 1
+            ;;
+          esac
+        done
         ;;
       esac
     fi
@@ -680,7 +687,6 @@ function main() {
   main_check_os
   main_define_colors
   main_define_font_types
-
   main_run "$@"
 }
 
