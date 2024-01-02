@@ -290,16 +290,16 @@ function main_run_install() {
 }
 
 function main_run_check_if_docker_is_running() {
-  echo "� Checking if Docker is running"
+  echo "🐳 Checking if Docker is running"
   if docker info &>/dev/null; then
-    echo "�✅ Docker is running"
+    echo "🐳✅ Docker is running"
   else
-    echo "�� Docker is not running. Exiting..."
+    echo "🚨 Docker is not running. Exiting..."
     exit 1
   fi
 }
 
-function check_registry_exists() {
+function main_run_up_check_registry_exists() {
   local registry_name=${1}
   if (docker volume ls | grep -q "${registry_name}") && (docker container ls -a | grep -q "${registry_name}"); then
     true
@@ -313,7 +313,7 @@ function main_run_up_create_oci_registry() {
   local remote_url=$2
   local port=$3
 
-  if check_registry_exists "$registry_name"; then
+  if main_run_up_check_registry_exists "$registry_name"; then
     echo "🧮✅ Registry '$registry_name' already exists. Skipping..."
   else
     echo "🧮 Creating registry '$registry_name'"
@@ -323,7 +323,7 @@ function main_run_up_create_oci_registry() {
       --name "$registry_name" \
       --volume "$registry_name":/var/lib/registry \
       registry:2 || {
-      echo "� Registry creation failed. Exiting..."
+      echo "🚨 Registry creation failed. Exiting..."
       exit 1
     }
   fi
@@ -340,7 +340,7 @@ function main_run_up_create_oci_registries() {
 }
 
 function main_run_up_add_sops_gpg_key() {
-  echo "� Adding SOPS GPG key"
+  echo "🔐 Adding SOPS GPG key"
   kubectl create namespace flux-system
   if [[ -z ${KSAIL_SOPS_GPG_KEY} ]]; then
     gpg --batch --passphrase '' --quick-gen-key ksail default default
@@ -577,7 +577,7 @@ function main_run_up() {
   fi
 }
 
-function configure_down_with_prompts() {
+function main_run_down_configure_with_prompts() {
   echo -e "${BOLD}Which cluster would you like to destroy?"
   while true; do
     read -r cluster_name
@@ -591,7 +591,7 @@ function configure_down_with_prompts() {
   echo
 }
 
-function configure_down_with_flags() {
+function main_run_down_configure_with_flags() {
   local OPTIND=2
   while getopts ":hn:b:p:" flag; do
     case "${flag}" in
@@ -617,13 +617,29 @@ function configure_down_with_flags() {
 function main_run_down() {
   local cluster_name="ksail"
   if [ -z "$2" ]; then
-    configure_down_with_prompts
+    main_run_help down
+  elif [[ ! " ${valid_backends[*]} " =~ (^| )${2}( |$) ]] && [[ ! " ${valid_global_flags[*]} " =~ (^| )${2}( |$) ]]; then
+    echo "🚨 Bad parameters: $*"
+    exit 1
+  elif [[ " ${valid_global_flags[*]} " =~ (^| )${2}( |$) ]]; then
+    local OPTIND=2
+    while getopts "hv" flag; do
+      main_run_global_flags "$flag" up
+    done
   else
-    configure_down_with_flags "$@"
+    local backend=${2}
+    if [ $# -eq 2 ]; then
+      main_run_down_configure_with_prompts
+    else
+      main_run_down_configure_with_flags "$@"
+    fi
+    main_run_check_if_docker_is_running
+    if [[ "$backend" == "k3d" ]]; then
+      main_run_down_destroy_k3d_cluster "$cluster_name"
+    elif [[ "$backend" == "talos" ]]; then
+      main_run_down_destroy_talos_cluster "$cluster_name"
+    fi
   fi
-
-  main_run_check_if_docker_is_running
-  destroy_cluster "$cluster_name"
 }
 
 function main_run() {
