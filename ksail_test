@@ -124,7 +124,7 @@ function test_up() {
 
 function test_down() {
   echo "🧪 Testing 'ksail down k3d -n test'"
-  ./ksail down k3d test >/dev/null 2>&1 || {
+  ./ksail down k3d -n test >/dev/null 2>&1 || {
     echo "❌ Testing 'ksail down k3d -n test' failed"
     exit 1
   }
