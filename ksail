@@ -41,7 +41,6 @@ function main_run_global_flags() {
     exit
     ;;
   \?)
-    echo "🚨 Unknown flag: $flag"
     exit 1
     ;;
   esac
@@ -164,6 +163,7 @@ function main_run_version() {
 }
 
 function main_run_down_destroy_k3d_cluster() {
+  echo "🔥 Destroying ${cluster_name} cluster"
   local cluster_name=${1}
   k3d cluster delete "$cluster_name" || {
     echo "🚨 Cluster deletion failed. Exiting..."
@@ -271,19 +271,34 @@ function main_run_install_dependencies() {
 }
 
 function main_run_install() {
-  if [ -z "$2" ]; then
+  if [ $# -eq 1 ]; then
     main_run_help install
-  elif [[ ! " ${valid_backends[*]} " =~ (^| )${2}( |$) ]] && [[ ! " ${valid_global_flags[*]} " =~ (^| )${2}( |$) ]] || [[ ! " ${valid_global_flags[*]} " =~ (^| )${3}( |$) ]] || [ $# -gt 3 ]; then
-    echo "🚨 Bad parameters: $*"
-    exit 1
-  elif [[ " ${valid_global_flags[*]} " =~ (^| )${2}( |$) && $# -eq 2 ]] || [[ " ${valid_global_flags[*]} " =~ (^| )${3}( |$) && $# -eq 3 ]]; then
-    local OPTIND=$#
-    while getopts "h" flag; do
-      main_run_global_flags "$flag" install
-    done
   else
-    local backend=${2}
-    main_run_install_dependencies "$backend"
+    if [ $# -gt 2 ]; then
+      echo "🚨 Bad parameters: $*"
+      exit 1
+    fi
+    local command=${2}
+    case $command in
+    k3d)
+      main_run_install_dependencies "k3d"
+      exit
+      ;;
+    talos)
+      main_run_install_dependencies "talos"
+      exit
+      ;;
+    *)
+      if [ $# -eq 2 ]; then
+        local OPTIND=2
+        if getopts "h" flag; then
+          main_run_global_flags "$flag" "install"
+        fi
+      fi
+      echo "🚨 Bad parameters: $*"
+      exit 1
+      ;;
+    esac
   fi
 }
 
@@ -395,9 +410,9 @@ function main_run_up_install_flux() {
 }
 
 function main_run_up_provision_k3d_cluster() {
+  echo "⛴️ Provision ${cluster_name} cluster"
   if $k3d_config_path; then
-    echo "⛴️ Provision ${cluster_name} cluster"
-    k3d cluster create --config "${k3d_config_path}" || {
+    k3d cluster create --config "${k3d_config_path}" "$cluster_name" || {
       echo "🚨 Cluster creation failed. Exiting..."
       exit 1
     }
@@ -438,6 +453,16 @@ function main_run_up_provision_talos_cluster() {
   # TODO: Add support for Talos patching
 }
 
+function main_run_up_provision_cluster() {
+  local cluster_name=${1}
+  local backend=${2}
+  if [[ "$backend" == "k3d" ]]; then
+    main_run_up_provision_k3d_cluster "$cluster_name"
+  elif [[ "$backend" == "talos" ]]; then
+    main_run_up_provision_talos_cluster "$cluster_name"
+  fi
+}
+
 function main_run_up_configure_cluster_with_prompts() {
   echo -e "${BOLD}What would you like to name your cluster? (default: ${GREEN}ksail${WHITE})${NORMAL}"
   read -r cluster_name
@@ -459,8 +484,9 @@ function main_run_up_configure_cluster_with_prompts() {
 }
 
 function main_run_up_configure_cluster_with_flags() {
-  local OPTIND=2
-  while getopts "n:m:f:" flag; do
+  local backend=${2}
+  local OPTIND=3
+  while getopts "n:m:f:c:h" flag; do
     case "${flag}" in
     n)
       cluster_name=${OPTARG}
@@ -471,12 +497,31 @@ function main_run_up_configure_cluster_with_flags() {
     f)
       flux_path=${OPTARG}
       ;;
+    c)
+      echo hello
+      if [[ "$backend" != "k3d" ]]; then
+        echo "🚨 Bad parameters: $*"
+        exit 1
+      fi
+      k3d_config_path=${OPTARG}
+      ;;
     *)
-      echo "🚫 Unknown flag: $2"
+      if [ $# -eq 3 ] && [[ ! " ${valid_global_flags[*]} " =~ (^| )${3}( |$) ]]; then
+        local OPTIND=3
+        if getopts "h" flag; then
+          main_run_global_flags "$flag" "up"
+        fi
+      fi
+      echo "🚨 Bad parameters: $*"
       exit 1
       ;;
     esac
   done
+  shift $((OPTIND - 1))
+  if [ $# -gt 0 ]; then
+    echo "🚨 Bad parameters: $*"
+    exit 1
+  fi
 }
 
 function main_run_up_configure() {
@@ -503,6 +548,7 @@ function main_run_up_configure_k3d_cluster_with_flags() {
       k3d_config_path=${OPTARG}
       ;;
     *)
+      echo "$flag"
       main_run_global_flags "$flag" up-k3d
       ;;
     esac
@@ -542,37 +588,39 @@ function main_run_up_configure_talos_cluster() {
 
 function main_run_up() {
   local cluster_name="ksail"
+  local backend
   local manifests_path="./k8s"
   local flux_path="./k8s/clusters/${cluster_name}/flux"
-  if [ -z "$2" ]; then
+  local k3d_config_path
+  if [ $# -eq 1 ]; then
     main_run_help up
-  elif [[ ! " ${valid_backends[*]} " =~ (^| )${2}( |$) ]] && [[ ! " ${valid_global_flags[*]} " =~ (^| )${2}( |$) ]]; then
-    echo "🚨 Bad parameters: $*"
-    exit 1
-  elif [[ " ${valid_global_flags[*]} " =~ (^| )${2}( |$) ]]; then
-    local OPTIND=2
-    while getopts "h" flag; do
-      main_run_global_flags "$flag" up
-    done
   else
-    local backend=${2}
-    main_run_up_configure "$@"
-    if [[ "$backend" == "k3d" ]]; then
-      main_run_up_configure_k3d_cluster "$@"
-    elif [[ "$backend" == "talos" ]]; then
-      main_run_up_configure_talos_cluster "$@"
-    fi
-    main_run_check_if_docker_is_running && echo
-    main_run_up_create_oci_registries && echo
-    main_run_update "$cluster_name" "$manifests_path" && echo
-    if [[ "$backend" == "k3d" ]]; then
-      main_run_down_destroy_k3d_cluster "$cluster_name"
-      main_run_up_provision_k3d_cluster "$cluster_name"
-    elif [[ "$backend" == "talos" ]]; then
-      main_run_down_destroy_talos_cluster "$cluster_name"
-      main_run_up_provision_talos_cluster "$cluster_name"
-    fi
+    local command=${2}
+    case $command in
+    k3d)
+      backend=$command
+      ;;
+    talos)
+      backend=$command
+      ;;
+    *)
+      if [ $# -eq 2 ]; then
+        local OPTIND=2
+        if getopts "h" flag; then
+          main_run_global_flags "$flag" "up"
+        fi
+      fi
+      echo "🚨 Bad parameters: $*"
+      exit 1
+      ;;
+    esac
   fi
+  main_run_up_configure "$@"
+  main_run_check_if_docker_is_running && echo
+  main_run_up_create_oci_registries && echo
+  main_run_update "$cluster_name" "$manifests_path" && echo
+  main_run_down_destroy_cluster "$cluster_name" "$backend" && echo
+  main_run_up_provision_cluster "$cluster_name" "$backend" && echo
 }
 
 function main_run_down_configure_with_prompts() {
@@ -603,6 +651,16 @@ function main_run_down_configure_with_flags() {
   done
 }
 
+function main_run_down_destroy_cluster() {
+  local cluster_name=${1}
+  local backend=${2}
+  if [[ "$backend" == "k3d" ]]; then
+    main_run_down_destroy_k3d_cluster "$cluster_name"
+  elif [[ "$backend" == "talos" ]]; then
+    main_run_down_destroy_talos_cluster "$cluster_name"
+  fi
+}
+
 function main_run_down() {
   local cluster_name="ksail"
   if [ -z "$2" ]; then
@@ -627,21 +685,7 @@ function main_run_down() {
       main_run_down_configure_with_flags "$@"
     fi
     main_run_check_if_docker_is_running
-    if [[ "$backend" == "k3d" ]]; then
-      main_run_down_destroy_k3d_cluster "$cluster_name"
-    elif [[ "$backend" == "talos" ]]; then
-      main_run_down_destroy_talos_cluster "$cluster_name"
-    fi
-  fi
-}
-
-function main_run_validate_arg {
-  local arg=${1}
-  if [[ " ${valid_flags[*]} " =~ (^| )${arg}( |$) ]]; then
-    return
-  else
-    echo "🚨 Bad argument: $arg"
-    exit 1
+    main_run_down_destroy_cluster "$cluster_name" "$backend"
   fi
 }
 
@@ -652,72 +696,48 @@ function main_run() {
     local command=${1}
     case $command in
     install)
-      valid_flags=("${valid_global_flags[@]}" "${valid_backends[@]}" install)
-      for arg in "$@"; do
-        main_run_validate_arg "$arg"
-      done
       main_run_install "$@"
       exit
       ;;
     up)
-      valid_flags=("${valid_global_flags[@]}" "${valid_backends[@]}" up -n -m -f -c)
-      for arg in "$@"; do
-        main_run_validate_arg "$arg"
-      done
       main_run_up "$@"
       exit
       ;;
     down)
-      valid_flags=("${valid_global_flags[@]}" "${valid_backends[@]}" down -n)
-      for arg in "$@"; do
-        main_run_validate_arg "$arg"
-      done
       main_run_down "$@"
       exit
       ;;
     update)
-      valid_flags=("${valid_global_flags[@]}" "${valid_backends[@]}" update -n -m)
-      for arg in "$@"; do
-        main_run_validate_arg "$arg"
-      done
       main_run_update "$@"
       exit
       ;;
     validate)
-      valid_flags=("${valid_global_flags[@]}" validate)
-      for arg in "$@"; do
-        main_run_validate_arg "$arg"
-      done
       main_run_validate "$@"
       exit
       ;;
     verify)
-      valid_flags=("${valid_global_flags[@]}" "${valid_backends[@]}" verify)
-      for arg in "$@"; do
-        main_run_validate_arg "$arg"
-      done
       main_run_verify "$@"
       exit
       ;;
     *)
-      valid_flags=("${valid_global_flags[@]}" -v)
-      for arg in "$@"; do
-        main_run_validate_arg "$arg"
-      done
       local OPTIND=1
-      while getopts "hv" flag; do
-        main_run_global_flags "$flag" ""
-        case "${flag}" in
-        v)
-          main_run_version
-          exit
-          ;;
-        *)
-          echo "🚨 Invalid flag: $flag"
-          exit 1
-          ;;
-        esac
-      done
+      if [ $# -eq 1 ]; then
+        while getopts "hv" flag; do
+          main_run_global_flags "$flag" ""
+          case "${flag}" in
+          v)
+            main_run_version
+            exit
+            ;;
+          *)
+            echo "🚨 Invalid flag: $flag"
+            exit 1
+            ;;
+          esac
+        done
+      fi
+      echo "🚨 Bad parameters: $*"
+      exit 1
       ;;
     esac
   fi
