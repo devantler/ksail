@@ -49,15 +49,15 @@ ksail -h
 
 Introducing KSail, your new go-to CLI tool for effortlessly managing GitOps-enabled Kubernetes clusters in Docker. Designed with simplicity and efficiency in mind, KSail is set to revolutionize your local Kubernetes development environment.
 
-Install - Say goodbye to the hassle of managing dependencies for Kubernetes-in-Docker backends. KSail's install command serves as a one-stop solution, seamlessly handling installation and updates for backends like k3d, talos, and minikube.
+`ksail install` - Say goodbye to the hassle of managing dependencies for Kubernetes-in-Docker backends. KSail's install command serves as a one-stop solution, seamlessly handling installation and updates for backends like k3d, talos, and minikube.
 
-Up - Creating a Flux-enabled cluster has never been easier. With the up command, you can swiftly set up a cluster with your chosen Kubernetes-in-Docker backend. KSail empowers you to choose the backend that best fits your needs.
+`ksail up` - Creating a Flux-enabled cluster has never been easier. With the up command, you can swiftly set up a cluster with your chosen Kubernetes-in-Docker backend. KSail empowers you to choose the backend that best fits your needs.
 
-Down - Need to dismantle a Flux-enabled cluster? The down command has you covered. With a single command, you can easily tear down your cluster when it's no longer needed.
+`ksail down` - Need to dismantle a Flux-enabled cluster? The down command has you covered. With a single command, you can easily tear down your cluster when it's no longer needed.
 
-Validate - Ensure your cluster's manifest files are ready for deployment with the validate command. KSail simplifies the process of linting and validating manifest files, saving you valuable time and effort.
+`ksail validate` - Ensure your cluster's manifest files are ready for deployment with the validate command. KSail simplifies the process of linting and validating manifest files, saving you valuable time and effort.
 
-Verify - With the verify command, you can easily check that your cluster reconciles successfully. KSail streamlines the verification process, making it easier than ever to ensure your cluster is functioning as expected.
+`ksail verify` - With the verify command, you can easily check that your cluster reconciles successfully. KSail streamlines the verification process, making it easier than ever to ensure your cluster is functioning as expected.
 
 KSail is more than just a tool - it's your partner in navigating the world of Kubernetes. Get ready to set sail with KSail!
 
