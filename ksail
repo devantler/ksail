@@ -240,7 +240,8 @@ function main_run_install_backend_dependency_homebrew() {
       echo "eval '$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)'" >>~/.profile
       eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
       if $GITHUB_ACTIONS; then
-        echo "/home/linuxbrew/.linuxbrew/bin" >>"$GITHUB_PATH"
+        # shellcheck disable=SC2086
+        echo "/home/linuxbrew/.linuxbrew/bin" >>$GITHUB_PATH
       fi
     fi
     if ! which brew &>/dev/null; then
@@ -264,7 +265,8 @@ function main_run_install_backend_dependency() {
     echo "📦🔨 Installing $dependency"
     brew install "$dependency"
     if $GITHUB_ACTIONS; then
-      which "$dependency" >>"$GITHUB_PATH"
+      # shellcheck disable=SC2086
+      which "$dependency" >>$GITHUB_PATH
     fi
     if ! which "$command" &>/dev/null; then
       echo "📦🚨 $dependency installation failed. Exiting..."
