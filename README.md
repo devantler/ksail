@@ -45,6 +45,9 @@ To get started use the global help flag:
 ksail -h
 ```
 
+<img width="509" alt="image" src="https://github.com/devantler/ksail/assets/26203420/554ecdfa-681f-4caf-98c6-82d77ac352cf">
+
+
 ## What is KSail?
 
 Introducing KSail, your new go-to CLI tool for effortlessly managing GitOps-enabled Kubernetes clusters in Docker. Designed with simplicity and efficiency in mind, KSail is set to revolutionize your local Kubernetes development environment.
