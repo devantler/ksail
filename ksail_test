@@ -147,6 +147,20 @@ function test_up_down_k3d() {
   }
   echo "✅"
 
+  echo -n "   Testing 'ksail up k3d -n test -m ./k8s -f ./clusters/test/flux'"
+  ./ksail up k3d -n test >/dev/null 2>&1 || {
+    echo "❌"
+    exit 1
+  }
+  echo "✅"
+
+  echo -n "   Testing 'ksail down k3d -n test'"
+  ./ksail down k3d -n test >/dev/null 2>&1 || {
+    echo "❌"
+    exit 1
+  }
+  echo "✅"
+
   echo -n "   Testing 'ksail up k3d -c k3d-config.yaml'"
   ./ksail up k3d -c k3d-config.yaml >/dev/null 2>&1 || {
     echo "❌"
