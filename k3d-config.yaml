@@ -1,0 +1,36 @@
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: test
+volumes:
+  - volume: k3d-test-storage:/var/lib/rancher/k3s/storage
+network: k3d-test
+ports:
+  - port: 8443:443
+options:
+  k3s:
+    extraArgs:
+      - arg: "--disable=traefik"
+        nodeFilters:
+          - server:*
+registries:
+  config: |
+    mirrors:
+      "docker.io":
+        endpoint:
+          - http://host.k3d.internal:5001
+      "hub.docker.com":
+        endpoint:
+          - http://host.k3d.internal:5002
+      "registry.k8s.io":
+        endpoint:
+          - http://host.k3d.internal:5003
+      "gcr.io":
+        endpoint:
+          - http://host.k3d.internal:5004
+      "ghcr.io":
+        endpoint:
+          - http://host.k3d.internal:5005
+      "quay.io":
+        endpoint:
+          - http://host.k3d.internal:5006

@@ -1,155 +1,194 @@
 #!/bin/bash
 
 function test_introduction() {
-  echo -n "🧪 Testing 'ksail'"
+  echo "================================"
+  echo "🧪 Testing introduction"
+  echo "--------------------------------"
+  echo -n "   Testing 'ksail'"
   ./ksail >/dev/null || {
     echo "❌"
     exit 1
   }
   echo "✅"
+  echo "================================"
 }
 
 function test_help_flag() {
-  echo -n "🧪 Testing 'ksail -h'"
+  echo "================================"
+  echo "🧪 Testing help flag"
+  echo "--------------------------------"
+  echo -n "   Testing 'ksail -h'"
   ./ksail -h >/dev/null || {
     echo "❌"
     exit 1
   }
   echo "✅"
 
-  echo -n "🧪 Testing 'ksail up'"
+  echo -n "   Testing 'ksail up'"
   ./ksail up >/dev/null || {
     echo "❌"
     exit 1
   }
   echo "✅"
 
-  echo -n "🧪 Testing 'ksail up -h'"
+  echo -n "   Testing 'ksail up -h'"
   ./ksail up -h >/dev/null || {
     echo "❌"
     exit 1
   }
   echo "✅"
 
-  echo -n "🧪 Testing 'ksail up k3d -h'"
+  echo -n "   Testing 'ksail up k3d -h'"
   ./ksail up k3d -h >/dev/null || {
     echo "❌"
     exit 1
   }
   echo "✅"
 
-  echo -n "🧪 Testing 'ksail up talos -h'"
+  echo -n "   Testing 'ksail up talos -h'"
   ./ksail up talos -h >/dev/null || {
     echo "❌"
     exit 1
   }
   echo "✅"
 
-  echo -n "🧪 Testing 'ksail down'"
+  echo -n "   Testing 'ksail down'"
   ./ksail down >/dev/null || {
     echo "❌"
     exit 1
   }
   echo "✅"
 
-  echo -n "🧪 Testing 'ksail down -h'"
+  echo -n "   Testing 'ksail down -h'"
   ./ksail down -h >/dev/null || {
     echo "❌"
     exit 1
   }
   echo "✅"
 
-  echo -n "🧪 Testing 'ksail down k3d -h'"
+  echo -n "   Testing 'ksail down k3d -h'"
   ./ksail down k3d -h >/dev/null || {
     echo "❌"
     exit 1
   }
   echo "✅"
 
-  echo -n "🧪 Testing 'ksail down talos -h'"
+  echo -n "   Testing 'ksail down talos -h'"
   ./ksail down talos -h >/dev/null || {
     echo "❌"
     exit 1
   }
   echo "✅"
 
-  echo -n "🧪 Testing 'ksail install'"
+  echo -n "   Testing 'ksail install'"
   ./ksail install >/dev/null || {
     echo "❌"
     exit 1
   }
   echo "✅"
 
-  echo -n "🧪 Testing 'ksail install -h'"
+  echo -n "   Testing 'ksail install -h'"
   ./ksail install -h >/dev/null || {
     echo "❌"
     exit 1
   }
   echo "✅"
+  echo "================================"
 }
 
 function test_version_flag() {
-  echo -n "🧪 Testing 'ksail -v'"
+  echo "================================"
+  echo "🧪 Testing version flag"
+  echo "--------------------------------"
+  echo -n "   Testing 'ksail -v'"
   ./ksail -v >/dev/null || {
     echo "❌"
     exit 1
   }
   echo "✅"
+  echo "================================"
 }
 
 function test_install() {
-  echo -n "🧪 Testing 'ksail install k3d'"
+  echo "================================"
+  echo "🧪 Testing install"
+  echo "--------------------------------"
+  echo -n "   Testing 'ksail install k3d'"
   ./ksail install k3d >/dev/null || {
     echo "❌"
     exit 1
   }
   echo "✅"
 
-  echo -n "🧪 Testing 'ksail install talos'"
+  echo -n "   Testing 'ksail install talos'"
   ./ksail install talos >/dev/null || {
     echo "❌"
     exit 1
   }
   echo "✅"
+  echo "================================"
 }
 
-function test_up() {
-  echo -n "🧪 Testing 'ksail up k3d -n test'"
+function test_up_down_k3d() {
+  echo "================================"
+  echo "🧪 Testing up and down for k3d"
+  echo "--------------------------------"
+  echo -n "   Testing 'ksail up k3d -n test'"
   ./ksail up k3d -n test >/dev/null 2>&1 || {
     echo "❌"
     exit 1
   }
   echo "✅"
-}
 
-function test_down() {
-  echo -n "🧪 Testing 'ksail down k3d -n test'"
+  echo -n "   Testing 'ksail down k3d -n test'"
   ./ksail down k3d -n test >/dev/null 2>&1 || {
     echo "❌"
     exit 1
   }
   echo "✅"
+
+  echo -n "   Testing 'ksail up k3d -c k3d-config.yaml'"
+  ./ksail up k3d -c test-k3d-config.yaml >/dev/null 2>&1 || {
+    echo "❌"
+    exit 1
+  }
+  echo "✅"
+
+  echo -n "   Testing 'ksail down k3d -n test'"
+  ./ksail down k3d -n test >/dev/null 2>&1 || {
+    echo "❌"
+    exit 1
+  }
+  echo "✅"
+  echo "================================"
 }
 
 function test_validate() {
-  echo "🧪 Testing 'ksail validate'"
+  echo "================================"
+  echo "🧪 Testing validate"
+  echo "--------------------------------"
+  echo "   Testing 'ksail validate'"
   echo "⚠️ Not implemented yet"
+  echo "================================"
 }
 
 function test_verify() {
-  echo "🧪 Testing 'ksail verify'"
+  echo "================================"
+  echo "🧪 Testing verify"
+  echo "--------------------------------"
+  echo "   Testing 'ksail verify'"
   echo "⚠️ Not implemented yet"
+  echo "================================"
 }
 
 # Run all the tests
 function run_tests() {
-  test_introduction
-  test_help_flag
-  test_version_flag
-  test_install
-  test_up
-  test_down
-  test_validate
+  test_introduction && echo
+  test_help_flag && echo
+  test_version_flag && echo
+  test_install && echo
+  test_up_down_k3d && echo
+  test_validate && echo
   test_verify
 }
 
