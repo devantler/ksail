@@ -99,7 +99,7 @@ function test_version_flag() {
 
 function test_install() {
   echo -n "🧪 Testing 'ksail install k3d'"
-  ./ksail install k3d >/dev/null || {
+  ./ksail install k3d || {
     echo "❌"
     exit 1
   }
