@@ -167,7 +167,7 @@ function test_validate() {
   echo "================================"
   echo "🧪 Testing validate"
   echo "--------------------------------"
-  echo "   Testing 'ksail validate'"
+  echo -n "   Testing 'ksail validate'"
   echo "⚠️ Not implemented yet"
   echo "================================"
 }
@@ -176,7 +176,7 @@ function test_verify() {
   echo "================================"
   echo "🧪 Testing verify"
   echo "--------------------------------"
-  echo "   Testing 'ksail verify'"
+  echo -n "   Testing 'ksail verify'"
   echo "⚠️ Not implemented yet"
   echo "================================"
 }
