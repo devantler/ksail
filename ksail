@@ -199,6 +199,7 @@ function main_run_update() {
   local time
   time=$(date +%s)
   echo "🗳️ Push OCI artifact to Docker"
+  flux --version
   flux push artifact oci://localhost:5050/"${cluster_name}":"$time" \
     --path="${manifests_path}" \
     --source="$(git config --get remote.origin.url)" \
