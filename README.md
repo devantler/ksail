@@ -18,8 +18,9 @@ A CLI tool for provisioning GitOps enabled K8s environments in Docker.
 
 ### Prerequisites
 
-- A Unix or Linux based OS.
-- A Flux project.
+- Unix or Linux based OS.
+- Docker
+- A Flux kustomization file.
 
 ### Installation
 
