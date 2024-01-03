@@ -15,4 +15,7 @@ jobs:
       - name: 📑 Checkout
         uses: actions/checkout@v4
       - name: 🧪 Test
-        run: TERM=xterm bash ksail_test
+        run: |
+          TERM=xterm bash ksail_test
+          $GITHUB_PATH
+          flux --version
