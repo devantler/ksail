@@ -239,7 +239,9 @@ function main_run_install_backend_dependency_homebrew() {
     elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
       echo "eval '$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)'" >>~/.profile
       eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-      echo "::add-path::/home/linuxbrew/.linuxbrew/bin"
+      if $GITHUB_ACTIONS; then
+        echo "::add-path::/home/linuxbrew/.linuxbrew/bin"
+      fi
     fi
     if ! which brew &>/dev/null; then
       echo "📦🚨 Homebrew installation failed. Exiting..."
@@ -261,6 +263,9 @@ function main_run_install_backend_dependency() {
   else
     echo "📦🔨 Installing $dependency"
     brew install "$dependency"
+    if $GITHUB_ACTIONS; then
+      echo "::add-path::${command-v "$dependency"}"
+    fi
     if ! which "$command" &>/dev/null; then
       echo "📦🚨 $dependency installation failed. Exiting..."
       exit 1
