@@ -606,16 +606,16 @@ function main_run_up_handle_flags() {
 
 function main_run_up_validate_configuration() {
   echo "🔍 Validating configuration"
-  if ! realpath "$manifests_path"; then
+  if ! realpath "$manifests_path" >/dev/null; then
     echo "🚨 Manifests path does not exist. Exiting..."
     exit 1
   fi
-  if ! realpath "$manifests_path/$flux_path"; then
+  if ! realpath "$manifests_path/$flux_path" >/dev/null; then
     echo "🚨 Flux path does not exist. Exiting..."
     exit 1
   fi
   if [[ "$backend" == "k3d" && -n "$k3d_config_path" ]]; then
-    if ! realpath "$k3d_config_path"; then
+    if ! realpath "$k3d_config_path" >/dev/null; then
       echo "🚨 K3d config path does not exist. Exiting..."
       exit 1
     fi
