@@ -266,7 +266,7 @@ function main_run_install_backend_dependency() {
     brew install "$dependency"
     if $GITHUB_ACTIONS; then
       # shellcheck disable=SC2086
-      which "$dependency" >>$GITHUB_PATH
+      which $dependency >>$GITHUB_PATH
     fi
     if ! which "$command" &>/dev/null; then
       echo "📦🚨 $dependency installation failed. Exiting..."
