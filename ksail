@@ -233,6 +233,10 @@ function main_run_install_backend_dependency_homebrew() {
   else
     echo "📦🔨 Installing Homebrew"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    if ! command -v brew &>/dev/null; then
+      echo "📦🚨 Homebrew installation failed. Exiting..."
+      exit 1
+    fi
     echo "📦✅ Homebrew installed"
   fi
 }
@@ -249,12 +253,11 @@ function main_run_install_backend_dependency() {
   else
     echo "📦🔨 Installing $dependency"
     brew install "$dependency"
-    if command -v "$command" &>/dev/null; then
-      echo "📦✅ $dependency installed"
-    else
+    if ! command -v "$command" &>/dev/null; then
       echo "📦🚨 $dependency installation failed. Exiting..."
       exit 1
     fi
+    echo "📦✅ $dependency installed"
   fi
 }
 
