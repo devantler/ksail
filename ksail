@@ -62,7 +62,7 @@ function main_run_help_up_k3d_arg() {
   echo -e "  -n   name of the cluster (${GREEN}ksail${WHITE})"
   echo -e "  -m   path to the manifests files that should be pushed to a local OCI registry (${GREEN}./k8s${WHITE})"
   echo -e "  -f   path to the flux kustomization files within the OCI registry (${GREEN}./clusters/${PURPLE}<cluster-name>${GREEN}/flux${WHITE})"
-  echo -e "  -c   path to the k3d cluster config file (${GREEN}./${PURPLE}<cluster-name>${GREEN}-k3d-config.yaml${WHITE})"
+  echo -e "  -c   path to the k3d cluster config file. Configurations in this file will take precedence over other flags."
 }
 
 function main_run_help_up_talos_arg() {
