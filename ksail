@@ -233,11 +233,6 @@ function main_run_install_backend_dependency_homebrew() {
   else
     echo "📦🔨 Installing Homebrew"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    (
-      echo
-      echo "eval '$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)'"
-    ) >>/home/main_runner/.bashrc
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
     echo "📦✅ Homebrew installed"
   fi
 }
