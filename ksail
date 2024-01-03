@@ -15,8 +15,8 @@ function main_run_help_no_arg() {
   echo
   echo "Commands:"
   echo "  install     install dependencies"
-  echo "  up          create cluster (⚠️ unstable)"
-  echo "  down        destroy cluster (⚠️ unstable)"
+  echo "  up          create cluster"
+  echo "  down        destroy cluster"
   echo "  update      update cluster (⚠️ unstable)"
   echo "  validate    validate manifest files (⚠️ unstable)"
   echo "  verify      verify cluster reconciliation (⚠️ unstable)"
