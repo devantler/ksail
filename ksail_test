@@ -1,22 +1,22 @@
 #!/bin/bash
 
 function test_introduction() {
-  echo "================================"
+  echo "===================================="
   echo "🧪 Testing introduction"
-  echo "--------------------------------"
+  echo "------------------------------------"
   echo -n "   Testing 'ksail'"
   ./ksail >/dev/null || {
     echo "❌"
     exit 1
   }
   echo "✅"
-  echo "================================"
+  echo "===================================="
 }
 
 function test_help_flag() {
-  echo "================================"
+  echo "===================================="
   echo "🧪 Testing help flag"
-  echo "--------------------------------"
+  echo "------------------------------------"
   echo -n "   Testing 'ksail -h'"
   ./ksail -h >/dev/null || {
     echo "❌"
@@ -93,26 +93,26 @@ function test_help_flag() {
     exit 1
   }
   echo "✅"
-  echo "================================"
+  echo "===================================="
 }
 
 function test_version_flag() {
-  echo "================================"
+  echo "===================================="
   echo "🧪 Testing version flag"
-  echo "--------------------------------"
+  echo "------------------------------------"
   echo -n "   Testing 'ksail -v'"
   ./ksail -v >/dev/null || {
     echo "❌"
     exit 1
   }
   echo "✅"
-  echo "================================"
+  echo "===================================="
 }
 
 function test_install() {
-  echo "================================"
+  echo "===================================="
   echo "🧪 Testing install"
-  echo "--------------------------------"
+  echo "------------------------------------"
   echo -n "   Testing 'ksail install k3d'"
   ./ksail install k3d >/dev/null || {
     echo "❌"
@@ -126,13 +126,13 @@ function test_install() {
     exit 1
   }
   echo "✅"
-  echo "================================"
+  echo "===================================="
 }
 
 function test_up_down_k3d() {
-  echo "================================"
+  echo "===================================="
   echo "🧪 Testing up and down for k3d"
-  echo "--------------------------------"
+  echo "------------------------------------"
   echo -n "   Testing 'ksail up k3d -n test'"
   ./ksail up k3d -n test >/dev/null 2>&1 || {
     echo "❌"
@@ -160,25 +160,25 @@ function test_up_down_k3d() {
     exit 1
   }
   echo "✅"
-  echo "================================"
+  echo "===================================="
 }
 
 function test_validate() {
-  echo "================================"
+  echo "===================================="
   echo "🧪 Testing validate"
-  echo "--------------------------------"
+  echo "------------------------------------"
   echo -n "   Testing 'ksail validate'"
   echo "⚠️"
-  echo "================================"
+  echo "===================================="
 }
 
 function test_verify() {
-  echo "================================"
+  echo "===================================="
   echo "🧪 Testing verify"
-  echo "--------------------------------"
+  echo "------------------------------------"
   echo -n "   Testing 'ksail verify'"
   echo "⚠️"
-  echo "================================"
+  echo "===================================="
 }
 
 # Run all the tests
