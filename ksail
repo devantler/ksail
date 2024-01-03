@@ -62,7 +62,7 @@ function main_run_help_up_k3d_arg() {
   echo -e "  -n   name of the cluster (${GREEN}ksail${WHITE})"
   echo -e "  -m   path to the manifests files that should be pushed to a local OCI registry (${GREEN}./k8s${WHITE})"
   echo -e "  -f   path to the flux kustomization files within the OCI registry (${GREEN}./clusters/${PURPLE}<cluster-name>${GREEN}/flux${WHITE})"
-  echo -e "  -c   path to the k3d cluster config file (${GREEN}./${PURPLE}<cluster-name>${GREEN}-k3d-config.yaml${WHITE})"
+  echo -e "  -c   path to the k3d cluster config file. Configurations in this file will take precedence over other flags."
 }
 
 function main_run_help_up_talos_arg() {
@@ -439,8 +439,8 @@ function main_run_up_install_flux() {
 
 function main_run_up_provision_k3d_cluster() {
   echo "⛴️ Provision ${cluster_name} cluster"
-  if $k3d_config_path; then
-    k3d cluster create --config "${k3d_config_path}" "$cluster_name" || {
+  if [[ -n "$k3d_config_path" ]]; then
+    k3d cluster create --config "${k3d_config_path}" || {
       echo "🚨 Cluster creation failed. Exiting..."
       exit 1
     }
@@ -489,18 +489,15 @@ function main_run_up_provision_cluster() {
 }
 
 function main_run_up_handle_prompts_k3d() {
-  echo -e "${BOLD}What is the path to your k3d cluster config file? (default: ${GREEN}./${cluster_name}-k3d-config.yaml${WHITE})${NORMAL}"
+  echo -e "${BOLD}What is the path to your k3d cluster config file? Leave blank if you do not want to use a config file.${NORMAL}"
   while true; do
     echo -n "> "
     read -r k3d_config_path
-    if [ -z "$k3d_config_path" ]; then
-      k3d_config_path="./${cluster_name}-k3d-config.yaml"
-    fi
-    if realpath "$k3d_config_path"; then
+    if realpath "$k3d_config_path" >/dev/null || [ -z "$k3d_config_path" ]; then
       break
     else
       echo
-      echo "🚫 K3d config path does not exist. Please enter a valid path."
+      echo "🚫 K3d config path is wrong. Please enter a valid path or leave blank."
     fi
   done
 }
@@ -525,7 +522,7 @@ function main_run_up_handle_prompts() {
     if [ -z "$manifests_path" ]; then
       manifests_path="./k8s"
     fi
-    if realpath "$manifests_path"; then
+    if realpath "$manifests_path" >/dev/null; then
       break
     else
       echo
@@ -540,7 +537,7 @@ function main_run_up_handle_prompts() {
     if [ -z "$flux_path" ]; then
       flux_path="./clusters/${cluster_name}/flux"
     fi
-    if realpath "$manifests_path/$flux_path"; then
+    if realpath "$manifests_path/$flux_path" >/dev/null; then
       break
     else
       echo
@@ -566,17 +563,9 @@ function main_run_up_handle_flags() {
       ;;
     m)
       manifests_path=${OPTARG}
-      if ! realpath "$manifests_path"; then
-        echo "🚨 Manifests path does not exist. Exiting..."
-        exit 1
-      fi
       ;;
     f)
       flux_path=${OPTARG}
-      if ! realpath "$$manifests_path/$flux_path"; then
-        echo "🚨 Flux path does not exist. Exiting..."
-        exit 1
-      fi
       ;;
     c)
       if [[ "$backend" != "k3d" ]]; then
@@ -584,9 +573,10 @@ function main_run_up_handle_flags() {
         exit 1
       fi
       k3d_config_path=${OPTARG}
-      if ! realpath "$k3d_config_path"; then
-        echo "🚨 K3d config path does not exist. Exiting..."
-        exit 1
+      k3d_config_cluster_name=$(yq eval '.metadata.name' "$k3d_config_path")
+      if [ -n "$k3d_config_cluster_name" ]; then
+        echo "✍🏻 Overriding cluster name with the name '$k3d_config_cluster_name' from '$k3d_config_path'"
+        cluster_name=$k3d_config_cluster_name
       fi
       ;;
     *)
@@ -614,6 +604,10 @@ function main_run_up_handle_flags() {
 
 function main_run_up_validate_configuration() {
   echo "🔍 Validating configuration"
+  if [ -z "$cluster_name" ]; then
+    echo "🚨 Cluster name is empty. Exiting..."
+    exit 1
+  fi
   if ! realpath "$manifests_path" >/dev/null; then
     echo "🚨 Manifests path does not exist. Exiting..."
     exit 1
@@ -632,10 +626,10 @@ function main_run_up_validate_configuration() {
 }
 
 function main_run_up() {
-  local cluster_name="ksail"
+  local cluster_name
   local backend
   local manifests_path="./k8s"
-  local flux_path="./clusters/${cluster_name}/flux"
+  local flux_path
   local k3d_config_path
   local docker_gateway_ip
   docker_gateway_ip=$(docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}')
