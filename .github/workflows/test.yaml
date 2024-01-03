@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: 📑 Checkout
         uses: actions/checkout@v4
+      - name: ⚙️ Install dependencies
+        run: TERM=xterm ./ksail install k3d
       - name: 🧪 Test
         run: |
           TERM=xterm ./ksail_test
