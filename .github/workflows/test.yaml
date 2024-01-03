@@ -17,5 +17,3 @@ jobs:
       - name: 🧪 Test
         run: |
           TERM=xterm bash ksail_test
-          $GITHUB_PATH
-          flux --version
