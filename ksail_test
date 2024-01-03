@@ -148,7 +148,7 @@ function test_up_down_k3d() {
   echo "✅"
 
   echo -n "   Testing 'ksail up k3d -c k3d-config.yaml'"
-  ./ksail up k3d -c test-k3d-config.yaml >/dev/null 2>&1 || {
+  ./ksail up k3d -c k3d-config.yaml >/dev/null 2>&1 || {
     echo "❌"
     exit 1
   }
