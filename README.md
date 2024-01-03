@@ -1,4 +1,4 @@
-# KSail
+# ⛴️🐳 KSail
 
 > [!NOTE]
 > KSail and this README is currently a WIP. Please come back soon for a stable release 🚀
