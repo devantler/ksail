@@ -88,3 +88,15 @@ KSail was born out of the desire to simplify the process of bootstrapping Flux, 
 Future plans for KSail include the ability to achieve instant reconciliation by preconfiguring clusters with Flux webhook receivers. These receivers can be triggered by KSail itself, allowing for immediate reconciliations and providing users with instant feedback on the state of their clusters.
 
 In essence, KSail was created to bring simplicity and efficiency to managing GitOps workflows in local Kubernetes development environments. It's more than just a tool - it's a solution designed to make your Kubernetes journey smoother and more enjoyable.
+
+## Contributing
+
+I welcome contributions to KSail and appreciate your help in improving this tool. Here's how you can contribute:
+
+**Reporting Bugs or Requesting Features:** If you encounter any bugs while using KSail, or if you have a feature request, please create an issue in the GitHub repository. When creating an issue, provide as much detail as possible to help me understand the problem or feature.
+
+**Submitting Pull Requests:** If you have a fix for a bug, an improvement, or a new feature you'd like to add, you're welcome to create a pull request. However, because not all changes may align with the project's direction, I recommend starting a discussion in the issues section before working on a pull request. This can save both you and me time and ensure that your contributions can be integrated smoothly.
+
+Remember, your contributions, no matter how small, are greatly appreciated and help make KSail better for everyone. Thank you for your support!
+
+
