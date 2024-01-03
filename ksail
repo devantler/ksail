@@ -233,7 +233,7 @@ function main_run_no_arg() {
 }
 
 function main_run_install_backend_dependency_homebrew() {
-  if command -v brew &>/dev/null; then
+  if which brew &>/dev/null; then
     echo "📦✅ Homebrew already installed. Updating..."
     brew upgrade
   else
@@ -261,7 +261,7 @@ function main_run_install_backend_dependency() {
     command="$dependency"
   fi
   echo "📦 Installing $dependency"
-  if command -v "$command" &>/dev/null; then
+  if which "$command" &>/dev/null; then
     echo "📦✅ $dependency already installed. Skipping..."
   else
     echo "📦🔨 Installing $dependency"
