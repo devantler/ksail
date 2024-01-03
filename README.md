@@ -63,6 +63,8 @@ Introducing KSail, your new go-to CLI tool for effortlessly managing GitOps-enab
 
 `ksail verify` - With the verify command, you can easily check that your cluster reconciles successfully. KSail streamlines the verification process, making it easier than ever to ensure your cluster is functioning as expected.
 
+`ksail sops` - KSail makes it easy to manage secrets in Git repositories. With the sops command, you can quickly create, get, and share your KSail SOPS GPG key. KSail takes the hassle out of managing secrets, allowing you to focus on what matters most.
+
 KSail is more than just a tool - it's your partner in navigating the world of Kubernetes. Get ready to set sail with KSail!
 
 ## How does it work?
@@ -74,6 +76,8 @@ KSail leverages several key technologies and concepts to achieve its functionali
 **Flux GitOps:** KSail uses Flux, a GitOps tool for Kubernetes, to manage the state of your clusters. With GitOps, your manifest source serves as the single source of truth for your cluster's desired state. Any changes to the source trigger an update in your cluster.
 
 **Local OCI Registries:** KSail uses local Open Container Initiative (OCI) registries to store and distribute Docker images and manifests. When you push manifest files to these registries, it triggers updates in your Kubernetes clusters. This allows for a streamlined and efficient workflow for updating your applications.
+
+**SOPS Integration:** KSail integrates with SOPS, a tool for managing secrets in Git repositories. It does so by automatically creating a SOPS GPG key and configuring it to work with your KSail clusters. This allows you to easily encrypt and decrypt your secrets.
 
 **Manifest Validation:** Before deploying your clusters, KSail validates your manifest files to ensure they are correctly formatted and contain valid configurations. This helps catch errors before they cause problems in your clusters.
 
