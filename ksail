@@ -9,12 +9,6 @@ valid_global_flags=(
   "-h"
 )
 
-# Valid Backends: The different supported kubernetes-in-docker distributions
-valid_backends=(
-  "k3d"
-  "talos"
-)
-
 function main_run_help_no_arg() {
   echo "Usage:"
   echo -e "  ksail ${PURPLE}<command>${WHITE} ${PURPLE}<flag>${WHITE}"
@@ -240,11 +234,12 @@ function main_run_install_backend_dependency_homebrew() {
     echo "📦🔨 Installing Homebrew"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     if [[ "$OSTYPE" == "darwin"* ]]; then
-      echo "eval '$(/opt/homebrew/bin/brew shellenv)'" >>~/.zprofile
-      eval "$(/opt/homebrew/bin/brew shellenv)"
+      echo "eval '$(brew --prefix)/bin/brew shellenv)'" >>~/.zprofile
+      eval "$(brew --prefix shellenv)"
     elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-      echo "eval '$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)'" >>~/.profile
-      eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+      echo "eval '$(brew --prefix shellenv)'" >>~/.profile
+      eval "$(brew --prefix shellenv)"
+      echo "::add-path::/home/linuxbrew/.linuxbrew/bin"
     fi
     if ! which brew &>/dev/null; then
       echo "📦🚨 Homebrew installation failed. Exiting..."
@@ -283,7 +278,6 @@ function main_run_install_backend_dependencies() {
   main_run_install_backend_dependency "kustomize"
   main_run_install_backend_dependency "docker"
   main_run_install_backend_dependency "fluxcd/tap/flux" "flux"
-  flux --version
   main_run_install_backend_dependency "gpg"
   main_run_install_backend_dependency "kubectl"
   if [[ "$backend" == "k3d" ]]; then
