@@ -283,7 +283,6 @@ function main_run_install_backend_dependencies() {
   main_run_install_backend_dependency "kustomize"
   main_run_install_backend_dependency "docker"
   main_run_install_backend_dependency "fluxcd/tap/flux" "flux"
-  echo "$GITHUB_PATH"
   flux --version
   main_run_install_backend_dependency "gpg"
   main_run_install_backend_dependency "kubectl"
