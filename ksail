@@ -266,12 +266,12 @@ function main_run_install_backend_dependency() {
   else
     echo "📦🔨 Installing $dependency"
     brew install "$dependency"
-    if $GITHUB_ACTIONS; then
-      echo command -v "$command" >>"$GITHUB_PATH"
-    fi
     if ! command -v "$command" &>/dev/null; then
       echo "📦🚨 $dependency installation failed. Exiting..."
       exit 1
+    fi
+    if $GITHUB_ACTIONS; then
+      echo command -v "$command" >>"$GITHUB_PATH"
     fi
     echo "📦✅ $dependency installed"
   fi
