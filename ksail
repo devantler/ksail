@@ -202,9 +202,15 @@ function main_run_update() {
   flux push artifact oci://localhost:5050/"${cluster_name}":"$time" \
     --path="${manifests_path}" \
     --source="$(git config --get remote.origin.url)" \
-    --revision="$(git branch --show-current)@sha1:$(git rev-parse HEAD)"
+    --revision="$(git branch --show-current)@sha1:$(git rev-parse HEAD)" || {
+    echo "🚨 OCI artifact push failed. Exiting..."
+  }
   flux tag artifact oci://localhost:5050/"${cluster_name}":"$time" \
-    --tag latest
+    --tag latest ||
+    {
+      echo "🚨 OCI artifact tag failed. Exiting..."
+      exit 1
+    }
 }
 
 function main_run_introduction() {
