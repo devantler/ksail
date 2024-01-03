@@ -234,9 +234,12 @@ function main_run_install_backend_dependency_homebrew() {
     echo "📦🔨 Installing Homebrew"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     if [[ "$OSTYPE" == "darwin"* ]]; then
+      test -d ~/opt/homebrew && eval "$(~/opt/homebrew/bin/brew shellenv)"
       echo "eval '$(brew --prefix)/bin/brew shellenv)'" >>~/.zprofile
       eval "$(brew --prefix shellenv)"
     elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+      test -d ~/.linuxbrew && eval "$(~/.linuxbrew/bin/brew shellenv)"
+      test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
       echo "eval '$(brew --prefix shellenv)'" >>~/.profile
       eval "$(brew --prefix shellenv)"
       echo "::add-path::/home/linuxbrew/.linuxbrew/bin"
