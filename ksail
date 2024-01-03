@@ -204,13 +204,13 @@ function main_run_update() {
     --source="$(git config --get remote.origin.url)" \
     --revision="$(git branch --show-current)@sha1:$(git rev-parse HEAD)" || {
     echo "🚨 OCI artifact push failed. Exiting..."
+    exit 1
   }
   flux tag artifact oci://localhost:5050/"${cluster_name}":"$time" \
-    --tag latest ||
-    {
-      echo "🚨 OCI artifact tag failed. Exiting..."
-      exit 1
-    }
+    --tag latest || {
+    echo "🚨 OCI artifact tag failed. Exiting..."
+    exit 1
+  }
 }
 
 function main_run_introduction() {
