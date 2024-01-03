@@ -99,7 +99,7 @@ function test_version_flag() {
 
 function test_install() {
   echo -n "🧪 Testing 'ksail install k3d'"
-  ./ksail install k3d || {
+  ./ksail install k3d >/dev/null || {
     echo "❌"
     exit 1
   }
@@ -115,7 +115,7 @@ function test_install() {
 
 function test_up() {
   echo -n "🧪 Testing 'ksail up k3d -n test'"
-  ./ksail up k3d -n test || {
+  ./ksail up k3d -n test >/dev/null 2>&1 || {
     echo "❌"
     exit 1
   }

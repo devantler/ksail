@@ -17,5 +17,4 @@ jobs:
       - name: ⚙️ Install dependencies
         run: TERM=xterm ./ksail install k3d
       - name: 🧪 Test
-        run: |
-          TERM=xterm ./ksail_test
+        run: TERM=xterm ./ksail_test
