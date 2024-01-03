@@ -129,19 +129,12 @@ function test_install() {
   echo "------------------------------------------------------------------------"
 }
 
-function test_up_down_k3d() {
+function test_up() {
   echo "------------------------------------------------------------------------"
-  echo "🧪 Testing up and down for k3d"
+  echo "🧪 Testing up"
   echo "========================================================================"
   echo -n "   Testing 'ksail up k3d -n test'"
   ./ksail up k3d -n test >/dev/null 2>&1 || {
-    echo "❌"
-    exit 1
-  }
-  echo "✅"
-
-  echo -n "   Testing 'ksail down k3d -n test'"
-  ./ksail down k3d -n test >/dev/null 2>&1 || {
     echo "❌"
     exit 1
   }
@@ -154,13 +147,6 @@ function test_up_down_k3d() {
   }
   echo "✅"
 
-  echo -n "   Testing 'ksail down k3d -n test'"
-  ./ksail down k3d -n test >/dev/null 2>&1 || {
-    echo "❌"
-    exit 1
-  }
-  echo "✅"
-
   echo -n "   Testing 'ksail up k3d -c k3d-config.yaml'"
   ./ksail up k3d -c k3d-config.yaml >/dev/null 2>&1 || {
     echo "❌"
@@ -168,8 +154,28 @@ function test_up_down_k3d() {
   }
   echo "✅"
 
+  echo -n "   Testing 'ksail up talos -n test'"
+  ./ksail up talos -n test >/dev/null 2>&1 || {
+    echo "❌"
+    exit 1
+  }
+  echo "✅"
+  echo "------------------------------------------------------------------------"
+}
+
+function test_down() {
+  echo "------------------------------------------------------------------------"
+  echo "🧪 Testing down"
+  echo "========================================================================"
   echo -n "   Testing 'ksail down k3d -n test'"
   ./ksail down k3d -n test >/dev/null 2>&1 || {
+    echo "❌"
+    exit 1
+  }
+  echo "✅"
+
+  echo -n "   Testing 'ksail down talos -n test'"
+  ./ksail down talos -n test >/dev/null 2>&1 || {
     echo "❌"
     exit 1
   }
@@ -201,7 +207,8 @@ function run_tests() {
   test_help_flag && echo
   test_version_flag && echo
   test_install && echo
-  test_up_down_k3d && echo
+  test_up && echo
+  test_down && echo
   test_validate && echo
   test_verify
 }

@@ -489,18 +489,15 @@ function main_run_up_provision_cluster() {
 }
 
 function main_run_up_handle_prompts_k3d() {
-  echo -e "${BOLD}What is the path to your k3d cluster config file? (default: ${GREEN}./${cluster_name}-k3d-config.yaml${WHITE})${NORMAL}"
+  echo -e "${BOLD}What is the path to your k3d cluster config file? Leave blank if you do not want to use a config file.${NORMAL}"
   while true; do
     echo -n "> "
     read -r k3d_config_path
-    if [ -z "$k3d_config_path" ]; then
-      k3d_config_path="./${cluster_name}-k3d-config.yaml"
-    fi
-    if realpath "$k3d_config_path" >/dev/null; then
+    if realpath "$k3d_config_path" >/dev/null || [ -z "$k3d_config_path" ]; then
       break
     else
       echo
-      echo "🚫 K3d config path does not exist. Please enter a valid path."
+      echo "🚫 K3d config path is wrong. Please enter a valid path or leave blank."
     fi
   done
 }
