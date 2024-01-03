@@ -12,7 +12,7 @@
 ~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 ```
 
-A kubernetes-in-docker service for provisioning GitOps enabled K8s environments in Docker.
+A CLI tool for provisioning GitOps enabled K8s environments in Docker.
 
 ## Getting Started
 
