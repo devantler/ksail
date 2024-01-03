@@ -9,12 +9,6 @@ valid_global_flags=(
   "-h"
 )
 
-# Valid Backends: The different supported kubernetes-in-docker distributions
-valid_backends=(
-  "k3d"
-  "talos"
-)
-
 function main_run_help_no_arg() {
   echo "Usage:"
   echo -e "  ksail ${PURPLE}<command>${WHITE} ${PURPLE}<flag>${WHITE}"
@@ -54,7 +48,7 @@ function main_run_help_up_arg() {
   echo "Flags:"
   echo -e "  -n   name of the cluster (${GREEN}ksail${WHITE})"
   echo -e "  -m   path to the manifests files root directory (${GREEN}./k8s${WHITE})"
-  echo -e "  -f   path to the flux kustomization manifests (${GREEN}./k8s/clusters/${PURPLE}<cluster-name>${GREEN}/flux${WHITE})"
+  echo -e "  -f   path to the flux kustomization manifests (${GREEN}./clusters/${PURPLE}<cluster-name>${GREEN}/flux${WHITE})"
   echo
   echo "ℹ️ Notes:"
   echo -e "  - Backends may have additional flags. Run '${BLUE}ksail up ${PURPLE}<backend>${BLUE} -h${WHITE}' for more information."
@@ -67,7 +61,7 @@ function main_run_help_up_k3d_arg() {
   echo "Flags:"
   echo -e "  -n   name of the cluster (${GREEN}ksail${WHITE})"
   echo -e "  -m   path to the manifests files root directory (${GREEN}./k8s${WHITE})"
-  echo -e "  -f   path to the flux kustomization manifests (${GREEN}./k8s/clusters/${PURPLE}<cluster-name>${GREEN}/flux${WHITE})"
+  echo -e "  -f   path to the flux kustomization manifests (${GREEN}./clusters/${PURPLE}<cluster-name>${GREEN}/flux${WHITE})"
   echo -e "  -c   path to the k3d cluster config file (${GREEN}./${PURPLE}<cluster-name>${GREEN}-k3d-config.yaml${WHITE})"
 }
 
@@ -78,7 +72,7 @@ function main_run_help_up_talos_arg() {
   echo "Flags:"
   echo -e "  -n   name of the cluster (${GREEN}ksail${WHITE})"
   echo -e "  -m   path to the manifests files root directory (${GREEN}./k8s${WHITE})"
-  echo -e "  -f   path to the flux kustomization manifests (${GREEN}./k8s/clusters/${PURPLE}<cluster-name>${GREEN}/flux${WHITE})"
+  echo -e "  -f   path to the flux kustomization manifests (${GREEN}./clusters/${PURPLE}<cluster-name>${GREEN}/flux${WHITE})"
 }
 
 function main_run_help_down_arg() {
@@ -202,9 +196,15 @@ function main_run_update() {
   flux push artifact oci://localhost:5050/"${cluster_name}":"$time" \
     --path="${manifests_path}" \
     --source="$(git config --get remote.origin.url)" \
-    --revision="$(git branch --show-current)@sha1:$(git rev-parse HEAD)"
+    --revision="$(git branch --show-current)@sha1:$(git rev-parse HEAD)" || {
+    echo "🚨 OCI artifact push failed. Exiting..."
+    exit 1
+  }
   flux tag artifact oci://localhost:5050/"${cluster_name}":"$time" \
-    --tag latest
+    --tag latest || {
+    echo "🚨 OCI artifact tag failed. Exiting..."
+    exit 1
+  }
 }
 
 function main_run_introduction() {
@@ -227,17 +227,27 @@ function main_run_no_arg() {
 }
 
 function main_run_install_backend_dependency_homebrew() {
-  if command -v brew &>/dev/null; then
+  if which brew &>/dev/null; then
     echo "📦✅ Homebrew already installed. Updating..."
     brew upgrade
   else
     echo "📦🔨 Installing Homebrew"
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    (
-      echo
-      echo "eval '$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)'"
-    ) >>/home/main_runner/.bashrc
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+      echo "eval '$(/opt/homebrew/bin/brew shellenv)'" >>~/.zprofile
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+      echo "eval '$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)'" >>~/.profile
+      eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+      if $GITHUB_ACTIONS; then
+        # shellcheck disable=SC2086
+        echo "/home/linuxbrew/.linuxbrew/bin" >>$GITHUB_PATH
+      fi
+    fi
+    if ! which brew &>/dev/null; then
+      echo "📦🚨 Homebrew installation failed. Exiting..."
+      exit 1
+    fi
     echo "📦✅ Homebrew installed"
   fi
 }
@@ -249,11 +259,19 @@ function main_run_install_backend_dependency() {
     command="$dependency"
   fi
   echo "📦 Installing $dependency"
-  if command -v "$command" &>/dev/null; then
+  if which "$command" &>/dev/null; then
     echo "📦✅ $dependency already installed. Skipping..."
   else
     echo "📦🔨 Installing $dependency"
     brew install "$dependency"
+    if $GITHUB_ACTIONS; then
+      # shellcheck disable=SC2086
+      which "$command" >>$GITHUB_PATH
+    fi
+    if ! which "$command" &>/dev/null; then
+      echo "📦🚨 $dependency installation failed. Exiting..."
+      exit 1
+    fi
     echo "📦✅ $dependency installed"
   fi
 }
@@ -478,7 +496,7 @@ function main_run_up_handle_prompts_k3d() {
     if [ -z "$k3d_config_path" ]; then
       k3d_config_path="./${cluster_name}-k3d-config.yaml"
     fi
-    if k3d_config_path=$(realpath "$k3d_config_path"); then
+    if realpath "$k3d_config_path"; then
       break
     else
       echo
@@ -507,7 +525,7 @@ function main_run_up_handle_prompts() {
     if [ -z "$manifests_path" ]; then
       manifests_path="./k8s"
     fi
-    if manifests_path=$(realpath "$manifests_path"); then
+    if realpath "$manifests_path"; then
       break
     else
       echo
@@ -515,14 +533,14 @@ function main_run_up_handle_prompts() {
     fi
   done
 
-  echo -e "${BOLD}What is the path to your flux kustomizations? (default: ${GREEN}./k8s/clusters/${cluster_name}/flux${WHITE})${NORMAL}"
+  echo -e "${BOLD}What is the path to your flux kustomizations? (default: ${GREEN}./clusters/${cluster_name}/flux${WHITE})${NORMAL}"
   while true; do
     echo -n "> "
     read -r flux_path
     if [ -z "$flux_path" ]; then
-      flux_path="./k8s/clusters/${cluster_name}/flux"
+      flux_path="./clusters/${cluster_name}/flux"
     fi
-    if flux_path=$(realpath "$flux_path"); then
+    if realpath "$manifests_path/$flux_path"; then
       break
     else
       echo
@@ -544,18 +562,18 @@ function main_run_up_handle_flags() {
     case "${flag}" in
     n)
       cluster_name=${OPTARG}
-      flux_path="./k8s/clusters/${cluster_name}/flux"
+      flux_path="./clusters/${cluster_name}/flux"
       ;;
     m)
       manifests_path=${OPTARG}
-      if ! manifests_path=$(realpath "$manifests_path"); then
+      if ! realpath "$manifests_path"; then
         echo "🚨 Manifests path does not exist. Exiting..."
         exit 1
       fi
       ;;
     f)
       flux_path=${OPTARG}
-      if ! flux_path=$(realpath "$flux_path"); then
+      if ! realpath "$$manifests_path/$flux_path"; then
         echo "🚨 Flux path does not exist. Exiting..."
         exit 1
       fi
@@ -566,7 +584,7 @@ function main_run_up_handle_flags() {
         exit 1
       fi
       k3d_config_path=${OPTARG}
-      if ! k3d_config_path=$(realpath "$k3d_config_path"); then
+      if ! realpath "$k3d_config_path"; then
         echo "🚨 K3d config path does not exist. Exiting..."
         exit 1
       fi
@@ -596,16 +614,16 @@ function main_run_up_handle_flags() {
 
 function main_run_up_validate_configuration() {
   echo "🔍 Validating configuration"
-  if ! manifests_path=$(realpath "$manifests_path"); then
+  if ! realpath "$manifests_path" >/dev/null; then
     echo "🚨 Manifests path does not exist. Exiting..."
     exit 1
   fi
-  if ! flux_path=$(realpath "$flux_path"); then
+  if ! realpath "$manifests_path/$flux_path" >/dev/null; then
     echo "🚨 Flux path does not exist. Exiting..."
     exit 1
   fi
   if [[ "$backend" == "k3d" && -n "$k3d_config_path" ]]; then
-    if ! k3d_config_path=$(realpath "$k3d_config_path"); then
+    if ! realpath "$k3d_config_path" >/dev/null; then
       echo "🚨 K3d config path does not exist. Exiting..."
       exit 1
     fi
@@ -617,7 +635,7 @@ function main_run_up() {
   local cluster_name="ksail"
   local backend
   local manifests_path="./k8s"
-  local flux_path="./k8s/clusters/${cluster_name}/flux"
+  local flux_path="./clusters/${cluster_name}/flux"
   local k3d_config_path
   local docker_gateway_ip
   docker_gateway_ip=$(docker network inspect bridge --format='{{(index .IPAM.Config 0).Gateway}}')

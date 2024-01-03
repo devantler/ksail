@@ -1,0 +1,20 @@
+name: Test
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📑 Checkout
+        uses: actions/checkout@v4
+      - name: ⚙️ Install dependencies
+        run: TERM=xterm ./ksail install k3d
+      - name: 🧪 Test
+        run: TERM=xterm ./ksail_test
