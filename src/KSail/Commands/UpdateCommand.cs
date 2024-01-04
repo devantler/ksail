@@ -10,7 +10,8 @@ public class UpdateCommand : Command
   /// <summary>
   /// Initializes a new instance of the <see cref="UpdateCommand"/> class.
   /// </summary>
-  public UpdateCommand() : base("update", "update a K8s cluster by pushing manifests in a specified directory to a local OCI registry")
-  {
-  }
+  public UpdateCommand() : base(
+    "update",
+    "update a K8s cluster by pushing manifests in a specified directory to a local OCI registry"
+  ) => this.SetHandler(() => _ = this.InvokeAsync("--help"));
 }

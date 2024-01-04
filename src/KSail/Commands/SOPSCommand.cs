@@ -10,7 +10,5 @@ public class SOPSCommand : Command
   /// <summary>
   /// Initializes a new instance of the <see cref="SOPSCommand"/> class.
   /// </summary>
-  public SOPSCommand() : base("sops", "manage KSail SOPS GPG key")
-  {
-  }
+  public SOPSCommand() : base("sops", "manage KSail SOPS GPG key") => this.SetHandler(() => _ = this.InvokeAsync("--help"));
 }
