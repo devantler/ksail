@@ -1,7 +1,7 @@
 using System.CommandLine;
 using System.Globalization;
 using KSail.Enums;
-using KSail.Provisioners;
+using KSail.Provisioners.ClusterProvisioners;
 using KSail.Utils;
 
 namespace KSail.Commands.Up;
@@ -11,7 +11,7 @@ namespace KSail.Commands.Up;
 /// </summary>
 public class UpK8sInDockerBackendCommand : Command
 {
-  readonly IProvisioner _provisioner;
+  readonly IClusterProvisioner _provisioner;
   /// <summary>
   /// Initializes a new instance of the <see cref="UpK8sInDockerBackendCommand"/> class.
   /// </summary>
@@ -26,7 +26,7 @@ public class UpK8sInDockerBackendCommand : Command
     Option<string> fluxKustomizationPathOption
   ) : base(k8sInDockerBackend.ToString().ToLower(CultureInfo.InvariantCulture), "create a K8s cluster ")
   {
-    _provisioner = IProvisioner.GetProvisioner(k8sInDockerBackend);
+    _provisioner = IClusterProvisioner.GetProvisioner(k8sInDockerBackend);
 
     var configPathOption = new Option<string>(["-c", "--config"], "path to the cluster configuration file");
     AddOptions(nameOption, manifestsPathOption, fluxKustomizationPathOption, configPathOption);
@@ -54,7 +54,7 @@ public class UpK8sInDockerBackendCommand : Command
 
       // Print that we are destroying the cluster prior to recreating it.
       Console.WriteLine($"🔥 Destroying '{name}' cluster prior to creation...");
-      await _provisioner.DestroyAsync(name);
+      await _provisioner.DeprovisionAsync(name);
       Console.WriteLine();
 
       if (!string.IsNullOrEmpty(configPath))
@@ -65,7 +65,7 @@ public class UpK8sInDockerBackendCommand : Command
       {
         Console.WriteLine($"🚀 Creating '{name}' cluster with manifest path '{manifestsPath}' and flux kustomization path '{fluxKustomizationPath}'...");
       }
-      await _provisioner.CreateAsync(name, manifestsPath, fluxKustomizationPath);
+      await _provisioner.ProvisionAsync(name, manifestsPath, fluxKustomizationPath);
       Console.WriteLine();
     }, nameOption, manifestsPathOption, fluxKustomizationPathOption, configPathOption);
   }
