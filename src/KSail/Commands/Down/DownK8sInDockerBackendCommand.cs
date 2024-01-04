@@ -1,11 +1,12 @@
 using System.CommandLine;
 using System.Globalization;
 using KSail.Enums;
+using KSail.Utils;
 
-namespace KSail.Commands;
+namespace KSail.Commands.Down;
 
 /// <summary>
-/// The 'down k8s-in-docker-backend' command responsible for destroying specific K8s clusters.
+/// The 'down k8s-in-docker-backend' command responsible for destroying K8s clusters.
 /// </summary>
 public class DownK8sInDockerBackendCommand : Command
 {
@@ -20,22 +21,9 @@ public class DownK8sInDockerBackendCommand : Command
 
     this.SetHandler((name) =>
     {
-      name = PromptName();
+      name = ConsoleUtils.Prompt("Please enter the name of the cluster to destroy");
 
-      Console.WriteLine($"🔥 Destroying '{name?.ToString()}' cluster...");
+      Console.WriteLine($"🔥 Destroying '{name}' cluster...");
     }, nameOption);
-  }
-
-  static string PromptName()
-  {
-    string? name;
-    do
-    {
-      Console.WriteLine("✍️ Please enter the name of the cluster to destroy:");
-      Console.Write("> ");
-      name = Console.ReadLine();
-    }
-    while (string.IsNullOrEmpty(name));
-    return name;
   }
 }

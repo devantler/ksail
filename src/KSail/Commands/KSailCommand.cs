@@ -1,4 +1,6 @@
 using System.CommandLine;
+using KSail.Commands.Down;
+using KSail.Commands.Up;
 using Spectre.Console;
 
 namespace KSail.Commands;
