@@ -8,31 +8,40 @@ on:
 jobs:
   check-assets:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
     steps:
       - uses: actions/checkout@v2
       - name: ⤵️ Get binaries
         run: |
-          flux_version_latest=$(curl -s https://api.github.com/repos/fluxcd/flux/releases/latest | grep tag_name | cut -d '"' -f 4)
+          flux_version_latest=$(curl -s https://api.github.com/repos/fluxcd/flux2/releases/latest | grep tag_name | cut -d '"' -f 4)
           flux_version_current=$(ls -l src/Ksail/assets/flux_* | cut -d '_' -f 2)
           if [ "$flux_version_latest" != "$flux_version_current" ]; then
             echo "New version of flux found: $flux_version_latest"
             echo "Current version of flux: $flux_version_current"
             echo "Downloading new version of flux"
-            curl -s https://api.github.com/repos/fluxcd/flux/releases/latest | grep browser_download_url | grep darwin_amd64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/flux_${flux_version_latest}_darwin_amd64.tar.gz
-            curl -s https://api.github.com/repos/fluxcd/flux/releases/latest | grep browser_download_url | grep darwin_arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/flux_${flux_version_latest}_darwin_arm64.tar.gz
-            curl -s https://api.github.com/repos/fluxcd/flux/releases/latest | grep browser_download_url | grep linux_amd64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/flux_${flux_version_latest}_linux_amd64.tar.gz
-            curl -s https://api.github.com/repos/fluxcd/flux/releases/latest | grep browser_download_url | grep linux_arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/flux_${flux_version_latest}_linux_arm64.tar.gz
-            curl -s https://api.github.com/repos/fluxcd/flux/releases/latest | grep browser_download_url | grep linux_arm | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/flux_${flux_version_latest}_linux_arm.tar.gz
+            curl -s https://api.github.com/repos/fluxcd/flux2/releases/latest | grep browser_download_url | grep darwin_amd64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/flux_${flux_version_latest}_darwin_amd64.tar.gz
+            curl -s https://api.github.com/repos/fluxcd/flux2/releases/latest | grep browser_download_url | grep darwin_arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/flux_${flux_version_latest}_darwin_arm64.tar.gz
+            curl -s https://api.github.com/repos/fluxcd/flux2/releases/latest | grep browser_download_url | grep linux_amd64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/flux_${flux_version_latest}_linux_amd64.tar.gz
+            curl -s https://api.github.com/repos/fluxcd/flux2/releases/latest | grep browser_download_url | grep linux_arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/flux_${flux_version_latest}_linux_arm64.tar.gz
+            curl -s https://api.github.com/repos/fluxcd/flux2/releases/latest | grep browser_download_url | grep linux_arm | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/flux_${flux_version_latest}_linux_arm.tar.gz
 
             echo "Extracting new version of flux"
             tar -xzf src/Ksail/assets/flux_${flux_version_latest}_darwin_amd64.tar.gz -C src/Ksail/assets/
+            mv src/Ksail/assets/flux src/Ksail/assets/flux_${flux_version_latest}_darwin_amd64
             tar -xzf src/Ksail/assets/flux_${flux_version_latest}_darwin_arm64.tar.gz -C src/Ksail/assets/
+            mv src/Ksail/assets/flux src/Ksail/assets/flux_${flux_version_latest}_darwin_arm64
             tar -xzf src/Ksail/assets/flux_${flux_version_latest}_linux_amd64.tar.gz -C src/Ksail/assets/
+            mv src/Ksail/assets/flux src/Ksail/assets/flux_${flux_version_latest}_linux_amd64
             tar -xzf src/Ksail/assets/flux_${flux_version_latest}_linux_arm64.tar.gz -C src/Ksail/assets/
+            mv src/Ksail/assets/flux src/Ksail/assets/flux_${flux_version_latest}_linux_arm64
             tar -xzf src/Ksail/assets/flux_${flux_version_latest}_linux_arm.tar.gz -C src/Ksail/assets/
+            mv src/Ksail/assets/flux src/Ksail/assets/flux_${flux_version_latest}_linux_arm
+
+            echo "Removing tar.gz files"
+            rm src/Ksail/assets/flux_${flux_version_latest}_darwin_amd64.tar.gz
+            rm src/Ksail/assets/flux_${flux_version_latest}_darwin_arm64.tar.gz
+            rm src/Ksail/assets/flux_${flux_version_latest}_linux_amd64.tar.gz
+            rm src/Ksail/assets/flux_${flux_version_latest}_linux_arm64.tar.gz
+            rm src/Ksail/assets/flux_${flux_version_latest}_linux_arm.tar.gz
 
             echo "Making new version of flux executable"
             chmod +x src/Ksail/assets/flux_${flux_version_latest}_darwin_amd64
@@ -42,11 +51,11 @@ jobs:
             chmod +x src/Ksail/assets/flux_${flux_version_latest}_linux_arm
 
             echo "Removing old version of flux"
-            rm src/Ksail/assets/flux_${flux_version_current}_darwin_amd64.tar.gz
-            rm src/Ksail/assets/flux_${flux_version_current}_darwin_arm64.tar.gz
-            rm src/Ksail/assets/flux_${flux_version_current}_linux_amd64.tar.gz
-            rm src/Ksail/assets/flux_${flux_version_current}_linux_arm64.tar.gz
-            rm src/Ksail/assets/flux_${flux_version_current}_linux_arm.tar.gz
+            rm src/Ksail/assets/flux_${flux_version_current}_darwin_amd64
+            rm src/Ksail/assets/flux_${flux_version_current}_darwin_arm64
+            rm src/Ksail/assets/flux_${flux_version_current}_linux_amd64
+            rm src/Ksail/assets/flux_${flux_version_current}_linux_arm64
+            rm src/Ksail/assets/flux_${flux_version_current}_linux_arm
           else
             echo "No new version of flux found"
           fi
@@ -104,6 +113,13 @@ jobs:
             tar -xzf src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_arm.tar.gz -C src/Ksail/assets/ kubeconform
             mv src/Ksail/assets/kubeconform src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_arm
 
+            echo "Removing tar.gz files"
+            rm src/Ksail/assets/kubeconform_${kubeconform_version_latest}_darwin_amd64.tar.gz
+            rm src/Ksail/assets/kubeconform_${kubeconform_version_latest}_darwin_arm64.tar.gz
+            rm src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_amd64.tar.gz
+            rm src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_arm64.tar.gz
+            rm src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_arm.tar.gz
+
             echo "Making new version of kubeconform executable"
             chmod +x src/Ksail/assets/kubeconform_${kubeconform_version_latest}_darwin_amd64
             chmod +x src/Ksail/assets/kubeconform_${kubeconform_version_latest}_darwin_arm64
@@ -112,11 +128,11 @@ jobs:
             chmod +x src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_arm
 
             echo "Removing old version of kubeconform"
-            rm src/Ksail/assets/kubeconform_${kubeconform_version_current}_darwin_amd64.tar.gz
-            rm src/Ksail/assets/kubeconform_${kubeconform_version_current}_darwin_arm64.tar.gz
-            rm src/Ksail/assets/kubeconform_${kubeconform_version_current}_linux_amd64.tar.gz
-            rm src/Ksail/assets/kubeconform_${kubeconform_version_current}_linux_arm64.tar.gz
-            rm src/Ksail/assets/kubeconform_${kubeconform_version_current}_linux_arm.tar.gz
+            rm src/Ksail/assets/kubeconform_${kubeconform_version_current}_darwin_amd64
+            rm src/Ksail/assets/kubeconform_${kubeconform_version_current}_darwin_arm64
+            rm src/Ksail/assets/kubeconform_${kubeconform_version_current}_linux_amd64
+            rm src/Ksail/assets/kubeconform_${kubeconform_version_current}_linux_arm64
+            rm src/Ksail/assets/kubeconform_${kubeconform_version_current}_linux_arm
           else
             echo "No new version of kubeconform found"
           fi
