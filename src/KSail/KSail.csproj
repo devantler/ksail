@@ -3,6 +3,9 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <AssemblyName>ksail</AssemblyName>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,7 +19,7 @@
 
   <!-- Copy binaries to output directory based on arch -->
   <ItemGroup>
-    <Content Include="assets/**" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="assets/**" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>
