@@ -146,3 +146,16 @@ jobs:
           else
             echo "No new version of talosctl found"
           fi
+      - name: ✍🏻 Create PR
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: Update binaries
+          title: Update binaries
+          body: |
+            This PR updates the binaries used by Ksail to the latest version.
+          branch: update-binaries
+          delete-branch: true
+          labels: dependencies
+          reviewers: devantler
+          assignees: devantler
+          signoff: true
