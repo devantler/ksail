@@ -20,9 +20,9 @@ jobs:
             echo "Downloading new version of flux"
             curl -s https://api.github.com/repos/fluxcd/flux/releases/latest | grep browser_download_url | grep darwin_amd64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/flux_${flux_version_latest}_darwin_amd64.tar.gz
             curl -s https://api.github.com/repos/fluxcd/flux/releases/latest | grep browser_download_url | grep darwin_arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/flux_${flux_version_latest}_darwin_arm64.tar.gz
-            curl -s https://api.github.com/repos/fluxcd/flux/releases/latest | grep browser_download_url | grep linux-amd64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/flux_${flux_version_latest}_linux_amd64.tar.gz
-            curl -s https://api.github.com/repos/fluxcd/flux/releases/latest | grep browser_download_url | grep linux-arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/flux_${flux_version_latest}_linux_arm64.tar.gz
-            curl -s https://api.github.com/repos/fluxcd/flux/releases/latest | grep browser_download_url | grep linux-arm | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/flux_${flux_version_latest}_linux_arm.tar.gz
+            curl -s https://api.github.com/repos/fluxcd/flux/releases/latest | grep browser_download_url | grep linux_amd64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/flux_${flux_version_latest}_linux_amd64.tar.gz
+            curl -s https://api.github.com/repos/fluxcd/flux/releases/latest | grep browser_download_url | grep linux_arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/flux_${flux_version_latest}_linux_arm64.tar.gz
+            curl -s https://api.github.com/repos/fluxcd/flux/releases/latest | grep browser_download_url | grep linux_arm | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/flux_${flux_version_latest}_linux_arm.tar.gz
 
             echo "Extracting new version of flux"
             tar -xzf src/Ksail/assets/flux_${flux_version_latest}_darwin_amd64.tar.gz -C src/Ksail/assets/
@@ -90,11 +90,16 @@ jobs:
             curl -s https://api.github.com/repos/yannh/kubeconform/releases/latest | grep browser_download_url | grep linux-armv6 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_arm.tar.gz
 
             echo "Extracting new version of kubeconform"
-            tar -xzf src/Ksail/assets/kubeconform_${kubeconform_version_latest}_darwin_amd64.tar.gz -C src/Ksail/assets/
-            tar -xzf src/Ksail/assets/kubeconform_${kubeconform_version_latest}_darwin_arm64.tar.gz -C src/Ksail/assets/
-            tar -xzf src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_amd64.tar.gz -C src/Ksail/assets/
-            tar -xzf src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_arm64.tar.gz -C src/Ksail/assets/
-            tar -xzf src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_arm.tar.gz -C src/Ksail/assets/
+            tar -xzf src/Ksail/assets/kubeconform_${kubeconform_version_latest}_darwin_amd64.tar.gz -C src/Ksail/assets/ kubeconform
+            mv src/Ksail/assets/kubeconform src/Ksail/assets/kubeconform_${kubeconform_version_latest}_darwin_amd64
+            tar -xzf src/Ksail/assets/kubeconform_${kubeconform_version_latest}_darwin_arm64.tar.gz -C src/Ksail/assets/ kubeconform
+            mv src/Ksail/assets/kubeconform src/Ksail/assets/kubeconform_${kubeconform_version_latest}_darwin_arm64
+            tar -xzf src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_amd64.tar.gz -C src/Ksail/assets/ kubeconform
+            mv src/Ksail/assets/kubeconform src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_amd64
+            tar -xzf src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_arm64.tar.gz -C src/Ksail/assets/ kubeconform
+            mv src/Ksail/assets/kubeconform src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_arm64
+            tar -xzf src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_arm.tar.gz -C src/Ksail/assets/ kubeconform
+            mv src/Ksail/assets/kubeconform src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_arm
 
             echo "Making new version of kubeconform executable"
             chmod +x src/Ksail/assets/kubeconform_${kubeconform_version_latest}_darwin_amd64
