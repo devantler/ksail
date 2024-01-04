@@ -58,6 +58,14 @@ jobs:
         run: dotnet build -c Release
       - name: 🧪 Test
         run: |
-          cp ./src/KSail/bin/Release/net8.0/ksail ./ksail
-          chmod +x ./src/KSail/bin/Release/net8.0/ksail
-          TERM=xterm ./src/KSail/bin/Release/net8.0/ksail
+          echo "Move binary to ./github and set it as working directory"
+          mv ./src/KSail/bin/Release/net8.0/linux-x64/publish/ksail ./.github/ksail
+          cd ./.github
+
+          echo "Test K3d"
+          ./ksail up k3d --config ./.github/k3d/k3d-config.yaml
+          ./ksail down k3d --name test
+
+          echo "Test Talos"
+          ./ksail up talos --name test
+          ./ksail down talos --name test
