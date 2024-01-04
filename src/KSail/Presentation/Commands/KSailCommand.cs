@@ -18,6 +18,7 @@ public class KSailCommand : RootCommand
     AddCommand(new UpCommand());
     AddCommand(new DownCommand());
     AddCommand(new UpdateCommand());
+    AddCommand(new ListCommand());
     AddCommand(new SOPSCommand());
     AddCommand(new ValidateCommand());
     AddCommand(new VerifyCommand());

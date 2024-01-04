@@ -11,6 +11,6 @@ public class ValidateCommand : Command
   /// Initializes a new instance of the <see cref="ValidateCommand"/> class.
   /// </summary>
   public ValidateCommand() : base(
-    "validate", "validate manifests in a specified directory"
+    "validate", "validate manifests"
   ) => this.SetHandler(() => _ = this.InvokeAsync("--help"));
 }

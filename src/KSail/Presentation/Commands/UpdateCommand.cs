@@ -12,6 +12,6 @@ public class UpdateCommand : Command
   /// </summary>
   public UpdateCommand() : base(
     "update",
-    "update a K8s cluster by pushing manifests in a specified directory to a local OCI registry"
+    "update a K8s cluster"
   ) => this.SetHandler(() => _ = this.InvokeAsync("--help"));
 }

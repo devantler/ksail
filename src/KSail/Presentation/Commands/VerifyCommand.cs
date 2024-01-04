@@ -11,6 +11,6 @@ public class VerifyCommand : Command
   /// Initializes a new instance of the <see cref="VerifyCommand"/> class.
   /// </summary>
   public VerifyCommand() : base(
-    "verify", "verify reconciliation of kustomizations in a K8s cluster"
+    "verify", "verify reconciliation"
   ) => this.SetHandler(() => _ = this.InvokeAsync("--help"));
 }
