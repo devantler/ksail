@@ -18,7 +18,12 @@ A CLI tool for provisioning GitOps enabled K8s environments in Docker.
 
 ### Prerequisites
 
-- Unix or Linux based OS.
+- Unix or Linux-based OS.
+  - osx-x64 ✅
+  - osx-arm64 ✅
+  - linux-x64 ✅
+  - linux-arm64 ✅
+  - linux-arm ✅
 - Docker
 - A Flux kustomization file.
 
@@ -43,17 +48,14 @@ Manually:
 To get started use the global help flag:
 
 ```shell
-ksail -h
+ksail --help
 ```
 
 <img width="509" alt="image" src="https://github.com/devantler/ksail/assets/26203420/554ecdfa-681f-4caf-98c6-82d77ac352cf">
 
-
 ## What is KSail?
 
 Introducing KSail, your new go-to CLI tool for effortlessly managing GitOps-enabled Kubernetes clusters in Docker. Designed with simplicity and efficiency in mind, KSail is set to revolutionize your local Kubernetes development environment.
-
-`ksail install` - Say goodbye to the hassle of managing dependencies for Kubernetes-in-Docker backends. KSail's install command serves as a one-stop solution, seamlessly handling installation and updates for backends like k3d, talos, and minikube.
 
 `ksail up` - Creating a Flux-enabled cluster has never been easier. With the up command, you can swiftly set up a cluster with your chosen Kubernetes-in-Docker backend. KSail empowers you to choose the backend that best fits your needs.
 
@@ -70,6 +72,8 @@ KSail is more than just a tool - it's your partner in navigating the world of Ku
 ## How does it work?
 
 KSail leverages several key technologies and concepts to achieve its functionality:
+
+**Embedded binaries:** KSail embeds binaries for various tools like k3d, talosctl, and sops. This allows you to use these tools without having to install them on your system. The binaries use state-of-the-art compression techniques by Microsoft to ensure only the necessary files and code is included in the build.
 
 **Kubernetes-in-Docker Backends:** KSail supports various Kubernetes-in-Docker backends like k3d and talos. These backends allow you to run Kubernetes clusters inside Docker containers, which is ideal for local development and testing.
 
@@ -106,5 +110,3 @@ I welcome contributions to KSail and appreciate your help in improving this tool
 **Submitting Pull Requests:** If you have a fix for a bug, an improvement, or a new feature you'd like to add, you're welcome to create a pull request. However, because not all changes may align with the project's direction, I recommend starting a discussion in the issues section before working on a pull request. This can save both you and me time and ensure that your contributions can be integrated smoothly.
 
 Remember, your contributions, no matter how small, are greatly appreciated and help make KSail better for everyone. Thank you for your support!
-
-
