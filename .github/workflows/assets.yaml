@@ -1,0 +1,143 @@
+name: Test
+
+on:
+  schedule:
+    - cron:  '59 23 * * 5'
+  workflow_dispatch:
+
+jobs:
+  check-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: ⤵️ Get binaries
+        run: |
+          flux_version_latest=$(curl -s https://api.github.com/repos/fluxcd/flux/releases/latest | grep tag_name | cut -d '"' -f 4)
+          flux_version_current=$(ls -l src/Ksail/assets/flux_* | cut -d '_' -f 2)
+          if [ "$flux_version_latest" != "$flux_version_current" ]; then
+            echo "New version of flux found: $flux_version_latest"
+            echo "Current version of flux: $flux_version_current"
+            echo "Downloading new version of flux"
+            curl -s https://api.github.com/repos/fluxcd/flux/releases/latest | grep browser_download_url | grep darwin_amd64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/flux_${flux_version_latest}_darwin_amd64.tar.gz
+            curl -s https://api.github.com/repos/fluxcd/flux/releases/latest | grep browser_download_url | grep darwin_arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/flux_${flux_version_latest}_darwin_arm64.tar.gz
+            curl -s https://api.github.com/repos/fluxcd/flux/releases/latest | grep browser_download_url | grep linux-amd64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/flux_${flux_version_latest}_linux_amd64.tar.gz
+            curl -s https://api.github.com/repos/fluxcd/flux/releases/latest | grep browser_download_url | grep linux-arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/flux_${flux_version_latest}_linux_arm64.tar.gz
+            curl -s https://api.github.com/repos/fluxcd/flux/releases/latest | grep browser_download_url | grep linux-arm | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/flux_${flux_version_latest}_linux_arm.tar.gz
+
+            echo "Extracting new version of flux"
+            tar -xzf src/Ksail/assets/flux_${flux_version_latest}_darwin_amd64.tar.gz -C src/Ksail/assets/
+            tar -xzf src/Ksail/assets/flux_${flux_version_latest}_darwin_arm64.tar.gz -C src/Ksail/assets/
+            tar -xzf src/Ksail/assets/flux_${flux_version_latest}_linux_amd64.tar.gz -C src/Ksail/assets/
+            tar -xzf src/Ksail/assets/flux_${flux_version_latest}_linux_arm64.tar.gz -C src/Ksail/assets/
+            tar -xzf src/Ksail/assets/flux_${flux_version_latest}_linux_arm.tar.gz -C src/Ksail/assets/
+
+            echo "Making new version of flux executable"
+            chmod +x src/Ksail/assets/flux_${flux_version_latest}_darwin_amd64
+            chmod +x src/Ksail/assets/flux_${flux_version_latest}_darwin_arm64
+            chmod +x src/Ksail/assets/flux_${flux_version_latest}_linux_amd64
+            chmod +x src/Ksail/assets/flux_${flux_version_latest}_linux_arm64
+            chmod +x src/Ksail/assets/flux_${flux_version_latest}_linux_arm
+
+            echo "Removing old version of flux"
+            rm src/Ksail/assets/flux_${flux_version_current}_darwin_amd64.tar.gz
+            rm src/Ksail/assets/flux_${flux_version_current}_darwin_arm64.tar.gz
+            rm src/Ksail/assets/flux_${flux_version_current}_linux_amd64.tar.gz
+            rm src/Ksail/assets/flux_${flux_version_current}_linux_arm64.tar.gz
+            rm src/Ksail/assets/flux_${flux_version_current}_linux_arm.tar.gz
+          else
+            echo "No new version of flux found"
+          fi
+
+          k3d_version_latest=$(curl -s https://api.github.com/repos/k3d-io/k3d/releases/latest | grep tag_name | cut -d '"' -f 4)
+          k3d_version_current=$(ls -l src/Ksail/assets/k3d_* | cut -d '_' -f 2)
+          if [ "$k3d_version_latest" != "$k3d_version_current" ]; then
+            echo "New version of k3d found: $k3d_version_latest"
+            echo "Current version of k3d: $k3d_version_current"
+            echo "Downloading new version of k3d"
+            curl -s https://api.github.com/repos/k3d-io/k3d/releases/latest | grep browser_download_url | grep darwin-amd64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/k3d_${k3d_version_latest}_darwin_amd64
+            curl -s https://api.github.com/repos/k3d-io/k3d/releases/latest | grep browser_download_url | grep darwin-arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/k3d_${k3d_version_latest}_darwin_arm64
+            curl -s https://api.github.com/repos/k3d-io/k3d/releases/latest | grep browser_download_url | grep linux-amd64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/k3d_${k3d_version_latest}_linux_amd64
+            curl -s https://api.github.com/repos/k3d-io/k3d/releases/latest | grep browser_download_url | grep linux-arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/k3d_${k3d_version_latest}_linux_arm64
+            curl -s https://api.github.com/repos/k3d-io/k3d/releases/latest | grep browser_download_url | grep linux-arm | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/k3d_${k3d_version_latest}_linux_arm
+
+            echo "Making new version of k3d executable"
+            chmod +x src/Ksail/assets/k3d_${k3d_version_latest}_darwin_amd64
+            chmod +x src/Ksail/assets/k3d_${k3d_version_latest}_darwin_arm64
+            chmod +x src/Ksail/assets/k3d_${k3d_version_latest}_linux_amd64
+            chmod +x src/Ksail/assets/k3d_${k3d_version_latest}_linux_arm64
+            chmod +x src/Ksail/assets/k3d_${k3d_version_latest}_linux_arm
+
+            echo "Removing old version of k3d"
+            rm src/Ksail/assets/k3d_${k3d_version_current}_darwin_amd64
+            rm src/Ksail/assets/k3d_${k3d_version_current}_darwin_arm64
+            rm src/Ksail/assets/k3d_${k3d_version_current}_linux_amd64
+            rm src/Ksail/assets/k3d_${k3d_version_current}_linux_arm64
+            rm src/Ksail/assets/k3d_${k3d_version_current}_linux_arm
+          else
+            echo "No new version of k3d found"
+          fi
+
+          kubeconform_version_latest=$(curl -s https://api.github.com/repos/yannh/kubeconform/releases/latest | grep tag_name | cut -d '"' -f 4)
+          kubeconform_version_current=$(ls -l src/Ksail/assets/kubeconform_* | cut -d '_' -f 2)
+          if [ "$kubeconform_version_latest" != "$kubeconform_version_current" ]; then
+            echo "New version of kubeconform found: $kubeconform_version_latest"
+            echo "Current version of kubeconform: $kubeconform_version_current"
+            echo "Downloading new version of kubeconform"
+            curl -s https://api.github.com/repos/yannh/kubeconform/releases/latest | grep browser_download_url | grep darwin-amd64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/kubeconform_${kubeconform_version_latest}_darwin_amd64.tar.gz
+            curl -s https://api.github.com/repos/yannh/kubeconform/releases/latest | grep browser_download_url | grep darwin-arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/kubeconform_${kubeconform_version_latest}_darwin_arm64.tar.gz
+            curl -s https://api.github.com/repos/yannh/kubeconform/releases/latest | grep browser_download_url | grep linux-amd64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_amd64.tar.gz
+            curl -s https://api.github.com/repos/yannh/kubeconform/releases/latest | grep browser_download_url | grep linux-arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_arm64.tar.gz
+            curl -s https://api.github.com/repos/yannh/kubeconform/releases/latest | grep browser_download_url | grep linux-armv6 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_arm.tar.gz
+
+            echo "Extracting new version of kubeconform"
+            tar -xzf src/Ksail/assets/kubeconform_${kubeconform_version_latest}_darwin_amd64.tar.gz -C src/Ksail/assets/
+            tar -xzf src/Ksail/assets/kubeconform_${kubeconform_version_latest}_darwin_arm64.tar.gz -C src/Ksail/assets/
+            tar -xzf src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_amd64.tar.gz -C src/Ksail/assets/
+            tar -xzf src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_arm64.tar.gz -C src/Ksail/assets/
+            tar -xzf src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_arm.tar.gz -C src/Ksail/assets/
+
+            echo "Making new version of kubeconform executable"
+            chmod +x src/Ksail/assets/kubeconform_${kubeconform_version_latest}_darwin_amd64
+            chmod +x src/Ksail/assets/kubeconform_${kubeconform_version_latest}_darwin_arm64
+            chmod +x src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_amd64
+            chmod +x src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_arm64
+            chmod +x src/Ksail/assets/kubeconform_${kubeconform_version_latest}_linux_arm
+
+            echo "Removing old version of kubeconform"
+            rm src/Ksail/assets/kubeconform_${kubeconform_version_current}_darwin_amd64.tar.gz
+            rm src/Ksail/assets/kubeconform_${kubeconform_version_current}_darwin_arm64.tar.gz
+            rm src/Ksail/assets/kubeconform_${kubeconform_version_current}_linux_amd64.tar.gz
+            rm src/Ksail/assets/kubeconform_${kubeconform_version_current}_linux_arm64.tar.gz
+            rm src/Ksail/assets/kubeconform_${kubeconform_version_current}_linux_arm.tar.gz
+          else
+            echo "No new version of kubeconform found"
+          fi
+
+          talosctl_version_latest=$(curl -s https://api.github.com/repos/siderolabs/talos/releases/latest | grep tag_name | cut -d '"' -f 4)
+          talosctl_version_current=$(ls -l src/Ksail/assets/talosctl_* | cut -d '_' -f 2)
+          if [ "$talosctl_version_latest" != "$talosctl_version_current" ]; then
+            echo "New version of talosctl found: $talosctl_version_latest"
+            echo "Current version of talosctl: $talosctl_version_current"
+            echo "Downloading new version of talosctl"
+            curl -s https://api.github.com/repos/siderolabs/talos/releases/latest | grep browser_download_url | grep talosctl-darwin-amd64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/talosctl_${talosctl_version_latest}_darwin_amd64
+            curl -s https://api.github.com/repos/siderolabs/talos/releases/latest | grep browser_download_url | grep talosctl-darwin-arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/talosctl_${talosctl_version_latest}_darwin_arm64
+            curl -s https://api.github.com/repos/siderolabs/talos/releases/latest | grep browser_download_url | grep talosctl-linux-amd64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/talosctl_${talosctl_version_latest}_linux_amd64
+            curl -s https://api.github.com/repos/siderolabs/talos/releases/latest | grep browser_download_url | grep talosctl-linux-arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/talosctl_${talosctl_version_latest}_linux_arm64
+            curl -s https://api.github.com/repos/siderolabs/talos/releases/latest | grep browser_download_url | grep talosctl-linux-armv7 | cut -d '"' -f 4 | xargs curl -sL -o src/Ksail/assets/talosctl_${talosctl_version_latest}_linux_arm
+
+            echo "Making new version of talosctl executable"
+            chmod +x src/Ksail/assets/talosctl_${talosctl_version_latest}_darwin_amd64
+            chmod +x src/Ksail/assets/talosctl_${talosctl_version_latest}_darwin_arm64
+            chmod +x src/Ksail/assets/talosctl_${talosctl_version_latest}_linux_amd64
+            chmod +x src/Ksail/assets/talosctl_${talosctl_version_latest}_linux_arm64
+            chmod +x src/Ksail/assets/talosctl_${talosctl_version_latest}_linux_arm
+
+            echo "Removing old version of talosctl"
+            rm src/Ksail/assets/talosctl_${talosctl_version_current}_darwin_amd64
+            rm src/Ksail/assets/talosctl_${talosctl_version_current}_darwin_arm64
+            rm src/Ksail/assets/talosctl_${talosctl_version_current}_linux_amd64
+            rm src/Ksail/assets/talosctl_${talosctl_version_current}_linux_arm64
+            rm src/Ksail/assets/talosctl_${talosctl_version_current}_linux_arm
+          else
+            echo "No new version of talosctl found"
+          fi
