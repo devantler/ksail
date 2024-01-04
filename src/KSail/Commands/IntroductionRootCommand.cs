@@ -13,7 +13,6 @@ public class IntroductionRootCommand : RootCommand
   /// </summary>
   public IntroductionRootCommand() : base("KSail is a CLI tool for provisioning GitOps enabled K8s clusters .")
   {
-    AddCommand(new InstallCommand());
     AddCommand(new UpCommand());
     AddCommand(new DownCommand());
     AddCommand(new UpdateCommand());
