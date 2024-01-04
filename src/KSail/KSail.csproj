@@ -5,6 +5,7 @@
     <AssemblyName>ksail</AssemblyName>
     <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>
+    <PublishTrimmed>true</PublishTrimmed>
     <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
   </PropertyGroup>
 
@@ -17,9 +18,12 @@
     <PackageReference Include="YamlDotNet" Version="13.7.1" />
   </ItemGroup>
 
-  <!-- Copy binaries to output directory based on arch -->
   <ItemGroup>
-    <Content Include="assets/**" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="assets/*darwin_amd64" CopyToPublishDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' == 'osx-x64'" />
+    <Content Include="assets/*darwin_arm64" CopyToPublishDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' == 'osx-arm64'" />
+    <Content Include="assets/*linux_amd64" CopyToPublishDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' == 'linux-x64'" />
+    <Content Include="assets/*linux_arm64" CopyToPublishDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' == 'linux-arm64'" />
+    <Content Include="assets/*linux_arm" CopyToPublishDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' == 'linux-arm'" />
   </ItemGroup>
 
 </Project>
