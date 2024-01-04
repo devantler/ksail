@@ -1,5 +1,6 @@
 namespace KSail.Provisioners;
 
-public class IProvisioner
-{
-}
+/// <summary>
+/// The interface for a provisioner.
+/// </summary>
+public class IProvisioner;

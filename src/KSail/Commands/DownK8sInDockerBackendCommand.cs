@@ -1,13 +1,20 @@
 using System.CommandLine;
 using System.Globalization;
 using KSail.Enums;
-using Spectre.Console;
 
 namespace KSail.Commands;
 
-public class DownBackendCommand : Command
+/// <summary>
+/// The 'down k8s-in-docker-backend' command responsible for destroying specific K8s clusters.
+/// </summary>
+public class DownK8sInDockerBackendCommand : Command
 {
-  public DownBackendCommand(K8sInDockerBackend k8sInDockerBackend, Option<string> nameOption) : base(k8sInDockerBackend.ToString().ToLower(CultureInfo.InvariantCulture), "destroy a K8s cluster in Docker")
+  /// <summary>
+  /// Initializes a new instance of the <see cref="DownK8sInDockerBackendCommand"/> class.
+  /// </summary>
+  /// <param name="k8sInDockerBackend">An enum value representing the K8s-in-Docker backend.</param>
+  /// <param name="nameOption">The -n, --name option.</param>
+  public DownK8sInDockerBackendCommand(K8sInDockerBackend k8sInDockerBackend, Option<string> nameOption) : base(k8sInDockerBackend.ToString().ToLower(CultureInfo.InvariantCulture), "destroy a K8s cluster ")
   {
     AddOption(nameOption);
 
@@ -16,8 +23,6 @@ public class DownBackendCommand : Command
       name = PromptName();
 
       Console.WriteLine($"🔥 Destroying '{name?.ToString()}' cluster...");
-      
-
     }, nameOption);
   }
 

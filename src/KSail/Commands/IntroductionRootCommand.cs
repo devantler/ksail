@@ -3,9 +3,15 @@ using Spectre.Console;
 
 namespace KSail.Commands;
 
+/// <summary>
+/// The root command responsible for setting up the KSail CLI entrypoint.
+/// </summary>
 public class IntroductionRootCommand : RootCommand
 {
-  public IntroductionRootCommand() : base("KSail is a CLI tool for provisioning GitOps enabled K8s clusters in Docker.")
+  /// <summary>
+  /// Initializes a new instance of the <see cref="IntroductionRootCommand"/> class.
+  /// </summary>
+  public IntroductionRootCommand() : base("KSail is a CLI tool for provisioning GitOps enabled K8s clusters .")
   {
     AddCommand(new InstallCommand());
     AddCommand(new UpCommand());
@@ -30,7 +36,6 @@ public class IntroductionRootCommand : RootCommand
       """);
 
       _ = this.InvokeAsync("--help");
-      return;
     });
   }
 }
