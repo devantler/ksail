@@ -18,11 +18,11 @@ public static class K3dCLIWrapper
     {
       string binary = (Environment.OSVersion.Platform, RuntimeInformation.ProcessArchitecture, RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) switch
       {
-        (PlatformID.Unix, Architecture.X64, true) => "k3d_v5.6.0_darwin_amd64",
-        (PlatformID.Unix, Architecture.Arm64, true) => "k3d_v5.6.0_darwin_arm64",
-        (PlatformID.Unix, Architecture.X64, false) => "k3d_v5.6.0_linux_amd64",
-        (PlatformID.Unix, Architecture.Arm64, false) => "k3d_v5.6.0_linux_arm64",
-        (PlatformID.Unix, Architecture.Arm, false) => "k3d_v5.6.0_linux_arm",
+        (PlatformID.Unix, Architecture.X64, true) => "k3d_darwin_amd64",
+        (PlatformID.Unix, Architecture.Arm64, true) => "k3d_darwin_arm64",
+        (PlatformID.Unix, Architecture.X64, false) => "k3d_linux_amd64",
+        (PlatformID.Unix, Architecture.Arm64, false) => "k3d_linux_arm64",
+        (PlatformID.Unix, Architecture.Arm, false) => "k3d_linux_arm",
         _ => throw new PlatformNotSupportedException()
       };
       return Cli.Wrap($"assets/{binary}");

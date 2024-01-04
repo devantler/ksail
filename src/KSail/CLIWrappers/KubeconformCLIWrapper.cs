@@ -19,11 +19,11 @@ public static class KubeconformCLIWrapper
     {
       string binary = (Environment.OSVersion.Platform, RuntimeInformation.ProcessArchitecture, RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) switch
       {
-        (PlatformID.Unix, Architecture.X64, true) => "kubeconform_v0.6.4_darwin_amd64",
-        (PlatformID.Unix, Architecture.Arm64, true) => "kubeconform_v0.6.4_darwin_arm64",
-        (PlatformID.Unix, Architecture.X64, false) => "kubeconform_v0.6.4_linux_amd64",
-        (PlatformID.Unix, Architecture.Arm64, false) => "kubeconform_v0.6.4_linux_arm64",
-        (PlatformID.Unix, Architecture.Arm, false) => "kubeconform_v0.6.4_linux_arm",
+        (PlatformID.Unix, Architecture.X64, true) => "kubeconform_darwin_amd64",
+        (PlatformID.Unix, Architecture.Arm64, true) => "kubeconform_darwin_arm64",
+        (PlatformID.Unix, Architecture.X64, false) => "kubeconform_linux_amd64",
+        (PlatformID.Unix, Architecture.Arm64, false) => "kubeconform_linux_arm64",
+        (PlatformID.Unix, Architecture.Arm, false) => "kubeconform_linux_arm",
         _ => throw new PlatformNotSupportedException()
       };
       return Cli.Wrap($"assets/{binary}");
