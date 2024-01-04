@@ -6,12 +6,12 @@ namespace KSail.Commands;
 /// <summary>
 /// The root command responsible for setting up the KSail CLI entrypoint.
 /// </summary>
-public class IntroductionRootCommand : RootCommand
+public class KSailCommand : RootCommand
 {
   /// <summary>
-  /// Initializes a new instance of the <see cref="IntroductionRootCommand"/> class.
+  /// Initializes a new instance of the <see cref="KSailCommand"/> class.
   /// </summary>
-  public IntroductionRootCommand() : base("KSail is a CLI tool for provisioning GitOps enabled K8s clusters .")
+  public KSailCommand() : base("KSail is a CLI tool for provisioning GitOps enabled K8s clusters .")
   {
     AddCommand(new UpCommand());
     AddCommand(new DownCommand());
