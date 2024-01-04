@@ -1,8 +1,8 @@
 using System.CommandLine;
 using KSail.Enums;
-using KSail.Options;
+using KSail.Presentation.Options;
 
-namespace KSail.Commands.Down;
+namespace KSail.Presentation.Commands.Down;
 
 /// <summary>
 /// The 'down' command responsible for destroying K8s clusters.

@@ -1,9 +1,9 @@
 using System.CommandLine;
-using KSail.Commands.Down;
-using KSail.Commands.Up;
+using KSail.Presentation.Commands.Down;
+using KSail.Presentation.Commands.Up;
 using Spectre.Console;
 
-namespace KSail.Commands;
+namespace KSail.Presentation.Commands;
 
 /// <summary>
 /// The root command responsible for setting up the KSail CLI entrypoint.

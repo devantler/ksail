@@ -1,6 +1,6 @@
 using System.CommandLine;
 
-namespace KSail.Commands.Up.Options;
+namespace KSail.Presentation.Commands.Up.Options;
 
 /// <summary>
 /// The 'flux-kustomization-path' option responsible for specifying the path to the flux kustomization directory with -fkp or --flux-kustomization-path.

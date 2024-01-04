@@ -4,7 +4,7 @@ using KSail.Enums;
 using KSail.Provisioners.ClusterProvisioners;
 using KSail.Utils;
 
-namespace KSail.Commands.Up;
+namespace KSail.Presentation.Commands.Up;
 
 /// <summary>
 /// The 'up k8s-in-docker-backend' command responsible for creating K8s clusters.

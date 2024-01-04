@@ -1,6 +1,6 @@
 using System.CommandLine;
 
-namespace KSail.Commands;
+namespace KSail.Presentation.Commands;
 
 /// <summary>
 /// The 'sops' command responsible for managing the KSail SOPS GPG key.

@@ -3,7 +3,7 @@ using System.Globalization;
 using KSail.Enums;
 using KSail.Utils;
 
-namespace KSail.Commands.Down;
+namespace KSail.Presentation.Commands.Down;
 
 /// <summary>
 /// The 'down k8s-in-docker-backend' command responsible for destroying K8s clusters.
