@@ -14,4 +14,9 @@
     <PackageReference Include="YamlDotNet" Version="13.7.1" />
   </ItemGroup>
 
+  <!-- Copy binaries to output directory based on arch -->
+  <ItemGroup>
+    <Content Include="assets/**" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
