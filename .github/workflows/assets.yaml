@@ -9,7 +9,7 @@ jobs:
   assets:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: ⤵️ Get binaries
         run: |
           flux_version_latest=$(curl -s https://api.github.com/repos/fluxcd/flux2/releases/latest | grep tag_name | cut -d '"' -f 4)
