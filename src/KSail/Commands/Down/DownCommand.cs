@@ -19,7 +19,6 @@ public class DownCommand : Command
     {
       AddCommand(new DownK8sInDockerBackendCommand(k8sInDockerBackend, nameOption));
     }
-
     this.SetHandler(() => _ = this.InvokeAsync("--help"));
   }
 }

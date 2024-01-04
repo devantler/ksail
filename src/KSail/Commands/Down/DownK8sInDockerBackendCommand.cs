@@ -15,7 +15,10 @@ public class DownK8sInDockerBackendCommand : Command
   /// </summary>
   /// <param name="k8sInDockerBackend">An enum value representing the K8s-in-Docker backend.</param>
   /// <param name="nameOption">The -n, --name option.</param>
-  public DownK8sInDockerBackendCommand(K8sInDockerBackend k8sInDockerBackend, Option<string> nameOption) : base(k8sInDockerBackend.ToString().ToLower(CultureInfo.InvariantCulture), "destroy a K8s cluster ")
+  public DownK8sInDockerBackendCommand(
+    K8sInDockerBackend k8sInDockerBackend,
+    Option<string> nameOption
+  ) : base(k8sInDockerBackend.ToString().ToLower(CultureInfo.InvariantCulture), "destroy a K8s cluster ")
   {
     AddOption(nameOption);
 
