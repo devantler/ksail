@@ -3,18 +3,22 @@ name: Publish
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 
 jobs:
-  Publish:
+  publish:
     name: Publish
     runs-on: ubuntu-latest
     steps:
       - name: 📑 Checkout
         uses: actions/checkout@v4
-      - name: ✍🏻 Update version
-        run: perl -i -pe 's/VERSION=.*/VERSION="${{ github.ref_name }}"/g' ksail
+      - name: #️⃣ Setup .NET
+        uses: actions/setup-dotnet@v1
       - name: 📦 Publish
+        run: |
+          dotnet publish -c Release
+          chmod +x src/KSail/bin/Release/net8.0/ksail
+      - name: 🎉 Release
         uses: softprops/action-gh-release@v1
         with:
-          files: ksail
+          files: src/KSail/bin/Release/net8.0/ksail
