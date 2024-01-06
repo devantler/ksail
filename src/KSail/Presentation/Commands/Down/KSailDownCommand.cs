@@ -1,5 +1,4 @@
 using System.CommandLine;
-using KSail.Enums;
 using KSail.Presentation.Options;
 
 namespace KSail.Presentation.Commands.Down;
@@ -15,10 +14,7 @@ public class DownCommand : Command
   public DownCommand() : base("down", "destroy a K8s cluster")
   {
     var nameOption = new NameOption("name of the cluster to destroy");
-    foreach (var k8sInDockerBackend in Enum.GetValues<K8sInDockerBackend>())
-    {
-      AddCommand(new DownK8sInDockerBackendCommand(k8sInDockerBackend, nameOption));
-    }
+    AddCommand(new KSailDownK3dCommand(nameOption));
     this.SetHandler(() => _ = this.InvokeAsync("--help"));
   }
 }

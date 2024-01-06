@@ -1,18 +1,14 @@
 using KSail.CLIWrappers;
-using KSail.Provisioners.GitOps;
 
 namespace KSail.Provisioners.Cluster;
 
 /// <summary>
 /// A provisioner for provisioning K3d clusters.
 /// </summary>
-/// <param name="gitOpsProvisioner">The GitOps provisioner.</param>
-public class K3dProvisioner(IGitOpsProvisioner gitOpsProvisioner) : IClusterProvisioner
+public class K3dProvisioner() : IClusterProvisioner
 {
-  readonly IGitOpsProvisioner _gitOpsProvisioner = gitOpsProvisioner;
-
   /// <inheritdoc/>
-  public async Task ProvisionAsync(string name, string manifestsPath, string fluxKustomizationPath, string? configPath = null)
+  public async Task ProvisionAsync(string name, string? configPath = null)
   {
     if (!string.IsNullOrEmpty(configPath))
     {
@@ -22,8 +18,6 @@ public class K3dProvisioner(IGitOpsProvisioner gitOpsProvisioner) : IClusterProv
     {
       await K3dCLIWrapper.CreateClusterAsync(name);
     }
-    await _gitOpsProvisioner.CheckPrerequisitesAsync();
-    await _gitOpsProvisioner.InstallAsync();
   }
 
   /// <inheritdoc/>

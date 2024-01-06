@@ -10,6 +10,6 @@ public static partial class RegexFilters
   [GeneratedRegex("^.+/[^/]*$")]
   public static partial Regex PathFilter();
 
-  [GeneratedRegex("^(y|n)$")]
+  [GeneratedRegex("^(y|n|yes|no|true|false)$")]
   public static partial Regex YesNoFilter();
 }

@@ -13,7 +13,7 @@ public class KSailCommand : RootCommand
   /// <summary>
   /// Initializes a new instance of the <see cref="KSailCommand"/> class.
   /// </summary>
-  public KSailCommand() : base("KSail is a CLI tool for provisioning GitOps enabled K8s clusters .")
+  public KSailCommand() : base("KSail is a CLI tool for provisioning K8s clusters.")
   {
     AddCommand(new UpCommand());
     AddCommand(new DownCommand());
