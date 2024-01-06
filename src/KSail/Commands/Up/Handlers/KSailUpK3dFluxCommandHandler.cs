@@ -1,3 +1,5 @@
+using k8s;
+using k8s.Models;
 using KSail.Provisioners.GitOps;
 using KSail.Provisioners.Registry;
 using KSail.Provisioners.SecretManagement;
@@ -27,15 +29,34 @@ public static class KSailUpK3dFluxCommandHandler
 
     Console.WriteLine();
     Console.WriteLine("📥 Pushing manifests to OCI registry...");
+    Console.WriteLine("📥⚠️ Not implemented yet...");
+
+    Console.WriteLine();
+    Console.WriteLine("🌐 Create flux-system namespace...");
+    var client = new Kubernetes(KubernetesClientConfiguration.BuildDefaultConfig());
+    var fluxSystemNamespace = new V1Namespace
+    {
+      ApiVersion = "v1",
+      Kind = "Namespace",
+      Metadata = new V1ObjectMeta
+      {
+        Name = "flux-system"
+      }
+    };
+    _ = await client.CreateNamespaceAsync(fluxSystemNamespace);
+    Console.WriteLine("🌐✅ Created flux-system namespace successfully...");
+
 
     if (sops)
     {
       Console.WriteLine();
       Console.WriteLine("🔐 Adding SOPS GPG key...");
       await _secretManagementProvisioner.CreateKeysAsync();
+      await _secretManagementProvisioner.DeploySecretManagementAsync();
     }
 
     Console.WriteLine();
     Console.WriteLine("🔄 Installing Flux GitOps...");
+    Console.WriteLine("🔄⚠️ Not implemented yet...");
   }
 }

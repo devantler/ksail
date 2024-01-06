@@ -1,5 +1,7 @@
-
-using System.Runtime.InteropServices;
+using System.Text;
+using System.Text.RegularExpressions;
+using k8s;
+using k8s.Models;
 using KSail.CLIWrappers;
 
 namespace KSail.Provisioners.SecretManagement;
@@ -7,8 +9,13 @@ namespace KSail.Provisioners.SecretManagement;
 /// <summary>
 /// A provisioner for the SOPS secret management system.
 /// </summary>
-public class SOPSProvisioner : ISecretManagementProvisioner
+public partial class SOPSProvisioner : ISecretManagementProvisioner
 {
+  [GeneratedRegex("export KSAIL_SOPS_GPG_KEY=.*")]
+  private static partial Regex KSailSOPSGPGFilter();
+
+  Kubernetes _kubernetesClient = new(KubernetesClientConfiguration.BuildDefaultConfig());
+
   /// <summary>
   /// Creates the keys needed for encrypting and decrypting secrets.
   /// </summary>
@@ -26,10 +33,9 @@ public class SOPSProvisioner : ISecretManagementProvisioner
     }
     else
     {
-      Console.WriteLine("🔐🔑 Generating new SOPS GPG key...");
+      Console.WriteLine("🔐🔑 Generating new SOPS GPG key and saving it to environment variable KSAIL_SOPS_GPG_KEY...");
       string privateKey = await GPGCLIWrapper.CreateGPGKeyAsync();
       Console.WriteLine("🔐🔑✅ SOPS GPG key generated successfully...");
-      Console.WriteLine("🔐🔑 Saving SOPS GPG key to environment variable KSAIL_SOPS_GPG_KEY...");
       //Write env variable to .zshrc
       string envFilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
       if (File.Exists($"{envFilePath}/.zshrc"))
@@ -46,8 +52,13 @@ public class SOPSProvisioner : ISecretManagementProvisioner
       }
       string envFileContent = File.ReadAllText(envFilePath);
       envFileContent += $"\nexport KSAIL_SOPS_GPG_KEY='{privateKey}'";
+      if (envFileContent.Contains("export KSAIL_SOPS_GPG_KEY="))
+      {
+        envFileContent = KSailSOPSGPGFilter().Replace(envFileContent, $"export KSAIL_SOPS_GPG_KEY='{privateKey}'");
+      }
       File.WriteAllText(envFilePath, envFileContent);
-      Console.WriteLine("🔐🔑✅ SOPS GPG key saved successfully...");
+      Environment.SetEnvironmentVariable("KSAIL_SOPS_GPG_KEY", privateKey);
+      Console.WriteLine("🔐🔑✅ SOPS GPG key saved to environment variable KSAIL_SOPS_GPG_KEY successfully...");
     }
   }
 
@@ -55,5 +66,29 @@ public class SOPSProvisioner : ISecretManagementProvisioner
   /// Deploys the SOPS GPG key to the cluster.
   /// </summary>
   /// <exception cref="NotImplementedException"></exception>
-  public Task DeploySecretManagementAsync() => throw new NotImplementedException();
+  /// <exception cref="InvalidOperationException"></exception>
+  public async Task DeploySecretManagementAsync()
+  {
+    Console.WriteLine("🔐🚀 Deploying SOPS GPG key to cluster...");
+    var sopsGpgSecret = new V1Secret
+    {
+      ApiVersion = "v1",
+      Kind = "Secret",
+      Metadata = new V1ObjectMeta
+      {
+        Name = "sops-gpg",
+        NamespaceProperty = "flux-system"
+      },
+      Type = "Opaque",
+      Data = new Dictionary<string, byte[]>
+      {
+        ["sops.asc"] = Encoding.UTF8.GetBytes(
+          Environment.GetEnvironmentVariable("KSAIL_SOPS_GPG_KEY") ??
+            throw new InvalidOperationException("🚨 Could not find the SOPS GPG key in the KSAIL_SOPS_GPG_KEY environment variable.")
+          )
+      }
+    };
+    _ = await _kubernetesClient.CreateNamespacedSecretAsync(sopsGpgSecret, "flux-system");
+    Console.WriteLine("🔐🚀✅ SOPS GPG key deployed to cluster successfully...");
+  }
 }
