@@ -1,9 +1,9 @@
-using KSail.Presentation.Commands.Down.Handlers;
+using KSail.Commands.Down.Handlers;
 using KSail.Provisioners.Cluster;
 using KSail.Provisioners.Registry;
 using KSail.Utils;
 
-namespace KSail.Presentation.Commands.Up.Handlers;
+namespace KSail.Commands.Up.Handlers;
 
 /// <summary>
 /// The command handler responsible for handling the <c>ksail up k3d</c> command.
@@ -36,17 +36,19 @@ public static class KSailUpK3dCommandHandler
       }
       pullThroughRegistries = bool.Parse(ConsoleUtils.Prompt("Pull through registries", "true", RegexFilters.YesNoFilter()));
     }
+    await KSailDownK3dCommandHandler.Handle(name);
     if (pullThroughRegistries)
     {
+      Console.WriteLine();
       Console.WriteLine("🧮 Creating pull-through registries...");
-      await _registryProvisioner.ProvisionAsync("proxy-docker.io", 5001, new Uri("https://registry-1.docker.io"));
-      await _registryProvisioner.ProvisionAsync("proxy-registry.k8s.io", 5002, new Uri("https://registry.k8s.io"));
-      await _registryProvisioner.ProvisionAsync("proxy-gcr.io", 5003, new Uri("https://gcr.io"));
-      await _registryProvisioner.ProvisionAsync("proxy-ghcr.io", 5004, new Uri("https://ghcr.io"));
-      await _registryProvisioner.ProvisionAsync("proxy-quay.io", 5005, new Uri("https://quay.io"));
+      await _registryProvisioner.CreateRegistryAsync("proxy-docker.io", 5001, new Uri("https://registry-1.docker.io"));
+      await _registryProvisioner.CreateRegistryAsync("proxy-registry.k8s.io", 5002, new Uri("https://registry.k8s.io"));
+      await _registryProvisioner.CreateRegistryAsync("proxy-gcr.io", 5003, new Uri("https://gcr.io"));
+      await _registryProvisioner.CreateRegistryAsync("proxy-ghcr.io", 5004, new Uri("https://ghcr.io"));
+      await _registryProvisioner.CreateRegistryAsync("proxy-quay.io", 5005, new Uri("https://quay.io"));
       //TODO: Add missing major registries
     }
-    await KSailDownK3dCommandHandler.Handle(name);
+    Console.WriteLine();
     Console.WriteLine($"🚀 Provisioning K3d cluster '{name}'...");
     await _clusterProvisioner.ProvisionAsync(name, configPath);
   }

@@ -1,6 +1,6 @@
 using System.CommandLine;
 
-namespace KSail.Presentation.Commands;
+namespace KSail.Commands;
 
 /// <summary>
 /// The 'validate' command responsible for validating manifests in a specified directory.

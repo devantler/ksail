@@ -1,9 +1,10 @@
 using System.CommandLine;
-using KSail.Presentation.Commands.Up.Handlers;
+using KSail.Commands.Up.Handlers;
+using KSail.Commands.Up.Options;
+using KSail.Options;
 using KSail.Presentation.Commands.Up.Options;
-using KSail.Presentation.Options;
 
-namespace KSail.Presentation.Commands.Up;
+namespace KSail.Commands.Up;
 
 /// <summary>
 /// The <c>ksail up k3d flux</c> command responsible for creating K3d clusters with Flux GitOps.
@@ -11,6 +12,7 @@ namespace KSail.Presentation.Commands.Up;
 public class KSailUpK3dFluxCommand : Command
 {
   readonly ManifestsPathOption _manifestsPathOption = new();
+  readonly SOPSOption _sopsOption = new();
 
   /// <summary>
   /// Initializes a new instance of the <see cref="KSailUpK3dFluxCommand"/> class.
@@ -21,13 +23,11 @@ public class KSailUpK3dFluxCommand : Command
   public KSailUpK3dFluxCommand(NameOption nameOption, PullThroughRegistriesOption pullThroughRegistriesOption, ConfigPathOption configPathOption) : base("flux", "create a K3d cluster with Flux GitOps")
   {
     AddOption(_manifestsPathOption);
-    this.SetHandler(async (name, manifestsPath, pullThroughRegistries, configPath) =>
+    AddOption(_sopsOption);
+    this.SetHandler(async (name, pullThroughRegistries, configPath, manifestsPath, sops) =>
     {
       await KSailUpK3dCommandHandler.Handle(name, pullThroughRegistries, configPath);
-      //await KSailUpK3dFluxCommandHandler.Handle(manifestsPath);
-      Console.WriteLine("🏡 Creating OCI registry...");
-      Console.WriteLine("📥 Pushing manifests to OCI registry...");
-      Console.WriteLine("🔄 Installing Flux GitOps...");
-    }, nameOption, _manifestsPathOption, pullThroughRegistriesOption, configPathOption);
+      await KSailUpK3dFluxCommandHandler.Handle(manifestsPath, sops);
+    }, nameOption, pullThroughRegistriesOption, configPathOption, _manifestsPathOption, _sopsOption);
   }
 }

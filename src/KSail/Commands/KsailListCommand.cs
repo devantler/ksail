@@ -1,6 +1,6 @@
 using System.CommandLine;
 
-namespace KSail.Presentation.Commands;
+namespace KSail.Commands;
 
 /// <summary>
 /// The 'list' command responsible for listing running clusters.

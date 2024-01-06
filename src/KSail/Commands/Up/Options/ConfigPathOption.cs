@@ -1,6 +1,6 @@
 using System.CommandLine;
 
-namespace KSail.Presentation.Commands.Up.Options;
+namespace KSail.Commands.Up.Options;
 
 /// <summary>
 /// The <c>--config</c> option to specify the path to the cluster configuration file.

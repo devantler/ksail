@@ -1,6 +1,6 @@
 using System.CommandLine;
 
-namespace KSail.Presentation.Options;
+namespace KSail.Options;
 
 /// <summary>
 /// The 'manifests-path' option responsible for specifying the path to the manifests directory with -m or --manifests-path.

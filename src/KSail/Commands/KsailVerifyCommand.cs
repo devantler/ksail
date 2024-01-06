@@ -1,6 +1,6 @@
 using System.CommandLine;
 
-namespace KSail.Presentation.Commands;
+namespace KSail.Commands;
 
 /// <summary>
 /// The 'verify' command responsible for verifying reconciliation of kustomizations in a K8s cluster.

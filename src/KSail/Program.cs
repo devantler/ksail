@@ -1,5 +1,5 @@
 ﻿using System.CommandLine;
-using KSail.Presentation.Commands;
+using KSail.Commands;
 
 var ksailCommand = new KSailCommand();
 await ksailCommand.InvokeAsync(args);

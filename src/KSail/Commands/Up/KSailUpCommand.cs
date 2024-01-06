@@ -1,6 +1,6 @@
 using System.CommandLine;
 
-namespace KSail.Presentation.Commands.Up;
+namespace KSail.Commands.Up;
 
 /// <summary>
 /// The 'up' command responsible for creating new K8s cluster.

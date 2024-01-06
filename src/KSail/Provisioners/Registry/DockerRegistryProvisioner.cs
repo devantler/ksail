@@ -9,7 +9,7 @@ class DockerRegistryProvisioner : IRegistryProvisioner
   readonly DockerClient _dockerClient = new DockerClientConfiguration(
     new Uri("unix:///var/run/docker.sock")
   ).CreateClient();
-  public async Task ProvisionAsync(string name, int port, Uri? proxyUrl = null)
+  public async Task CreateRegistryAsync(string name, int port, Uri? proxyUrl = null)
   {
     bool registryExists = await GetContainerId(name) != null;
 
@@ -42,16 +42,16 @@ class DockerRegistryProvisioner : IRegistryProvisioner
           $"{name}:/var/lib/registry"
         }
       },
-      Env = new List<string>
+      Env = proxyUrl != null ? new List<string>
       {
         $"REGISTRY_PROXY_REMOTEURL={proxyUrl}"
-      }
+      } : null
     });
     _ = await _dockerClient.Containers.StartContainerAsync(registry.ID, new ContainerStartParameters());
     Console.WriteLine($"🧮✅ Registry '{name}' created successfully.");
   }
 
-  public async Task DeprovisionAsync(string name)
+  public async Task DeleteRegistryAsync(string name)
   {
     string? containerId = await GetContainerId(name);
 

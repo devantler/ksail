@@ -1,9 +1,10 @@
 using System.CommandLine;
-using KSail.Presentation.Commands.Up.Handlers;
+using KSail.Commands.Up.Handlers;
+using KSail.Commands.Up.Options;
+using KSail.Options;
 using KSail.Presentation.Commands.Up.Options;
-using KSail.Presentation.Options;
 
-namespace KSail.Presentation.Commands.Up;
+namespace KSail.Commands.Up;
 
 /// <summary>
 /// The <c>ksail up k3d</c> command responsible for creating K3d clusters.

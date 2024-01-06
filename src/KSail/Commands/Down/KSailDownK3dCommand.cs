@@ -1,7 +1,7 @@
 using System.CommandLine;
-using KSail.Presentation.Commands.Down.Handlers;
+using KSail.Commands.Down.Handlers;
 
-namespace KSail.Presentation.Commands.Down;
+namespace KSail.Commands.Down;
 
 /// <summary>
 /// The 'ksail down k3d' command responsible for destroying K3d clusters.

@@ -1,7 +1,7 @@
 using KSail.Provisioners.Cluster;
 using KSail.Utils;
 
-namespace KSail.Presentation.Commands.Down.Handlers;
+namespace KSail.Commands.Down.Handlers;
 
 /// <summary>
 /// The command handler responsible for handling the <c>ksail down k3d</c> command.

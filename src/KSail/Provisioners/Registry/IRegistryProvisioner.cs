@@ -1,8 +1,8 @@
 namespace KSail.Provisioners.Registry;
 
-interface IRegistryProvisioner
+interface IRegistryProvisioner : IProvisioner
 {
-  Task ProvisionAsync(string name, int port, Uri? proxyUrl = null);
+  Task CreateRegistryAsync(string name, int port, Uri? proxyUrl = null);
 
-  Task DeprovisionAsync(string name);
+  Task DeleteRegistryAsync(string name);
 }

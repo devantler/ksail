@@ -1,6 +1,6 @@
 using System.CommandLine;
 
-namespace KSail.Presentation.Options;
+namespace KSail.Options;
 
 /// <summary>
 /// The 'name' option responsible for specifying the name of a resource with -n or --name.

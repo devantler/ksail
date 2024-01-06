@@ -1,6 +1,6 @@
 using System.CommandLine;
 
-namespace KSail.Presentation.Commands;
+namespace KSail.Commands;
 
 /// <summary>
 /// The 'update' command responsible for updating K8s clusters by pushing manifests in a specified directory to a local OCI registry.
