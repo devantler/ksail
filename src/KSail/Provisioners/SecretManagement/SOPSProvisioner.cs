@@ -9,12 +9,12 @@ namespace KSail.Provisioners.SecretManagement;
 /// <summary>
 /// A provisioner for the SOPS secret management system.
 /// </summary>
-public partial class SOPSProvisioner : ISecretManagementProvisioner
+public partial class SOPSProvisioner : ISecretManagementProvisioner, IDisposable
 {
   [GeneratedRegex("export KSAIL_SOPS_GPG_KEY=.*")]
   private static partial Regex KSailSOPSGPGFilter();
 
-  Kubernetes _kubernetesClient = new(KubernetesClientConfiguration.BuildDefaultConfig());
+  readonly Kubernetes _kubernetesClient = new(KubernetesClientConfiguration.BuildDefaultConfig());
 
   /// <summary>
   /// Creates the keys needed for encrypting and decrypting secrets.
@@ -90,5 +90,11 @@ public partial class SOPSProvisioner : ISecretManagementProvisioner
     };
     _ = await _kubernetesClient.CreateNamespacedSecretAsync(sopsGpgSecret, "flux-system");
     Console.WriteLine("🔐🚀✅ SOPS GPG key deployed to cluster successfully...");
+  }
+  /// <inheritdoc/>
+  public void Dispose()
+  {
+    _kubernetesClient.Dispose();
+    GC.SuppressFinalize(this);
   }
 }

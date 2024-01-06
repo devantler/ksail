@@ -46,7 +46,6 @@ public static class KSailUpK3dFluxCommandHandler
     _ = await client.CreateNamespaceAsync(fluxSystemNamespace);
     Console.WriteLine("🌐✅ Created flux-system namespace successfully...");
 
-
     if (sops)
     {
       Console.WriteLine();

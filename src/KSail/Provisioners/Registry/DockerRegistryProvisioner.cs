@@ -4,7 +4,7 @@ using Docker.DotNet.Models;
 
 namespace KSail.Provisioners.Registry;
 
-class DockerRegistryProvisioner : IRegistryProvisioner
+sealed class DockerRegistryProvisioner : IRegistryProvisioner
 {
   readonly DockerClient _dockerClient = new DockerClientConfiguration(
     new Uri("unix:///var/run/docker.sock")
