@@ -1,5 +1,4 @@
-
-namespace KSail.Provisioners.ClusterProvisioners;
+namespace KSail.Provisioners.Cluster;
 
 /// <summary>
 /// A provisioner for provisioning Talos clusters.

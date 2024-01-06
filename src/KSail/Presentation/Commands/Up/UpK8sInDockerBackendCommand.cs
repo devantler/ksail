@@ -1,7 +1,7 @@
 using System.CommandLine;
 using System.Globalization;
 using KSail.Enums;
-using KSail.Provisioners.ClusterProvisioners;
+using KSail.Provisioners.Cluster;
 using KSail.Utils;
 
 namespace KSail.Presentation.Commands.Up;

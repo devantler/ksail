@@ -1,6 +1,6 @@
 using KSail.Enums;
 
-namespace KSail.Provisioners.ClusterProvisioners;
+namespace KSail.Provisioners.Cluster;
 
 /// <summary>
 /// The interface for a cluster provisioner.

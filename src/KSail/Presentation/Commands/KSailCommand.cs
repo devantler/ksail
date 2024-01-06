@@ -25,19 +25,20 @@ public class KSailCommand : RootCommand
 
     this.SetHandler(() =>
     {
-      AnsiConsole.Markup("""
-      🐳⛴️    [bold underline]Welcome to [blue]KSail[/]![/]    ⛴️ 🐳
-                                           [blue]. . .[/]
-                      __/___                 [blue]:[/]
-                _____/______|             ___[blue]|[/]____     |"\/"|
-        _______/_____\_______\_____     ,'        `.    \  /
-        \               [italic]KSail[/]      |    |  ^        \___/  |
-      [bold blue]~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^[/]
-
-
-      """);
-
+      Introduction();
       _ = this.InvokeAsync("--help");
     });
   }
+
+  static void Introduction() => AnsiConsole.Markup("""
+    🐳⛴️    [bold underline]Welcome to [blue]KSail[/]![/]    ⛴️ 🐳
+                                          [blue]. . .[/]
+                    __/___                 [blue]:[/]
+              _____/______|             ___[blue]|[/]____     |"\/"|
+      _______/_____\_______\_____     ,'        `.    \  /
+      \               [italic]KSail[/]      |    |  ^        \___/  |
+    [bold blue]~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^[/]
+
+
+    """);
 }
