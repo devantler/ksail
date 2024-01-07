@@ -22,7 +22,6 @@ static class KSailUpK3dFluxCommandHandler
       sops = bool.Parse(ConsoleUtils.Prompt("Use SOPS", "true", RegexFilters.YesNoFilter()));
     }
     Console.WriteLine();
-    Console.WriteLine("🧮 Creating OCI registry...");
     await _dockerRegistryProvisioner.CreateRegistryAsync("manifests", 5050);
 
     Console.WriteLine();

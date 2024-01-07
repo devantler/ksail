@@ -11,6 +11,14 @@ sealed class DockerProvisioner : IContainerOrchestratorProvisioner
   ).CreateClient();
   internal async Task CreateRegistryAsync(string name, int port, Uri? proxyUrl = null)
   {
+    if (proxyUrl != null)
+    {
+      Console.WriteLine($"🧮 Creating registry {name} on port {port} with proxy {proxyUrl}...");
+    }
+    else
+    {
+      Console.WriteLine($"🧮 Creating registry {name} on port {port}...");
+    }
     bool registryExists = await GetContainerId(name) != null;
 
     if (registryExists)
