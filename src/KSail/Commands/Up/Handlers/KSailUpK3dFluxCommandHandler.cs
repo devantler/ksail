@@ -13,7 +13,7 @@ static class KSailUpK3dFluxCommandHandler
   static readonly DockerProvisioner _dockerRegistryProvisioner = new();
   static readonly SOPSProvisioner _secretManagementProvisioner = new();
 
-  internal static async Task Handle(bool shouldPrompt, string name, string manifestsPath, string fluxKustomizationPath, bool sops)
+  internal static async Task HandleAsync(bool shouldPrompt, string name, string manifestsPath, string fluxKustomizationPath, bool sops)
   {
     if (shouldPrompt)
     {
@@ -25,28 +25,23 @@ static class KSailUpK3dFluxCommandHandler
     {
       fluxKustomizationPath = string.IsNullOrEmpty(fluxKustomizationPath) ? $"./clusters/{name}/flux" : fluxKustomizationPath;
     }
-    Console.WriteLine();
+    Console.WriteLine("🧮 Creating OCI registry...");
     await _dockerRegistryProvisioner.CreateRegistryAsync("manifests", 5050);
-
     Console.WriteLine();
-    await KSailUpdateCommandHandler.Handle(name, manifestsPath);
 
-    Console.WriteLine();
+    await KSailUpdateCommandHandler.HandleAsync(name, manifestsPath);
     await _kubernetesProvisioner.CreateNamespaceAsync("flux-system");
 
     if (sops)
     {
-      Console.WriteLine();
       Console.WriteLine("🔐 Adding SOPS GPG key...");
       await _secretManagementProvisioner.CreateKeysAsync();
       await _secretManagementProvisioner.ProvisionAsync();
       await SOPSProvisioner.CreateSOPSConfigAsync(manifestsPath);
+      Console.WriteLine();
     }
 
-    Console.WriteLine();
     await _gitOpsProvisioner.CheckPrerequisitesAsync();
-
-    Console.WriteLine();
     await _gitOpsProvisioner.InstallAsync($"oci://host.k3d.internal:5050/{name}", fluxKustomizationPath);
   }
 }

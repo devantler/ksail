@@ -19,7 +19,7 @@ sealed class KSailUpK3dCommand : Command
     this.SetHandler(async (name, pullThroughRegistries, configPath) =>
     {
       bool shouldPrompt = string.IsNullOrEmpty(name) && string.IsNullOrEmpty(configPath);
-      await KSailUpK3dCommandHandler.Handle(shouldPrompt, name, pullThroughRegistries, configPath);
+      await KSailUpK3dCommandHandler.HandleAsync(shouldPrompt, name, pullThroughRegistries, configPath);
     }, _nameOption, _pullThroughRegistriesOption, _configPathOption);
   }
 

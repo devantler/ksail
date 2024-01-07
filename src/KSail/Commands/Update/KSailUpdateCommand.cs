@@ -15,6 +15,6 @@ sealed class KSailUpdateCommand : Command
   {
     AddOption(_nameOption);
     AddOption(_manifestsPathOption);
-    this.SetHandler(KSailUpdateCommandHandler.Handle, _nameOption, _manifestsPathOption);
+    this.SetHandler(KSailUpdateCommandHandler.HandleAsync, _nameOption, _manifestsPathOption);
   }
 }

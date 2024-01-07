@@ -13,16 +13,19 @@ static class CLIRunner
     {
       await foreach (var cmdEvent in command.WithValidation(validation).ListenAsync())
       {
-        if (!silent)
+        if (cmdEvent is StandardOutputCommandEvent or StandardErrorCommandEvent)
         {
-          Console.WriteLine(cmdEvent);
+          if (!silent)
+          {
+            Console.WriteLine(cmdEvent);
+          }
+          _ = result.AppendLine(cmdEvent.ToString());
         }
-        _ = result.AppendLine(cmdEvent.ToString());
       }
     }
-    catch (Exception)
+    catch (Exception e)
     {
-      Console.WriteLine($"🚨 An error occurred while running '{command}'...");
+      Console.WriteLine($"🚨 An error occurred while running '{command}': {e.Message}...");
       Environment.Exit(1);
     }
     return result.ToString();

@@ -6,7 +6,7 @@ namespace KSail.Commands.Update.Handlers;
 static class KSailUpdateCommandHandler
 {
   static readonly FluxProvisioner _gitOpsProvisioner = new();
-  internal static async Task Handle(string name, string manifestsPath)
+  internal static async Task HandleAsync(string name, string manifestsPath)
   {
     bool shouldPrompt = string.IsNullOrEmpty(name);
     if (shouldPrompt)

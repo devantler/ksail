@@ -20,13 +20,12 @@ sealed partial class SOPSProvisioner : ISecretManagementProvisioner, IDisposable
     string? existingKey = Environment.GetEnvironmentVariable("KSAIL_SOPS_PRIVATE_GPG_KEY");
     if (!string.IsNullOrWhiteSpace(existingKey))
     {
-      Console.WriteLine("✅ Using existing SOPS GPG key from environment variables...");
+      Console.WriteLine("✔ Using existing SOPS GPG key from environment variables...");
       return;
     }
 
-    Console.WriteLine("🔐🔑 Generating new SOPS GPG key and saving it to environment variables...");
+    Console.WriteLine("► Generating new SOPS GPG key and saving it to environment variables...");
     await GPGCLIWrapper.CreateGPGKeyAsync();
-    Console.WriteLine("✅ SOPS GPG key generated successfully...");
 
     string envFilePath = GetEnvironmentFilePath();
     string envFileContent = File.ReadAllText(envFilePath);
@@ -43,7 +42,6 @@ sealed partial class SOPSProvisioner : ISecretManagementProvisioner, IDisposable
     File.WriteAllText(envFilePath, envFileContent);
     Environment.SetEnvironmentVariable("KSAIL_SOPS_PRIVATE_GPG_KEY", privateKey);
     Environment.SetEnvironmentVariable("KSAIL_SOPS_PUBLIC_GPG_KEY", publicKey);
-    Console.WriteLine("✅ SOPS GPG key saved to environment variables successfully.");
   }
 
   public async Task ProvisionAsync()
@@ -57,7 +55,7 @@ sealed partial class SOPSProvisioner : ISecretManagementProvisioner, IDisposable
 
   internal static async Task CreateSOPSConfigAsync(string manifestsPath)
   {
-    Console.WriteLine("🔐📄 Creating SOPS config file...");
+    Console.WriteLine("► Creating SOPS config file...");
     string sopsConfigPath = $"{manifestsPath}/../.sops.yaml";
     string fingerprint = await GPGCLIWrapper.GetFingerprintAsync();
     string sopsConfigContent = $"""
@@ -68,13 +66,13 @@ sealed partial class SOPSProvisioner : ISecretManagementProvisioner, IDisposable
       """;
 
     File.WriteAllText(sopsConfigPath, sopsConfigContent);
-    Console.WriteLine("✅ SOPS config file created successfully.");
   }
 
   public async Task ShowPublicKeyAsync()
   {
     string publicKey = Environment.GetEnvironmentVariable("KSAIL_SOPS_PUBLIC_GPG_KEY") ?? await GPGCLIWrapper.ExportPublicKeyAsync();
     Console.WriteLine($"🔐🔑 SOPS public key:\n{publicKey}");
+    Console.WriteLine();
   }
 
   public async Task ShowPrivateKeyAsync()
@@ -83,6 +81,7 @@ sealed partial class SOPSProvisioner : ISecretManagementProvisioner, IDisposable
     if (ConsoleUtils.PromptLogin())
     {
       Console.WriteLine($"🔐🔑 SOPS private key:\n{privateKey}");
+      Console.WriteLine();
     }
   }
 

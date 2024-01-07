@@ -11,6 +11,6 @@ sealed class KSailDownK3dCommand : Command
   {
     AddOption(nameOption);
 
-    this.SetHandler(KSailDownK3dCommandHandler.Handle, nameOption);
+    this.SetHandler(KSailDownK3dCommandHandler.HandleAsync, nameOption);
   }
 }

@@ -13,6 +13,6 @@ sealed class KSailSOPSCommand : Command
     AddOption(_showPublicKeyOption);
     AddOption(_showPrivateKeyOption);
 
-    this.SetHandler(KSailSOPSCommandHandler.Handle, _showPublicKeyOption, _showPrivateKeyOption);
+    this.SetHandler(KSailSOPSCommandHandler.HandleAsync, _showPublicKeyOption, _showPrivateKeyOption);
   }
 }

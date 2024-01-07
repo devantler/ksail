@@ -12,7 +12,7 @@ sealed class DockerProvisioner : IContainerOrchestratorProvisioner
 
   internal async Task CheckReadyAsync()
   {
-    Console.WriteLine("🐳 Checking if Docker is running...");
+    Console.WriteLine("🐳 Checking Docker is running...");
     try
     {
       await _dockerClient.System.PingAsync();
@@ -22,24 +22,25 @@ sealed class DockerProvisioner : IContainerOrchestratorProvisioner
       Console.WriteLine("🐳❌ Could not connect to Docker. Is Docker running?");
       Environment.Exit(1);
     }
-    Console.WriteLine("✅ Docker is running...");
+    Console.WriteLine("✔ Docker is running...");
+    Console.WriteLine();
   }
 
   internal async Task CreateRegistryAsync(string name, int port, Uri? proxyUrl = null)
   {
     if (proxyUrl != null)
     {
-      Console.WriteLine($"🧮 Creating pull-through registry '{name}' on port '{port}' for '{proxyUrl}'...");
+      Console.WriteLine($"► Creating pull-through registry '{name}' on port '{port}' for '{proxyUrl}'...");
     }
     else
     {
-      Console.WriteLine($"🧮 Creating registry '{name}' on port '{port}'...");
+      Console.WriteLine($"► Creating registry '{name}' on port '{port}'...");
     }
     bool registryExists = await GetContainerId(name) != null;
 
     if (registryExists)
     {
-      Console.WriteLine($"✅ Registry '{name}' already exists. Skipping...");
+      Console.WriteLine($"✔ Registry '{name}' already exists. Skipping...");
       return;
     }
     CreateContainerResponse registry;
@@ -78,10 +79,9 @@ sealed class DockerProvisioner : IContainerOrchestratorProvisioner
     }
     catch (DockerApiException e)
     {
-      Console.WriteLine($"🧮❌ Could not create registry '{name}'. {e.Message}...");
+      Console.WriteLine($" Could not create registry '{name}'. {e.Message}...");
       Environment.Exit(1);
     }
-    Console.WriteLine($"✅ Registry '{name}' created successfully...");
   }
 
   internal async Task DeleteRegistryAsync(string name)

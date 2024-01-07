@@ -6,7 +6,7 @@ namespace KSail.Commands.SOPS.Handlers;
 static class KSailSOPSCommandHandler
 {
   static readonly SOPSProvisioner _sopsProvisioner = new();
-  internal static async Task Handle(bool showPublicKey, bool showPrivateKey)
+  internal static async Task HandleAsync(bool showPublicKey, bool showPrivateKey)
   {
     if (!showPublicKey && !showPrivateKey)
     {
@@ -32,5 +32,6 @@ static class KSailSOPSCommandHandler
       Console.WriteLine("❌ No option selected...");
       Environment.Exit(1);
     }
+    Console.WriteLine();
   }
 }

@@ -11,7 +11,7 @@ sealed class KubernetesProvisioner : IContainerOrchestratorProvisioner, IDisposa
   /// <inheritdoc/>
   internal async Task CreateNamespaceAsync(string name)
   {
-    Console.WriteLine($"🌐 Create '{name}' namespace...");
+    Console.WriteLine($"🌐 Creating '{name}' namespace...");
     var fluxSystemNamespace = new V1Namespace
     {
       ApiVersion = "v1",
@@ -22,12 +22,13 @@ sealed class KubernetesProvisioner : IContainerOrchestratorProvisioner, IDisposa
       }
     };
     _ = await _kubernetesClient.CreateNamespaceAsync(fluxSystemNamespace);
-    Console.WriteLine($"✅ Created '{name}' namespace successfully...");
+    Console.WriteLine("✔ Namespace created...");
+    Console.WriteLine();
   }
 
   internal async Task CreateSecretAsync(string name, Dictionary<string, string> data, string @namespace = "default")
   {
-    Console.WriteLine($"🔐🚀 Deploying '{name}' secret to '{@namespace}' namespace...");
+    Console.WriteLine($"► Deploying '{name}' secret to '{@namespace}' namespace...");
     var sopsGpgSecret = new V1Secret
     {
       ApiVersion = "v1",
@@ -44,7 +45,6 @@ sealed class KubernetesProvisioner : IContainerOrchestratorProvisioner, IDisposa
       )
     };
     _ = await _kubernetesClient.CreateNamespacedSecretAsync(sopsGpgSecret, "flux-system");
-    Console.WriteLine($"✅ '{name}' secret successfully deployed to '{@namespace}' namespace...");
   }
 
   public void Dispose()

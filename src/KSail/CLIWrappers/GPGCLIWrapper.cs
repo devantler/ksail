@@ -31,7 +31,7 @@ static class GPGCLIWrapper
   {
     var listKSailKeyCmd = GPG.WithArguments("--list-keys -uid ksail");
     string listKSailKeyCmdResult = await CLIRunner.RunAsync(listKSailKeyCmd, silent: true);
-    string? fingerprint = listKSailKeyCmdResult.Split('\n')[2]?.Trim();
+    string? fingerprint = listKSailKeyCmdResult.Split('\n')[1]?.Trim();
     return string.IsNullOrEmpty(fingerprint)
       ? throw new InvalidOperationException("🚨 Could not find the fingerprint of the newly created GPG key.")
       : fingerprint;
