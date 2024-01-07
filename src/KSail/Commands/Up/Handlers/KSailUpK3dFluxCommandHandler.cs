@@ -21,6 +21,10 @@ static class KSailUpK3dFluxCommandHandler
       fluxKustomizationPath = ConsoleUtils.Prompt("Path to Flux kustomization relative to the manifests folder", $"./clusters/{name}/flux", RegexFilters.PathFilter());
       sops = bool.Parse(ConsoleUtils.Prompt("Use SOPS", "true", RegexFilters.YesNoFilter()));
     }
+    else
+    {
+      fluxKustomizationPath = string.IsNullOrEmpty(fluxKustomizationPath) ? $"./clusters/{name}/flux" : fluxKustomizationPath;
+    }
     Console.WriteLine();
     await _dockerRegistryProvisioner.CreateRegistryAsync("manifests", 5050);
 
@@ -40,6 +44,8 @@ static class KSailUpK3dFluxCommandHandler
 
     Console.WriteLine();
     await _gitOpsProvisioner.CheckPrerequisitesAsync();
+
+    Console.WriteLine();
     await _gitOpsProvisioner.InstallAsync($"oci://host.k3d.internal:5050/{name}", fluxKustomizationPath);
   }
 }
