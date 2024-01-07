@@ -22,7 +22,6 @@ jobs:
             curl -s https://api.github.com/repos/fluxcd/flux2/releases/latest | grep browser_download_url | grep darwin_arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/flux_darwin_arm64.tar.gz
             curl -s https://api.github.com/repos/fluxcd/flux2/releases/latest | grep browser_download_url | grep linux_amd64 | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/flux_linux_amd64.tar.gz
             curl -s https://api.github.com/repos/fluxcd/flux2/releases/latest | grep browser_download_url | grep linux_arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/flux_linux_arm64.tar.gz
-            curl -s https://api.github.com/repos/fluxcd/flux2/releases/latest | grep browser_download_url | grep linux_arm | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/flux_linux_arm.tar.gz
 
             echo "Extracting new version of flux"
             tar -xzf src/KSail/assets/flux_darwin_amd64.tar.gz -C src/KSail/assets/
@@ -33,22 +32,18 @@ jobs:
             mv src/KSail/assets/flux src/KSail/assets/flux_linux_amd64
             tar -xzf src/KSail/assets/flux_linux_arm64.tar.gz -C src/KSail/assets/
             mv src/KSail/assets/flux src/KSail/assets/flux_linux_arm64
-            tar -xzf src/KSail/assets/flux_linux_arm.tar.gz -C src/KSail/assets/
-            mv src/KSail/assets/flux src/KSail/assets/flux_linux_arm
 
             echo "Removing tar.gz files"
             rm src/KSail/assets/flux_darwin_amd64.tar.gz
             rm src/KSail/assets/flux_darwin_arm64.tar.gz
             rm src/KSail/assets/flux_linux_amd64.tar.gz
             rm src/KSail/assets/flux_linux_arm64.tar.gz
-            rm src/KSail/assets/flux_linux_arm.tar.gz
 
             echo "Making new version of flux executable"
             chmod +x src/KSail/assets/flux_darwin_amd64
             chmod +x src/KSail/assets/flux_darwin_arm64
             chmod +x src/KSail/assets/flux_linux_amd64
             chmod +x src/KSail/assets/flux_linux_arm64
-            chmod +x src/KSail/assets/flux_linux_arm
 
             echo "Update version file"
             if [ -f src/KSail/assets/flux_version_${flux_version_current} ]; then
@@ -70,14 +65,12 @@ jobs:
             curl -s https://api.github.com/repos/k3d-io/k3d/releases/latest | grep browser_download_url | grep darwin-arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/k3d_darwin_arm64
             curl -s https://api.github.com/repos/k3d-io/k3d/releases/latest | grep browser_download_url | grep linux-amd64 | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/k3d_linux_amd64
             curl -s https://api.github.com/repos/k3d-io/k3d/releases/latest | grep browser_download_url | grep linux-arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/k3d_linux_arm64
-            curl -s https://api.github.com/repos/k3d-io/k3d/releases/latest | grep browser_download_url | grep linux-arm | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/k3d_linux_arm
 
             echo "Making new version of k3d executable"
             chmod +x src/KSail/assets/k3d_darwin_amd64
             chmod +x src/KSail/assets/k3d_darwin_arm64
             chmod +x src/KSail/assets/k3d_linux_amd64
             chmod +x src/KSail/assets/k3d_linux_arm64
-            chmod +x src/KSail/assets/k3d_linux_arm
 
             echo "Update version file"
             if [ -f src/KSail/assets/k3d_version_${k3d_version_current} ]; then
@@ -99,7 +92,6 @@ jobs:
             curl -s https://api.github.com/repos/yannh/kubeconform/releases/latest | grep browser_download_url | grep darwin-arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/kubeconform_darwin_arm64.tar.gz
             curl -s https://api.github.com/repos/yannh/kubeconform/releases/latest | grep browser_download_url | grep linux-amd64 | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/kubeconform_linux_amd64.tar.gz
             curl -s https://api.github.com/repos/yannh/kubeconform/releases/latest | grep browser_download_url | grep linux-arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/kubeconform_linux_arm64.tar.gz
-            curl -s https://api.github.com/repos/yannh/kubeconform/releases/latest | grep browser_download_url | grep linux-armv6 | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/kubeconform_linux_arm.tar.gz
 
             echo "Extracting new version of kubeconform"
             tar -xzf src/KSail/assets/kubeconform_darwin_amd64.tar.gz -C src/KSail/assets/ kubeconform
@@ -110,22 +102,18 @@ jobs:
             mv src/KSail/assets/kubeconform src/KSail/assets/kubeconform_linux_amd64
             tar -xzf src/KSail/assets/kubeconform_linux_arm64.tar.gz -C src/KSail/assets/ kubeconform
             mv src/KSail/assets/kubeconform src/KSail/assets/kubeconform_linux_arm64
-            tar -xzf src/KSail/assets/kubeconform_linux_arm.tar.gz -C src/KSail/assets/ kubeconform
-            mv src/KSail/assets/kubeconform src/KSail/assets/kubeconform_linux_arm
 
             echo "Removing tar.gz files"
             rm src/KSail/assets/kubeconform_darwin_amd64.tar.gz
             rm src/KSail/assets/kubeconform_darwin_arm64.tar.gz
             rm src/KSail/assets/kubeconform_linux_amd64.tar.gz
             rm src/KSail/assets/kubeconform_linux_arm64.tar.gz
-            rm src/KSail/assets/kubeconform_linux_arm.tar.gz
 
             echo "Making new version of kubeconform executable"
             chmod +x src/KSail/assets/kubeconform_darwin_amd64
             chmod +x src/KSail/assets/kubeconform_darwin_arm64
             chmod +x src/KSail/assets/kubeconform_linux_amd64
             chmod +x src/KSail/assets/kubeconform_linux_arm64
-            chmod +x src/KSail/assets/kubeconform_linux_arm
 
             echo "Update version file"
             if [ -f src/KSail/assets/kubeconform_version_${kubeconform_version_current} ]; then
@@ -135,6 +123,50 @@ jobs:
             fi
           else
             echo "No new version of kubeconform found"
+          fi
+
+          kustomize_version_latest=$(curl -s https://api.github.com/repos/kubernetes-sigs/kustomize/releases/latest | grep tag_name | cut -d '"' -f 4)
+          kustomize_version_current=$(ls -l src/KSail/assets/kustomize_version* | cut -d '_' -f 3)
+          if [ "$kustomize_version_latest != "$kustomize_version_current" ]; then
+            echo "New version of kustomize found: $kustomize_version_latest"
+            echo "Current version of kustomize: $kustomize_version_current"
+            echo "Downloading new version of kustomize"
+            curl -s https://api.github.com/repos/kubernetes-sigs/kustomize/releases/latest | grep browser_download_url | grep darwin_amd64 | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/kustomize_darwin_amd64.tar.gz
+            curl -s https://api.github.com/repos/kubernetes-sigs/kustomize/releases/latest | grep browser_download_url | grep darwin_arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/kustomize_darwin_arm64.tar.gz
+            curl -s https://api.github.com/repos/kubernetes-sigs/kustomize/releases/latest | grep browser_download_url | grep linux_amd64 | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/kustomize_linux_amd64.tar.gz
+            curl -s https://api.github.com/repos/kubernetes-sigs/kustomize/releases/latest | grep browser_download_url | grep linux_arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/kustomize_linux_arm64.tar.gz
+
+            echo "Extracting new version of kustomize"
+            tar -xzf src/KSail/assets/kustomize_darwin_amd64.tar.gz -C src/KSail/assets/
+            mv src/KSail/assets/kustomize src/KSail/assets/kustomize_darwin_amd64
+            tar -xzf src/KSail/assets/kustomize_darwin_arm64.tar.gz -C src/KSail/assets/
+            mv src/KSail/assets/kustomize src/KSail/assets/kustomize_darwin_arm64
+            tar -xzf src/KSail/assets/kustomize_linux_amd64.tar.gz -C src/KSail/assets/
+            mv src/KSail/assets/kustomize src/KSail/assets/kustomize_linux_amd64
+            tar -xzf src/KSail/assets/kustomize_linux_arm64.tar.gz -C src/KSail/assets/
+            mv src/KSail/assets/kustomize src/KSail/assets/kustomize_linux_arm64
+
+            echo "Removing tar.gz files"
+            rm src/KSail/assets/kustomize_darwin_amd64.tar.gz
+            rm src/KSail/assets/kustomize_darwin_arm64.tar.gz
+            rm src/KSail/assets/kustomize_linux_amd64.tar.gz
+            rm src/KSail/assets/kustomize_linux_arm64.tar.gz
+
+            echo "Making new version of kustomize executable"
+            chmod +x src/KSail/assets/kustomize_darwin_amd64
+            chmod +x src/KSail/assets/kustomize_darwin_arm64
+            chmod +x src/KSail/assets/kustomize_linux_amd64
+            chmod +x src/KSail/assets/kustomize_linux_arm64
+
+            echo "Update version file"
+            if [ -f src/KSail/assets/kustomize_version_${kustomize_version_current} ]; then
+              mv src/KSail/assets/kustomize_version_${kustomize_version_current} src/KSail/assets/kustomize_version_${kustomize_version_latest}
+            else
+              touch src/KSail/assets/kustomize_version_${kustomize_version_latest}
+            fi
+          else
+            echo "No new version of kustomize found"
+          fi
           fi
 
           talosctl_version_latest=$(curl -s https://api.github.com/repos/siderolabs/talos/releases/latest | grep tag_name | cut -d '"' -f 4)
@@ -147,14 +179,12 @@ jobs:
             curl -s https://api.github.com/repos/siderolabs/talos/releases/latest | grep browser_download_url | grep talosctl-darwin-arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/talosctl_darwin_arm64
             curl -s https://api.github.com/repos/siderolabs/talos/releases/latest | grep browser_download_url | grep talosctl-linux-amd64 | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/talosctl_linux_amd64
             curl -s https://api.github.com/repos/siderolabs/talos/releases/latest | grep browser_download_url | grep talosctl-linux-arm64 | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/talosctl_linux_arm64
-            curl -s https://api.github.com/repos/siderolabs/talos/releases/latest | grep browser_download_url | grep talosctl-linux-armv7 | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/talosctl_linux_arm
 
             echo "Making new version of talosctl executable"
             chmod +x src/KSail/assets/talosctl_darwin_amd64
             chmod +x src/KSail/assets/talosctl_darwin_arm64
             chmod +x src/KSail/assets/talosctl_linux_amd64
             chmod +x src/KSail/assets/talosctl_linux_arm64
-            chmod +x src/KSail/assets/talosctl_linux_arm
 
             echo "Update version file"
             if [ -f src/KSail/assets/talosctl_version_${talosctl_version_current} ]; then
