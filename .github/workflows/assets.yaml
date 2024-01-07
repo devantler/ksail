@@ -2,7 +2,7 @@ name: Assets
 
 on:
   schedule:
-    - cron: "59 23 * * 5"
+    - cron: "59 23 * * *"
   workflow_dispatch:
 
 jobs:
