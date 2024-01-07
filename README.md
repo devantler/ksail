@@ -24,8 +24,10 @@ A CLI tool for provisioning GitOps enabled K8s environments in Docker.
   - linux-x64 ✅
   - linux-arm64 ✅
   - linux-arm ✅
+  - windows-x86 ❌
+  - windows-arm64 ❌
 - Docker
-- A Flux kustomization file.
+- gpg
 
 ### Installation
 
