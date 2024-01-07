@@ -18,62 +18,40 @@ sealed partial class SOPSProvisioner : ISecretManagementProvisioner, IDisposable
   public async Task CreateKeysAsync()
   {
     string? existingKey = Environment.GetEnvironmentVariable("KSAIL_SOPS_GPG_KEY");
-    if (existingKey is not null && !string.IsNullOrWhiteSpace(existingKey))
+    if (!string.IsNullOrWhiteSpace(existingKey))
     {
       Console.WriteLine("✅ Using existing SOPS GPG key from environment variable KSAIL_SOPS_GPG_KEY.");
+      return;
     }
-    else
-    {
-      Console.WriteLine("🔐🔑 Generating new SOPS GPG key and saving it to environment variable KSAIL_SOPS_GPG_KEY...");
-      await GPGCLIWrapper.CreateGPGKeyAsync();
-      Console.WriteLine("✅ SOPS GPG key generated successfully...");
-      string envFilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-      if (File.Exists($"{envFilePath}/.zshrc"))
-      {
-        envFilePath += "/.zshrc";
-      }
-      else if (File.Exists($"{envFilePath}/.bashrc"))
-      {
-        envFilePath += "/.bashrc";
-      }
-      else
-      {
-        throw new FileNotFoundException("🚨 Could not save SOPS GPG key to environment variable KSAIL_SOPS_GPG_KEY because neither .zshrc nor .bashrc were found in the user's home directory.");
-      }
 
-      string envFileContent = File.ReadAllText(envFilePath);
-      string privateKey = await GPGCLIWrapper.ExportPrivateKeyAsync(true);
-      if (envFileContent.Contains("export KSAIL_SOPS_PRIVATE_GPG_KEY="))
-      {
-        envFileContent = KSailSOPSPrivateKeyFilter().Replace(envFileContent, $"export KSAIL_SOPS_PRIVATE_GPG_KEY='{privateKey}'");
-      }
-      else
-      {
-        //TODO: Add support for Fig, so that the env is appended in the right place
-        envFileContent += $"\nexport KSAIL_SOPS_PRIVATE_GPG_KEY='{privateKey}'";
-      }
-      string publicKey = await GPGCLIWrapper.ExportPublicKeyAsync(true);
-      if (envFileContent.Contains("export KSAIL_SOPS_PUBLIC_GPG_KEY="))
-      {
-        envFileContent = KSailSOPSPublicKeyFilter().Replace(envFileContent, $"export KSAIL_SOPS_PUBLIC_GPG_KEY='{publicKey}'");
-      }
-      else
-      {
-        //TODO: Add support for Fig, so that the env is appended in the right place
-        envFileContent += $"\nexport KSAIL_SOPS_PUBLIC_GPG_KEY='{publicKey}'";
-      }
-      File.WriteAllText(envFilePath, envFileContent);
-      Environment.SetEnvironmentVariable("KSAIL_SOPS_GPG_KEY", privateKey);
-      Console.WriteLine("✅ SOPS GPG key saved to environment variable KSAIL_SOPS_GPG_KEY successfully...");
-    }
+    Console.WriteLine("🔐🔑 Generating new SOPS GPG key and saving it to environment variable KSAIL_SOPS_GPG_KEY...");
+    await GPGCLIWrapper.CreateGPGKeyAsync();
+    Console.WriteLine("✅ SOPS GPG key generated successfully...");
+
+    string envFilePath = GetEnvironmentFilePath();
+    string envFileContent = File.ReadAllText(envFilePath);
+
+    string privateKey = await GPGCLIWrapper.ExportPrivateKeyAsync(true);
+    string publicKey = await GPGCLIWrapper.ExportPublicKeyAsync(true);
+    const string figPostBlock = "# Fig post block. Keep at the bottom of this file.";
+    string privateKeyExportStatement = $"export KSAIL_SOPS_PRIVATE_GPG_KEY='{privateKey}'";
+    string publicKeyExportStatement = $"export KSAIL_SOPS_PUBLIC_GPG_KEY='{publicKey}'";
+
+    envFileContent = ReplaceOrInsertExportStatement(envFileContent, privateKeyExportStatement, KSailSOPSPrivateKeyFilter(), figPostBlock);
+    envFileContent = ReplaceOrInsertExportStatement(envFileContent, publicKeyExportStatement, KSailSOPSPublicKeyFilter(), figPostBlock);
+
+    File.WriteAllText(envFilePath, envFileContent);
+    Environment.SetEnvironmentVariable("KSAIL_SOPS_PRIVATE_GPG_KEY", privateKey);
+    Environment.SetEnvironmentVariable("KSAIL_SOPS_PUBLIC_GPG_KEY", publicKey);
+    Console.WriteLine("✅ SOPS GPG key saved to environment variable KSAIL_SOPS_GPG_KEY successfully...");
   }
 
   public async Task ProvisionAsync()
   {
     await _kubernetesProvisioner.CreateSecretAsync("sops-gpg", new Dictionary<string, string>
     {
-      ["sops.asc"] = Environment.GetEnvironmentVariable("KSAIL_SOPS_GPG_KEY") ??
-        throw new InvalidOperationException("🚨 Could not find the SOPS GPG key in the KSAIL_SOPS_GPG_KEY environment variable.")
+      ["sops.asc"] = Environment.GetEnvironmentVariable("KSAIL_SOPS_PRIVATE_GPG_KEY") ??
+        throw new InvalidOperationException("🚨 Could not find the SOPS GPG key in the KSAIl_SOPS_PRIVATE_GPG_KEY environment variable.")
     }, "flux-system");
   }
 
@@ -105,6 +83,40 @@ sealed partial class SOPSProvisioner : ISecretManagementProvisioner, IDisposable
     if (ConsoleUtils.PromptLogin())
     {
       Console.WriteLine($"🔐🔑 SOPS private key:\n{privateKey}");
+    }
+  }
+
+  string GetEnvironmentFilePath()
+  {
+    string envFilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+    if (File.Exists($"{envFilePath}/.zshrc"))
+    {
+      return $"{envFilePath}/.zshrc";
+    }
+    else if (File.Exists($"{envFilePath}/.bashrc"))
+    {
+      return $"{envFilePath}/.bashrc";
+    }
+    else
+    {
+      throw new FileNotFoundException("🚨 Could not save SOPS GPG key to environment variable KSAIL_SOPS_GPG_KEY because neither .zshrc nor .bashrc were found in the user's home directory.");
+    }
+  }
+
+  string ReplaceOrInsertExportStatement(string envFileContent, string exportStatement, Regex filterRegex, string insertMarker)
+  {
+    if (envFileContent.Contains(exportStatement))
+    {
+      return filterRegex.Replace(envFileContent, exportStatement);
+    }
+    else if (envFileContent.Contains(insertMarker))
+    {
+      int insertIndex = envFileContent.IndexOf(insertMarker, StringComparison.InvariantCulture);
+      return envFileContent.Insert(insertIndex, $"{exportStatement}\n");
+    }
+    else
+    {
+      return $"{envFileContent}\n{exportStatement}";
     }
   }
 

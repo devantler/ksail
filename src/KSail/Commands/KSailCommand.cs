@@ -1,5 +1,6 @@
 using System.CommandLine;
 using KSail.Commands.Down;
+using KSail.Commands.Lint;
 using KSail.Commands.List;
 using KSail.Commands.SOPS;
 using KSail.Commands.Up;
@@ -16,7 +17,7 @@ sealed class KSailCommand : RootCommand
     AddCommand(new KSailDownCommand());
     AddCommand(new KSailUpdateCommand());
     AddCommand(new KSailListCommand());
-    //AddCommand(new ValidateCommand());
+    AddCommand(new KSailLintCommand());
     //AddCommand(new VerifyCommand());
     AddCommand(new KSailSOPSCommand());
 
