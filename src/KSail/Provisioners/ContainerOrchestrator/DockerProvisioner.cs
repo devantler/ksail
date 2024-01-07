@@ -13,11 +13,11 @@ sealed class DockerProvisioner : IContainerOrchestratorProvisioner
   {
     if (proxyUrl != null)
     {
-      Console.WriteLine($"🧮 Creating registry {name} on port {port} with proxy {proxyUrl}...");
+      Console.WriteLine($"🧮 Creating pull-through registry '{name}' on port '{port}' as proxy for '{proxyUrl}'...");
     }
     else
     {
-      Console.WriteLine($"🧮 Creating registry {name} on port {port}...");
+      Console.WriteLine($"🧮 Creating registry '{name}' on port '{port}'...");
     }
     bool registryExists = await GetContainerId(name) != null;
 
@@ -56,7 +56,7 @@ sealed class DockerProvisioner : IContainerOrchestratorProvisioner
       } : null
     });
     _ = await _dockerClient.Containers.StartContainerAsync(registry.ID, new ContainerStartParameters());
-    Console.WriteLine($"🧮✅ Registry '{name}' created successfully.");
+    Console.WriteLine($"🧮✅ Registry '{name}' created successfully...");
   }
 
   internal async Task DeleteRegistryAsync(string name)

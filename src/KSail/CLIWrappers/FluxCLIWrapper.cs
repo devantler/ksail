@@ -1,5 +1,4 @@
 using CliWrap;
-using CliWrap.EventStream;
 using IdentityModel;
 using System.Runtime.InteropServices;
 
@@ -27,13 +26,13 @@ static class FluxCLIWrapper
   internal static async Task CheckPrerequisitesAsync()
   {
     var cmd = Flux.WithArguments("check --pre");
-    await CLIRunner.RunAsync(cmd);
+    _ = await CLIRunner.RunAsync(cmd);
   }
 
   internal static async Task InstallAsync()
   {
     var cmd = Flux.WithArguments("install");
-    await CLIRunner.RunAsync(cmd);
+    _ = await CLIRunner.RunAsync(cmd);
   }
 
   internal static async Task CreateSourceOCIAsync(string sourceUrl)
@@ -49,7 +48,7 @@ static class FluxCLIWrapper
         "--tag=latest"
       ]
     );
-    await CLIRunner.RunAsync(cmd);
+    _ = await CLIRunner.RunAsync(cmd);
   }
   internal static async Task CreateKustomizationAsync(string fluxKustomizationPathOption)
   {
@@ -62,12 +61,12 @@ static class FluxCLIWrapper
         $"--path={fluxKustomizationPathOption}"
       ]
     );
-    await CLIRunner.RunAsync(cmd);
+    _ = await CLIRunner.RunAsync(cmd);
   }
   internal static async Task UninstallAsync()
   {
     var cmd = Flux.WithArguments("uninstall");
-    await CLIRunner.RunAsync(cmd);
+    _ = await CLIRunner.RunAsync(cmd);
   }
 
   internal static async Task PushManifestsAsync(string ociUrl, string manifestsPath)
@@ -91,7 +90,7 @@ static class FluxCLIWrapper
         "--tag=latest"
       ]
     );
-    await CLIRunner.RunAsync(pushCmd);
-    await CLIRunner.RunAsync(tagCmd);
+    _ = await CLIRunner.RunAsync(pushCmd);
+    _ = await CLIRunner.RunAsync(tagCmd);
   }
 }
