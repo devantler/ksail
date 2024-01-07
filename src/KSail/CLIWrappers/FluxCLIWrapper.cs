@@ -19,7 +19,7 @@ static class FluxCLIWrapper
         (PlatformID.Unix, Architecture.Arm, false) => "flux_linux_arm",
         _ => throw new PlatformNotSupportedException()
       };
-      return Cli.Wrap($"assets/{binary}");
+      return Cli.Wrap($"{AppContext.BaseDirectory}assets/{binary}");
     }
   }
 

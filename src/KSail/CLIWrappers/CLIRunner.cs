@@ -18,6 +18,7 @@ static class CLIRunner
     }
     catch (Exception)
     {
+      Console.WriteLine($"🚨 An error occurred while running '{command}'...");
       Environment.Exit(1);
     }
     return result;
