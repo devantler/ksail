@@ -44,7 +44,10 @@ static class FluxCLIWrapper
   {
     var cmd = Flux.WithArguments(
       [
-        "create source oci flux-system",
+        "create",
+        "source",
+        "oci",
+        "flux-system",
         $"--url={sourceUrl}",
         "--insecure",
         "--tag=latest"
@@ -94,7 +97,9 @@ static class FluxCLIWrapper
     );
     var tagCmd = Flux.WithArguments(
       [
-        $"tag artifact {ociUrl}:{currentTimeEpoch}",
+        "tag",
+        "artifact",
+        $"{ociUrl}:{currentTimeEpoch}",
         "--tag=latest"
       ]
     );
