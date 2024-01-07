@@ -8,7 +8,7 @@ namespace KSail.Commands.Up.Handlers;
 static class KSailUpK3dCommandHandler
 {
   static readonly K3dProvisioner _clusterProvisioner = new();
-  static readonly DockerProvisioner _registryProvisioner = new();
+  static readonly DockerProvisioner _dockerProvisioner = new();
 
   internal static async Task Handle(bool shouldPrompt, string name, bool pullThroughRegistries, string configPath)
   {
@@ -25,15 +25,18 @@ static class KSailUpK3dCommandHandler
       }
       pullThroughRegistries = bool.Parse(ConsoleUtils.Prompt("Pull through registries", "true", RegexFilters.YesNoFilter()));
     }
+    await _dockerProvisioner.CheckReadyAsync();
+
+    Console.WriteLine();
     await KSailDownK3dCommandHandler.Handle(name);
     if (pullThroughRegistries)
     {
       Console.WriteLine();
-      await _registryProvisioner.CreateRegistryAsync("proxy-docker.io", 5001, new Uri("https://registry-1.docker.io"));
-      await _registryProvisioner.CreateRegistryAsync("proxy-registry.k8s.io", 5002, new Uri("https://registry.k8s.io"));
-      await _registryProvisioner.CreateRegistryAsync("proxy-gcr.io", 5003, new Uri("https://gcr.io"));
-      await _registryProvisioner.CreateRegistryAsync("proxy-ghcr.io", 5004, new Uri("https://ghcr.io"));
-      await _registryProvisioner.CreateRegistryAsync("proxy-quay.io", 5005, new Uri("https://quay.io"));
+      await _dockerProvisioner.CreateRegistryAsync("proxy-docker.io", 5001, new Uri("https://registry-1.docker.io"));
+      await _dockerProvisioner.CreateRegistryAsync("proxy-registry.k8s.io", 5002, new Uri("https://registry.k8s.io"));
+      await _dockerProvisioner.CreateRegistryAsync("proxy-gcr.io", 5003, new Uri("https://gcr.io"));
+      await _dockerProvisioner.CreateRegistryAsync("proxy-ghcr.io", 5004, new Uri("https://ghcr.io"));
+      await _dockerProvisioner.CreateRegistryAsync("proxy-quay.io", 5005, new Uri("https://quay.io"));
       //TODO: Add missing major registries
     }
     Console.WriteLine();

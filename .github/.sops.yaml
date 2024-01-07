@@ -1,4 +1,4 @@
 creation_rules:
   - path_regex: .sops.yaml
     encrypted_regex: ^(data|stringData)$
-    pgp: $pub   ed25519 2023-12-31 [SC] [expires: 2026-12-30]
+    pgp: $68648C40AFD5CE4E5B1EA4A27F296345DE61A830

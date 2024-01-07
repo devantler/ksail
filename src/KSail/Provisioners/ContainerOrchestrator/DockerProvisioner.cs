@@ -9,6 +9,22 @@ sealed class DockerProvisioner : IContainerOrchestratorProvisioner
   readonly DockerClient _dockerClient = new DockerClientConfiguration(
     new Uri("unix:///var/run/docker.sock")
   ).CreateClient();
+
+  internal async Task CheckReadyAsync()
+  {
+    Console.WriteLine("🐳 Checking if Docker is running...");
+    try
+    {
+      await _dockerClient.System.PingAsync();
+    }
+    catch (Exception)
+    {
+      Console.WriteLine("🐳❌ Could not connect to Docker. Is Docker running?");
+      Environment.Exit(1);
+    }
+    Console.WriteLine("✅ Docker is running...");
+  }
+
   internal async Task CreateRegistryAsync(string name, int port, Uri? proxyUrl = null)
   {
     if (proxyUrl != null)
@@ -23,40 +39,49 @@ sealed class DockerProvisioner : IContainerOrchestratorProvisioner
 
     if (registryExists)
     {
-      Console.WriteLine($"🧮✅ Registry '{name}' already exists. Skipping...");
+      Console.WriteLine($"✅ Registry '{name}' already exists. Skipping...");
       return;
     }
-    var registry = await _dockerClient.Containers.CreateContainerAsync(new CreateContainerParameters
+    CreateContainerResponse registry;
+    try
     {
-      Image = "registry:2",
-      Name = name,
-      HostConfig = new HostConfig
+      registry = await _dockerClient.Containers.CreateContainerAsync(new CreateContainerParameters
       {
-        PortBindings = new Dictionary<string, IList<PortBinding>>
+        Image = "registry:2",
+        Name = name,
+        HostConfig = new HostConfig
         {
-          ["5000/tcp"] = new List<PortBinding>
+          PortBindings = new Dictionary<string, IList<PortBinding>>
+          {
+            ["5000/tcp"] = new List<PortBinding>
           {
             new() {
               HostPort = $"{port}"
             }
           }
-        },
-        RestartPolicy = new RestartPolicy
-        {
-          Name = RestartPolicyKind.Always
-        },
-        Binds = new List<string>
+          },
+          RestartPolicy = new RestartPolicy
+          {
+            Name = RestartPolicyKind.Always
+          },
+          Binds = new List<string>
         {
           $"{name}:/var/lib/registry"
         }
-      },
-      Env = proxyUrl != null ? new List<string>
+        },
+        Env = proxyUrl != null ? new List<string>
       {
         $"REGISTRY_PROXY_REMOTEURL={proxyUrl}"
       } : null
-    });
-    _ = await _dockerClient.Containers.StartContainerAsync(registry.ID, new ContainerStartParameters());
-    Console.WriteLine($"🧮✅ Registry '{name}' created successfully...");
+      });
+      _ = await _dockerClient.Containers.StartContainerAsync(registry.ID, new ContainerStartParameters());
+    }
+    catch (DockerApiException e)
+    {
+      Console.WriteLine($"🧮❌ Could not create registry '{name}'. {e.Message}...");
+      Environment.Exit(1);
+    }
+    Console.WriteLine($"✅ Registry '{name}' created successfully...");
   }
 
   internal async Task DeleteRegistryAsync(string name)

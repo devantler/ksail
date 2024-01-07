@@ -22,7 +22,7 @@ sealed class KubernetesProvisioner : IContainerOrchestratorProvisioner, IDisposa
       }
     };
     _ = await _kubernetesClient.CreateNamespaceAsync(fluxSystemNamespace);
-    Console.WriteLine($"🌐✅ Created '{name}' namespace successfully...");
+    Console.WriteLine($"✅ Created '{name}' namespace successfully...");
   }
 
   internal async Task CreateSecretAsync(string name, Dictionary<string, string> data, string @namespace = "default")
@@ -44,7 +44,7 @@ sealed class KubernetesProvisioner : IContainerOrchestratorProvisioner, IDisposa
       )
     };
     _ = await _kubernetesClient.CreateNamespacedSecretAsync(sopsGpgSecret, "flux-system");
-    Console.WriteLine($"🔐🚀✅ '{name}' secret successfully deployed to '{@namespace}' namespace...");
+    Console.WriteLine($"✅ '{name}' secret successfully deployed to '{@namespace}' namespace...");
   }
 
   public void Dispose()

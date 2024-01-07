@@ -9,7 +9,7 @@ sealed class FluxProvisioner : IGitOpsProvisioner
   {
     Console.WriteLine("🔄 Checking Flux prerequisites are satisfied...");
     await FluxCLIWrapper.CheckPrerequisitesAsync();
-    Console.WriteLine("🔄✅ Flux prerequisites are satisfied...");
+    Console.WriteLine("✅ Flux prerequisites are satisfied...");
   }
 
   public async Task InstallAsync(string sourceUrl, string fluxKustomizationPathOption)
@@ -20,20 +20,20 @@ sealed class FluxProvisioner : IGitOpsProvisioner
     await FluxCLIWrapper.CreateSourceOCIAsync(sourceUrl);
     Console.WriteLine("🔄 Creating Flux kustomization...");
     await FluxCLIWrapper.CreateKustomizationAsync(fluxKustomizationPathOption);
-    Console.WriteLine("🔄✅ Flux installed successfully...");
+    Console.WriteLine("✅ Flux installed successfully...");
   }
 
   public async Task UninstallAsync()
   {
     Console.WriteLine("🔄 Uninstalling Flux...");
     await FluxCLIWrapper.UninstallAsync();
-    Console.WriteLine("🔄✅ Flux uninstalled successfully...");
+    Console.WriteLine("✅ Flux uninstalled successfully...");
   }
 
   public async Task PushManifestsAsync(string ociUrl, string manifestsPath)
   {
     Console.WriteLine($"📥 Pushing manifests to {ociUrl}...");
     await FluxCLIWrapper.PushManifestsAsync(ociUrl, manifestsPath);
-    Console.WriteLine("📥✅ Manifests pushed successfully...");
+    Console.WriteLine("✅ Manifests pushed successfully...");
   }
 }
