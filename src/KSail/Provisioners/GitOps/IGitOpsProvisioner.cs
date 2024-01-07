@@ -7,4 +7,6 @@ interface IGitOpsProvisioner : IProvisioner
   Task InstallAsync(string sourceUrl, string fluxKustomizationPathOption);
 
   Task UninstallAsync();
+
+  Task PushManifestsAsync(string ociUrl, string manifestsPath);
 }

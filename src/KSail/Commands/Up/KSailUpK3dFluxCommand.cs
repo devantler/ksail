@@ -9,16 +9,20 @@ namespace KSail.Commands.Up;
 sealed class KSailUpK3dFluxCommand : Command
 {
   readonly ManifestsPathOption _manifestsPathOption = new();
+  readonly FluxKustomizationPathOption _fluxKustomizationPathOption;
   readonly SOPSOption _sopsOption = new();
 
   internal KSailUpK3dFluxCommand(NameOption nameOption, PullThroughRegistriesOption pullThroughRegistriesOption, ConfigPathOption configPathOption) : base("flux", "create a K3d cluster with Flux GitOps")
   {
+    _fluxKustomizationPathOption = new FluxKustomizationPathOption(nameOption.Name);
     AddOption(_manifestsPathOption);
+    AddOption(_fluxKustomizationPathOption);
     AddOption(_sopsOption);
-    this.SetHandler(async (name, pullThroughRegistries, configPath, manifestsPath, sops) =>
+    this.SetHandler(async (name, pullThroughRegistries, configPath, manifestsPath, _fluxKustomizationPath, sops) =>
     {
-      await KSailUpK3dCommandHandler.Handle(name, pullThroughRegistries, configPath);
-      await KSailUpK3dFluxCommandHandler.Handle(manifestsPath, sops);
-    }, nameOption, pullThroughRegistriesOption, configPathOption, _manifestsPathOption, _sopsOption);
+      bool shouldPrompt = string.IsNullOrEmpty(name) && string.IsNullOrEmpty(configPath);
+      await KSailUpK3dCommandHandler.Handle(shouldPrompt, name, pullThroughRegistries, configPath);
+      await KSailUpK3dFluxCommandHandler.Handle(shouldPrompt, name, manifestsPath, _fluxKustomizationPath, sops);
+    }, nameOption, pullThroughRegistriesOption, configPathOption, _manifestsPathOption, _fluxKustomizationPathOption, _sopsOption);
   }
 }

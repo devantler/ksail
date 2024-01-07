@@ -27,4 +27,11 @@ sealed class FluxProvisioner : IGitOpsProvisioner
     await FluxCLIWrapper.UninstallAsync();
     Console.WriteLine("🔄✅ Flux uninstalled successfully...");
   }
+
+  public async Task PushManifestsAsync(string ociUrl, string manifestsPath)
+  {
+    Console.WriteLine($"📥 Pushing manifests to {ociUrl}...");
+    await FluxCLIWrapper.PushManifestsAsync(ociUrl, manifestsPath);
+    Console.WriteLine("📥✅ Manifests pushed successfully...");
+  }
 }

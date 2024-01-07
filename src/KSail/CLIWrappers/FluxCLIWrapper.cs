@@ -1,5 +1,6 @@
 using CliWrap;
 using CliWrap.EventStream;
+using IdentityModel;
 using System.Runtime.InteropServices;
 
 namespace KSail.CLIWrappers;
@@ -44,7 +45,7 @@ static class FluxCLIWrapper
     var cmd = Flux.WithArguments(
       [
         "create source oci flux-system",
-        $"--url {sourceUrl}",
+        $"--url={sourceUrl}",
         "--insecure",
         "--tag=latest"
       ]
@@ -58,7 +59,9 @@ static class FluxCLIWrapper
   {
     var cmd = Flux.WithArguments(
       [
-        "create kustomization flux-system",
+        "create",
+        "kustomization",
+        "flux-system",
         "--source=OCIRepository/flux-system",
         $"--path={fluxKustomizationPathOption}"
       ]
@@ -71,6 +74,35 @@ static class FluxCLIWrapper
   internal static async Task UninstallAsync()
   {
     await foreach (var cmdEvent in Flux.WithArguments("uninstall").ListenAsync())
+    {
+      Console.WriteLine(cmdEvent);
+    }
+  }
+
+  internal static async Task PushManifestsAsync(string ociUrl, string manifestsPath)
+  {
+    long currentTimeEpoch = DateTime.Now.ToEpochTime();
+    var pushCmd = Flux.WithArguments(
+      [
+        "push",
+        "artifact",
+        $"{ociUrl}:{currentTimeEpoch}",
+        $"--path={manifestsPath}",
+        $"--source={ociUrl}",
+        $"--revision={currentTimeEpoch}",
+      ]
+    );
+    var tagCmd = Flux.WithArguments(
+      [
+        $"tag artifact {ociUrl}:{currentTimeEpoch}",
+        "--tag=latest"
+      ]
+    );
+    await foreach (var cmdEvent in pushCmd.ListenAsync())
+    {
+      Console.WriteLine(cmdEvent);
+    }
+    await foreach (var cmdEvent in tagCmd.ListenAsync())
     {
       Console.WriteLine(cmdEvent);
     }

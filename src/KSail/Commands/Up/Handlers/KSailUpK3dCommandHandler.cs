@@ -10,9 +10,8 @@ static class KSailUpK3dCommandHandler
   static readonly K3dProvisioner _clusterProvisioner = new();
   static readonly DockerProvisioner _registryProvisioner = new();
 
-  internal static async Task Handle(string name, bool pullThroughRegistries, string configPath)
+  internal static async Task Handle(bool shouldPrompt, string name, bool pullThroughRegistries, string configPath)
   {
-    bool shouldPrompt = string.IsNullOrEmpty(name) && string.IsNullOrEmpty(configPath);
     if (shouldPrompt)
     {
       bool shouldUseConfig = bool.Parse(ConsoleUtils.Prompt("Use config", "true", RegexFilters.YesNoFilter()));

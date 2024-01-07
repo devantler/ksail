@@ -1,6 +1,8 @@
+using KSail.Commands.Update.Handlers;
 using KSail.Provisioners.ContainerOrchestrator;
 using KSail.Provisioners.GitOps;
 using KSail.Provisioners.SecretManagement;
+using KSail.Utils;
 
 namespace KSail.Commands.Up.Handlers;
 
@@ -11,15 +13,20 @@ static class KSailUpK3dFluxCommandHandler
   static readonly DockerProvisioner _dockerRegistryProvisioner = new();
   static readonly SOPSProvisioner _secretManagementProvisioner = new();
 
-  internal static async Task Handle(string manifestsPath, bool sops)
+  internal static async Task Handle(bool shouldPrompt, string name, string manifestsPath, string fluxKustomizationPath, bool sops)
   {
+    if (shouldPrompt)
+    {
+      manifestsPath = ConsoleUtils.Prompt("Path to k8s manifests", "./k8s", RegexFilters.PathFilter());
+      fluxKustomizationPath = ConsoleUtils.Prompt("Path to Flux kustomization relative to the manifests folder", $"./clusters/{name}/flux", RegexFilters.PathFilter());
+      sops = bool.Parse(ConsoleUtils.Prompt("Use SOPS", "true", RegexFilters.YesNoFilter()));
+    }
     Console.WriteLine();
     Console.WriteLine("🧮 Creating OCI registry...");
     await _dockerRegistryProvisioner.CreateRegistryAsync("manifests", 5050);
 
     Console.WriteLine();
-    Console.WriteLine("📥 Pushing manifests to OCI registry...");
-    Console.WriteLine("📥⚠️ Not implemented yet...");
+    await KSailUpdateCommandHandler.Handle(name, manifestsPath);
 
     Console.WriteLine();
     _ = _kubernetesProvisioner.CreateNamespaceAsync("flux-system");
@@ -34,6 +41,6 @@ static class KSailUpK3dFluxCommandHandler
 
     Console.WriteLine();
     await _gitOpsProvisioner.CheckPrerequisitesAsync();
-    await _gitOpsProvisioner.InstallAsync("oci://localhost:5050/manifests", manifestsPath);
+    await _gitOpsProvisioner.InstallAsync($"oci://localhost:5050/{name}", fluxKustomizationPath);
   }
 }

@@ -17,9 +17,11 @@ sealed class KSailUpK3dCommand : Command
     AddGlobalOptions();
     AddCommands();
 
-    this.SetHandler(
-      KSailUpK3dCommandHandler.Handle, _nameOption, _pullThroughRegistriesOption, _configPathOption
-    );
+    this.SetHandler(async (name, pullThroughRegistries, configPath) =>
+    {
+      bool shouldPrompt = string.IsNullOrEmpty(name) && string.IsNullOrEmpty(configPath);
+      await KSailUpK3dCommandHandler.Handle(shouldPrompt, name, pullThroughRegistries, configPath);
+    }, _nameOption, _pullThroughRegistriesOption, _configPathOption);
   }
 
   void AddGlobalOptions()
