@@ -25,25 +25,17 @@ static class GPGCLIWrapper
 
   internal static async Task<string> CreateGPGKeyAsync()
   {
-    await foreach (
-      var cmdEvent in GPG.WithArguments(
-        "--batch --passphrase '' --quick-gen-key ksail default default"
-      ).WithValidation(
-        CommandResultValidation.None
-      ).ListenAsync()
-    )
-    {
-      Console.WriteLine(cmdEvent);
-    }
+    var gpgGenKeyCmd = GPG.WithArguments("--batch --passphrase '' --quick-gen-key ksail default default");
+    _ = await CLIRunner.RunAsync(gpgGenKeyCmd, CommandResultValidation.None);
 
-    var listKeysResult = await GPG.WithArguments("--list-keys -uid ksail").ExecuteBufferedAsync();
-    string? fingerprint = listKeysResult.StandardOutput.Split('\n')[1]?.Trim();
+    var listKSailKeyCmd = GPG.WithArguments("--list-keys -uid ksail");
+    string listKSailKeyCmdResult = await CLIRunner.RunAsync(listKSailKeyCmd);
+    string? fingerprint = listKSailKeyCmdResult.Split('\n')[1]?.Trim();
     if (string.IsNullOrEmpty(fingerprint))
     {
       throw new InvalidOperationException("🚨 Could not find the fingerprint of the newly created GPG key.");
     }
-
-    var exportResult = await GPG.WithArguments($"--export-secret-keys --armor {fingerprint}").ExecuteBufferedAsync();
-    return exportResult.StandardOutput;
+    var exportPrivateKeyCmd = GPG.WithArguments($"--export-secret-keys --armor {fingerprint}");
+    return await CLIRunner.RunAsync(exportPrivateKeyCmd);
   }
 }

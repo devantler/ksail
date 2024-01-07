@@ -25,25 +25,19 @@ static class K3dCLIWrapper
 
   internal static async Task CreateClusterAsync(string name)
   {
-    await foreach (var cmdEvent in K3d.WithArguments($"cluster create {name}").ListenAsync())
-    {
-      Console.WriteLine(cmdEvent);
-    }
+    var cmd = K3d.WithArguments($"cluster create {name}");
+    _ = await CLIRunner.RunAsync(cmd);
   }
 
   internal static async Task CreateClusterFromConfigAsync(string configPath)
   {
-    await foreach (var cmdEvent in K3d.WithArguments($"cluster create --config {configPath}").ListenAsync())
-    {
-      Console.WriteLine(cmdEvent);
-    }
+    var cmd = K3d.WithArguments($"cluster create --config {configPath}");
+    _ = await CLIRunner.RunAsync(cmd);
   }
 
   internal static async Task DeleteClusterAsync(string name)
   {
-    await foreach (var cmdEvent in K3d.WithArguments($"cluster delete {name}").ListenAsync())
-    {
-      Console.WriteLine(cmdEvent);
-    }
+    var cmd = K3d.WithArguments($"cluster delete {name}");
+    _ = await CLIRunner.RunAsync(cmd);
   }
 }

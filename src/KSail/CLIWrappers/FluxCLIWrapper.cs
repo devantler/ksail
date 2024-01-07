@@ -26,18 +26,14 @@ static class FluxCLIWrapper
 
   internal static async Task CheckPrerequisitesAsync()
   {
-    await foreach (var cmdEvent in Flux.WithArguments("check --pre").ListenAsync())
-    {
-      Console.WriteLine(cmdEvent);
-    }
+    var cmd = Flux.WithArguments("check --pre");
+    await CLIRunner.RunAsync(cmd);
   }
 
   internal static async Task InstallAsync()
   {
-    await foreach (var cmdEvent in Flux.WithArguments("install").ListenAsync())
-    {
-      Console.WriteLine(cmdEvent);
-    }
+    var cmd = Flux.WithArguments("install");
+    await CLIRunner.RunAsync(cmd);
   }
 
   internal static async Task CreateSourceOCIAsync(string sourceUrl)
@@ -53,10 +49,7 @@ static class FluxCLIWrapper
         "--tag=latest"
       ]
     );
-    await foreach (var cmdEvent in cmd.ListenAsync())
-    {
-      Console.WriteLine(cmdEvent);
-    }
+    await CLIRunner.RunAsync(cmd);
   }
   internal static async Task CreateKustomizationAsync(string fluxKustomizationPathOption)
   {
@@ -69,17 +62,12 @@ static class FluxCLIWrapper
         $"--path={fluxKustomizationPathOption}"
       ]
     );
-    await foreach (var cmdEvent in cmd.ListenAsync())
-    {
-      Console.WriteLine(cmdEvent);
-    }
+    await CLIRunner.RunAsync(cmd);
   }
   internal static async Task UninstallAsync()
   {
-    await foreach (var cmdEvent in Flux.WithArguments("uninstall").ListenAsync())
-    {
-      Console.WriteLine(cmdEvent);
-    }
+    var cmd = Flux.WithArguments("uninstall");
+    await CLIRunner.RunAsync(cmd);
   }
 
   internal static async Task PushManifestsAsync(string ociUrl, string manifestsPath)
@@ -103,13 +91,7 @@ static class FluxCLIWrapper
         "--tag=latest"
       ]
     );
-    await foreach (var cmdEvent in pushCmd.ListenAsync())
-    {
-      Console.WriteLine(cmdEvent);
-    }
-    await foreach (var cmdEvent in tagCmd.ListenAsync())
-    {
-      Console.WriteLine(cmdEvent);
-    }
+    await CLIRunner.RunAsync(pushCmd);
+    await CLIRunner.RunAsync(tagCmd);
   }
 }
