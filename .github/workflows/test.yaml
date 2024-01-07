@@ -62,10 +62,9 @@ jobs:
           mv ./src/KSail/bin/Release/net8.0/linux-x64/publish/ksail ./.github/ksail
           cd ./.github
 
-          echo "Test K3d"
-          ./ksail up k3d --config ./.github/k3d/k3d-config.yaml
-          ./ksail down k3d --name test
+          echo "Test K3d (no config)"
+          ./ksail up k3d flux -n test
 
-          echo "Test Talos"
-          ./ksail up talos --name test
-          ./ksail down talos --name test
+          echo "Test K3d (with config)"
+          ./ksail up k3d flux --config ./.github/k3d/k3d-config.yaml
+          ./ksail down k3d --name test
