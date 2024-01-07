@@ -28,7 +28,7 @@ static class KSailUpK3dFluxCommandHandler
     await KSailUpdateCommandHandler.Handle(name, manifestsPath);
 
     Console.WriteLine();
-    _ = _kubernetesProvisioner.CreateNamespaceAsync("flux-system");
+    await _kubernetesProvisioner.CreateNamespaceAsync("flux-system");
 
     if (sops)
     {

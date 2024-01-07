@@ -29,7 +29,6 @@ static class KSailUpK3dCommandHandler
     if (pullThroughRegistries)
     {
       Console.WriteLine();
-      Console.WriteLine("🧮 Creating pull-through registries...");
       await _registryProvisioner.CreateRegistryAsync("proxy-docker.io", 5001, new Uri("https://registry-1.docker.io"));
       await _registryProvisioner.CreateRegistryAsync("proxy-registry.k8s.io", 5002, new Uri("https://registry.k8s.io"));
       await _registryProvisioner.CreateRegistryAsync("proxy-gcr.io", 5003, new Uri("https://gcr.io"));
@@ -38,7 +37,7 @@ static class KSailUpK3dCommandHandler
       //TODO: Add missing major registries
     }
     Console.WriteLine();
-    Console.WriteLine($"🚀 Provisioning K3d cluster '{name}'...");
+
     await _clusterProvisioner.ProvisionAsync(name, configPath);
   }
 }

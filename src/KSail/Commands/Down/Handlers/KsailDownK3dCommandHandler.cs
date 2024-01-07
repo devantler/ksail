@@ -10,8 +10,6 @@ static class KSailDownK3dCommandHandler
   internal static async Task Handle(string name)
   {
     name ??= ConsoleUtils.Prompt("Please enter the name of the cluster to destroy");
-
-    Console.WriteLine($"🔥 Destroying K3d cluster '{name}'...");
     await _provisioner.DeprovisionAsync(name);
   }
 }

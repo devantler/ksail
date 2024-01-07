@@ -13,7 +13,7 @@ sealed class DockerProvisioner : IContainerOrchestratorProvisioner
   {
     if (proxyUrl != null)
     {
-      Console.WriteLine($"🧮 Creating pull-through registry '{name}' on port '{port}' as proxy for '{proxyUrl}'...");
+      Console.WriteLine($"🧮 Creating pull-through registry '{name}' on port '{port}' for '{proxyUrl}'...");
     }
     else
     {
