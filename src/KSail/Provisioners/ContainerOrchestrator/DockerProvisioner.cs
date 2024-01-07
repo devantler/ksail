@@ -2,14 +2,14 @@
 using Docker.DotNet;
 using Docker.DotNet.Models;
 
-namespace KSail.Provisioners.Registry;
+namespace KSail.Provisioners.ContainerOrchestrator;
 
-sealed class DockerRegistryProvisioner : IRegistryProvisioner
+sealed class DockerProvisioner : IContainerOrchestratorProvisioner
 {
   readonly DockerClient _dockerClient = new DockerClientConfiguration(
     new Uri("unix:///var/run/docker.sock")
   ).CreateClient();
-  public async Task CreateRegistryAsync(string name, int port, Uri? proxyUrl = null)
+  internal async Task CreateRegistryAsync(string name, int port, Uri? proxyUrl = null)
   {
     bool registryExists = await GetContainerId(name) != null;
 
@@ -51,7 +51,7 @@ sealed class DockerRegistryProvisioner : IRegistryProvisioner
     Console.WriteLine($"🧮✅ Registry '{name}' created successfully.");
   }
 
-  public async Task DeleteRegistryAsync(string name)
+  internal async Task DeleteRegistryAsync(string name)
   {
     string? containerId = await GetContainerId(name);
 

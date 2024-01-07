@@ -1,17 +1,30 @@
 
+using KSail.CLIWrappers;
+
 namespace KSail.Provisioners.GitOps;
 
-/// <summary>
-/// A provisioner for provisioning Flux.
-/// </summary>
-public class FluxProvisioner : IGitOpsProvisioner
+sealed class FluxProvisioner : IGitOpsProvisioner
 {
-  /// <inheritdoc/>
-  public Task CheckPrerequisitesAsync() => throw new NotImplementedException();
+  public async Task CheckPrerequisitesAsync()
+  {
+    Console.WriteLine("🔄 Checking Flux prerequisites are satisfied...");
+    await FluxCLIWrapper.CheckPrerequisitesAsync();
+    Console.WriteLine("🔄✅ Flux prerequisites are satisfied...");
+  }
 
-  /// <inheritdoc/>
-  public Task InstallAsync() => throw new NotImplementedException();
+  public async Task InstallAsync(string sourceUrl, string fluxKustomizationPathOption)
+  {
+    Console.WriteLine("🔄 Installing Flux...");
+    await FluxCLIWrapper.InstallAsync();
+    await FluxCLIWrapper.CreateSourceOCIAsync(sourceUrl);
+    await FluxCLIWrapper.CreateKustomizationAsync(fluxKustomizationPathOption);
+    Console.WriteLine("🔄✅ Flux installed successfully...");
+  }
 
-  /// <inheritdoc/>
-  public Task UninstallAsync() => throw new NotImplementedException();
+  public async Task UninstallAsync()
+  {
+    Console.WriteLine("🔄 Uninstalling Flux...");
+    await FluxCLIWrapper.UninstallAsync();
+    Console.WriteLine("🔄✅ Flux uninstalled successfully...");
+  }
 }

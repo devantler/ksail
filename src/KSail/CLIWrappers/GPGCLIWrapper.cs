@@ -4,16 +4,9 @@ using CliWrap.EventStream;
 
 namespace KSail.CLIWrappers;
 
-/// <summary>
-/// A CLI wrapper for the 'gpg' binary.
-/// </summary>
-public static class GPGCLIWrapper
+static class GPGCLIWrapper
 {
-  /// <summary>
-  /// The 'gpg' binary.
-  /// </summary>
-  /// <exception cref="PlatformNotSupportedException"></exception>
-  public static Command GPG
+  static Command GPG
   {
     get
     {
@@ -30,12 +23,7 @@ public static class GPGCLIWrapper
     }
   }
 
-  /// <summary>
-  /// Creates a GPG key.
-  /// </summary>
-  /// <returns>The private key.</returns>
-  /// <exception cref="InvalidOperationException"></exception>
-  public static async Task<string> CreateGPGKeyAsync()
+  internal static async Task<string> CreateGPGKeyAsync()
   {
     await foreach (
       var cmdEvent in GPG.WithArguments(

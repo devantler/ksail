@@ -2,12 +2,8 @@ using KSail.CLIWrappers;
 
 namespace KSail.Provisioners.Cluster;
 
-/// <summary>
-/// A provisioner for provisioning K3d clusters.
-/// </summary>
-public class K3dProvisioner() : IClusterProvisioner
+sealed class K3dProvisioner() : IClusterProvisioner
 {
-  /// <inheritdoc/>
   public async Task ProvisionAsync(string name, string? configPath = null)
   {
     if (!string.IsNullOrEmpty(configPath))
@@ -20,7 +16,6 @@ public class K3dProvisioner() : IClusterProvisioner
     }
   }
 
-  /// <inheritdoc/>
   public async Task DeprovisionAsync(string name)
-    => await K3dCLIWrapper.DeleteClusterAsync(name);
+   => await K3dCLIWrapper.DeleteClusterAsync(name);
 }

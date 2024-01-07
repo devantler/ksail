@@ -4,16 +4,9 @@ using CliWrap;
 
 namespace KSail.CLIWrappers;
 
-/// <summary>
-/// A CLI wrapper for the 'kubectl' binary.
-/// </summary>
-public static class KubectlWrapper
+static class KubectlWrapper
 {
-  /// <summary>
-  /// The 'kubectl' binary.
-  /// </summary>
-  /// <exception cref="PlatformNotSupportedException"></exception>
-  public static Command Kubeconform
+  internal static Command Kubectl
   {
     get
     {

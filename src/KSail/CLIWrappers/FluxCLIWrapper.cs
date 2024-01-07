@@ -1,17 +1,12 @@
 using CliWrap;
+using CliWrap.EventStream;
 using System.Runtime.InteropServices;
 
 namespace KSail.CLIWrappers;
-/// <summary>
-/// A CLI wrapper for the 'flux' binary.
-/// </summary>
-public static class FluxCLIWrapper
+
+static class FluxCLIWrapper
 {
-  /// <summary>
-  /// The 'flux' binary.
-  /// </summary>
-  /// <exception cref="PlatformNotSupportedException"></exception>
-  public static Command Flux
+  static Command Flux
   {
     get
     {
@@ -25,6 +20,59 @@ public static class FluxCLIWrapper
         _ => throw new PlatformNotSupportedException()
       };
       return Cli.Wrap($"assets/{binary}");
+    }
+  }
+
+  internal static async Task CheckPrerequisitesAsync()
+  {
+    await foreach (var cmdEvent in Flux.WithArguments("check --pre").ListenAsync())
+    {
+      Console.WriteLine(cmdEvent);
+    }
+  }
+
+  internal static async Task InstallAsync()
+  {
+    await foreach (var cmdEvent in Flux.WithArguments("install").ListenAsync())
+    {
+      Console.WriteLine(cmdEvent);
+    }
+  }
+
+  internal static async Task CreateSourceOCIAsync(string sourceUrl)
+  {
+    var cmd = Flux.WithArguments(
+      [
+        "create source oci flux-system",
+        $"--url {sourceUrl}",
+        "--insecure",
+        "--tag=latest"
+      ]
+    );
+    await foreach (var cmdEvent in cmd.ListenAsync())
+    {
+      Console.WriteLine(cmdEvent);
+    }
+  }
+  internal static async Task CreateKustomizationAsync(string fluxKustomizationPathOption)
+  {
+    var cmd = Flux.WithArguments(
+      [
+        "create kustomization flux-system",
+        "--source=OCIRepository/flux-system",
+        $"--path={fluxKustomizationPathOption}"
+      ]
+    );
+    await foreach (var cmdEvent in cmd.ListenAsync())
+    {
+      Console.WriteLine(cmdEvent);
+    }
+  }
+  internal static async Task UninstallAsync()
+  {
+    await foreach (var cmdEvent in Flux.WithArguments("uninstall").ListenAsync())
+    {
+      Console.WriteLine(cmdEvent);
     }
   }
 }

@@ -1,26 +1,16 @@
 using KSail.Commands.Down.Handlers;
 using KSail.Provisioners.Cluster;
-using KSail.Provisioners.Registry;
+using KSail.Provisioners.ContainerOrchestrator;
 using KSail.Utils;
 
 namespace KSail.Commands.Up.Handlers;
 
-/// <summary>
-/// The command handler responsible for handling the <c>ksail up k3d</c> command.
-/// </summary>
-public static class KSailUpK3dCommandHandler
+static class KSailUpK3dCommandHandler
 {
   static readonly K3dProvisioner _clusterProvisioner = new();
-  static readonly DockerRegistryProvisioner _registryProvisioner = new();
+  static readonly DockerProvisioner _registryProvisioner = new();
 
-  /// <summary>
-  /// Handles the <c>ksail up k3d</c> command.
-  /// </summary>
-  /// <param name="name">The name of the cluster.</param>
-  /// <param name="pullThroughRegistries">Whether to create pull-through registries.</param>
-  /// <param name="configPath">The path to the cluster configuration file.</param>
-  /// <returns>A task representing the asynchronous operation.</returns>
-  public static async Task Handle(string name, bool pullThroughRegistries, string configPath)
+  internal static async Task Handle(string name, bool pullThroughRegistries, string configPath)
   {
     bool shouldPrompt = string.IsNullOrEmpty(name) && string.IsNullOrEmpty(configPath);
     if (shouldPrompt)

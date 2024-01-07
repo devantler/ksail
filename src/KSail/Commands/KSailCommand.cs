@@ -1,20 +1,18 @@
 using System.CommandLine;
 using KSail.Commands.Down;
+using KSail.Commands.List;
 using KSail.Commands.Up;
+using KSail.Commands.Update;
+using KSail.Commands.Validate;
+using KSail.Commands.Verify;
 using KSail.Presentation.Commands;
 using Spectre.Console;
 
 namespace KSail.Commands;
 
-/// <summary>
-/// The root command responsible for setting up the KSail CLI entrypoint.
-/// </summary>
-public class KSailCommand : RootCommand
+sealed class KSailCommand : RootCommand
 {
-  /// <summary>
-  /// Initializes a new instance of the <see cref="KSailCommand"/> class.
-  /// </summary>
-  public KSailCommand() : base("KSail is a CLI tool for provisioning K8s clusters.")
+  internal KSailCommand() : base("KSail is a CLI tool for provisioning K8s clusters.")
   {
     AddCommand(new UpCommand());
     AddCommand(new DownCommand());
