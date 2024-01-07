@@ -2,7 +2,6 @@ using System.CommandLine;
 using KSail.Commands.Up.Handlers;
 using KSail.Commands.Up.Options;
 using KSail.Options;
-using KSail.Presentation.Commands.Up.Options;
 
 namespace KSail.Commands.Up;
 

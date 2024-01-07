@@ -4,5 +4,9 @@ interface ISecretManagementProvisioner : IProvisioner
 {
   Task CreateKeysAsync();
 
-  Task DeploySecretManagementAsync();
+  Task ProvisionAsync();
+
+  Task ShowPublicKeyAsync();
+
+  Task ShowPrivateKeyAsync();
 }

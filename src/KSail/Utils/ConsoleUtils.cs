@@ -44,4 +44,8 @@ static class ConsoleUtils
     Console.WriteLine();
     return input;
   }
+
+  internal static bool PromptLogin() =>
+    //TODO: Implement login
+    true;
 }

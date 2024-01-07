@@ -1,3 +1,4 @@
+using System.Text;
 using CliWrap;
 using CliWrap.EventStream;
 
@@ -5,15 +6,18 @@ namespace KSail.CLIWrappers;
 
 static class CLIRunner
 {
-  public static async Task<string> RunAsync(Command command, CommandResultValidation validation = CommandResultValidation.ZeroExitCode)
+  public static async Task<string> RunAsync(Command command, CommandResultValidation validation = CommandResultValidation.ZeroExitCode, bool silent = false)
   {
-    string result = "";
+    StringBuilder result = new();
     try
     {
       await foreach (var cmdEvent in command.WithValidation(validation).ListenAsync())
       {
-        Console.WriteLine(cmdEvent);
-        result += cmdEvent;
+        if (!silent)
+        {
+          Console.WriteLine(cmdEvent);
+        }
+        _ = result.AppendLine(cmdEvent.ToString());
       }
     }
     catch (Exception)
@@ -21,6 +25,6 @@ static class CLIRunner
       Console.WriteLine($"🚨 An error occurred while running '{command}'...");
       Environment.Exit(1);
     }
-    return result;
+    return result.ToString();
   }
 }

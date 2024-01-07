@@ -39,7 +39,8 @@ static class KSailUpK3dFluxCommandHandler
       Console.WriteLine();
       Console.WriteLine("🔐 Adding SOPS GPG key...");
       await _secretManagementProvisioner.CreateKeysAsync();
-      await _secretManagementProvisioner.DeploySecretManagementAsync();
+      await _secretManagementProvisioner.ProvisionAsync();
+      await SOPSProvisioner.CreateSOPSConfigAsync(manifestsPath);
     }
 
     Console.WriteLine();
