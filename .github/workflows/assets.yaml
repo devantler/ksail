@@ -13,7 +13,7 @@ jobs:
       - name: ⤵️ Get binaries
         run: |
           flux_version_latest=$(curl -s https://api.github.com/repos/fluxcd/flux2/releases/latest | grep tag_name | cut -d '"' -f 4)
-          if [ -f "src/KSail/assets/flux_version_*" ]; then
+          if [ -n "$(find src/KSail/assets -name 'flux_version_*')" ]; then
             flux_version_current=$(ls -l src/KSail/assets/flux_version_* | cut -d '_' -f 3)
           else
             flux_version_current="0.0.0"
@@ -50,7 +50,7 @@ jobs:
             chmod +x src/KSail/assets/flux_linux_arm64
 
             echo "Update version file"
-            if [ -f src/KSail/assets/flux_version_"${flux_version_current}" ]; then
+            if [ -n "$(find src/KSail/assets -name 'flux_version_${flux_version_current}')" ]; then
               mv src/KSail/assets/flux_version_"${flux_version_current}" src/KSail/assets/flux_version_"${flux_version_latest}"
             else
               touch src/KSail/assets/flux_version_"${flux_version_latest}"
@@ -60,7 +60,7 @@ jobs:
           fi
 
           k3d_version_latest=$(curl -s https://api.github.com/repos/k3d-io/k3d/releases/latest | grep tag_name | cut -d '"' -f 4)
-          if [ -f "src/KSail/assets/k3d_version_*" ]; then
+          if [ -n "$(find src/KSail/assets -name 'k3d_version_*')" ]; then
             k3d_version_current=$(find src/KSail/assets/k3d_version* | cut -d '_' -f 3)
           else
             k3d_version_current="0.0.0"
@@ -81,7 +81,7 @@ jobs:
             chmod +x src/KSail/assets/k3d_linux_arm64
 
             echo "Update version file"
-            if [ -f src/KSail/assets/k3d_version_"${k3d_version_current}" ]; then
+            if [ -n "$(find src/KSail/assets -name 'k3d_version_${k3d_version_current}')" ]; then
               mv src/KSail/assets/k3d_version_"${k3d_version_current}" src/KSail/assets/k3d_version_"${k3d_version_latest}"
             else
               touch src/KSail/assets/k3d_version_"${k3d_version_latest}"
@@ -91,7 +91,7 @@ jobs:
           fi
 
           kubeconform_version_latest=$(curl -s https://api.github.com/repos/yannh/kubeconform/releases/latest | grep tag_name | cut -d '"' -f 4)
-          if [ -f "src/KSail/assets/kubeconform_version_*" ]; then
+          if [ -n "$(find src/KSail/assets -name 'kubeconform_version_*')" ]; then
             kubeconform_version_current=$(find src/KSail/assets/kubeconform_version* | cut -d '_' -f 3)
           else
             kubeconform_version_current="0.0.0"
@@ -128,7 +128,7 @@ jobs:
             chmod +x src/KSail/assets/kubeconform_linux_arm64
 
             echo "Update version file"
-            if [ -f src/KSail/assets/kubeconform_version_"${kubeconform_version_current}" ]; then
+            if [ -n "$(find src/KSail/assets -name 'kubeconform_version_${kubeconform_version_current}')" ]; then
               mv src/KSail/assets/kubeconform_version_"${kubeconform_version_current}" src/KSail/assets/kubeconform_version_"${kubeconform_version_latest}"
             else
               touch src/KSail/assets/kubeconform_version_"${kubeconform_version_latest}"
@@ -138,7 +138,7 @@ jobs:
           fi
 
           kustomize_version_latest=$(curl -s https://api.github.com/repos/kubernetes-sigs/kustomize/releases/latest | grep tag_name | cut -d '"' -f 4 | sed 's/kustomize\///')
-          if [ -f "src/KSail/assets/kustomize_version_*" ]; then
+          if [ -n "$(find src/KSail/assets -name 'kustomize_version_*')" ]; then
             kustomize_version_current=$(find src/KSail/assets/kustomize_version* | cut -d '_' -f 3)
           else
             kustomize_version_current="0.0.0"
@@ -175,7 +175,7 @@ jobs:
             chmod +x src/KSail/assets/kustomize_linux_arm64
 
             echo "Update version file"
-            if [ -f src/KSail/assets/kustomize_version_"${kustomize_version_current}" ]; then
+            if [ -n "$(find src/KSail/assets -name 'kustomize_version_${kustomize_version_current}')" ]; then
               mv src/KSail/assets/kustomize_version_"${kustomize_version_current}" src/KSail/assets/kustomize_version_"${kustomize_version_latest}"
             else
               touch src/KSail/assets/kustomize_version_"${kustomize_version_latest}"
@@ -185,7 +185,7 @@ jobs:
           fi
 
           talosctl_version_latest=$(curl -s https://api.github.com/repos/siderolabs/talos/releases/latest | grep tag_name | cut -d '"' -f 4)
-          if [ -f "src/KSail/assets/talosctl_version_*" ]; then
+          if [ -n "$(find src/KSail/assets -name 'talosctl_version_*')" ]; then
             talosctl_version_current=$(find src/KSail/assets/talosctl_version* | cut -d '_' -f 3)
           else
             talosctl_version_current="0.0.0"
@@ -206,7 +206,7 @@ jobs:
             chmod +x src/KSail/assets/talosctl_linux_arm64
 
             echo "Update version file"
-            if [ -f src/KSail/assets/talosctl_version_"${talosctl_version_current}" ]; then
+            if [ -n "$(find src/KSail/assets -name 'talosctl_version_${talosctl_version_current}')" ]; then
               mv src/KSail/assets/talosctl_version_"${talosctl_version_current}" src/KSail/assets/talosctl_version_"${talosctl_version_latest}"
             else
               touch src/KSail/assets/talosctl_version_"${talosctl_version_latest}"
