@@ -17,14 +17,14 @@ sealed partial class SOPSProvisioner : ISecretManagementProvisioner, IDisposable
 
   public async Task CreateKeysAsync()
   {
-    string? existingKey = Environment.GetEnvironmentVariable("KSAIL_SOPS_GPG_KEY");
+    string? existingKey = Environment.GetEnvironmentVariable("KSAIL_SOPS_PRIVATE_GPG_KEY");
     if (!string.IsNullOrWhiteSpace(existingKey))
     {
-      Console.WriteLine("✅ Using existing SOPS GPG key from environment variable KSAIL_SOPS_GPG_KEY.");
+      Console.WriteLine("✅ Using existing SOPS GPG key from environment variables...");
       return;
     }
 
-    Console.WriteLine("🔐🔑 Generating new SOPS GPG key and saving it to environment variable KSAIL_SOPS_GPG_KEY...");
+    Console.WriteLine("🔐🔑 Generating new SOPS GPG key and saving it to environment variables...");
     await GPGCLIWrapper.CreateGPGKeyAsync();
     Console.WriteLine("✅ SOPS GPG key generated successfully...");
 
@@ -43,7 +43,7 @@ sealed partial class SOPSProvisioner : ISecretManagementProvisioner, IDisposable
     File.WriteAllText(envFilePath, envFileContent);
     Environment.SetEnvironmentVariable("KSAIL_SOPS_PRIVATE_GPG_KEY", privateKey);
     Environment.SetEnvironmentVariable("KSAIL_SOPS_PUBLIC_GPG_KEY", publicKey);
-    Console.WriteLine("✅ SOPS GPG key saved to environment variable KSAIL_SOPS_GPG_KEY successfully...");
+    Console.WriteLine("✅ SOPS GPG key saved to environment variables successfully.");
   }
 
   public async Task ProvisionAsync()
@@ -99,7 +99,7 @@ sealed partial class SOPSProvisioner : ISecretManagementProvisioner, IDisposable
     }
     else
     {
-      throw new FileNotFoundException("🚨 Could not save SOPS GPG key to environment variable KSAIL_SOPS_GPG_KEY because neither .zshrc nor .bashrc were found in the user's home directory.");
+      throw new FileNotFoundException("🚨 Could not save SOPS GPG key to environment variables because neither .zshrc nor .bashrc were found in the user's home directory.");
     }
   }
 
