@@ -40,6 +40,6 @@ static class KSailUpK3dFluxCommandHandler
 
     Console.WriteLine();
     await _gitOpsProvisioner.CheckPrerequisitesAsync();
-    await _gitOpsProvisioner.InstallAsync($"oci://localhost:5050/{name}", fluxKustomizationPath);
+    await _gitOpsProvisioner.InstallAsync($"oci://host.k3d.internal:5050/{name}", fluxKustomizationPath);
   }
 }

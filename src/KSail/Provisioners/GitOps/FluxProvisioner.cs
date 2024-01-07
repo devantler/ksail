@@ -16,7 +16,9 @@ sealed class FluxProvisioner : IGitOpsProvisioner
   {
     Console.WriteLine("🔄 Installing Flux...");
     await FluxCLIWrapper.InstallAsync();
+    Console.WriteLine("🔄 Creating Flux OCI source...");
     await FluxCLIWrapper.CreateSourceOCIAsync(sourceUrl);
+    Console.WriteLine("🔄 Creating Flux kustomization...");
     await FluxCLIWrapper.CreateKustomizationAsync(fluxKustomizationPathOption);
     Console.WriteLine("🔄✅ Flux installed successfully...");
   }
