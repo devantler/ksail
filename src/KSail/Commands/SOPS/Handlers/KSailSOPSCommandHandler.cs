@@ -10,7 +10,7 @@ static class KSailSOPSCommandHandler
   {
     if (!showPublicKey && !showPrivateKey)
     {
-      if (bool.Parse(ConsoleUtils.Prompt("Show public key", "true", RegexFilters.YesNoFilter())))
+      if (bool.Parse(ConsoleUtils.Prompt("Show public key", "false", RegexFilters.YesNoFilter())))
       {
         showPublicKey = true;
       }

@@ -5,10 +5,10 @@ namespace KSail.Commands.Down;
 
 sealed class KSailDownCommand : Command
 {
+  readonly NameOption _nameOption = new("name of the cluster to destroy");
   internal KSailDownCommand() : base("down", "destroy a K8s cluster")
   {
-    var nameOption = new NameOption("name of the cluster to destroy");
-    AddCommand(new KSailDownK3dCommand(nameOption));
+    AddCommand(new KSailDownK3dCommand(_nameOption));
     this.SetHandler(() => _ = this.InvokeAsync("--help"));
   }
 }
