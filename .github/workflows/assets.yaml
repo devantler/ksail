@@ -137,7 +137,7 @@ jobs:
             echo "No new version of kubeconform found"
           fi
 
-          kustomize_version_latest=$(curl -s https://api.github.com/repos/kubernetes-sigs/kustomize/releases/latest | grep tag_name | cut -d '"' -f 4)
+          kustomize_version_latest=$(curl -s https://api.github.com/repos/kubernetes-sigs/kustomize/releases/latest | grep tag_name | cut -d '"' -f 4 | sed 's/kustomize\///')
           if [ -f "src/KSail/assets/kustomize_version_*" ]; then
             kustomize_version_current=$(find src/KSail/assets/kustomize_version* | cut -d '_' -f 3)
           else
