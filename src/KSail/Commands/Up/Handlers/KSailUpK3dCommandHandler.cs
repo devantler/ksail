@@ -38,6 +38,6 @@ static class KSailUpK3dCommandHandler
     }
     Console.WriteLine();
 
-    await _clusterProvisioner.ProvisionAsync(name, configPath);
+    await _clusterProvisioner.ProvisionAsync(name, pullThroughRegistries, configPath);
   }
 }

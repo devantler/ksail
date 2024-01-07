@@ -11,7 +11,7 @@ interface IClusterProvisioner : IProvisioner
      _ => throw new NotSupportedException($"The '{k8sInDockerBackend}' k8s-in-docker backend is not supported.")
    };
 
-  Task ProvisionAsync(string name, string? configPath = null);
+  Task ProvisionAsync(string name, bool pullThroughRegistries, string? configPath = null);
 
   Task DeprovisionAsync(string name);
 }

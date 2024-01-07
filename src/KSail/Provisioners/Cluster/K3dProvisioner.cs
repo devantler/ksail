@@ -4,7 +4,7 @@ namespace KSail.Provisioners.Cluster;
 
 sealed class K3dProvisioner() : IClusterProvisioner
 {
-  public async Task ProvisionAsync(string name, string? configPath = null)
+  public async Task ProvisionAsync(string name, bool pullThroughRegistries, string? configPath = null)
   {
     Console.WriteLine($"🚀 Provisioning K3d cluster '{name}'...");
     if (!string.IsNullOrEmpty(configPath))
@@ -13,7 +13,7 @@ sealed class K3dProvisioner() : IClusterProvisioner
     }
     else
     {
-      await K3dCLIWrapper.CreateClusterAsync(name);
+      await K3dCLIWrapper.CreateClusterAsync(name, pullThroughRegistries);
     }
     Console.WriteLine($"🚀✅ Provisioned K3d cluster '{name}' successfully...");
   }

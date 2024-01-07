@@ -22,9 +22,18 @@ static class K3dCLIWrapper
     }
   }
 
-  internal static async Task CreateClusterAsync(string name)
+  internal static async Task CreateClusterAsync(string name, bool pullThroughRegistries)
   {
-    var cmd = K3d.WithArguments($"cluster create {name}");
+    var cmd = pullThroughRegistries
+      ? K3d.WithArguments(
+        [
+          "cluster",
+          "create",
+          $"{name}",
+          "--registry-config=./assets/k3d-registry-config.yaml"
+        ]
+      )
+      : K3d.WithArguments($"cluster create {name}");
     _ = await CLIRunner.RunAsync(cmd);
   }
 

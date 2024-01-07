@@ -19,18 +19,15 @@ registries:
       "docker.io":
         endpoint:
           - http://host.k3d.internal:5001
-      "hub.docker.com":
-        endpoint:
-          - http://host.k3d.internal:5002
       "registry.k8s.io":
         endpoint:
-          - http://host.k3d.internal:5003
+          - http://host.k3d.internal:5002
       "gcr.io":
         endpoint:
-          - http://host.k3d.internal:5004
+          - http://host.k3d.internal:5003
       "ghcr.io":
         endpoint:
-          - http://host.k3d.internal:5005
+          - http://host.k3d.internal:5004
       "quay.io":
         endpoint:
-          - http://host.k3d.internal:5006
+          - http://host.k3d.internal:5005
