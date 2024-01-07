@@ -1,6 +1,4 @@
 using CliWrap;
-using CliWrap.Buffered;
-using CliWrap.EventStream;
 
 namespace KSail.CLIWrappers;
 

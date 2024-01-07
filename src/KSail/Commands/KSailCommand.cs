@@ -1,11 +1,7 @@
 using System.CommandLine;
 using KSail.Commands.Down;
-using KSail.Commands.List;
 using KSail.Commands.Up;
 using KSail.Commands.Update;
-using KSail.Commands.Validate;
-using KSail.Commands.Verify;
-using KSail.Presentation.Commands;
 using Spectre.Console;
 
 namespace KSail.Commands;
@@ -17,10 +13,10 @@ sealed class KSailCommand : RootCommand
     AddCommand(new UpCommand());
     AddCommand(new DownCommand());
     AddCommand(new UpdateCommand());
-    AddCommand(new ListCommand());
-    AddCommand(new SOPSCommand());
-    AddCommand(new ValidateCommand());
-    AddCommand(new VerifyCommand());
+    //AddCommand(new ListCommand());
+    //AddCommand(new SOPSCommand());
+    //AddCommand(new ValidateCommand());
+    //AddCommand(new VerifyCommand());
 
     this.SetHandler(() =>
     {
