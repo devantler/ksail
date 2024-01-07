@@ -11,9 +11,13 @@ static class KSailLintCommandHandler
   {
     Console.WriteLine($"🔎 Linting files in '{manifestsPath}'...");
     Console.WriteLine("🔎 Downloading Flux OpenAPI schemas...");
+    const string url = "https://github.com/fluxcd/flux2/releases/latest/download/crd-schemas.tar.gz";
     var directoryInfo = Directory.CreateDirectory("/tmp/flux-crd-schemas/master-standalone-strict");
-    var stream = await _httpClient.GetStreamAsync("https://github.com/fluxcd/flux2/releases/latest/download/crd-schemas.tar.gz");
-    TarFile.ExtractToDirectory(stream, directoryInfo.FullName, true);
+    await using (var file = await _httpClient.GetStreamAsync(url).ConfigureAwait(false))
+    await using (var memoryStream = new MemoryStream())
+    {
+      await TarFile.ExtractToDirectoryAsync(memoryStream, directoryInfo.FullName, true);
+    }
     Console.WriteLine("✅ Flux OpenAPI schemas downloaded successfully...");
 
     ValidateYaml(manifestsPath);
