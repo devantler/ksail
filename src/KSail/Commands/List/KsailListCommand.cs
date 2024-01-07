@@ -1,8 +1,10 @@
 using System.CommandLine;
+using KSail.Commands.List.Handlers;
 
 namespace KSail.Commands.List;
 
-sealed class ListCommand : Command
+sealed class KSailListCommand : Command
 {
-  internal ListCommand() : base("list", "list running clusters") => this.SetHandler(() => _ = this.InvokeAsync("--help"));
+  internal KSailListCommand() : base("list", "list running clusters") =>
+    this.SetHandler(KSailListCommandHandler.Handle);
 }

@@ -24,4 +24,10 @@ sealed class K3dProvisioner() : IClusterProvisioner
     await K3dCLIWrapper.DeleteClusterAsync(name);
     Console.WriteLine($"🔥✅ Destroyed K3d cluster '{name}' successfully...");
   }
+
+  public async Task ListAsync()
+  {
+    Console.WriteLine("📋 Listing K3d clusters...");
+    await K3dCLIWrapper.ListClustersAsync();
+  }
 }

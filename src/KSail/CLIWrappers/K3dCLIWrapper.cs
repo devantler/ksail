@@ -48,4 +48,10 @@ static class K3dCLIWrapper
     var cmd = K3d.WithArguments($"cluster delete {name}");
     _ = await CLIRunner.RunAsync(cmd);
   }
+
+  internal static async Task ListClustersAsync()
+  {
+    var cmd = K3d.WithArguments("cluster list");
+    _ = await CLIRunner.RunAsync(cmd);
+  }
 }

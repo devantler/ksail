@@ -1,5 +1,6 @@
 using System.CommandLine;
 using KSail.Commands.Down;
+using KSail.Commands.List;
 using KSail.Commands.Up;
 using KSail.Commands.Update;
 using Spectre.Console;
@@ -10,10 +11,10 @@ sealed class KSailCommand : RootCommand
 {
   internal KSailCommand() : base("KSail is a CLI tool for provisioning K8s clusters.")
   {
-    AddCommand(new UpCommand());
-    AddCommand(new DownCommand());
-    AddCommand(new UpdateCommand());
-    //AddCommand(new ListCommand());
+    AddCommand(new KSailUpCommand());
+    AddCommand(new KSailDownCommand());
+    AddCommand(new KSailUpdateCommand());
+    AddCommand(new KSailListCommand());
     //AddCommand(new SOPSCommand());
     //AddCommand(new ValidateCommand());
     //AddCommand(new VerifyCommand());

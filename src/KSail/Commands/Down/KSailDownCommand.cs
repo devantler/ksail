@@ -3,9 +3,9 @@ using KSail.Options;
 
 namespace KSail.Commands.Down;
 
-sealed class DownCommand : Command
+sealed class KSailDownCommand : Command
 {
-  internal DownCommand() : base("down", "destroy a K8s cluster")
+  internal KSailDownCommand() : base("down", "destroy a K8s cluster")
   {
     var nameOption = new NameOption("name of the cluster to destroy");
     AddCommand(new KSailDownK3dCommand(nameOption));

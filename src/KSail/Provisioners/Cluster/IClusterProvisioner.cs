@@ -14,4 +14,6 @@ interface IClusterProvisioner : IProvisioner
   Task ProvisionAsync(string name, bool pullThroughRegistries, string? configPath = null);
 
   Task DeprovisionAsync(string name);
+
+  Task ListAsync();
 }
