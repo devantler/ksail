@@ -86,7 +86,7 @@ sealed partial class SOPSProvisioner : ISecretManagementProvisioner, IDisposable
     }
   }
 
-  string GetEnvironmentFilePath()
+  static string GetEnvironmentFilePath()
   {
     string envFilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
     if (File.Exists($"{envFilePath}/.zshrc"))
@@ -97,13 +97,11 @@ sealed partial class SOPSProvisioner : ISecretManagementProvisioner, IDisposable
     {
       return $"{envFilePath}/.bashrc";
     }
-    else
-    {
-      throw new FileNotFoundException("🚨 Could not save SOPS GPG key to environment variables because neither .zshrc nor .bashrc were found in the user's home directory.");
-    }
+
+    throw new FileNotFoundException("🚨 Could not save SOPS GPG key to environment variables because neither .zshrc nor .bashrc were found in the user's home directory.");
   }
 
-  string ReplaceOrInsertExportStatement(string envFileContent, string exportStatement, Regex filterRegex, string insertMarker)
+  static string ReplaceOrInsertExportStatement(string envFileContent, string exportStatement, Regex filterRegex, string insertMarker)
   {
     if (envFileContent.Contains(exportStatement))
     {
