@@ -6,6 +6,7 @@
     <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>
     <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="assets/k3d-registry-config.yaml" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="assets/*darwin_amd64" CopyToPublishDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' == 'osx-x64'" />
     <Content Include="assets/*darwin_arm64" CopyToPublishDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' == 'osx-arm64'" />
     <Content Include="assets/*linux_amd64" CopyToPublishDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' == 'linux-x64'" />
