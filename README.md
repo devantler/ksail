@@ -78,14 +78,13 @@ A CLI tool for provisioning GitOps enabled K8s environments in Docker.
 
 ### Installation
 
-<!--With Homebrew:
+With Homebrew:
 
-```shell
-TODO: Add a homebrew package for ksail.
-
+```
+brew tap devantler/formulas
 brew install ksail
 ```
--->
+
 Manually:
 
 1. Download the latest release from the [releases page](https://github.com/devantler/ksail/releases).
