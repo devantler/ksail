@@ -41,10 +41,9 @@ jobs:
             ksail-${{ github.ref_name}}-osx-arm64.tar.gz
             ksail-${{ github.ref_name}}-linux-x64.tar.gz
             ksail-${{ github.ref_name}}-linux-arm64.tar.gz
-      - name: Update Homebrew formula
-        uses: dawidd6/action-homebrew-bump-formula@v3
+      - name: Bump packages
+        uses: Homebrew/actions/bump-packages@master
         with:
-          token: ${{secrets.KSAIL_HOMEBREW_RELEASER_TOKEN }}
-          tap: devantler/formulas
-          formula: ksail
-          revision: ${{ github.sha }}
+          token: ${{ secrets.KSAIL_HOMEBREW_RELEASER_TOKEN }}
+          formulae: |
+            ksail
