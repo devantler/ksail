@@ -1,2 +1,6 @@
 # MacOS
 .DS_Store
+
+# .NET
+bin
+obj

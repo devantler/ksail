@@ -3,18 +3,39 @@ name: Publish
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 
 jobs:
-  Publish:
+  publish:
     name: Publish
     runs-on: ubuntu-latest
     steps:
       - name: 📑 Checkout
         uses: actions/checkout@v4
-      - name: ✍🏻 Update version
-        run: perl -i -pe 's/VERSION=.*/VERSION="${{ github.ref_name }}"/g' ksail
+      - name: #️⃣ Setup .NET
+        uses: actions/setup-dotnet@v1
       - name: 📦 Publish
+        run: |
+          dotnet publish -c Release -r osx-x64 src/KSail/KSail.csproj
+          mv src/KSail/bin/Release/net8.0/osx-x64/publish/ksail ksail-${{ github.ref_name}}-osx-x64
+
+          dotnet publish -c Release -r oxs-arm64 src/KSail/KSail.csproj
+          mv src/KSail/bin/Release/net8.0/osx-arm64/publish/ksail ksail-${{ github.ref_name}}-osx-arm64
+
+          dotnet publish -c Release -r linux-x64 src/KSail/KSail.csproj
+          mv src/KSail/bin/Release/net8.0/linux-x64/publish/ksail ksail-${{ github.ref_name}}-linux-x64
+
+          dotnet publish -c Release -r linux-arm64 src/KSail/KSail.csproj
+          mv src/KSail/bin/Release/net8.0/linux-arm64/publish/ksail ksail-${{ github.ref_name}}-linux-arm64
+
+          dotnet publish -c Release -r linux-arm src/KSail/KSail.csproj
+          mv src/KSail/bin/Release/net8.0/linux-arm/publish/ksail ksail-${{ github.ref_name}}-linux-arm
+      - name: 🎉 Release
         uses: softprops/action-gh-release@v1
         with:
-          files: ksail
+          files: |
+            ksail-${{ github.ref_name}}-osx-x64
+            ksail-${{ github.ref_name}}-osx-arm64
+            ksail-${{ github.ref_name}}-linux-x64
+            ksail-${{ github.ref_name}}-linux-arm64
+            ksail-${{ github.ref_name}}-linux-arm

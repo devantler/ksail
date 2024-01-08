@@ -23,21 +23,43 @@ jobs:
           filters: |
             action:
               - '.github/workflows/test.yaml'
-            ksail:
+            dotnet:
+              - 'src/**/*'
+              - 'tests/**/*'
+            e2e:
               - 'k8s/**/*.yaml'
-              - 'ksail'
-              - 'ksail_test'
               - 'k3d-config.yaml'
+              - 'ksail_test'
 
-  test:
+  test-dotnet:
     runs-on: ubuntu-latest
     needs:
       - changes
-    if: ${{ github.event.pull_request.draft == false && (needs.changes.outputs.ksail == 'true' || needs.changes.outputs.action == 'true') }}
+    if: ${{ github.event.pull_request.draft == false && (needs.changes.outputs.dotnet == 'true' || needs.changes.outputs.action == 'true') }}
     steps:
       - name: 📑 Checkout
         uses: actions/checkout@v4
-      - name: ⚙️ Install dependencies
-        run: TERM=xterm ./ksail install k3d
+      - name: #️⃣ Setup .NET
+        uses: actions/setup-dotnet@v1
       - name: 🧪 Test
-        run: TERM=xterm ./ksail_test
+        run: dotnet test
+
+  test-e2e:
+    runs-on: ubuntu-latest
+    needs:
+      - changes
+    if: ${{ github.event.pull_request.draft == false && (needs.changes.outputs.dotnet == 'true' ||needs.changes.outputs.e2e == 'true' || needs.changes.outputs.action == 'true') }}
+    steps:
+      - name: 📑 Checkout
+        uses: actions/checkout@v4
+      - name: ⚙️ Setup .NET
+        uses: actions/setup-dotnet@v1
+      - name: ⚙️ Setup GPG
+        run: sudo apt-get install gnupg
+      - name: 🧪 Test
+        run: |
+          dotnet run --project ./src/KSail/KSail.csproj -- up k3d flux -n test
+          dotnet run --project ./src/KSail/KSail.csproj -- down k3d -n test
+
+          dotnet run --project ./src/KSail/KSail.csproj -- up k3d flux --config ./k3d/k3d-config.yaml
+          dotnet run --project ./src/KSail/KSail.csproj -- down k3d -n test
