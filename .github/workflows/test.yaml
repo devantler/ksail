@@ -64,7 +64,7 @@ jobs:
 
           echo "Extract files"
           ./ksail
-          ls -la /root/.net/ksail/
+          sudo ls -la /root/.net/ksail/
 
           echo "Test K3d (no config)"
           ./ksail up k3d flux -n test
