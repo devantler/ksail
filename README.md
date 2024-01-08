@@ -20,6 +20,7 @@ A CLI tool for provisioning GitOps enabled K8s environments in Docker.
 │       └── test
 │           ├── flux
 │           └── infrastructure
+├── scripts
 ├── src
 │   └── KSail
 │       ├── CLIWrappers
@@ -51,7 +52,6 @@ A CLI tool for provisioning GitOps enabled K8s environments in Docker.
 │       ├── Utils
 │       └── assets
 │           ├── binaries
-│           │   └── versions
 │           └── k3d
 └── tests
     ├── KSail.Tests.Integration
