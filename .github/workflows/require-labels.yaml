@@ -24,4 +24,4 @@ jobs:
         with:
           mode: minimum
           count: 1
-          labels: "bug,documentation,enhancement,refactor,research"
+          labels: "bug,enhancement,chore"
