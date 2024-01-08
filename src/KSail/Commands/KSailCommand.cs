@@ -30,7 +30,7 @@ sealed class KSailCommand : RootCommand
 
   static void Introduction() => AnsiConsole.Markup("""
     🐳⛴️    [bold underline]Welcome to [blue]KSail[/]![/]    ⛴️ 🐳
-                                          [blue]. . .[/]
+                                         [blue]. . .[/]
                     __/___                 [blue]:[/]
               _____/______|             ___[blue]|[/]____     |"\/"|
       _______/_____\_______\_____     ,'        `.    \  /
