@@ -12,26 +12,32 @@ jobs:
     steps:
       - name: 📑 Checkout
         uses: actions/checkout@v4
-      - name: #️⃣ Setup .NET
+      - name: ⚙️ Setup .NET
         uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x.x'
       - name: 📦 Publish
         run: |
           dotnet publish -c Release -r osx-x64 src/KSail/KSail.csproj
-          mv src/KSail/bin/Release/net8.0/osx-x64/publish/ksail ksail-${{ github.ref_name}}-osx-x64
+          mv src/KSail/bin/Release/net8.0/osx-x64/publish/ksail ksail
+          tar -czf ksail-${{ github.ref_name}}-osx-x64.tar.gz ksail
 
           dotnet publish -c Release -r osx-arm64 src/KSail/KSail.csproj
-          mv src/KSail/bin/Release/net8.0/osx-arm64/publish/ksail ksail-${{ github.ref_name}}-osx-arm64
+          mv src/KSail/bin/Release/net8.0/osx-arm64/publish/ksail ksail
+          tar -czf ksail-${{ github.ref_name}}-osx-arm64.tar.gz ksail
 
           dotnet publish -c Release -r linux-x64 src/KSail/KSail.csproj
-          mv src/KSail/bin/Release/net8.0/linux-x64/publish/ksail ksail-${{ github.ref_name}}-linux-x64
+          mv src/KSail/bin/Release/net8.0/linux-x64/publish/ksail ksail
+          tar -czf ksail-${{ github.ref_name}}-linux-x64.tar.gz ksail
 
           dotnet publish -c Release -r linux-arm64 src/KSail/KSail.csproj
-          mv src/KSail/bin/Release/net8.0/linux-arm64/publish/ksail ksail-${{ github.ref_name}}-linux-arm64
+          mv src/KSail/bin/Release/net8.0/linux-arm64/publish/ksail ksail
+          tar -czf ksail-${{ github.ref_name}}-linux-arm64.tar.gz ksail
       - name: 🎉 Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            ksail-${{ github.ref_name}}-osx-x64
-            ksail-${{ github.ref_name}}-osx-arm64
-            ksail-${{ github.ref_name}}-linux-x64
-            ksail-${{ github.ref_name}}-linux-arm64
+            ksail-${{ github.ref_name}}-osx-x64.tar.gz
+            ksail-${{ github.ref_name}}-osx-arm64.tar.gz
+            ksail-${{ github.ref_name}}-linux-x64.tar.gz
+            ksail-${{ github.ref_name}}-linux-arm64.tar.gz
