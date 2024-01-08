@@ -47,3 +47,4 @@ jobs:
           token: ${{secrets.KSAIL_HOMEBREW_RELEASER_TOKEN }}
           tap: devantler/formulas
           formula: ksail
+          revision: ${{ github.sha }}
