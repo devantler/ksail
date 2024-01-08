@@ -63,3 +63,4 @@ download_and_update "k3d-io/k3d" "k3d" false
 download_and_update "siderolabs/talos" "talosctl" false
 download_and_update "yannh/kubeconform" "kubeconform" true
 download_and_update "kubernetes-sigs/kustomize" "kustomize" true
+find src/KSail/assets/binaries -name "LICENSE" -type f -delete
