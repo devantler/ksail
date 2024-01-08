@@ -1,0 +1,17 @@
+name: "TODOs"
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v4"
+      - uses: "alstr/todo-to-issue-action@v4"
+        env:
+          AUTO_ASSIGN: true
