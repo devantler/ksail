@@ -46,8 +46,7 @@ jobs:
         with:
           homebrew_owner: devantler
           homebrew_tap: homebrew-formulas
-          formula_folder: formula
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.KSAIL_HOMEBREW_RELEASER_TOKEN }}
           commit_owner: devantler
           commit_email: devantler@icloud.com
           install: bin.install "ksail"
