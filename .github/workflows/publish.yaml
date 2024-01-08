@@ -44,7 +44,6 @@ jobs:
       - uses: mislav/bump-homebrew-formula-action@v3
         with:
           formula-name: ksail
-          formula-path: Formula/ksail.rb
           homebrew-tap: devantler/homebrew-formulas
           base-branch: main
           commit-message: |
