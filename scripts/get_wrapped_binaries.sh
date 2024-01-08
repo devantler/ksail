@@ -1,0 +1,60 @@
+#!/bin/bash
+download_and_update() {
+  repo=$1
+  binary=$2
+  is_tarball=$3
+
+  version_latest=$(curl -s https://api.github.com/repos/"$repo"/releases/latest | grep tag_name | cut -d '"' -f 4)
+  if [ -z "$version_latest" ]; then
+    echo "No version of $binary found, this is usually due to a rate limit on the GitHub API"
+    return
+  fi
+  if [ -f src/KSail/assets/binaries/requirements.txt ]; then
+    version_current=$(grep "${binary}_version_" src/KSail/assets/binaries/requirements.txt | cut -d '_' -f 3)
+  else
+    version_current="0.0.0"
+  fi
+  if [ "$version_latest" != "$version_current" ]; then
+    echo "New version of $binary found: $version_latest"
+    echo "Current version of $binary: $version_current"
+    echo "Downloading new version of $binary"
+    for arch in darwin_amd64 darwin_arm64 darwin-amd64 darwin-arm64 linux_amd64 linux_arm64 linux-amd64 linux-arm64; do
+      echo "Checking if $binary for $arch exists"
+      local exists
+      exists=$(curl -s https://api.github.com/repos/"$repo"/releases/latest | grep browser_download_url | grep $arch | cut -d '"' -f 4)
+      if [ -z "$exists" ]; then
+        echo "No $binary for $arch found"
+        continue
+      fi
+      if [ "$is_tarball" = true ]; then
+        curl -s https://api.github.com/repos/"$repo"/releases/latest | grep browser_download_url | grep $arch | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/binaries/"${binary}"_${arch}.tar.gz
+        echo "Extracting new version of $binary"
+        tar -xzf src/KSail/assets/binaries/"${binary}"_${arch}.tar.gz -C src/KSail/assets/binaries/
+        mv src/KSail/assets/binaries/"$binary" src/KSail/assets/binaries/"${binary}"_${arch}
+        echo "Removing tar.gz files"
+        rm src/KSail/assets/binaries/"${binary}"_${arch}.tar.gz
+      else
+        curl -s https://api.github.com/repos/"$repo"/releases/latest | grep browser_download_url | grep $arch | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/binaries/"${binary}"_"${arch}"
+      fi
+      echo "Making new version of $binary executable"
+      chmod +x src/KSail/assets/binaries/"${binary}"_${arch}
+    done
+    echo "Update version in requirements.txt"
+    if [ ! -f src/KSail/assets/binaries/requirements.txt ]; then
+      echo "${binary}_version_${version_latest}" >src/KSail/assets/binaries/requirements.txt
+    elif grep -q "${binary}_version_${version_latest}" src/KSail/assets/binaries/requirements.txt; then
+      sed -i '' "s/${binary}_version_*/${binary}_version_${version_latest}/g" src/KSail/assets/binaries/requirements.txt
+    else
+      echo "${binary}_version_${version_latest}" >>src/KSail/assets/binaries/requirements.txt
+    fi
+  else
+    echo "No new version of $binary found"
+  fi
+}
+
+set -e
+download_and_update "fluxcd/flux2" "flux" true
+download_and_update "k3d-io/k3d" "k3d" false
+download_and_update "siderolabs/talos" "talosctl" false
+download_and_update "yannh/kubeconform" "kubeconform" true
+download_and_update "kubernetes-sigs/kustomize" "kustomize" true
