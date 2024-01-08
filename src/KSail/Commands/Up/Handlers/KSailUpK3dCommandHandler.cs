@@ -43,8 +43,8 @@ static class KSailUpK3dCommandHandler
       await _dockerProvisioner.CreateRegistryAsync("proxy-gcr.io", 5003, new Uri("https://gcr.io"));
       await _dockerProvisioner.CreateRegistryAsync("proxy-ghcr.io", 5004, new Uri("https://ghcr.io"));
       await _dockerProvisioner.CreateRegistryAsync("proxy-quay.io", 5005, new Uri("https://quay.io"));
+      await _dockerProvisioner.CreateRegistryAsync("proxy-mcr.microsoft.com", 5006, new Uri("https://mcr.microsoft.com"));
       Console.WriteLine();
-      //TODO: Add missing major registries
     }
 
     await _clusterProvisioner.ProvisionAsync(name, pullThroughRegistries, configPath);
