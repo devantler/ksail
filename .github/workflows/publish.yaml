@@ -12,8 +12,10 @@ jobs:
     steps:
       - name: 📑 Checkout
         uses: actions/checkout@v4
-      - name: #️⃣ Setup .NET
+      - name: ⚙️ Setup .NET
         uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x.x'
       - name: 📦 Publish
         run: |
           dotnet publish -c Release -r osx-x64 src/KSail/KSail.csproj
