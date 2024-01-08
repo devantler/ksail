@@ -1,3 +1,5 @@
+name: Homebrew Releaser
+
 on:
   release:
     types: [published]
@@ -23,4 +25,4 @@ jobs:
           target_linux_arm64: true
           update_readme_table: true
           skip_commit: false
-          debug: false
+          debug: true
