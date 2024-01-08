@@ -1,5 +1,6 @@
 using System.Formats.Tar;
 using KSail.CLIWrappers;
+using KSail.Models.K3d;
 using KSail.Utils;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
@@ -23,7 +24,7 @@ static class KSailLintCommandHandler
 
     if (string.IsNullOrEmpty(name))
     {
-      Console.WriteLine("❌ Both name and manifests path are required...");
+      Console.WriteLine("❌ Name of the cluster is required...");
       Environment.Exit(1);
     }
 
