@@ -12,10 +12,52 @@ A CLI tool for provisioning GitOps enabled K8s environments in Docker.
 <!-- readme-tree start -->
 ```
 .
-└── .github
-    └── workflows
+├── .github
+│   └── workflows
+├── k3d
+├── k8s
+│   └── clusters
+│       └── test
+│           ├── flux
+│           └── infrastructure
+├── src
+│   └── KSail
+│       ├── CLIWrappers
+│       ├── Commands
+│       │   ├── Down
+│       │   │   └── Handlers
+│       │   ├── Lint
+│       │   │   └── Handlers
+│       │   ├── List
+│       │   │   └── Handlers
+│       │   ├── SOPS
+│       │   │   ├── Handlers
+│       │   │   └── Options
+│       │   ├── Up
+│       │   │   ├── Handlers
+│       │   │   └── Options
+│       │   ├── Update
+│       │   │   └── Handlers
+│       │   └── Verify
+│       ├── Enums
+│       ├── Models
+│       │   └── K3d
+│       ├── Options
+│       ├── Provisioners
+│       │   ├── Cluster
+│       │   ├── ContainerOrchestrator
+│       │   ├── GitOps
+│       │   └── SecretManagement
+│       ├── Utils
+│       └── assets
+│           ├── binaries
+│           │   └── versions
+│           └── k3d
+└── tests
+    ├── KSail.Tests.Integration
+    └── KSail.Tests.Unit
 
-2 directories
+44 directories
 ```
 <!-- readme-tree end -->
 
