@@ -41,19 +41,15 @@ jobs:
             ksail-${{ github.ref_name}}-osx-arm64.tar.gz
             ksail-${{ github.ref_name}}-linux-x64.tar.gz
             ksail-${{ github.ref_name}}-linux-arm64.tar.gz
-      - name: 🍺 Release to Homebrew
-        uses: Justintime50/homebrew-releaser@v1
+      - uses: mislav/bump-homebrew-formula-action@v3
         with:
-          homebrew_owner: devantler
-          homebrew_tap: homebrew-formulas
-          github_token: ${{ secrets.KSAIL_HOMEBREW_RELEASER_TOKEN }}
-          commit_owner: devantler
-          commit_email: devantler@icloud.com
-          install: bin.install "ksail"
-          target_darwin_amd64: true
-          target_darwin_arm64: true
-          target_linux_amd64: true
-          target_linux_arm64: true
-          update_readme_table: true
-          skip_commit: false
-          debug: true
+          formula-name: ksail
+          formula-path: Formula/ksail.rb
+          homebrew-tap: devantler/homebrew-formulas
+          base-branch: main
+          commit-message: |
+            {{formulaName}} {{version}}
+
+            Created by https://github.com/mislav/bump-homebrew-formula-action
+        env:
+          COMMITTER_TOKEN: ${{ secrets.KSAIL_HOMEBREW_RELEASER_TOKEN }}
