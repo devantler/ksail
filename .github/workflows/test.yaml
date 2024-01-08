@@ -56,8 +56,8 @@ jobs:
         uses: actions/setup-dotnet@v1
       - name: 🧪 Test
         run: |
-          dotnet run --project ./src/KSail/KSail.csproj -- up k3d flux -n test -mp ./.github/k8s
+          dotnet run --project ./src/KSail/KSail.csproj -- up k3d flux -n test
           dotnet run --project ./src/KSail/KSail.csproj -- down k3d -n test
 
-          dotnet run --project ./src/KSail/KSail.csproj -- up k3d flux --config ./.github/k3d/k3d-config.yaml -mp ./.github/k8s
+          dotnet run --project ./src/KSail/KSail.csproj -- up k3d flux --config ./k3d/k3d-config.yaml
           dotnet run --project ./src/KSail/KSail.csproj -- down k3d -n test
