@@ -1,6 +1,5 @@
 using System.Formats.Tar;
 using KSail.CLIWrappers;
-using KSail.Models.K3d;
 using KSail.Utils;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
