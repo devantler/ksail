@@ -14,7 +14,7 @@ A CLI tool for provisioning GitOps enabled K8s environments in Docker.
   - osx-arm64 ✅
   - linux-x64 ✅
   - linux-arm64 ✅
-  - linux-arm ✅
+  - linux-arm ❌
   - windows-x86 ❌
   - windows-arm64 ❌
 - Docker
