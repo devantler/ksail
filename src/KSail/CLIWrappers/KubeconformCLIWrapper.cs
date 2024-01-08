@@ -19,7 +19,7 @@ static class KubeconformCLIWrapper
         (PlatformID.Unix, Architecture.Arm, false) => "kubeconform_linux_arm",
         _ => throw new PlatformNotSupportedException()
       };
-      return Cli.Wrap($"{AppContext.BaseDirectory}assets/{binary}");
+      return Cli.Wrap($"{AppContext.BaseDirectory}assets/binaries/{binary}");
     }
   }
 

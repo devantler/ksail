@@ -18,7 +18,7 @@ static class KustomizeCLIWrapper
         (PlatformID.Unix, Architecture.Arm, false) => "kustomize_linux_arm",
         _ => throw new PlatformNotSupportedException()
       };
-      return Cli.Wrap($"{AppContext.BaseDirectory}assets/{binary}");
+      return Cli.Wrap($"{AppContext.BaseDirectory}assets/binaries/{binary}");
     }
   }
 }

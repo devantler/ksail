@@ -18,7 +18,7 @@ static class K3dCLIWrapper
         (PlatformID.Unix, Architecture.Arm, false) => "k3d_linux_arm",
         _ => throw new PlatformNotSupportedException()
       };
-      return Cli.Wrap($"{AppContext.BaseDirectory}assets/{binary}");
+      return Cli.Wrap($"{AppContext.BaseDirectory}assets/binaries/{binary}");
     }
   }
 
@@ -30,7 +30,7 @@ static class K3dCLIWrapper
           "cluster",
           "create",
           $"{name}",
-          $"--registry-config={AppContext.BaseDirectory}assets/k3d-registry-config.yaml"
+          $"--registry-config={AppContext.BaseDirectory}assets/k3d/registry-config.yaml"
         ]
       )
       : K3d.WithArguments($"cluster create {name}");
