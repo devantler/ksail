@@ -63,8 +63,8 @@ jobs:
           cd ./.github
 
           echo "Test K3d (no config)"
-          ./ksail up k3d flux -n test
+          sudo ./ksail up k3d flux -n test
 
           echo "Test K3d (with config)"
-          ./ksail up k3d flux --config ./.github/k3d/k3d-config.yaml
+          sudo ./ksail up k3d flux --config ./.github/k3d/k3d-config.yaml
           ./ksail down k3d --name test
