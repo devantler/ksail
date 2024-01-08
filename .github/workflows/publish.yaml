@@ -41,9 +41,3 @@ jobs:
             ksail-${{ github.ref_name}}-osx-arm64.tar.gz
             ksail-${{ github.ref_name}}-linux-x64.tar.gz
             ksail-${{ github.ref_name}}-linux-arm64.tar.gz
-      - name: Bump packages
-        uses: Homebrew/actions/bump-packages@master
-        with:
-          token: ${{ secrets.KSAIL_HOMEBREW_RELEASER_TOKEN }}
-          formulae: |
-            ksail
