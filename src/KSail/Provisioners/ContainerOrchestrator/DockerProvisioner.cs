@@ -46,6 +46,10 @@ sealed class DockerProvisioner : IContainerOrchestratorProvisioner
     CreateContainerResponse registry;
     try
     {
+      await _dockerClient.Images.CreateImageAsync(new ImagesCreateParameters
+      {
+        FromImage = "registry:2"
+      }, null, new Progress<JSONMessage>());
       registry = await _dockerClient.Containers.CreateContainerAsync(new CreateContainerParameters
       {
         Image = "registry:2",
