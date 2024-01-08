@@ -3,14 +3,8 @@
 > [!NOTE]
 > KSail and this README is currently a WIP. Please come back soon for a stable release 🚀
 
-```
-                                     . . .
-                __/___                 :
-          _____/______|             ___|____     |"\/"|
-  _______/_____\_______\_____     ,'        `.    \  /
-  \               KSail      |    |  ^        \___/  |
-~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
-```
+![image](https://github.com/devantler/ksail/assets/26203420/d8a20d3c-5152-40f8-a08d-2d70517e094d)
+
 
 A CLI tool for provisioning GitOps enabled K8s environments in Docker.
 
@@ -52,8 +46,6 @@ To get started use the global help flag:
 ```shell
 ksail --help
 ```
-
-<img width="509" alt="image" src="https://github.com/devantler/ksail/assets/26203420/554ecdfa-681f-4caf-98c6-82d77ac352cf">
 
 ## What is KSail?
 
