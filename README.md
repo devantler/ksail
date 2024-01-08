@@ -2,10 +2,24 @@
 
 ![image](https://github.com/devantler/ksail/assets/26203420/d8a20d3c-5152-40f8-a08d-2d70517e094d)
 
-
 A CLI tool for provisioning GitOps enabled K8s environments in Docker.
 
 ## Getting Started
+
+<details> 
+  <summary>Show/Hide</summary>
+
+<!-- readme-tree start -->
+```
+.
+└── .github
+    └── workflows
+
+2 directories
+```
+<!-- readme-tree end -->
+
+</details>
 
 ### Prerequisites
 
@@ -14,7 +28,7 @@ A CLI tool for provisioning GitOps enabled K8s environments in Docker.
   - osx-arm64 ✅
   - linux-x64 ✅
   - linux-arm64 ✅
-  - linux-arm ✅
+  - linux-arm ❌
   - windows-x86 ❌
   - windows-arm64 ❌
 - Docker
