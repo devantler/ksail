@@ -52,7 +52,7 @@ jobs:
     steps:
       - name: 📑 Checkout
         uses: actions/checkout@v4
-      - name: #️⃣ Setup .NET
+      - name: ⚙️ Setup .NET
         uses: actions/setup-dotnet@v1
       - name: 🔨 Publish
         run: dotnet publish -c Release -r linux-x64
