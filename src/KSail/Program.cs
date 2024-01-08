@@ -1,12 +1,19 @@
 ﻿using System.CommandLine;
+using System.Runtime.InteropServices;
 using KSail.Commands;
 
-//Make all binaries in AppContext.BaseDirectory/assets executable
-foreach (string file in Directory.GetFiles($"{AppContext.BaseDirectory}assets/binaries"))
+if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 {
-  //
-  File.SetUnixFileMode(file, UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute);
+  Console.WriteLine("🚨 Windows is not supported.");
+  Environment.Exit(1);
 }
+else
+{
+  foreach (string file in Directory.GetFiles($"{AppContext.BaseDirectory}assets/binaries"))
+  {
+    File.SetUnixFileMode(file, UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute);
+  }
 
-var ksailCommand = new KSailCommand();
-await ksailCommand.InvokeAsync(args);
+  var ksailCommand = new KSailCommand();
+  _ = await ksailCommand.InvokeAsync(args);
+}
