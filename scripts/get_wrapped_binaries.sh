@@ -8,6 +8,11 @@ download_and_update() {
   if [ -z "$version_latest" ]; then
     echo "No version of $binary found, this is usually due to a rate limit on the GitHub API"
     return
+  else
+    # Check that version is semver vx.x.x or x.x.x
+    if ! [[ "$version_latest" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] && ! [[ "$version_latest" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+      version_latest=$(echo "$version_latest" | cut -d '/' -f 2)
+    fi
   fi
   if [ -f src/KSail/assets/binaries/requirements.txt ]; then
     version_current=$(grep "${binary}_version_" src/KSail/assets/binaries/requirements.txt | cut -d '_' -f 3)
@@ -58,3 +63,4 @@ download_and_update "k3d-io/k3d" "k3d" false
 download_and_update "siderolabs/talos" "talosctl" false
 download_and_update "yannh/kubeconform" "kubeconform" true
 download_and_update "kubernetes-sigs/kustomize" "kustomize" true
+find src/KSail/assets/binaries -name "LICENSE" -type f -delete
