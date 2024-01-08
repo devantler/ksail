@@ -40,7 +40,7 @@ jobs:
       - name: 📑 Checkout
         uses: actions/checkout@v4
       - name: #️⃣ Setup .NET
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v4
       - name: 🧪 Test
         run: dotnet test
 
@@ -53,7 +53,7 @@ jobs:
       - name: 📑 Checkout
         uses: actions/checkout@v4
       - name: ⚙️ Setup .NET
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v4
       - name: ⚙️ Setup GPG
         run: sudo apt-get install gnupg
       - name: 🧪 Test
