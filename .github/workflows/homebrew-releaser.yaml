@@ -1,0 +1,26 @@
+on:
+  release:
+    types: [published]
+
+jobs:
+  homebrew-releaser:
+    runs-on: ubuntu-latest
+    name: homebrew-releaser
+    steps:
+      - name: Release my project to my Homebrew tap
+        uses: Justintime50/homebrew-releaser@v1
+        with:
+          homebrew_owner: devantler
+          homebrew_tap: homebrew-formulas
+          formula_folder: formula
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          commit_owner: devantler
+          commit_email: devantler@icloud.com
+          install: bin.install "ksail"
+          target_darwin_amd64: true
+          target_darwin_arm64: true
+          target_linux_amd64: true
+          target_linux_arm64: true
+          update_readme_table: true
+          skip_commit: false
+          debug: false
