@@ -54,20 +54,10 @@ jobs:
         uses: actions/checkout@v4
       - name: ⚙️ Setup .NET
         uses: actions/setup-dotnet@v1
-      - name: 🔨 Publish
-        run: dotnet publish -c Release -r linux-x64
       - name: 🧪 Test
         run: |
-          echo "Move binary to ./github and set it as working directory"
-          mv ./src/KSail/bin/Release/net8.0/linux-x64/publish/ksail ./.github/ksail
-          cd ./.github
+          dotnet run --project ./src/KSail/KSail.csproj -- up k3d flux -n test -mp ./.github/k8s
+          dotnet run --project ./src/KSail/KSail.csproj -- down k3d -n test
 
-          export DOTNET_BUNDLE_EXTRACT_BASE_DIR=./
-
-          echo "Test K3d (no config)"
-          ./ksail up k3d flux -n test
-          ./ksail down k3d -n test
-
-          echo "Test K3d (with config)"
-          ./ksail up k3d flux --config ./k3d/k3d-config.yaml
-          ./ksail down k3d -n test
+          dotnet run --project ./src/KSail/KSail.csproj -- up k3d flux --config ./.github/k3d/k3d-config.yaml -mp ./.github/k8s
+          dotnet run --project ./src/KSail/KSail.csproj -- down k3d -n test
