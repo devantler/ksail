@@ -51,9 +51,9 @@ jobs:
 
             echo "Update version file"
             if [ -n "$(find src/KSail/assets/binaries/versions -name 'flux_version_${flux_version_current}')" ]; then
-              mv src/KSail/assets/binaries/flux_version_"${flux_version_current}" src/KSail/assets/binaries/flux_version_"${flux_version_latest}"
+              mv src/KSail/assets/binaries/versions/flux_version_"${flux_version_current}" src/KSail/assets/binaries/versions/flux_version_"${flux_version_latest}"
             else
-              touch src/KSail/assets/binaries/flux_version_"${flux_version_latest}"
+              touch src/KSail/assets/binaries/versions/flux_version_"${flux_version_latest}"
             fi
           else
             echo "No new version of flux found"
@@ -82,9 +82,9 @@ jobs:
 
             echo "Update version file"
             if [ -n "$(find src/KSail/assets/binaries/versions -name 'k3d_version_${k3d_version_current}')" ]; then
-              mv src/KSail/assets/binaries/k3d_version_"${k3d_version_current}" src/KSail/assets/binaries/k3d_version_"${k3d_version_latest}"
+              mv src/KSail/assets/binaries/versions/k3d_version_"${k3d_version_current}" src/KSail/assets/binaries/versions/k3d_version_"${k3d_version_latest}"
             else
-              touch src/KSail/assets/binaries/k3d_version_"${k3d_version_latest}"
+              touch src/KSail/assets/binaries/versions/k3d_version_"${k3d_version_latest}"
             fi
           else
             echo "No new version of k3d found"
@@ -129,9 +129,9 @@ jobs:
 
             echo "Update version file"
             if [ -n "$(find src/KSail/assets/binaries/versions -name 'kubeconform_version_${kubeconform_version_current}')" ]; then
-              mv src/KSail/assets/binaries/kubeconform_version_"${kubeconform_version_current}" src/KSail/assets/binaries/kubeconform_version_"${kubeconform_version_latest}"
+              mv src/KSail/assets/binaries/versions/kubeconform_version_"${kubeconform_version_current}" src/KSail/assets/binaries/versions/kubeconform_version_"${kubeconform_version_latest}"
             else
-              touch src/KSail/assets/binaries/kubeconform_version_"${kubeconform_version_latest}"
+              touch src/KSail/assets/binaries/versions/kubeconform_version_"${kubeconform_version_latest}"
             fi
           else
             echo "No new version of kubeconform found"
@@ -176,9 +176,9 @@ jobs:
 
             echo "Update version file"
             if [ -n "$(find src/KSail/assets/binaries/versions -name 'kustomize_version_${kustomize_version_current}')" ]; then
-              mv src/KSail/assets/binaries/kustomize_version_"${kustomize_version_current}" src/KSail/assets/binaries/kustomize_version_"${kustomize_version_latest}"
+              mv src/KSail/assets/binaries/versions/kustomize_version_"${kustomize_version_current}" src/KSail/assets/binaries/versions/kustomize_version_"${kustomize_version_latest}"
             else
-              touch src/KSail/assets/binaries/kustomize_version_"${kustomize_version_latest}"
+              touch src/KSail/assets/binaries/versions/kustomize_version_"${kustomize_version_latest}"
             fi
           else
             echo "No new version of kustomize found"
@@ -207,9 +207,9 @@ jobs:
 
             echo "Update version file"
             if [ -n "$(find src/KSail/assets/binaries/versions -name 'talosctl_version_${talosctl_version_current}')" ]; then
-              mv src/KSail/assets/binaries/talosctl_version_"${talosctl_version_current}" src/KSail/assets/binaries/talosctl_version_"${talosctl_version_latest}"
+              mv src/KSail/assets/binaries/versions/talosctl_version_"${talosctl_version_current}" src/KSail/assets/binaries/versions/talosctl_version_"${talosctl_version_latest}"
             else
-              touch src/KSail/assets/binaries/talosctl_version_"${talosctl_version_latest}"
+              touch src/KSail/assets/binaries/versions/talosctl_version_"${talosctl_version_latest}"
             fi
           else
             echo "No new version of talosctl found"
