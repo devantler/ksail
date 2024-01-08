@@ -62,6 +62,10 @@ jobs:
           mv ./src/KSail/bin/Release/net8.0/linux-x64/publish/ksail ./.github/ksail
           cd ./.github
 
+          echo "Extract files"
+          ./ksail
+          ls -la /root/.net/ksail/
+
           echo "Test K3d (no config)"
           ./ksail up k3d flux -n test
           ./ksail down k3d -n test
