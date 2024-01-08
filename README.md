@@ -1,8 +1,5 @@
 # ⛴️🐳 KSail
 
-> [!NOTE]
-> KSail and this README is currently a WIP. Please come back soon for a stable release 🚀
-
 ![image](https://github.com/devantler/ksail/assets/26203420/d8a20d3c-5152-40f8-a08d-2d70517e094d)
 
 
@@ -25,14 +22,14 @@ A CLI tool for provisioning GitOps enabled K8s environments in Docker.
 
 ### Installation
 
-With Homebrew:
+<!--With Homebrew:
 
 ```shell
 TODO: Add a homebrew package for ksail.
 
 brew install ksail
 ```
-
+-->
 Manually:
 
 1. Download the latest release from the [releases page](https://github.com/devantler/ksail/releases).
