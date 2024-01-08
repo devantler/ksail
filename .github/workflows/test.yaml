@@ -62,9 +62,7 @@ jobs:
           mv ./src/KSail/bin/Release/net8.0/linux-x64/publish/ksail ./.github/ksail
           cd ./.github
 
-          echo "Extract files"
-          ./ksail
-          sudo ls -la /root/.net/ksail/
+          export DOTNET_BUNDLE_EXTRACT_BASE_DIR=./
 
           echo "Test K3d (no config)"
           ./ksail up k3d flux -n test
