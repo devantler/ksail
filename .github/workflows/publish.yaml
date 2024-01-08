@@ -19,7 +19,7 @@ jobs:
           dotnet publish -c Release -r osx-x64 src/KSail/KSail.csproj
           mv src/KSail/bin/Release/net8.0/osx-x64/publish/ksail ksail-${{ github.ref_name}}-osx-x64
 
-          dotnet publish -c Release -r oxs-arm64 src/KSail/KSail.csproj
+          dotnet publish -c Release -r osx-arm64 src/KSail/KSail.csproj
           mv src/KSail/bin/Release/net8.0/osx-arm64/publish/ksail ksail-${{ github.ref_name}}-osx-arm64
 
           dotnet publish -c Release -r linux-x64 src/KSail/KSail.csproj
