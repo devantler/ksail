@@ -8,7 +8,7 @@ on:
 jobs:
   publish:
     name: Publish
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: 📑 Checkout
         uses: actions/checkout@v4
@@ -41,14 +41,9 @@ jobs:
             ksail-${{ github.ref_name}}-osx-arm64.tar.gz
             ksail-${{ github.ref_name}}-linux-x64.tar.gz
             ksail-${{ github.ref_name}}-linux-arm64.tar.gz
-      - uses: mislav/bump-homebrew-formula-action@v3
+      - name: Update Homebrew formula
+        uses: dawidd6/action-homebrew-bump-formula@v3
         with:
-          formula-name: ksail
-          homebrew-tap: devantler/homebrew-formulas
-          base-branch: main
-          commit-message: |
-            {{formulaName}} {{version}}
-
-            Created by https://github.com/mislav/bump-homebrew-formula-action
-        env:
-          COMMITTER_TOKEN: ${{ secrets.KSAIL_HOMEBREW_RELEASER_TOKEN }}
+          token: ${{secrets.KSAIL_HOMEBREW_RELEASER_TOKEN }}
+          tap: devantler/formulas
+          formula: ksail
