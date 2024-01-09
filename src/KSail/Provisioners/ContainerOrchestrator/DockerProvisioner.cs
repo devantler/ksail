@@ -6,7 +6,7 @@ namespace KSail.Provisioners.ContainerOrchestrator;
 
 sealed class DockerProvisioner : IContainerOrchestratorProvisioner
 {
-  readonly DockerClient _dockerClient = new DockerClientConfiguration(
+  readonly DockerClient dockerClient = new DockerClientConfiguration(
     new Uri("unix:///var/run/docker.sock")
   ).CreateClient();
 
@@ -15,7 +15,7 @@ sealed class DockerProvisioner : IContainerOrchestratorProvisioner
     Console.WriteLine("🐳 Checking Docker is running...");
     try
     {
-      await _dockerClient.System.PingAsync();
+      await dockerClient.System.PingAsync();
     }
     catch (Exception)
     {
@@ -46,11 +46,11 @@ sealed class DockerProvisioner : IContainerOrchestratorProvisioner
     CreateContainerResponse registry;
     try
     {
-      await _dockerClient.Images.CreateImageAsync(new ImagesCreateParameters
+      await dockerClient.Images.CreateImageAsync(new ImagesCreateParameters
       {
         FromImage = "registry:2"
       }, null, new Progress<JSONMessage>());
-      registry = await _dockerClient.Containers.CreateContainerAsync(new CreateContainerParameters
+      registry = await dockerClient.Containers.CreateContainerAsync(new CreateContainerParameters
       {
         Image = "registry:2",
         Name = name,
@@ -79,7 +79,7 @@ sealed class DockerProvisioner : IContainerOrchestratorProvisioner
         $"REGISTRY_PROXY_REMOTEURL={proxyUrl}"
       } : null
       });
-      _ = await _dockerClient.Containers.StartContainerAsync(registry.ID, new ContainerStartParameters());
+      _ = await dockerClient.Containers.StartContainerAsync(registry.ID, new ContainerStartParameters());
     }
     catch (DockerApiException e)
     {
@@ -94,14 +94,14 @@ sealed class DockerProvisioner : IContainerOrchestratorProvisioner
 
     if (containerId != null)
     {
-      _ = await _dockerClient.Containers.StopContainerAsync(containerId, new ContainerStopParameters());
-      await _dockerClient.Containers.RemoveContainerAsync(containerId, new ContainerRemoveParameters());
+      _ = await dockerClient.Containers.StopContainerAsync(containerId, new ContainerStopParameters());
+      await dockerClient.Containers.RemoveContainerAsync(containerId, new ContainerRemoveParameters());
     }
   }
 
   async Task<string?> GetContainerId(string name)
   {
-    var containers = await _dockerClient.Containers.ListContainersAsync(new ContainersListParameters
+    var containers = await dockerClient.Containers.ListContainersAsync(new ContainersListParameters
     {
       All = true,
       Filters = new Dictionary<string, IDictionary<string, bool>>

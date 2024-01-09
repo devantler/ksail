@@ -6,15 +6,15 @@ namespace KSail.Commands.Update;
 
 sealed class KSailUpdateCommand : Command
 {
-  readonly NameOption _nameOption = new("the name of the cluster to update manifests for") { IsRequired = true };
-  readonly ManifestsPathOption _manifestsPathOption = new() { IsRequired = true };
+  readonly NameOption nameOption = new("the name of the cluster to update manifests for") { IsRequired = true };
+  readonly ManifestsPathOption manifestsPathOption = new() { IsRequired = true };
   internal KSailUpdateCommand() : base(
     "update",
     "update manifests in an OCI registry"
   )
   {
-    AddOption(_nameOption);
-    AddOption(_manifestsPathOption);
-    this.SetHandler(KSailUpdateCommandHandler.HandleAsync, _nameOption, _manifestsPathOption);
+    AddOption(nameOption);
+    AddOption(manifestsPathOption);
+    this.SetHandler(KSailUpdateCommandHandler.HandleAsync, nameOption, manifestsPathOption);
   }
 }

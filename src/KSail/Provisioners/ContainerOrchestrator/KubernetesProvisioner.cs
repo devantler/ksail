@@ -6,7 +6,7 @@ namespace KSail.Provisioners.ContainerOrchestrator;
 
 sealed class KubernetesProvisioner : IContainerOrchestratorProvisioner, IDisposable
 {
-  readonly Kubernetes _kubernetesClient = new(KubernetesClientConfiguration.BuildDefaultConfig());
+  readonly Kubernetes kubernetesClient = new(KubernetesClientConfiguration.BuildDefaultConfig());
 
   /// <inheritdoc/>
   internal async Task CreateNamespaceAsync(string name)
@@ -21,7 +21,7 @@ sealed class KubernetesProvisioner : IContainerOrchestratorProvisioner, IDisposa
         Name = name
       }
     };
-    _ = await _kubernetesClient.CreateNamespaceAsync(fluxSystemNamespace);
+    _ = await kubernetesClient.CreateNamespaceAsync(fluxSystemNamespace);
     Console.WriteLine("✔ Namespace created...");
     Console.WriteLine();
   }
@@ -44,12 +44,12 @@ sealed class KubernetesProvisioner : IContainerOrchestratorProvisioner, IDisposa
         pair => Encoding.UTF8.GetBytes(pair.Value)
       )
     };
-    _ = await _kubernetesClient.CreateNamespacedSecretAsync(sopsGpgSecret, "flux-system");
+    _ = await kubernetesClient.CreateNamespacedSecretAsync(sopsGpgSecret, "flux-system");
   }
 
   public void Dispose()
   {
-    _kubernetesClient.Dispose();
+    kubernetesClient.Dispose();
     GC.SuppressFinalize(this);
   }
 }

@@ -4,8 +4,8 @@ namespace KSail.Commands.Update.Handlers;
 
 static class KSailUpdateCommandHandler
 {
-  static readonly FluxProvisioner _gitOpsProvisioner = new();
+  static readonly FluxProvisioner gitOpsProvisioner = new();
   internal static async Task HandleAsync(string name, string manifestsPath) =>
     // Validate
-    await _gitOpsProvisioner.PushManifestsAsync($"oci://localhost:5050/{name}", manifestsPath);
+    await gitOpsProvisioner.PushManifestsAsync($"oci://localhost:5050/{name}", manifestsPath);
 }

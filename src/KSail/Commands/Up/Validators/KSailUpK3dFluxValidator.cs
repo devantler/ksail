@@ -8,12 +8,12 @@ namespace KSail.Commands.Up.Validators;
 
 static class KSailUpK3dFluxValidator
 {
-  static readonly Deserializer _yamlDeserializer = new();
+  static readonly Deserializer yamlDeserializer = new();
   internal static Task ValidateAsync(CommandResult commandResult, NameOption nameOption, ConfigPathOption configPathOption, ManifestsPathOption _manifestsPathOption, FluxKustomizationPathOption _fluxKustomizationPathOption)
   {
     string? name = commandResult.GetValueForOption(nameOption);
     string? configPath = commandResult.GetValueForOption(configPathOption);
-    var config = string.IsNullOrEmpty(configPath) ? null : _yamlDeserializer.Deserialize<K3dConfig>(File.ReadAllText(configPath));
+    var config = string.IsNullOrEmpty(configPath) ? null : yamlDeserializer.Deserialize<K3dConfig>(File.ReadAllText(configPath));
     name = config?.Metadata.Name ?? name;
     if (string.IsNullOrEmpty(name))
     {
@@ -22,7 +22,7 @@ static class KSailUpK3dFluxValidator
     }
     if (configPath != null && !ValidatePathExists(configPath))
     {
-      commandResult.ErrorMessage += $"Invalid option '{configPathOption.Aliases.First()} {configPath ?? "null"}'. Path does not exist...{Environment.NewLine}";
+      commandResult.ErrorMessage += $"Invalid option '{configPathOption.Aliases.First()} {configPath}'. Path does not exist...{Environment.NewLine}";
       return Task.CompletedTask;
     }
     string? manifestsPath = commandResult.GetValueForOption(_manifestsPathOption);

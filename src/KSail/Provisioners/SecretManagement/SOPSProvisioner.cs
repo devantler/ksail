@@ -12,7 +12,7 @@ sealed partial class SOPSProvisioner : ISecretManagementProvisioner, IDisposable
   [GeneratedRegex("export KSAIL_SOPS_PRIVATE_GPG_KEY='.*'")]
   private static partial Regex KSailSOPSPrivateKeyFilter();
 
-  readonly KubernetesProvisioner _kubernetesProvisioner = new();
+  readonly KubernetesProvisioner kubernetesProvisioner = new();
 
   public async Task CreateKeysAsync()
   {
@@ -45,7 +45,7 @@ sealed partial class SOPSProvisioner : ISecretManagementProvisioner, IDisposable
 
   public async Task ProvisionAsync()
   {
-    await _kubernetesProvisioner.CreateSecretAsync("sops-gpg", new Dictionary<string, string>
+    await kubernetesProvisioner.CreateSecretAsync("sops-gpg", new Dictionary<string, string>
     {
       ["sops.asc"] = Environment.GetEnvironmentVariable("KSAIL_SOPS_PRIVATE_GPG_KEY") ??
         throw new InvalidOperationException("🚨 Could not find the SOPS GPG key in the KSAIl_SOPS_PRIVATE_GPG_KEY environment variable.")
@@ -64,7 +64,7 @@ sealed partial class SOPSProvisioner : ISecretManagementProvisioner, IDisposable
           pgp: ${fingerprint}
       """;
 
-    File.WriteAllText(sopsConfigPath, sopsConfigContent);
+    await File.WriteAllTextAsync(sopsConfigPath, sopsConfigContent);
   }
 
   public async Task ShowPublicKeyAsync()
@@ -115,7 +115,7 @@ sealed partial class SOPSProvisioner : ISecretManagementProvisioner, IDisposable
 
   public void Dispose()
   {
-    _kubernetesProvisioner.Dispose();
+    kubernetesProvisioner.Dispose();
     GC.SuppressFinalize(this);
   }
 }
