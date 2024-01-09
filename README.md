@@ -14,6 +14,7 @@ A CLI tool for provisioning GitOps enabled K8s environments in Docker.
 .
 ├── .github
 │   └── workflows
+├── autocomplete
 ├── k3d
 ├── k8s
 │   └── clusters
@@ -57,7 +58,7 @@ A CLI tool for provisioning GitOps enabled K8s environments in Docker.
     ├── KSail.Tests.Integration
     └── KSail.Tests.Unit
 
-44 directories
+45 directories
 ```
 <!-- readme-tree end -->
 
