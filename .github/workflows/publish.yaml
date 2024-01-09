@@ -41,6 +41,8 @@ jobs:
             ksail-linux-arm64
           author_name: devantler
           author_email: devantler@icloud.com
+          push: origin main --force
+          message: "📥 Commited new binaries for release ${{ github.ref }}"
       - name: 🎉 Release
         uses: softprops/action-gh-release@v1
         with:
