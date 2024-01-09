@@ -2,6 +2,6 @@ using System.CommandLine;
 
 namespace KSail.Options;
 
-sealed class NameOption(string description) : Option<string>(["-n", "--name"], description)
+sealed class NameOption(string description) : Option<string>(["--name", "-n"], description)
 {
 }

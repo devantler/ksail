@@ -3,6 +3,6 @@ using System.CommandLine;
 namespace KSail.Commands.SOPS.Options;
 
 sealed class ShowPrivateKeyOption() : Option<bool>(
- ["-sprivk", "--show-private-key"],
+ ["--show-private-key", "-sprivk"],
   "show the private key"
 );

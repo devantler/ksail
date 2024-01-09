@@ -1,7 +1,6 @@
 using KSail.Commands.Down.Handlers;
 using KSail.Provisioners.Cluster;
 using KSail.Provisioners.ContainerOrchestrator;
-using KSail.Utils;
 
 namespace KSail.Commands.Up.Handlers;
 
@@ -9,21 +8,8 @@ static class KSailUpK3dCommandHandler
 {
   static readonly K3dProvisioner _clusterProvisioner = new();
   static readonly DockerProvisioner _dockerProvisioner = new();
-  internal static async Task HandleAsync(bool shouldPrompt, string name, bool pullThroughRegistries, string configPath)
+  internal static async Task HandleAsync(string name, bool pullThroughRegistries, string configPath)
   {
-    if (shouldPrompt)
-    {
-      bool shouldUseConfig = bool.Parse(ConsoleUtils.Prompt("Use config", "true", RegexFilters.YesNoFilter()));
-      if (shouldUseConfig)
-      {
-        configPath = ConsoleUtils.Prompt("Path to config file", "./k3d-config.yaml", RegexFilters.PathFilter());
-      }
-      else
-      {
-        name = ConsoleUtils.Prompt("Name of the cluster");
-      }
-      pullThroughRegistries = bool.Parse(ConsoleUtils.Prompt("Pull through registries", "true", RegexFilters.YesNoFilter()));
-    }
     await _dockerProvisioner.CheckReadyAsync();
 
     await KSailDownK3dCommandHandler.HandleAsync(name);

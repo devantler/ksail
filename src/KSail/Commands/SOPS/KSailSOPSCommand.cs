@@ -13,6 +13,15 @@ sealed class KSailSOPSCommand : Command
     AddOption(_showPublicKeyOption);
     AddOption(_showPrivateKeyOption);
 
+    AddValidator(result =>
+    {
+      if (!result.GetValueForOption(_showPublicKeyOption) && !result.GetValueForOption(_showPrivateKeyOption))
+      {
+        Console.WriteLine($"❌ Either '{_showPublicKeyOption.Aliases.First()}' or '{_showPrivateKeyOption.Aliases.First()}' must be specified to list SOPS GPG keys...");
+        Environment.Exit(1);
+      }
+    });
+
     this.SetHandler(KSailSOPSCommandHandler.HandleAsync, _showPublicKeyOption, _showPrivateKeyOption);
   }
 }

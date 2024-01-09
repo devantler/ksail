@@ -1,6 +1,5 @@
 using System.Formats.Tar;
 using KSail.CLIWrappers;
-using KSail.Utils;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
@@ -13,13 +12,6 @@ static class KSailLintCommandHandler
   internal static async Task HandleAsync(string name, string manifestsPath)
   {
     Console.WriteLine("🧹 Linting manifest files...");
-    bool shouldPrompt = string.IsNullOrEmpty(name) && string.IsNullOrEmpty(manifestsPath);
-
-    if (shouldPrompt)
-    {
-      name = ConsoleUtils.Prompt("✍️ Name of the cluster to lint");
-      manifestsPath = ConsoleUtils.Prompt("✍️ Path to the manifests directory", "./k8s", RegexFilters.PathFilter());
-    }
 
     if (string.IsNullOrEmpty(name))
     {
