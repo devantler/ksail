@@ -9,10 +9,10 @@ namespace KSail.Commands.Up;
 
 sealed class KSailUpK3dCommand : Command
 {
-  readonly NameOption _nameOption = new("name of the cluster");
-  readonly PullThroughRegistriesOption _pullThroughRegistriesOption = new() { IsRequired = true };
-  readonly ConfigPathOption _configPathOption = new();
-  static readonly Deserializer _yamlDeserializer = new();
+  readonly NameOption nameOption = new("name of the cluster");
+  readonly PullThroughRegistriesOption pullThroughRegistriesOption = new() { IsRequired = true };
+  readonly ConfigPathOption configPathOption = new();
+  static readonly Deserializer yamlDeserializer = new();
 
   internal KSailUpK3dCommand() : base("k3d", "create a k3d cluster ")
   {
@@ -21,18 +21,18 @@ sealed class KSailUpK3dCommand : Command
 
     this.SetHandler(async (name, pullThroughRegistries, configPath) =>
     {
-      var config = string.IsNullOrEmpty(configPath) ? null : _yamlDeserializer.Deserialize<K3dConfig>(File.ReadAllText(configPath));
+      var config = string.IsNullOrEmpty(configPath) ? null : yamlDeserializer.Deserialize<K3dConfig>(File.ReadAllText(configPath));
       name = config?.Metadata.Name ?? name;
       await KSailUpK3dCommandHandler.HandleAsync(name, pullThroughRegistries, configPath);
-    }, _nameOption, _pullThroughRegistriesOption, _configPathOption);
+    }, nameOption, pullThroughRegistriesOption, configPathOption);
   }
 
   void AddGlobalOptions()
   {
-    AddGlobalOption(_nameOption);
-    AddGlobalOption(_pullThroughRegistriesOption);
-    AddGlobalOption(_configPathOption);
+    AddGlobalOption(nameOption);
+    AddGlobalOption(pullThroughRegistriesOption);
+    AddGlobalOption(configPathOption);
   }
 
-  void AddCommands() => AddCommand(new KSailUpK3dFluxCommand(_nameOption, _pullThroughRegistriesOption, _configPathOption));
+  void AddCommands() => AddCommand(new KSailUpK3dFluxCommand(nameOption, pullThroughRegistriesOption, configPathOption));
 }

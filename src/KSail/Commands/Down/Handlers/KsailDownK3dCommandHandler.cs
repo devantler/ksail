@@ -4,11 +4,11 @@ namespace KSail.Commands.Down.Handlers;
 
 static class KSailDownK3dCommandHandler
 {
-  static readonly K3dProvisioner _provisioner = new();
+  static readonly K3dProvisioner provisioner = new();
 
   internal static async Task HandleAsync(string name)
   {
-    await _provisioner.DeprovisionAsync(name);
+    await provisioner.DeprovisionAsync(name);
     Console.WriteLine();
   }
 }

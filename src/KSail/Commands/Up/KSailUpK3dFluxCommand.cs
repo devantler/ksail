@@ -11,10 +11,10 @@ namespace KSail.Commands.Up;
 
 sealed class KSailUpK3dFluxCommand : Command
 {
-  readonly ManifestsPathOption _manifestsPathOption = new() { IsRequired = true };
-  readonly FluxKustomizationPathOption _fluxKustomizationPathOption = new();
-  readonly SOPSOption _sopsOption = new() { IsRequired = true };
-  static readonly Deserializer _yamlDeserializer = new();
+  readonly ManifestsPathOption manifestsPathOption = new() { IsRequired = true };
+  readonly FluxKustomizationPathOption fluxKustomizationPathOption = new();
+  readonly SOPSOption sopsOption = new() { IsRequired = true };
+  static readonly Deserializer yamlDeserializer = new();
 
   internal KSailUpK3dFluxCommand(
     NameOption nameOption,
@@ -22,25 +22,25 @@ sealed class KSailUpK3dFluxCommand : Command
     ConfigPathOption configPathOption
   ) : base("flux", "create a K3d cluster with Flux GitOps")
   {
-    AddOption(_manifestsPathOption);
-    AddOption(_fluxKustomizationPathOption);
-    AddOption(_sopsOption);
+    AddOption(manifestsPathOption);
+    AddOption(fluxKustomizationPathOption);
+    AddOption(sopsOption);
 
     AddValidator(
       async commandResult => await KSailUpK3dFluxValidator.ValidateAsync(
         commandResult, nameOption,
-        configPathOption, _manifestsPathOption,
-        _fluxKustomizationPathOption
+        configPathOption, manifestsPathOption,
+        fluxKustomizationPathOption
       )
     );
     this.SetHandler(async (name, configPath, manifestsPath, _fluxKustomizationPath, pullThroughRegistries, sops) =>
     {
-      var config = string.IsNullOrEmpty(configPath) ? null : _yamlDeserializer.Deserialize<K3dConfig>(File.ReadAllText(configPath));
+      var config = string.IsNullOrEmpty(configPath) ? null : yamlDeserializer.Deserialize<K3dConfig>(File.ReadAllText(configPath));
       name = config?.Metadata.Name ?? name;
       _fluxKustomizationPath = string.IsNullOrEmpty(_fluxKustomizationPath) ? $"clusters/{name}/flux" : _fluxKustomizationPath;
       await KSailLintCommandHandler.HandleAsync(name, manifestsPath);
       await KSailUpK3dCommandHandler.HandleAsync(name, pullThroughRegistries, configPath);
       await KSailUpK3dFluxCommandHandler.HandleAsync(name, manifestsPath, _fluxKustomizationPath, sops);
-    }, nameOption, configPathOption, _manifestsPathOption, _fluxKustomizationPathOption, pullThroughRegistriesOption, _sopsOption);
+    }, nameOption, configPathOption, manifestsPathOption, fluxKustomizationPathOption, pullThroughRegistriesOption, sopsOption);
   }
 }

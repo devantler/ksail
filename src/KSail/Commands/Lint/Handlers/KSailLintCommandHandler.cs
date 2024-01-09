@@ -8,7 +8,7 @@ namespace KSail.Commands.Lint.Handlers;
 
 static class KSailLintCommandHandler
 {
-  static readonly HttpClient _httpClient = new();
+  static readonly HttpClient httpClient = new();
   internal static async Task HandleAsync(string name, string manifestsPath)
   {
     Console.WriteLine("🧹 Linting manifest files...");
@@ -22,7 +22,7 @@ static class KSailLintCommandHandler
     Console.WriteLine("► Downloading Flux OpenAPI schemas...");
     const string url = "https://github.com/fluxcd/flux2/releases/latest/download/crd-schemas.tar.gz";
     var directoryInfo = Directory.CreateDirectory("/tmp/flux-crd-schemas/master-standalone-strict");
-    await using (var file = await _httpClient.GetStreamAsync(url).ConfigureAwait(false))
+    await using (var file = await httpClient.GetStreamAsync(url).ConfigureAwait(false))
     await using (var memoryStream = new MemoryStream())
     {
       await TarFile.ExtractToDirectoryAsync(memoryStream, directoryInfo.FullName, true);
@@ -52,14 +52,14 @@ static class KSailLintCommandHandler
             object? doc = deserializer.Deserialize(parser);
           }
         }
-        catch (Exception e)
+        catch (YamlException e)
         {
           Console.WriteLine($"❌ Validation failed for {manifest}. {e.Message}...");
           Environment.Exit(1);
         }
       }
     }
-    catch (Exception e)
+    catch (YamlException e)
     {
       Console.WriteLine($"🚨 An error occurred while validating YAML files: {e.Message}...");
       Environment.Exit(1);
@@ -90,7 +90,7 @@ ValidateKustomizationsAsync(string name, string manifestsPath)
     Console.WriteLine("► Validating kustomizations with Kustomize and Kubeconform...");
     foreach (string manifest in Directory.GetFiles(manifestsPath, kustomization, SearchOption.AllDirectories))
     {
-      string kustomizationPath = manifest.Replace(kustomization, "");
+      string kustomizationPath = manifest.Replace(kustomization, "", StringComparison.Ordinal);
       var kustomizeBuildCmd = KustomizeCLIWrapper.Kustomize.WithArguments(["build", kustomizationPath, .. kustomizeFlags]);
       var kubeconformCmd = KubeconformCLIWrapper.Kubeconform.WithArguments([.. kubeconformFlags, .. kubeconformConfig]);
       var cmd = kustomizeBuildCmd | kubeconformCmd;

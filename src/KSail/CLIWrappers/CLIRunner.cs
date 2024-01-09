@@ -1,6 +1,7 @@
 using System.Text;
 using CliWrap;
 using CliWrap.EventStream;
+using CliWrap.Exceptions;
 
 namespace KSail.CLIWrappers;
 
@@ -23,7 +24,7 @@ static class CLIRunner
         }
       }
     }
-    catch (Exception e)
+    catch (CommandExecutionException e)
     {
       Console.WriteLine($"🚨 An error occurred while running '{command}': {e.Message}...");
       Environment.Exit(1);
