@@ -21,37 +21,33 @@ jobs:
       - name: 📦 Publish
         run: |
           dotnet publish -c Release -r osx-x64 src/KSail/KSail.csproj
-          mv src/KSail/bin/Release/net8.0/osx-x64/publish/ksail ksail
-          tar -czf ksail-${{ github.ref_name}}-osx-x64.tar.gz ksail
+          mv src/KSail/bin/Release/net8.0/osx-x64/publish/ksail ksail-${{ github.ref_name}}-osx-x64
 
           dotnet publish -c Release -r osx-arm64 src/KSail/KSail.csproj
-          mv src/KSail/bin/Release/net8.0/osx-arm64/publish/ksail ksail
-          tar -czf ksail-${{ github.ref_name}}-osx-arm64.tar.gz ksail
+          mv src/KSail/bin/Release/net8.0/osx-arm64/publish/ksail ksail-${{ github.ref_name}}-osx-arm64
 
           dotnet publish -c Release -r linux-x64 src/KSail/KSail.csproj
-          mv src/KSail/bin/Release/net8.0/linux-x64/publish/ksail ksail
-          tar -czf ksail-${{ github.ref_name}}-linux-x64.tar.gz ksail
+          mv src/KSail/bin/Release/net8.0/linux-x64/publish/ksail ksail-${{ github.ref_name}}-linux-x64
 
           dotnet publish -c Release -r linux-arm64 src/KSail/KSail.csproj
-          mv src/KSail/bin/Release/net8.0/linux-arm64/publish/ksail ksail
-          tar -czf ksail-${{ github.ref_name}}-linux-arm64.tar.gz ksail
+          mv src/KSail/bin/Release/net8.0/linux-arm64/publish/ksail ksail-${{ github.ref_name}}-linux-arm64
       - name: 📥 Commit tarballs
         uses: EndBug/add-and-commit@v9
         with:
           add: |
-            ksail-${{ github.ref_name}}-osx-x64.tar.gz
-            ksail-${{ github.ref_name}}-osx-arm64.tar.gz
-            ksail-${{ github.ref_name}}-linux-x64.tar.gz
-            ksail-${{ github.ref_name}}-linux-arm64.tar.gz
+            ksail-${{ github.ref_name}}-osx-x64
+            ksail-${{ github.ref_name}}-osx-arm64
+            ksail-${{ github.ref_name}}-linux-x64
+            ksail-${{ github.ref_name}}-linux-arm64
           author_name: devantler
           author_email: devantler@icloud.com
       - name: 🎉 Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            ksail-${{ github.ref_name}}-osx-x64.tar.gz
-            ksail-${{ github.ref_name}}-osx-arm64.tar.gz
-            ksail-${{ github.ref_name}}-linux-x64.tar.gz
-            ksail-${{ github.ref_name}}-linux-arm64.tar.gz
+            ksail-${{ github.ref_name}}-osx-x64
+            ksail-${{ github.ref_name}}-osx-arm64
+            ksail-${{ github.ref_name}}-linux-x64
+            ksail-${{ github.ref_name}}-linux-arm64
       - name: 🍺 Brew bump
         run: brew bump --open-pr --formulae devantler/formulas/ksail
