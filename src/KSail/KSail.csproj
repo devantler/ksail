@@ -7,7 +7,6 @@
     <SelfContained>true</SelfContained>
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
-    <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
