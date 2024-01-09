@@ -6,8 +6,8 @@ namespace KSail.Commands.Lint;
 
 sealed class KSailLintCommand : Command
 {
-  readonly NameOption _nameOption = new("name of the cluster to lint");
-  readonly ManifestsPathOption _manifestsPathOption = new();
+  readonly NameOption _nameOption = new("name of the cluster to lint") { IsRequired = true };
+  readonly ManifestsPathOption _manifestsPathOption = new() { IsRequired = true };
   internal KSailLintCommand() : base(
    "lint", "lint manifest files"
   )

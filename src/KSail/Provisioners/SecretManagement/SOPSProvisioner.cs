@@ -1,7 +1,6 @@
 using System.Text.RegularExpressions;
 using KSail.CLIWrappers;
 using KSail.Provisioners.ContainerOrchestrator;
-using KSail.Utils;
 
 namespace KSail.Provisioners.SecretManagement;
 
@@ -78,11 +77,8 @@ sealed partial class SOPSProvisioner : ISecretManagementProvisioner, IDisposable
   public async Task ShowPrivateKeyAsync()
   {
     string privateKey = Environment.GetEnvironmentVariable("KSAIL_SOPS_PRIVATE_GPG_KEY") ?? await GPGCLIWrapper.ExportPrivateKeyAsync(true);
-    if (ConsoleUtils.PromptLogin())
-    {
-      Console.WriteLine($"🔐 SOPS private key:\n{privateKey}");
-      Console.WriteLine();
-    }
+    Console.WriteLine($"🔐 SOPS private key:\n{privateKey}");
+    Console.WriteLine();
   }
 
   static string GetEnvironmentFilePath()

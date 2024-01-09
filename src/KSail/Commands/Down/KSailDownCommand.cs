@@ -5,7 +5,7 @@ namespace KSail.Commands.Down;
 
 sealed class KSailDownCommand : Command
 {
-  readonly NameOption _nameOption = new("name of the cluster to destroy");
+  readonly NameOption _nameOption = new("name of the cluster to destroy") { IsRequired = true };
   internal KSailDownCommand() : base("down", "destroy a K8s cluster")
   {
     AddCommand(new KSailDownK3dCommand(_nameOption));

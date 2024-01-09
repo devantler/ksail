@@ -4,7 +4,7 @@ namespace KSail.Options;
 
 sealed class ManifestsPathOption()
  : Option<string>(
-    ["-mp", "--manifests-path"],
+    ["--manifests-path", "-mp"],
     () => "./k8s",
     "path to the manifests directory"
   )
