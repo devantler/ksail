@@ -7,6 +7,10 @@ on:
     branches:
       - main
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   publish:
     name: Publish
@@ -44,7 +48,6 @@ jobs:
             ksail-linux-arm64
           author_name: devantler
           author_email: devantler@icloud.com
-          push: origin main --force
           message: "📥 Commited new binaries for release ${{ github.ref }}"
       - name: 🎉 Release
         if: startsWith(github.ref, 'refs/tags/v')
