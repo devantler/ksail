@@ -14,9 +14,6 @@ jobs:
         uses: actions/checkout@v4
       - name: ⚙️ Setup Homebrew
         uses: Homebrew/actions/setup-homebrew@master
-      - name: ⚙️ Configure environment
-        run: |
-          echo 'export HOMEBREW_GITHUB_API_TOKEN=${{ secrets.HOMEBREW_GITHUB_API_TOKEN }}' >> /Users/runner/.bash_profile
       - name: ⚙️ Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -49,5 +46,6 @@ jobs:
 
       - name: 🍺 Brew bump
         run: |
+          echo 'export HOMEBREW_GITHUB_API_TOKEN=${{ secrets.HOMEBREW_GITHUB_API_TOKEN }}' >> /Users/runner/.bash_profile
           brew tap devantler/formulas
           brew bump --open-pr --formulae devantler/formulas/ksail
