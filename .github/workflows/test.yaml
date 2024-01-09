@@ -16,7 +16,8 @@ jobs:
       pull-requests: read
     outputs:
       action: ${{ steps.filter.outputs.action }}
-      ksail: ${{ steps.filter.outputs.ksail }}
+      code: ${{ steps.filter.outputs.code }}
+      k8s: ${{ steps.filter.outputs.k8s }}
     steps:
       - uses: dorny/paths-filter@v2
         id: filter
