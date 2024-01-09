@@ -46,4 +46,6 @@ jobs:
             ksail.tar.gz
 
       - name: 🍺 Brew bump
-        run: brew bump --open-pr --formulae devantler/formulas/ksail
+        run: |
+          brew tap devantler/formulas
+          brew bump --open-pr --formulae devantler/formulas/ksail
