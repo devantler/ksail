@@ -70,14 +70,14 @@ sealed partial class SOPSProvisioner : ISecretManagementProvisioner, IDisposable
   public async Task ShowPublicKeyAsync()
   {
     string publicKey = Environment.GetEnvironmentVariable("KSAIL_SOPS_PUBLIC_GPG_KEY") ?? await GPGCLIWrapper.ExportPublicKeyAsync(true);
-    Console.WriteLine($"🔐 SOPS public key:\n{publicKey}");
+    Console.WriteLine(publicKey);
     Console.WriteLine();
   }
 
   public async Task ShowPrivateKeyAsync()
   {
     string privateKey = Environment.GetEnvironmentVariable("KSAIL_SOPS_PRIVATE_GPG_KEY") ?? await GPGCLIWrapper.ExportPrivateKeyAsync(true);
-    Console.WriteLine($"🔐 SOPS private key:\n{privateKey}");
+    Console.WriteLine(privateKey);
     Console.WriteLine();
   }
 
