@@ -47,7 +47,6 @@ jobs:
       - name: 🍺 Brew bump
         uses: Homebrew/actions/bump-packages@master
         with:
-          # Custom GitHub access token with only the 'public_repo' scope enabled
           token: ${{ secrets.HOMEBREW_GITHUB_API_TOKEN }}
           formulae: |
             devantler/formulas/ksail
