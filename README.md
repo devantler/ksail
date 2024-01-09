@@ -37,10 +37,10 @@ A CLI tool for provisioning GitOps enabled K8s environments in Docker.
 │       │   │   └── Options
 │       │   ├── Up
 │       │   │   ├── Handlers
-│       │   │   └── Options
-│       │   ├── Update
-│       │   │   └── Handlers
-│       │   └── Verify
+│       │   │   ├── Options
+│       │   │   └── Validators
+│       │   └── Update
+│       │       └── Handlers
 │       ├── Enums
 │       ├── Models
 │       │   └── K3d
@@ -50,7 +50,6 @@ A CLI tool for provisioning GitOps enabled K8s environments in Docker.
 │       │   ├── ContainerOrchestrator
 │       │   ├── GitOps
 │       │   └── SecretManagement
-│       ├── Utils
 │       └── assets
 │           ├── binaries
 │           └── k3d
@@ -58,7 +57,7 @@ A CLI tool for provisioning GitOps enabled K8s environments in Docker.
     ├── KSail.Tests.Integration
     └── KSail.Tests.Unit
 
-45 directories
+44 directories
 ```
 <!-- readme-tree end -->
 
