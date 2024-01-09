@@ -20,16 +20,17 @@ jobs:
           dotnet-version: "8.x.x"
       - name: 📦 Publish
         run: |
-          dotnet publish -c Release -r osx-x64 src/KSail/KSail.csproj
+          version=$(echo "${{ github.ref_name }}" | sed -e 's/v//')
+          dotnet publish -c Release -r osx-x64 src/KSail/KSail.csproj /p:Version=$version
           mv src/KSail/bin/Release/net8.0/osx-x64/publish/ksail ksail-osx-x64
 
-          dotnet publish -c Release -r osx-arm64 src/KSail/KSail.csproj
+          dotnet publish -c Release -r osx-arm64 src/KSail/KSail.csproj /p:Version=$version
           mv src/KSail/bin/Release/net8.0/osx-arm64/publish/ksail ksail-osx-arm64
 
-          dotnet publish -c Release -r linux-x64 src/KSail/KSail.csproj
+          dotnet publish -c Release -r linux-x64 src/KSail/KSail.csproj /p:Version=$version
           mv src/KSail/bin/Release/net8.0/linux-x64/publish/ksail ksail-linux-x64
 
-          dotnet publish -c Release -r linux-arm64 src/KSail/KSail.csproj
+          dotnet publish -c Release -r linux-arm64 src/KSail/KSail.csproj /p:Version=$version
           mv src/KSail/bin/Release/net8.0/linux-arm64/publish/ksail ksail-linux-arm64
 
           tar -czf ksail.tar.gz ksail-osx-x64 ksail-osx-arm64 ksail-linux-x64 ksail-linux-arm64
