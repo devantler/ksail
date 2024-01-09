@@ -34,6 +34,7 @@ jobs:
           dotnet publish -c Release -r linux-arm64 src/KSail/KSail.csproj
           mv src/KSail/bin/Release/net8.0/linux-arm64/publish/ksail ksail-linux-arm64
       - name: 📥 Commit tarballs
+        if: startsWith(github.ref, 'refs/heads/main')
         uses: EndBug/add-and-commit@v9
         with:
           add: |
@@ -55,4 +56,5 @@ jobs:
             ksail-linux-x64
             ksail-linux-arm64
       - name: 🍺 Brew bump
+        if: startsWith(github.ref, 'refs/tags/v')
         run: brew bump --open-pr --formulae devantler/formulas/ksail
