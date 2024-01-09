@@ -28,7 +28,7 @@ jobs:
               - 'tests/**'
             k8s:
               - 'k8s/**'
-              - 'k3d-config.yaml'
+              - 'k3d/k3d-config.yaml'
 
   test-dotnet:
     runs-on: ubuntu-latest
