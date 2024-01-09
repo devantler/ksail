@@ -21,7 +21,7 @@ jobs:
       - name: 🔢 Get version
         id: version
         run: |
-          echo "${{ github.ref_name }}" | sed 's/v//g' >> $GITHUB_OUTPUT
+          echo "${{ github.ref_name }}" | sed 's/v//g' >> "$GITHUB_OUTPUT"
       - name: 📦 Publish
         run: |
           dotnet publish -c Release -r osx-x64 src/KSail/KSail.csproj /p:Version=${{ steps.version.outputs.version }}
