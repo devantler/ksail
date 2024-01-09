@@ -43,7 +43,8 @@ jobs:
             ksail-linux-x64
             ksail-linux-arm64
             ksail.tar.gz
-
+      - name: 🍺 Brew tap
+        run: brew tap devantler/formulas
       - name: 🍺 Brew bump
         uses: Homebrew/actions/bump-packages@master
         with:
