@@ -23,32 +23,29 @@ jobs:
           filters: |
             action:
               - '.github/workflows/test.yaml'
-            dotnet:
-              - 'src/**/*'
-              - 'tests/**/*'
-            e2e:
-              - 'k8s/**/*.yaml'
+            code:
+              - 'src/**'
+              - 'tests/**'
+            k8s:
+              - 'k8s/**'
               - 'k3d-config.yaml'
-              - 'ksail_test'
 
   test-dotnet:
     runs-on: ubuntu-latest
-    needs:
-      - changes
-    if: ${{ github.event.pull_request.draft == false && (needs.changes.outputs.dotnet == 'true' || needs.changes.outputs.action == 'true') }}
+    needs: changes
+    if: ${{ github.event.pull_request.draft == false && (needs.changes.outputs.code == 'true' || needs.changes.outputs.action == 'true') }}
     steps:
       - name: 📑 Checkout
         uses: actions/checkout@v4
-      - name: #️⃣ Setup .NET
+      - name: ⚙️ Setup .NET
         uses: actions/setup-dotnet@v4
       - name: 🧪 Test
         run: dotnet test
 
   test-e2e:
     runs-on: ubuntu-latest
-    needs:
-      - changes
-    if: ${{ github.event.pull_request.draft == false && (needs.changes.outputs.dotnet == 'true' ||needs.changes.outputs.e2e == 'true' || needs.changes.outputs.action == 'true') }}
+    needs: changes
+    if: ${{ github.event.pull_request.draft == false && (needs.changes.outputs.code == 'true' || needs.changes.outputs.k8s == 'true' || needs.changes.outputs.action == 'true') }}
     steps:
       - name: 📑 Checkout
         uses: actions/checkout@v4
