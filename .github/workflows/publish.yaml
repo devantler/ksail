@@ -4,12 +4,6 @@ on:
   push:
     tags:
       - "v*.*.*"
-    branches:
-      - main
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   publish:
@@ -37,22 +31,11 @@ jobs:
 
           dotnet publish -c Release -r linux-arm64 src/KSail/KSail.csproj
           mv src/KSail/bin/Release/net8.0/linux-arm64/publish/ksail ksail-linux-arm64
-      - name: 📥 Commit tarballs
-        if: startsWith(github.ref, 'refs/heads/main')
-        uses: EndBug/add-and-commit@v9
-        with:
-          add: |
-            ksail-osx-x64
-            ksail-osx-arm64
-            ksail-linux-x64
-            ksail-linux-arm64
-          author_name: devantler
-          author_email: devantler@icloud.com
-          committer_name: devantler
-          committer_email: nikolaiemildamm@icloud.com
-          message: "📥 Commited new binaries for release ${{ github.ref }}"
+
+          # tar all files into one archive
+          tar -czf ksail.tar.gz ksail-osx-x64 ksail-osx-arm64 ksail-linux-x64 ksail-linux-arm64
+
       - name: 🎉 Release
-        if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v1
         with:
           files: |
@@ -60,6 +43,7 @@ jobs:
             ksail-osx-arm64
             ksail-linux-x64
             ksail-linux-arm64
+            ksail.tar.gz
+
       - name: 🍺 Brew bump
-        if: startsWith(github.ref, 'refs/tags/v')
         run: brew bump --open-pr --formulae devantler/formulas/ksail
