@@ -48,6 +48,8 @@ jobs:
             ksail-linux-arm64
           author_name: devantler
           author_email: devantler@icloud.com
+          committer_name: devantler
+          committer_email: nikolaiemildamm@icloud.com
           message: "📥 Commited new binaries for release ${{ github.ref }}"
       - name: 🎉 Release
         if: startsWith(github.ref, 'refs/tags/v')
