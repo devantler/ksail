@@ -15,7 +15,7 @@ jobs:
       - name: ⚙️ Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.x.x'
+          dotnet-version: "8.x.x"
       - name: 📦 Publish
         run: |
           dotnet publish -c Release -r osx-x64 src/KSail/KSail.csproj
@@ -33,11 +33,21 @@ jobs:
           dotnet publish -c Release -r linux-arm64 src/KSail/KSail.csproj
           mv src/KSail/bin/Release/net8.0/linux-arm64/publish/ksail ksail
           tar -czf ksail-${{ github.ref_name}}-linux-arm64.tar.gz ksail
-      - name: 🎉 Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
+          - name: 🎉 Release
+          uses: softprops/action-gh-release@v1
+          with:
+            files: |
             ksail-${{ github.ref_name}}-osx-x64.tar.gz
             ksail-${{ github.ref_name}}-osx-arm64.tar.gz
             ksail-${{ github.ref_name}}-linux-x64.tar.gz
             ksail-${{ github.ref_name}}-linux-arm64.tar.gz
+      - name: 📥 Commit tarballs
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: |
+            ksail-${{ github.ref_name}}-osx-x64.tar.gz
+            ksail-${{ github.ref_name}}-osx-arm64.tar.gz
+            ksail-${{ github.ref_name}}-linux-x64.tar.gz
+            ksail-${{ github.ref_name}}-linux-arm64.tar.gz
+          author_name: devantler
+          author_email: devantler@icloud.com
