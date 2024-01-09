@@ -21,10 +21,10 @@
 
   <ItemGroup>
     <Content Include="assets/k3d/registry-config.yaml" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="assets/binaries/*darwin_amd64" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' == 'osx-x64'" />
-    <Content Include="assets/binaries/*darwin_arm64" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' == 'osx-arm64'" />
-    <Content Include="assets/binaries/*linux_amd64" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' == 'linux-x64'" />
-    <Content Include="assets/binaries/*linux_arm64" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' == 'linux-arm64'" />
+    <Content Include="assets/binaries/*darwin*amd64" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' == 'osx-x64'" />
+    <Content Include="assets/binaries/*darwin*arm64" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' == 'osx-arm64'" />
+    <Content Include="assets/binaries/*linux*amd64" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' == 'linux-x64'" />
+    <Content Include="assets/binaries/*linux*arm64" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' == 'linux-arm64'" />
   </ItemGroup>
 
 </Project>
