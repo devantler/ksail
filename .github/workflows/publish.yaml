@@ -49,6 +49,5 @@ jobs:
 
       - name: 🍺 Brew bump
         run: |
-
           brew tap devantler/formulas
           brew bump --open-pr --formulae devantler/formulas/ksail
