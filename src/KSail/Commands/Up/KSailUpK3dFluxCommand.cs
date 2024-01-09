@@ -24,7 +24,7 @@ sealed class KSailUpK3dFluxCommand : Command
     {
       var config = string.IsNullOrEmpty(configPath) ? null : _yamlDeserializer.Deserialize<K3dConfig>(File.ReadAllText(configPath));
       name = config?.Metadata.Name ?? name;
-      _fluxKustomizationPath = string.IsNullOrEmpty(_fluxKustomizationPath) ? $"{manifestsPath}/clusters/{name}/flux" : _fluxKustomizationPath;
+      _fluxKustomizationPath = string.IsNullOrEmpty(_fluxKustomizationPath) ? $"./clusters/{name}/flux" : _fluxKustomizationPath;
       await KSailLintCommandHandler.HandleAsync(name, manifestsPath);
       await KSailUpK3dCommandHandler.HandleAsync(name, pullThroughRegistries, configPath);
       await KSailUpK3dFluxCommandHandler.HandleAsync(name, manifestsPath, _fluxKustomizationPath, sops);
