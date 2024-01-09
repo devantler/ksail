@@ -1,5 +1,4 @@
 using System.CommandLine;
-using System.Linq;
 using KSail.Commands.Lint.Handlers;
 using KSail.Commands.Up.Handlers;
 using KSail.Commands.Up.Options;

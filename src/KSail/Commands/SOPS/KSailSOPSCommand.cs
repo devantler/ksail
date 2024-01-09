@@ -1,6 +1,4 @@
 using System.CommandLine;
-using System.CommandLine.Parsing;
-using System.Linq;
 using KSail.Commands.SOPS.Handlers;
 using KSail.Commands.SOPS.Options;
 
