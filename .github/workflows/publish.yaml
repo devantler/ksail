@@ -45,7 +45,9 @@ jobs:
             ksail.tar.gz
 
       - name: 🍺 Brew bump
-        run: |
-          echo 'export HOMEBREW_GITHUB_API_TOKEN=${{ secrets.HOMEBREW_GITHUB_API_TOKEN }}' >> /Users/runner/.bash_profile
-          brew tap devantler/formulas
-          brew bump --open-pr --formulae devantler/formulas/ksail
+        uses: Homebrew/actions/bump-packages@master
+        with:
+          # Custom GitHub access token with only the 'public_repo' scope enabled
+          token: ${{ secrets.HOMEBREW_GITHUB_API_TOKEN }}
+          formulae: |
+            devantler/formulas/ksail
