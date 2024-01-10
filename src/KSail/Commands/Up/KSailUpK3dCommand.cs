@@ -9,12 +9,12 @@ namespace KSail.Commands.Up;
 
 sealed class KSailUpK3dCommand : Command
 {
-  readonly NameOption nameOption = new("name of the cluster");
+  readonly NameOption nameOption = new("Name of the cluster");
   readonly PullThroughRegistriesOption pullThroughRegistriesOption = new() { IsRequired = true };
   readonly ConfigPathOption configPathOption = new();
   static readonly Deserializer yamlDeserializer = new();
 
-  internal KSailUpK3dCommand() : base("k3d", "create a k3d cluster ")
+  internal KSailUpK3dCommand() : base("k3d", "Create a k3d cluster ")
   {
     AddGlobalOptions();
     AddCommands();

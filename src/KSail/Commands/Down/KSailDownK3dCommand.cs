@@ -7,7 +7,7 @@ sealed class KSailDownK3dCommand : Command
 {
   internal KSailDownK3dCommand(
    Option<string> nameOption
-  ) : base("k3d", "destroy a K3d cluster ")
+  ) : base("k3d", "Destroy a K3d cluster ")
   {
     AddOption(nameOption);
 
