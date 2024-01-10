@@ -1,5 +1,8 @@
 # ⛴️🐳 KSail
 
+> [!NOTE]
+> This is an early release of KSail. I am actively working on the tool, so if you encounter any issues, please let me know 🙏🏻
+
 ![image](https://github.com/devantler/ksail/assets/26203420/d8a20d3c-5152-40f8-a08d-2d70517e094d)
 
 A CLI tool for provisioning GitOps enabled K8s environments in Docker.
