@@ -5,5 +5,5 @@ namespace KSail.Commands.Up.Options;
 sealed class SOPSOption() : Option<bool>(
  ["--sops", "-s"],
   () => true,
-  "enable SOPS"
+  "Enable SOPS"
 );

@@ -20,7 +20,7 @@ sealed class KSailUpK3dFluxCommand : Command
     NameOption nameOption,
     PullThroughRegistriesOption pullThroughRegistriesOption,
     ConfigPathOption configPathOption
-  ) : base("flux", "create a K3d cluster with Flux GitOps")
+  ) : base("flux", "Create a K3d cluster with Flux GitOps")
   {
     AddOption(manifestsPathOption);
     AddOption(fluxKustomizationPathOption);
