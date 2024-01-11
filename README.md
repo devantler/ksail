@@ -121,8 +121,8 @@ KSail is a CLI tool designed to simplify the management of GitOps-enabled Kubern
 KSail leverages several key technologies to provide its functionality:
 
 - **Embedded Binaries:** KSail embeds binaries for tools like k3d, flux, and sops. This enables KSail to work out of the box without requiring you to install any additional dependencies.
-- **Kubernetes-in-Docker Backends:** KSail supports various Kubernetes-in-Docker backends, allowing you to run Kubernetes clusters inside Docker containers.
-- **GitOps:** KSail sets up GitOps to manage the state of your clusters, with your manifest source serving as the single source of truth.
+- **K3d Backend:** KSail uses K3d, allowing you to run Kubernetes clusters inside Docker containers with small footprint.
+- **Flux GitOps:** KSail sets up Flux GitOps to manage the state of your clusters, with your manifest source serving as the single source of truth.
 - **Local OCI Registries:** KSail uses local OCI registries to store and distribute Docker images and manifests.
 - **SOPS Integration:** KSail integrates with SOPS for managing secrets in Git repositories.
 - **Manifest linting:** KSail lints your manifest files before deploying your clusters.
@@ -137,7 +137,7 @@ KSail was created to fill a gap in the tooling landscape for managing GitOps-ena
 KSail is useful because it provides a simple, easy-to-use interface for managing GitOps-enabled Kubernetes clusters in Docker. It also provides a set of commands that allow you to easily create, manage, and dismantle GitOps-enabled clusters. There are currently two main use cases for KSail:
 
 - **Local Development:** KSail can be used to create and manage GitOps-enabled Kubernetes clusters in Docker for local development. This allows you to easily build and test your applications in a K8s environment.
-- **CI/CD:** KSail can be used to create and manage GitOps-enabled Kubernetes clusters in Docker for CI/CD. This allows you to easily build and test your applications in a K8s environment.
+- **CI/CD:** KSail can be used to spin up GitOps-enabled Kubernetes clusters in CI/CD, to easily verify that your changes are working as expected before deploying them to your other environments.
 
 ## Contributing
 
