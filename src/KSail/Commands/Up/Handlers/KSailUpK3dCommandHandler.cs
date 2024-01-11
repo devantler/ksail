@@ -12,7 +12,7 @@ static class KSailUpCommandHandler
   {
     await dockerProvisioner.CheckReadyAsync();
 
-    await KSailDownK3dCommandHandler.HandleAsync(name);
+    await KSailDownCommandHandler.HandleAsync(name);
     if (pullThroughRegistries)
     {
       Console.WriteLine("🧮 Creating pull-through registries...");
