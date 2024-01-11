@@ -2,40 +2,20 @@ using System.Data;
 using System.Globalization;
 using k8s;
 using k8s.Models;
+using KSail.Extensions;
 
 namespace KSail.Commands.Check.Handlers;
 
 static class KSailCheckHandler
 {
+  static readonly List<string> kustomizations = [];
+  static readonly List<string> successFullKustomizations = [];
   internal static async Task HandleAsync(string name, CancellationToken cancellationToken)
   {
-    var kubeConfig = KubernetesClientConfiguration.LoadKubeConfig();
-    var context = kubeConfig.Contexts.FirstOrDefault(c => c.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
+    var kubernetesClient = CreateKubernetesClientFromClusterName(name);
+    var responseTask = kubernetesClient.ListKustomizationsWithHttpMessagesAsync(cancellationToken);
 
-    if (context == null)
-    {
-      Console.WriteLine($"❌ Could not find a context matching the cluster name '{name}' in the kubeconfig file.");
-      Console.WriteLine($"   Available contexts are: {string.Join(", ", kubeConfig.Contexts.Select(c => c.Name))}");
-      Environment.Exit(1);
-    }
-
-    // Create a KubernetesClientConfiguration object from the context
-    var config = KubernetesClientConfiguration.BuildConfigFromConfigObject(kubeConfig, context.Name);
-
-    // Instantiate the Kubernetes client with the config
-    var kubernetesClient = new Kubernetes(config);
-    var listResponse = kubernetesClient.CustomObjects.ListNamespacedCustomObjectWithHttpMessagesAsync(
-      "kustomize.toolkit.fluxcd.io",
-      "v1",
-      "flux-system",
-      "kustomizations",
-      watch: true,
-      cancellationToken: cancellationToken
-    );
-
-    var kustomizations = new List<string>();
-    var successFullKustomizations = new List<string>();
-    await foreach (var (type, kustomization) in listResponse.WatchAsync<V1CustomResourceDefinition, object>(cancellationToken: cancellationToken))
+    await foreach (var (type, kustomization) in responseTask.WatchAsync<V1CustomResourceDefinition, object>(cancellationToken: cancellationToken))
     {
       string? kustomizationName = kustomization?.Metadata.Name ??
         throw new NoNullAllowedException("Kustomization name is null");
@@ -67,5 +47,20 @@ static class KSailCheckHandler
       }
       Console.WriteLine($"🔁 Waiting for kustomization '{kustomizationName}' to be ready. It is currently {statusName?.ToLower(CultureInfo.InvariantCulture)}...");
     }
+  }
+
+  static Kubernetes CreateKubernetesClientFromClusterName(string name)
+  {
+    var kubeConfig = KubernetesClientConfiguration.LoadKubeConfig();
+    var context = kubeConfig.Contexts.FirstOrDefault(c => c.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
+
+    if (context == null)
+    {
+      Console.WriteLine($"❌ Could not find a context matching the cluster name '{name}' in the kubeconfig file.");
+      Console.WriteLine($"   Available contexts are: {string.Join(", ", kubeConfig.Contexts.Select(c => c.Name))}");
+      Environment.Exit(1);
+    }
+    var config = KubernetesClientConfiguration.BuildConfigFromConfigObject(kubeConfig, context.Name);
+    return new Kubernetes(config);
   }
 }
