@@ -1,3 +1,4 @@
+using System.Data;
 using System.Globalization;
 using k8s;
 using k8s.Models;
@@ -32,24 +33,14 @@ static class KSailCheckHandler
       cancellationToken: cancellationToken
     );
 
-    //Check that all kustomizations have been created and return success if so.
     var kustomizations = new List<string>();
     var successFullKustomizations = new List<string>();
     await foreach (var (type, kustomization) in listResponse.WatchAsync<V1CustomResourceDefinition, object>(cancellationToken: cancellationToken))
     {
-      // Assuming the status of the Kustomization is stored in the 'status' field
-      string? kustomizationName = kustomization?.Metadata.Name;
-      string? statusName = kustomization?.Status.Conditions.FirstOrDefault()?.Type;
-      if (string.IsNullOrEmpty(kustomizationName))
-      {
-        Console.WriteLine("❌ The kustomization name is null or empty.");
-        Environment.Exit(1);
-      }
-      if (string.IsNullOrEmpty(statusName))
-      {
-        Console.WriteLine("❌ The status name is null or empty.");
-        Environment.Exit(1);
-      }
+      string? kustomizationName = kustomization?.Metadata.Name ??
+        throw new NoNullAllowedException("Kustomization name is null");
+      string? statusName = kustomization?.Status.Conditions.FirstOrDefault()?.Type ??
+        throw new NoNullAllowedException("Kustomization status is null");
       if (statusName == "Failed")
       {
         Console.WriteLine($"❌ Kustomization '{kustomizationName}' failed!");
@@ -58,13 +49,11 @@ static class KSailCheckHandler
         Environment.Exit(1);
       }
       if (successFullKustomizations.Contains(kustomizationName))
-      {
         continue;
-      }
+
       if (!kustomizations.Contains(kustomizationName))
-      {
         kustomizations.Add(kustomizationName);
-      }
+
       if (statusName == "Ready")
       {
         Console.WriteLine($"✅ Kustomization '{kustomizationName}' is ready!");
@@ -73,10 +62,10 @@ static class KSailCheckHandler
       }
       if (successFullKustomizations.Count == kustomizations.Count)
       {
-        Console.WriteLine($"✅ All kustomizations are ready!");
+        Console.WriteLine("✅ All kustomizations are ready!");
         Environment.Exit(0);
       }
-      Console.WriteLine($"🔁 Waiting for kustomization '{kustomizationName}' to be ready. It is currently {statusName.ToLower(CultureInfo.InvariantCulture)}...");
+      Console.WriteLine($"🔁 Waiting for kustomization '{kustomizationName}' to be ready. It is currently {statusName?.ToLower(CultureInfo.InvariantCulture)}...");
     }
   }
 }
