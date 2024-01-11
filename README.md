@@ -125,4 +125,3 @@ KSail was created to fill a gap in the tooling landscape for managing GitOps-ena
 ## Contributing
 
 Contributions to KSail are welcome! You can contribute by reporting bugs, requesting features, or submitting pull requests. When creating an issue or pull request, please provide as much detail as possible to help understand the problem or feature.
-```
