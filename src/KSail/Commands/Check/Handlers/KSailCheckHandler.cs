@@ -6,11 +6,25 @@ namespace KSail.Commands.Check.Handlers;
 
 static class KSailCheckHandler
 {
-  static readonly Kubernetes kubernetesClient = new(KubernetesClientConfiguration.BuildDefaultConfig());
   internal static async Task HandleAsync(string name, CancellationToken cancellationToken)
   {
-    // Wait for the cluster to be ready
+    // Load the kubeconfig file
+    var kubeConfig = KubernetesClientConfiguration.LoadKubeConfig();
 
+    // Find the context by name
+    var context = kubeConfig.Contexts.FirstOrDefault(c => c.Name == name);
+
+    if (context == null)
+    {
+      Console.WriteLine($"❌ Could not find a context with the name '{name}' in the kubeconfig file.");
+      Environment.Exit(1);
+    }
+
+    // Create a KubernetesClientConfiguration object from the context
+    var config = KubernetesClientConfiguration.BuildConfigFromConfigObject(kubeConfig, name);
+
+    // Instantiate the Kubernetes client with the config
+    var kubernetesClient = new Kubernetes(config);
     var listResponse = kubernetesClient.CustomObjects.ListNamespacedCustomObjectWithHttpMessagesAsync(
       "kustomize.toolkit.fluxcd.io",
       "v1",
@@ -41,7 +55,7 @@ static class KSailCheckHandler
       if (statusName == "Failed")
       {
         Console.WriteLine($"❌ Kustomization '{kustomizationName}' failed!");
-        var message = kustomization?.Status.Conditions.FirstOrDefault()?.Message;
+        string? message = kustomization?.Status.Conditions.FirstOrDefault()?.Message;
         Console.WriteLine($"❌ {message}");
         Environment.Exit(1);
       }
