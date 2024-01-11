@@ -8,20 +8,18 @@ static class KSailCheckHandler
 {
   internal static async Task HandleAsync(string name, CancellationToken cancellationToken)
   {
-    // Load the kubeconfig file
     var kubeConfig = KubernetesClientConfiguration.LoadKubeConfig();
-
-    // Find the context by name
-    var context = kubeConfig.Contexts.FirstOrDefault(c => c.Name == name);
+    var context = kubeConfig.Contexts.FirstOrDefault(c => c.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
 
     if (context == null)
     {
-      Console.WriteLine($"❌ Could not find a context with the name '{name}' in the kubeconfig file.");
+      Console.WriteLine($"❌ Could not find a context matching the cluster name '{name}' in the kubeconfig file.");
+      Console.WriteLine($"   Available contexts are: {string.Join(", ", kubeConfig.Contexts.Select(c => c.Name))}");
       Environment.Exit(1);
     }
 
     // Create a KubernetesClientConfiguration object from the context
-    var config = KubernetesClientConfiguration.BuildConfigFromConfigObject(kubeConfig, name);
+    var config = KubernetesClientConfiguration.BuildConfigFromConfigObject(kubeConfig, context.Name);
 
     // Instantiate the Kubernetes client with the config
     var kubernetesClient = new Kubernetes(config);
