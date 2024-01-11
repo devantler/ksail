@@ -5,8 +5,6 @@
 
 ![image](https://github.com/devantler/ksail/assets/26203420/83a77828-02e1-4d7a-92b7-9e89d0c4e509)
 
-A CLI tool for provisioning GitOps enabled K8s environments in Docker.
-
 <details>
   <summary>Show/hide folder structure</summary>
 
@@ -104,19 +102,19 @@ ksail --help
 
 ## What is KSail?
 
-KSail is a CLI tool designed to simplify the management of GitOps-enabled Kubernetes clusters in Docker. It provides a set of commands that allow you to easily create, manage, and dismantle Flux-enabled clusters. KSail also integrates with SOPS for managing secrets in Git repositories, and provides features for validating and verifying your clusters.
+KSail is a CLI tool designed to simplify the management of GitOps-enabled Kubernetes clusters in Docker. It provides a set of commands that allow you to easily create, manage, and dismantle GitOps-enabled clusters. KSail also integrates with SOPS for managing secrets in Git repositories and provides features for validating and verifying your clusters.
 
 ## How does it work?
 
 KSail leverages several key technologies to provide its functionality:
 
-- **Embedded Binaries:** KSail embeds binaries for tools like k3d, talosctl, and sops, allowing you to use these tools without having to install them separately.
+- **Embedded Binaries:** KSail embeds binaries for tools like k3d, flux, and sops. This enables KSail to work out of the box without requiring you to install any additional dependencies.
 - **Kubernetes-in-Docker Backends:** KSail supports various Kubernetes-in-Docker backends, allowing you to run Kubernetes clusters inside Docker containers.
-- **Flux GitOps:** KSail uses Flux to manage the state of your clusters, with your manifest source serving as the single source of truth.
+- **GitOps:** KSail sets up GitOps to manage the state of your clusters, with your manifest source serving as the single source of truth.
 - **Local OCI Registries:** KSail uses local OCI registries to store and distribute Docker images and manifests.
 - **SOPS Integration:** KSail integrates with SOPS for managing secrets in Git repositories.
-- **Manifest Validation:** KSail validates your manifest files before deploying your clusters.
-- **Cluster Reconciliation Verification:** After deploying your clusters, KSail verifies that they reconcile successfully.
+- **Manifest linting:** KSail lints your manifest files before deploying your clusters.
+- **Cluster Reconciliation Checking:** After deploying your clusters, KSail verifies that they reconcile successfully.
 
 ## Why was it made?
 
