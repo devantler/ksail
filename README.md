@@ -69,13 +69,22 @@
 
 ### Prerequisites
 
+System:
+
 - Unix or Linux-based OS.
   - osx-x64 ✅
   - osx-arm64 ✅
   - linux-x64 ✅
   - linux-arm64 ✅
-- Docker
-- gpg
+
+Tools:
+
+- [Docker](https://www.docker.com) (I have not tested KSail with Podman. But if it uses the docker socket it should work.)
+- [SOPS](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwiBwqfUh9aDAxViVPEDHUBJBxQQFnoECAMQAQ&url=https%3A%2F%2Fgithub.com%2Fgetsops%2Fsops&usg=AOvVaw1VL2ENXs82bAZnq5jAzeH_&opi=89978449)
+
+Temporary dependencies:
+
+- `gnupg` (I will eventually embed Age into KSail, and remove this dependency. For now, you will need to install `gnupg` if you want to use SOPS.)
 
 ### Installation
 
