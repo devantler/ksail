@@ -12,7 +12,7 @@ namespace KSail.Commands;
 
 sealed class KSailCommand : RootCommand
 {
-  internal KSailCommand() : base("KSail is a CLI tool for provisioning K8s clusters.")
+  internal KSailCommand() : base("KSail is a CLI tool for provisioning GitOps enabled K8s clusters in Docker.")
   {
     AddCommand(new KSailUpCommand());
     AddCommand(new KSailDownCommand());

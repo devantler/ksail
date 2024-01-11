@@ -1,4 +1,5 @@
 using System.Data;
+using System.Diagnostics;
 using System.Globalization;
 using k8s;
 using k8s.Models;
@@ -10,11 +11,13 @@ static class KSailCheckCommandHandler
 {
   static readonly List<string> kustomizations = [];
   static readonly List<string> successFullKustomizations = [];
-  internal static async Task HandleAsync(string name, CancellationToken cancellationToken)
+  internal static async Task HandleAsync(string name, int timeout, CancellationToken cancellationToken)
   {
     Console.WriteLine("👀 Checking the status the cluster...");
     var kubernetesClient = CreateKubernetesClientFromClusterName(name);
     var responseTask = kubernetesClient.ListKustomizationsWithHttpMessagesAsync(cancellationToken);
+    var stopwatch = Stopwatch.StartNew();
+
     await foreach (var (type, kustomization) in responseTask.WatchAsync<V1CustomResourceDefinition, object>(cancellationToken: cancellationToken))
     {
       string? kustomizationName = kustomization?.Metadata.Name ??
@@ -42,9 +45,16 @@ static class KSailCheckCommandHandler
       {
         Console.WriteLine($"✔ Kustomization '{kustomizationName}' is ready!");
         successFullKustomizations.Add(kustomizationName);
+        stopwatch.Restart(); // Reset the timeout
         continue;
       }
       Console.WriteLine($"► Waiting for kustomization '{kustomizationName}' to be ready. It is currently {statusName?.ToLower(CultureInfo.InvariantCulture)}...");
+
+      if (stopwatch.Elapsed.TotalSeconds >= timeout)
+      {
+        Console.WriteLine($"✕ Timeout reached. Kustomization '{kustomizationName}' did not become ready within the specified timeout of {timeout} seconds.");
+        Environment.Exit(1);
+      }
     }
   }
 
