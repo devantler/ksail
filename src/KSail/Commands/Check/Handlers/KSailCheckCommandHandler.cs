@@ -23,16 +23,16 @@ static class KSailCheckCommandHandler
         throw new NoNullAllowedException("Kustomization status is null");
       if (statusName == "Failed")
       {
-        Console.WriteLine($"❌ Kustomization '{kustomizationName}' failed!");
+        Console.WriteLine($"✕ Kustomization '{kustomizationName}' failed!");
         string? message = kustomization?.Status.Conditions.FirstOrDefault()?.Message;
-        Console.WriteLine($"❌ {message}");
+        Console.WriteLine($"✕ {message}");
         Environment.Exit(1);
       }
       if (!kustomizations.Contains(kustomizationName))
         kustomizations.Add(kustomizationName);
       if (successFullKustomizations.Count == kustomizations.Count)
       {
-        Console.WriteLine("✅ All kustomizations are ready!");
+        Console.WriteLine("✔ All kustomizations are ready!");
         Environment.Exit(0);
       }
       if (successFullKustomizations.Contains(kustomizationName))
@@ -40,11 +40,11 @@ static class KSailCheckCommandHandler
 
       if (statusName == "Ready")
       {
-        Console.WriteLine($"✅ Kustomization '{kustomizationName}' is ready!");
+        Console.WriteLine($"✔ Kustomization '{kustomizationName}' is ready!");
         successFullKustomizations.Add(kustomizationName);
         continue;
       }
-      Console.WriteLine($"🔁 Waiting for kustomization '{kustomizationName}' to be ready. It is currently {statusName?.ToLower(CultureInfo.InvariantCulture)}...");
+      Console.WriteLine($"► Waiting for kustomization '{kustomizationName}' to be ready. It is currently {statusName?.ToLower(CultureInfo.InvariantCulture)}...");
     }
   }
 
@@ -55,7 +55,7 @@ static class KSailCheckCommandHandler
 
     if (context == null)
     {
-      Console.WriteLine($"❌ Could not find a context matching the cluster name '{name}' in the kubeconfig file.");
+      Console.WriteLine($"✕ Could not find a context matching the cluster name '{name}' in the kubeconfig file.");
       Console.WriteLine($"   Available contexts are: {string.Join(", ", kubeConfig.Contexts.Select(c => c.Name))}");
       Environment.Exit(1);
     }
