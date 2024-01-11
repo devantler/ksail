@@ -28,6 +28,8 @@ static class KSailCheckCommandHandler
         Console.WriteLine($"❌ {message}");
         Environment.Exit(1);
       }
+      if (!kustomizations.Contains(kustomizationName))
+        kustomizations.Add(kustomizationName);
       if (successFullKustomizations.Count == kustomizations.Count)
       {
         Console.WriteLine("✅ All kustomizations are ready!");
@@ -35,9 +37,6 @@ static class KSailCheckCommandHandler
       }
       if (successFullKustomizations.Contains(kustomizationName))
         continue;
-
-      if (!kustomizations.Contains(kustomizationName))
-        kustomizations.Add(kustomizationName);
 
       if (statusName == "Ready")
       {
