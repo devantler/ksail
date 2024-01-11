@@ -7,8 +7,6 @@
 
 A CLI tool for provisioning GitOps enabled K8s environments in Docker.
 
-## Getting Started
-
 <details>
   <summary>Show/Hide</summary>
 
@@ -68,6 +66,8 @@ A CLI tool for provisioning GitOps enabled K8s environments in Docker.
 <!-- readme-tree end -->
 
 </details>
+
+## Getting Started
 
 ### Prerequisites
 
