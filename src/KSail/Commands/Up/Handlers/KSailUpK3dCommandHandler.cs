@@ -4,7 +4,7 @@ using KSail.Provisioners.ContainerOrchestrator;
 
 namespace KSail.Commands.Up.Handlers;
 
-static class KSailUpK3dCommandHandler
+static class KSailUpCommandHandler
 {
   static readonly K3dProvisioner clusterProvisioner = new();
   static readonly DockerProvisioner dockerProvisioner = new();

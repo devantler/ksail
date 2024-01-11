@@ -1,4 +1,5 @@
 using System.CommandLine;
+using KSail.Commands.Check.Handlers;
 using KSail.Commands.Lint.Handlers;
 using KSail.Commands.Up.Handlers;
 using KSail.Commands.Up.Options;
@@ -9,25 +10,25 @@ using YamlDotNet.Serialization;
 
 namespace KSail.Commands.Up;
 
-sealed class KSailUpK3dFluxCommand : Command
+sealed class KSailUpGitOpsCommand : Command
 {
   readonly ManifestsPathOption manifestsPathOption = new() { IsRequired = true };
   readonly FluxKustomizationPathOption fluxKustomizationPathOption = new();
   readonly SOPSOption sopsOption = new() { IsRequired = true };
   static readonly Deserializer yamlDeserializer = new();
 
-  internal KSailUpK3dFluxCommand(
+  internal KSailUpGitOpsCommand(
     NameOption nameOption,
     PullThroughRegistriesOption pullThroughRegistriesOption,
     ConfigPathOption configPathOption
-  ) : base("flux", "create a K3d cluster with Flux GitOps")
+  ) : base("gitops", "create a K8s cluster with GitOps")
   {
     AddOption(manifestsPathOption);
     AddOption(fluxKustomizationPathOption);
     AddOption(sopsOption);
 
     AddValidator(
-      async commandResult => await KSailUpK3dFluxValidator.ValidateAsync(
+      async commandResult => await KSailUpGitOpsValidator.ValidateAsync(
         commandResult, nameOption,
         configPathOption, manifestsPathOption,
         fluxKustomizationPathOption
@@ -39,8 +40,9 @@ sealed class KSailUpK3dFluxCommand : Command
       name = config?.Metadata.Name ?? name;
       _fluxKustomizationPath = string.IsNullOrEmpty(_fluxKustomizationPath) ? $"clusters/{name}/flux" : _fluxKustomizationPath;
       await KSailLintCommandHandler.HandleAsync(name, manifestsPath);
-      await KSailUpK3dCommandHandler.HandleAsync(name, pullThroughRegistries, configPath);
-      await KSailUpK3dFluxCommandHandler.HandleAsync(name, manifestsPath, _fluxKustomizationPath, sops);
+      await KSailUpCommandHandler.HandleAsync(name, pullThroughRegistries, configPath);
+      await KSailUpGitOpsCommandHandler.HandleAsync(name, manifestsPath, _fluxKustomizationPath, sops);
+      await KSailCheckHandler.HandleAsync(name, new CancellationToken());
     }, nameOption, configPathOption, manifestsPathOption, fluxKustomizationPathOption, pullThroughRegistriesOption, sopsOption);
   }
 }
