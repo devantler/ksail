@@ -12,6 +12,7 @@ sealed class KSailCheckCommand : Command
   internal KSailCheckCommand() : base("check", "Check the status of the cluster.")
   {
     AddOption(nameOption);
+    AddOption(timeoutOption);
     this.SetHandler((name, timeout) =>
       _ = KSailCheckCommandHandler.HandleAsync(
         name,

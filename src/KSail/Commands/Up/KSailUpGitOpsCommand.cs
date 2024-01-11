@@ -26,6 +26,7 @@ sealed class KSailUpGitOpsCommand : Command
   {
     AddOption(manifestsPathOption);
     AddOption(fluxKustomizationPathOption);
+    AddOption(timeoutOption);
     AddOption(sopsOption);
 
     AddValidator(

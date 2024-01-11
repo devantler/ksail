@@ -32,20 +32,25 @@ static class KSailCheckCommandHandler
         Environment.Exit(1);
       }
       if (!kustomizations.Contains(kustomizationName))
+      {
         kustomizations.Add(kustomizationName);
+      }
+
       if (successFullKustomizations.Count == kustomizations.Count)
       {
         Console.WriteLine("✔ All kustomizations are ready!");
         Environment.Exit(0);
       }
       if (successFullKustomizations.Contains(kustomizationName))
+      {
         continue;
+      }
 
       if (statusName == "Ready")
       {
         Console.WriteLine($"✔ Kustomization '{kustomizationName}' is ready!");
         successFullKustomizations.Add(kustomizationName);
-        stopwatch.Restart(); // Reset the timeout
+        stopwatch.Restart();
         continue;
       }
       Console.WriteLine($"► Waiting for kustomization '{kustomizationName}' to be ready. It is currently {statusName?.ToLower(CultureInfo.InvariantCulture)}...");
