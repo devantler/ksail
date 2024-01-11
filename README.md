@@ -8,7 +8,7 @@
 A CLI tool for provisioning GitOps enabled K8s environments in Docker.
 
 <details>
-  <summary>Show/Hide</summary>
+  <summary>Show/hide folder structure</summary>
 
 <!-- readme-tree start -->
 ```
