@@ -121,8 +121,8 @@ KSail is a CLI tool designed to simplify the management of GitOps-enabled Kubern
 KSail leverages several key technologies to provide its functionality:
 
 - **Embedded Binaries:** KSail embeds binaries for tools like k3d, flux, and sops. This enables KSail to work out of the box without requiring you to install any additional dependencies.
-- **Kubernetes-in-Docker Backends:** KSail supports various Kubernetes-in-Docker backends, allowing you to run Kubernetes clusters inside Docker containers.
-- **GitOps:** KSail sets up GitOps to manage the state of your clusters, with your manifest source serving as the single source of truth.
+- **K3d Backend:** KSail uses K3d, allowing you to run Kubernetes clusters inside Docker containers with small footprint.
+- **Flux GitOps:** KSail sets up Flux GitOps to manage the state of your clusters, with your manifest source serving as the single source of truth.
 - **Local OCI Registries:** KSail uses local OCI registries to store and distribute Docker images and manifests.
 - **SOPS Integration:** KSail integrates with SOPS for managing secrets in Git repositories.
 - **Manifest linting:** KSail lints your manifest files before deploying your clusters.
