@@ -35,14 +35,14 @@ sealed class KSailUpGitOpsCommand : Command
         fluxKustomizationPathOption
       )
     );
-    this.SetHandler(async (name, configPath, manifestsPath, _fluxKustomizationPath, timeout, pullThroughRegistries, sops) =>
+    this.SetHandler(async (name, configPath, manifestsPath, fluxKustomizationPath, timeout, pullThroughRegistries, sops) =>
     {
       var config = string.IsNullOrEmpty(configPath) ? null : yamlDeserializer.Deserialize<K3dConfig>(File.ReadAllText(configPath));
       name = config?.Metadata.Name ?? name;
-      _fluxKustomizationPath = string.IsNullOrEmpty(_fluxKustomizationPath) ? $"clusters/{name}/flux" : _fluxKustomizationPath;
+      fluxKustomizationPath = string.IsNullOrEmpty(fluxKustomizationPath) ? $"clusters/{name}/flux" : fluxKustomizationPath;
       await KSailLintCommandHandler.HandleAsync(name, manifestsPath);
       await KSailUpCommandHandler.HandleAsync(name, pullThroughRegistries, configPath);
-      await KSailUpGitOpsCommandHandler.HandleAsync(name, manifestsPath, _fluxKustomizationPath, sops);
+      await KSailUpGitOpsCommandHandler.HandleAsync(name, manifestsPath, fluxKustomizationPath, sops);
       await KSailCheckCommandHandler.HandleAsync(name, timeout, new CancellationToken());
     }, nameOption, configPathOption, manifestsPathOption, fluxKustomizationPathOption, timeout, pullThroughRegistriesOption, sopsOption);
   }
