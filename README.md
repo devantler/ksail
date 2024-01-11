@@ -132,6 +132,13 @@ KSail leverages several key technologies to provide its functionality:
 
 KSail was created to fill a gap in the tooling landscape for managing GitOps-enabled Kubernetes clusters in Docker. It aims to simplify the process of enabling GitOps, with necessary tools like OCI registries, and SOPS to enable a seamless development environment for K8s.
 
+## Why is it useful?
+
+KSail is useful because it provides a simple, easy-to-use interface for managing GitOps-enabled Kubernetes clusters in Docker. It also provides a set of commands that allow you to easily create, manage, and dismantle GitOps-enabled clusters. There are currently two main use cases for KSail:
+
+- **Local Development:** KSail can be used to create and manage GitOps-enabled Kubernetes clusters in Docker for local development. This allows you to easily build and test your applications in a K8s environment.
+- **CI/CD:** KSail can be used to create and manage GitOps-enabled Kubernetes clusters in Docker for CI/CD. This allows you to easily build and test your applications in a K8s environment.
+
 ## Contributing
 
 Contributions to KSail are welcome! You can contribute by reporting bugs, requesting features, or submitting pull requests. When creating an issue or pull request, please provide as much detail as possible to help understand the problem or feature.
