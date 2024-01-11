@@ -14,7 +14,7 @@ sealed class KSailUpGitOpsCommand : Command
 {
   readonly ManifestsPathOption manifestsPathOption = new() { IsRequired = true };
   readonly FluxKustomizationPathOption fluxKustomizationPathOption = new();
-  readonly TimeoutOption timeout = new();
+  readonly TimeoutOption timeoutOption = new();
   readonly SOPSOption sopsOption = new() { IsRequired = true };
   static readonly Deserializer yamlDeserializer = new();
 
@@ -44,6 +44,6 @@ sealed class KSailUpGitOpsCommand : Command
       await KSailUpCommandHandler.HandleAsync(name, pullThroughRegistries, configPath);
       await KSailUpGitOpsCommandHandler.HandleAsync(name, manifestsPath, fluxKustomizationPath, sops);
       await KSailCheckCommandHandler.HandleAsync(name, timeout, new CancellationToken());
-    }, nameOption, configPathOption, manifestsPathOption, fluxKustomizationPathOption, timeout, pullThroughRegistriesOption, sopsOption);
+    }, nameOption, configPathOption, manifestsPathOption, fluxKustomizationPathOption, timeoutOption, pullThroughRegistriesOption, sopsOption);
   }
 }
