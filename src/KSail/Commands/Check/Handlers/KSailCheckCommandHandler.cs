@@ -28,6 +28,11 @@ static class KSailCheckCommandHandler
         Console.WriteLine($"❌ {message}");
         Environment.Exit(1);
       }
+      if (successFullKustomizations.Count == kustomizations.Count)
+      {
+        Console.WriteLine("✅ All kustomizations are ready!");
+        Environment.Exit(0);
+      }
       if (successFullKustomizations.Contains(kustomizationName))
         continue;
 
@@ -39,11 +44,6 @@ static class KSailCheckCommandHandler
         Console.WriteLine($"✅ Kustomization '{kustomizationName}' is ready!");
         successFullKustomizations.Add(kustomizationName);
         continue;
-      }
-      if (successFullKustomizations.Count == kustomizations.Count)
-      {
-        Console.WriteLine("✅ All kustomizations are ready!");
-        Environment.Exit(0);
       }
       Console.WriteLine($"🔁 Waiting for kustomization '{kustomizationName}' to be ready. It is currently {statusName?.ToLower(CultureInfo.InvariantCulture)}...");
     }

@@ -12,7 +12,7 @@ sealed class KSailCheckCommand : Command
   {
     AddOption(nameOption);
     this.SetHandler((name) =>
-      _ = KSailCheckHandler.HandleAsync(
+      _ = KSailCheckCommandHandler.HandleAsync(
         name,
         new CancellationToken()
       ), nameOption

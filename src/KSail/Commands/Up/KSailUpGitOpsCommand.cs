@@ -42,7 +42,7 @@ sealed class KSailUpGitOpsCommand : Command
       await KSailLintCommandHandler.HandleAsync(name, manifestsPath);
       await KSailUpCommandHandler.HandleAsync(name, pullThroughRegistries, configPath);
       await KSailUpGitOpsCommandHandler.HandleAsync(name, manifestsPath, _fluxKustomizationPath, sops);
-      await KSailCheckHandler.HandleAsync(name, new CancellationToken());
+      await KSailCheckCommandHandler.HandleAsync(name, new CancellationToken());
     }, nameOption, configPathOption, manifestsPathOption, fluxKustomizationPathOption, pullThroughRegistriesOption, sopsOption);
   }
 }
