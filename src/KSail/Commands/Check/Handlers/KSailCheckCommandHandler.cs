@@ -6,7 +6,7 @@ using KSail.Extensions;
 
 namespace KSail.Commands.Check.Handlers;
 
-static class KSailCheckHandler
+static class KSailCheckCommandHandler
 {
   static readonly List<string> kustomizations = [];
   static readonly List<string> successFullKustomizations = [];
