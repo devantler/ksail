@@ -1,9 +1,8 @@
-using KSail.Provisioners.Cluster;
+using KSail.Provisioners;
 
 namespace KSail.Commands.List.Handlers;
 
 sealed class KSailListCommandHandler
 {
-  static readonly K3dProvisioner provisioner = new();
-  internal static async Task HandleAsync() => await provisioner.ListAsync();
+  internal static async Task HandleAsync() => await K3dProvisioner.ListAsync();
 }

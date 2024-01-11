@@ -1,4 +1,4 @@
-namespace KSail.Models.K3d;
+namespace KSail.Models;
 
 sealed record K3dConfig(K3dConfigMetadata Metadata);
 

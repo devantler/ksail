@@ -2,9 +2,9 @@ using System.Text;
 using k8s;
 using k8s.Models;
 
-namespace KSail.Provisioners.ContainerOrchestrator;
+namespace KSail.Provisioners;
 
-sealed class KubernetesProvisioner : IContainerOrchestratorProvisioner, IDisposable
+sealed class KubernetesProvisioner : IProvisioner, IDisposable
 {
   readonly Kubernetes kubernetesClient = new(KubernetesClientConfiguration.BuildDefaultConfig());
 

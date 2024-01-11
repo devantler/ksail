@@ -1,10 +1,9 @@
 using System.Text.RegularExpressions;
 using KSail.CLIWrappers;
-using KSail.Provisioners.ContainerOrchestrator;
 
 namespace KSail.Provisioners.SecretManagement;
 
-sealed partial class SOPSProvisioner : ISecretManagementProvisioner, IDisposable
+sealed partial class SOPSProvisioner : IProvisioner, IDisposable
 {
   [GeneratedRegex("export KSAIL_SOPS_PUBLIC_GPG_KEY='.*'")]
   private static partial Regex KSailSOPSPublicKeyFilter();
@@ -14,7 +13,7 @@ sealed partial class SOPSProvisioner : ISecretManagementProvisioner, IDisposable
 
   readonly KubernetesProvisioner kubernetesProvisioner = new();
 
-  public async Task CreateKeysAsync()
+  internal static async Task CreateKeysAsync()
   {
     string? existingKey = Environment.GetEnvironmentVariable("KSAIL_SOPS_PRIVATE_GPG_KEY");
     if (!string.IsNullOrWhiteSpace(existingKey))
@@ -67,14 +66,14 @@ sealed partial class SOPSProvisioner : ISecretManagementProvisioner, IDisposable
     await File.WriteAllTextAsync(sopsConfigPath, sopsConfigContent);
   }
 
-  public async Task ShowPublicKeyAsync()
+  internal static async Task ShowPublicKeyAsync()
   {
     string publicKey = Environment.GetEnvironmentVariable("KSAIL_SOPS_PUBLIC_GPG_KEY") ?? await GPGCLIWrapper.ExportPublicKeyAsync(true);
     Console.WriteLine(publicKey);
     Console.WriteLine();
   }
 
-  public async Task ShowPrivateKeyAsync()
+  internal static async Task ShowPrivateKeyAsync()
   {
     string privateKey = Environment.GetEnvironmentVariable("KSAIL_SOPS_PRIVATE_GPG_KEY") ?? await GPGCLIWrapper.ExportPrivateKeyAsync(true);
     Console.WriteLine(privateKey);
