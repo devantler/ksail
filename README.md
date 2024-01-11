@@ -81,8 +81,8 @@ Tools:
 
 - [Docker](https://www.docker.com) (required)
 - [SOPS](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwiBwqfUh9aDAxViVPEDHUBJBxQQFnoECAMQAQ&url=https%3A%2F%2Fgithub.com%2Fgetsops%2Fsops&usg=AOvVaw1VL2ENXs82bAZnq5jAzeH_&opi=89978449) (optional, but required if you want to use SOPS for managing secrets.)
-- [K9s](https://k9scli.io) (Optional, but recommended for debugging.)
-- [VScode Extension - Run on Save(pucelle.run-on-save)](https://github.com/pucelle/vscode-run-on-save) (Optional, but recommended to run `ksail update` on save, which enables a seamless development experience.)
+- [K9s](https://k9scli.io) (optional, but recommended for debugging.)
+- [VScode Extension - Run on Save(pucelle.run-on-save)](https://github.com/pucelle/vscode-run-on-save) (optional, but recommended to run `ksail update` on save, to enable a seamless developer experience.)
 
 Temporary dependencies:
 
