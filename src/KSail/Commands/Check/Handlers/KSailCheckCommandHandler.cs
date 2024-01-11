@@ -12,9 +12,9 @@ static class KSailCheckCommandHandler
   static readonly List<string> successFullKustomizations = [];
   internal static async Task HandleAsync(string name, CancellationToken cancellationToken)
   {
+    Console.WriteLine("👀 Checking the status the cluster...");
     var kubernetesClient = CreateKubernetesClientFromClusterName(name);
     var responseTask = kubernetesClient.ListKustomizationsWithHttpMessagesAsync(cancellationToken);
-
     await foreach (var (type, kustomization) in responseTask.WatchAsync<V1CustomResourceDefinition, object>(cancellationToken: cancellationToken))
     {
       string? kustomizationName = kustomization?.Metadata.Name ??
