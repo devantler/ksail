@@ -29,6 +29,8 @@ A CLI tool for provisioning GitOps enabled K8s environments in Docker.
 │   └── KSail
 │       ├── CLIWrappers
 │       ├── Commands
+│       │   ├── Check
+│       │   │   └── Handlers
 │       │   ├── Down
 │       │   │   └── Handlers
 │       │   ├── Lint
@@ -45,6 +47,7 @@ A CLI tool for provisioning GitOps enabled K8s environments in Docker.
 │       │   └── Update
 │       │       └── Handlers
 │       ├── Enums
+│       ├── Extensions
 │       ├── Models
 │       │   └── K3d
 │       ├── Options
@@ -60,7 +63,7 @@ A CLI tool for provisioning GitOps enabled K8s environments in Docker.
     ├── KSail.Tests.Integration
     └── KSail.Tests.Unit
 
-44 directories
+47 directories
 ```
 <!-- readme-tree end -->
 
