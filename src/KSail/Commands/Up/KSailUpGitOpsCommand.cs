@@ -21,7 +21,7 @@ sealed class KSailUpGitOpsCommand : Command
     NameOption nameOption,
     PullThroughRegistriesOption pullThroughRegistriesOption,
     ConfigPathOption configPathOption
-  ) : base("gitops", "create a K8s cluster with GitOps")
+  ) : base("gitops", "Create a K8s cluster with GitOps")
   {
     AddOption(manifestsPathOption);
     AddOption(fluxKustomizationPathOption);

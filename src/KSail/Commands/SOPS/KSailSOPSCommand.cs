@@ -8,7 +8,7 @@ sealed class KSailSOPSCommand : Command
 {
   readonly ShowPublicKeyOption showPublicKeyOption = new();
   readonly ShowPrivateKeyOption showPrivateKeyOption = new();
-  internal KSailSOPSCommand() : base("sops", "manage SOPS GPG key")
+  internal KSailSOPSCommand() : base("sops", "Manage SOPS GPG key")
   {
     AddOption(showPublicKeyOption);
     AddOption(showPrivateKeyOption);

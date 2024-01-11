@@ -9,11 +9,11 @@ namespace KSail.Commands.Up;
 
 sealed class KSailUpCommand : Command
 {
-  readonly NameOption nameOption = new("name of the cluster");
+  readonly NameOption nameOption = new("Name of the cluster");
   readonly PullThroughRegistriesOption pullThroughRegistriesOption = new() { IsRequired = true };
   readonly ConfigPathOption configPathOption = new();
   static readonly Deserializer yamlDeserializer = new();
-  internal KSailUpCommand() : base("up", "create a K8s cluster")
+  internal KSailUpCommand() : base("up", "Create a K8s cluster")
   {
     AddGlobalOptions();
     AddCommands();

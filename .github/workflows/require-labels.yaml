@@ -14,7 +14,8 @@ jobs:
       github.actor != 'dependabot[bot]' &&
       github.actor != 'renovate[bot]' &&
       github.actor != 'web-flow' &&
-      github.event.pull_request.title != 'Update global workflows'
+      github.event.pull_request.title != 'Update global workflows' &&
+      github.event.pull_request.title != 'ksail*'
     runs-on: ubuntu-latest
     permissions:
       issues: write
