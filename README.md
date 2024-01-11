@@ -79,12 +79,15 @@ System:
 
 Tools:
 
-- [Docker](https://www.docker.com) (I have not tested KSail with Podman. But if it uses the docker socket it should work.)
-- [SOPS](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwiBwqfUh9aDAxViVPEDHUBJBxQQFnoECAMQAQ&url=https%3A%2F%2Fgithub.com%2Fgetsops%2Fsops&usg=AOvVaw1VL2ENXs82bAZnq5jAzeH_&opi=89978449)
+- [Docker](https://www.docker.com) (required)
+- [SOPS](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwiBwqfUh9aDAxViVPEDHUBJBxQQFnoECAMQAQ&url=https%3A%2F%2Fgithub.com%2Fgetsops%2Fsops&usg=AOvVaw1VL2ENXs82bAZnq5jAzeH_&opi=89978449) (required if you want to use SOPS for managing secrets.)
+- [K9s](https://k9scli.io) (optional, but recommended for debugging.)
+- [VScode Extension - Run on Save(pucelle.run-on-save)](https://github.com/pucelle/vscode-run-on-save) (optional, but recommended to run `ksail update` on save, to enable a seamless developer experience.)
 
 Temporary dependencies:
 
-- `gnupg` (I will eventually embed Age into KSail, and remove this dependency. For now, you will need to install `gnupg` if you want to use SOPS.)
+- `gnupg` (required if you want to use SOPS for managing secrets.)
+  - I will eventually embed Age into KSail, and remove this dependency.
 
 ### Installation
 
@@ -128,6 +131,13 @@ KSail leverages several key technologies to provide its functionality:
 ## Why was it made?
 
 KSail was created to fill a gap in the tooling landscape for managing GitOps-enabled Kubernetes clusters in Docker. It aims to simplify the process of enabling GitOps, with necessary tools like OCI registries, and SOPS to enable a seamless development environment for K8s.
+
+## Why is it useful?
+
+KSail is useful because it provides a simple, easy-to-use interface for managing GitOps-enabled Kubernetes clusters in Docker. It also provides a set of commands that allow you to easily create, manage, and dismantle GitOps-enabled clusters. There are currently two main use cases for KSail:
+
+- **Local Development:** KSail can be used to create and manage GitOps-enabled Kubernetes clusters in Docker for local development. This allows you to easily build and test your applications in a K8s environment.
+- **CI/CD:** KSail can be used to create and manage GitOps-enabled Kubernetes clusters in Docker for CI/CD. This allows you to easily build and test your applications in a K8s environment.
 
 ## Contributing
 
