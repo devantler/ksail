@@ -5,7 +5,7 @@ using KSail.Provisioners.SecretManagement;
 
 namespace KSail.Commands.Up.Handlers;
 
-static class KSailUpK3dFluxCommandHandler
+static class KSailUpGitOpsCommandHandler
 {
   static readonly FluxProvisioner gitOpsProvisioner = new();
   static readonly KubernetesProvisioner kubernetesProvisioner = new();

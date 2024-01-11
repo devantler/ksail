@@ -6,7 +6,7 @@ using YamlDotNet.Serialization;
 
 namespace KSail.Commands.Up.Validators;
 
-static class KSailUpK3dFluxValidator
+static class KSailUpGitOpsValidator
 {
   static readonly Deserializer yamlDeserializer = new();
   internal static Task ValidateAsync(CommandResult commandResult, NameOption nameOption, ConfigPathOption configPathOption, ManifestsPathOption _manifestsPathOption, FluxKustomizationPathOption _fluxKustomizationPathOption)

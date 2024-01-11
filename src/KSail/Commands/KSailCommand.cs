@@ -1,4 +1,5 @@
 using System.CommandLine;
+using KSail.Commands.Check;
 using KSail.Commands.Down;
 using KSail.Commands.Lint;
 using KSail.Commands.List;
@@ -18,7 +19,7 @@ sealed class KSailCommand : RootCommand
     AddCommand(new KSailUpdateCommand());
     AddCommand(new KSailListCommand());
     AddCommand(new KSailLintCommand());
-    //AddCommand(new VerifyCommand());
+    AddCommand(new KSailCheckCommand());
     AddCommand(new KSailSOPSCommand());
 
     this.SetHandler(() =>
