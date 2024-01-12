@@ -40,7 +40,7 @@ sealed class KSailUpGitOpsCommand : Command
     {
       var config = string.IsNullOrEmpty(configPath) ? null : yamlDeserializer.Deserialize<K3dConfig>(File.ReadAllText(configPath));
       name = config?.Metadata.Name ?? name;
-      fluxKustomizationPath = string.IsNullOrEmpty(fluxKustomizationPath) ? $"clusters/{name}/flux" : fluxKustomizationPath;
+      fluxKustomizationPath = string.IsNullOrEmpty(fluxKustomizationPath) ? $"clusters/{name}" : fluxKustomizationPath;
       await KSailLintCommandHandler.HandleAsync(name, manifestsPath);
       await KSailUpCommandHandler.HandleAsync(name, configPath, pullThroughRegistries);
       await KSailUpGitOpsCommandHandler.HandleAsync(name, manifestsPath, fluxKustomizationPath, sops);

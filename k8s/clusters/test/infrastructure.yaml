@@ -8,7 +8,7 @@ spec:
   sourceRef:
     kind: OCIRepository
     name: flux-system
-  path: ./clusters/test/infrastructure
+  path: ./clusters/infrastructure
   prune: true
   wait: true
   decryption:

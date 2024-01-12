@@ -31,7 +31,7 @@ static class KSailUpGitOpsValidator
       commandResult.ErrorMessage += $"Invalid option '{_manifestsOption.Aliases.First()} {manifestsPath ?? "null"}'. Path does not exist...{Environment.NewLine}";
     }
     string? fluxKustomizationPath = commandResult.GetValueForOption(_fluxKustomizationPathOption);
-    fluxKustomizationPath = string.IsNullOrEmpty(fluxKustomizationPath) ? $"clusters/{name}/flux" : fluxKustomizationPath;
+    fluxKustomizationPath = string.IsNullOrEmpty(fluxKustomizationPath) ? $"clusters/{name}" : fluxKustomizationPath;
     string? realFluxKustomizationPath = Path.Join(manifestsPath, fluxKustomizationPath);
     if (!ValidatePathExists(realFluxKustomizationPath))
     {
