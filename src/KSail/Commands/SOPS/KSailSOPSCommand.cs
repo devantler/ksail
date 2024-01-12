@@ -17,7 +17,7 @@ sealed class KSailSOPSCommand : Command
     {
       if (!result.GetValueForOption(showPublicKeyOption) && !result.GetValueForOption(showPrivateKeyOption))
       {
-        Console.WriteLine($"❌ Either '{showPublicKeyOption.Aliases.First()}' or '{showPrivateKeyOption.Aliases.First()}' must be specified to list SOPS GPG keys...");
+        Console.WriteLine($"✕ Either '{showPublicKeyOption.Aliases.First()}' or '{showPrivateKeyOption.Aliases.First()}' must be specified to list SOPS GPG keys...");
         Environment.Exit(1);
       }
     });
