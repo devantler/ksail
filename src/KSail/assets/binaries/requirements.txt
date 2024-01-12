@@ -1,5 +1,4 @@
 flux_version_v2.2.2
 k3d_version_v5.6.0
-talosctl_version_v1.6.1
 kubeconform_version_v0.6.4
 kustomize_version_v5.3.0
