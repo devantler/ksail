@@ -45,13 +45,8 @@
 │       ├── Enums
 │       ├── Extensions
 │       ├── Models
-│       │   └── K3d
 │       ├── Options
 │       ├── Provisioners
-│       │   ├── Cluster
-│       │   ├── ContainerOrchestrator
-│       │   ├── GitOps
-│       │   └── SecretManagement
 │       └── assets
 │           ├── binaries
 │           └── k3d
@@ -59,7 +54,7 @@
     ├── KSail.Tests.Integration
     └── KSail.Tests.Unit
 
-47 directories
+42 directories
 ```
 <!-- readme-tree end -->
 
