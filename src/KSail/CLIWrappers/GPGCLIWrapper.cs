@@ -41,13 +41,19 @@ static class GPGCLIWrapper
   {
     string fingerprint = await GetFingerprintAsync();
     var exportPublicKeyCmd = GPG.WithArguments($"--export --armor {fingerprint}");
-    return await CLIRunner.RunAsync(exportPublicKeyCmd, silent: silent);
+    string publicKey = await CLIRunner.RunAsync(exportPublicKeyCmd, silent: silent);
+    return string.IsNullOrEmpty(publicKey)
+      ? throw new InvalidOperationException("🚨 Could not find the public key of the newly created GPG key.")
+      : publicKey;
   }
 
   internal static async Task<string> ExportPrivateKeyAsync(bool silent = false)
   {
     string fingerprint = await GetFingerprintAsync();
     var exportPrivateKeyCmd = GPG.WithArguments($"--export-secret-keys --armor {fingerprint}");
-    return await CLIRunner.RunAsync(exportPrivateKeyCmd, silent: silent);
+    string privateKey = await CLIRunner.RunAsync(exportPrivateKeyCmd, silent: silent);
+    return string.IsNullOrEmpty(privateKey)
+      ? throw new InvalidOperationException("🚨 Could not find the private key of the newly created GPG key.")
+      : privateKey;
   }
 }
