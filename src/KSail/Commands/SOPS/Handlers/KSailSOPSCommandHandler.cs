@@ -4,16 +4,15 @@ namespace KSail.Commands.SOPS.Handlers;
 
 static class KSailSOPSCommandHandler
 {
-  static readonly SOPSProvisioner sopsProvisioner = new();
   internal static async Task HandleAsync(bool showPublicKey, bool showPrivateKey)
   {
     if (showPublicKey)
     {
-      await sopsProvisioner.ShowPublicKeyAsync();
+      await SOPSProvisioner.ShowPublicKeyAsync();
     }
     if (showPrivateKey)
     {
-      await sopsProvisioner.ShowPrivateKeyAsync();
+      await SOPSProvisioner.ShowPrivateKeyAsync();
     }
 
     Console.WriteLine();

@@ -1,12 +1,10 @@
 using KSail.Commands.Down.Handlers;
-using KSail.Provisioners.Cluster;
-using KSail.Provisioners.ContainerOrchestrator;
+using KSail.Provisioners;
 
 namespace KSail.Commands.Up.Handlers;
 
 static class KSailUpCommandHandler
 {
-  static readonly K3dProvisioner clusterProvisioner = new();
   static readonly DockerProvisioner dockerProvisioner = new();
   internal static async Task HandleAsync(string name, bool pullThroughRegistries, string configPath)
   {
@@ -25,6 +23,6 @@ static class KSailUpCommandHandler
       Console.WriteLine();
     }
 
-    await clusterProvisioner.ProvisionAsync(name, pullThroughRegistries, configPath);
+    await K3dProvisioner.ProvisionAsync(name, pullThroughRegistries, configPath);
   }
 }
