@@ -1,5 +1,8 @@
 name: Test
 
+env:
+  GITHUB_SCRIPTS_DIR: ./.github/scripts
+
 on:
   pull_request:
     branches: [main]
