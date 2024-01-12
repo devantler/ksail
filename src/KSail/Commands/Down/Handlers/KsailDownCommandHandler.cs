@@ -2,7 +2,7 @@ using KSail.Provisioners;
 
 namespace KSail.Commands.Down.Handlers;
 
-static class KSailDownK3dCommandHandler
+static class KSailDownCommandHandler
 {
   internal static async Task HandleAsync(string name)
   {

@@ -2,9 +2,9 @@ using System.CommandLine;
 
 namespace KSail.Options;
 
-sealed class ManifestsPathOption()
+sealed class ManifestsOption()
  : Option<string>(
-    ["--manifests-path", "-mp"],
+    ["--manifests", "-m"],
     () => "./k8s",
     "path to the manifests directory"
   )

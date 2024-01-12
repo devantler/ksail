@@ -6,11 +6,11 @@ namespace KSail.Commands.Up.Handlers;
 static class KSailUpCommandHandler
 {
   static readonly DockerProvisioner dockerProvisioner = new();
-  internal static async Task HandleAsync(string name, bool pullThroughRegistries, string configPath)
+  internal static async Task HandleAsync(string name, string configPath, bool pullThroughRegistries)
   {
     await dockerProvisioner.CheckReadyAsync();
 
-    await KSailDownK3dCommandHandler.HandleAsync(name);
+    await KSailDownCommandHandler.HandleAsync(name);
     if (pullThroughRegistries)
     {
       Console.WriteLine("🧮 Creating pull-through registries...");

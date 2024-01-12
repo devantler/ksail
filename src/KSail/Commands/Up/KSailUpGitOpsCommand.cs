@@ -12,7 +12,7 @@ namespace KSail.Commands.Up;
 
 sealed class KSailUpGitOpsCommand : Command
 {
-  readonly ManifestsPathOption manifestsPathOption = new() { IsRequired = true };
+  readonly ManifestsOption manifestsOption = new() { IsRequired = true };
   readonly FluxKustomizationPathOption fluxKustomizationPathOption = new();
   readonly SOPSOption sopsOption = new() { IsRequired = true };
   static readonly Deserializer yamlDeserializer = new();
@@ -20,17 +20,17 @@ sealed class KSailUpGitOpsCommand : Command
   internal KSailUpGitOpsCommand(
     NameOption nameOption,
     PullThroughRegistriesOption pullThroughRegistriesOption,
-    ConfigPathOption configPathOption
-  ) : base("gitops", "Create a K8s cluster with GitOps")
+    ConfigOption configOption
+  ) : base("gitops", "Create a GitOps-enabled K8s cluster")
   {
-    AddOption(manifestsPathOption);
+    AddOption(manifestsOption);
     AddOption(fluxKustomizationPathOption);
     AddOption(sopsOption);
 
     AddValidator(
       async commandResult => await KSailUpGitOpsValidator.ValidateAsync(
         commandResult, nameOption,
-        configPathOption, manifestsPathOption,
+        configOption, manifestsOption,
         fluxKustomizationPathOption
       )
     );
@@ -40,9 +40,9 @@ sealed class KSailUpGitOpsCommand : Command
       name = config?.Metadata.Name ?? name;
       _fluxKustomizationPath = string.IsNullOrEmpty(_fluxKustomizationPath) ? $"clusters/{name}/flux" : _fluxKustomizationPath;
       await KSailLintCommandHandler.HandleAsync(name, manifestsPath);
-      await KSailUpCommandHandler.HandleAsync(name, pullThroughRegistries, configPath);
+      await KSailUpCommandHandler.HandleAsync(name, configPath, pullThroughRegistries);
       await KSailUpGitOpsCommandHandler.HandleAsync(name, manifestsPath, _fluxKustomizationPath, sops);
       await KSailCheckCommandHandler.HandleAsync(name, new CancellationToken());
-    }, nameOption, configPathOption, manifestsPathOption, fluxKustomizationPathOption, pullThroughRegistriesOption, sopsOption);
+    }, nameOption, configOption, manifestsOption, fluxKustomizationPathOption, pullThroughRegistriesOption, sopsOption);
   }
 }
