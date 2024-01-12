@@ -26,9 +26,6 @@ static class KSailCheckCommandHandler
       string? statusName = kustomization?.Status.Conditions.FirstOrDefault()?.Type ??
         throw new NoNullAllowedException("Kustomization status is null");
 
-      if (successFullKustomizations.Contains(kustomizationName))
-        continue;
-
       if (!kustomizations.Add(kustomizationName))
       {
         if (successFullKustomizations.Count == kustomizations.Count)
@@ -42,6 +39,9 @@ static class KSailCheckCommandHandler
           Environment.Exit(1);
         }
       }
+
+      if (successFullKustomizations.Contains(kustomizationName))
+        continue;
 
       switch (statusName)
       {
