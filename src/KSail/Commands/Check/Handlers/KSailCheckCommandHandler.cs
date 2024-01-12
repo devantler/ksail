@@ -38,10 +38,11 @@ static class KSailCheckCommandHandler
           Console.WriteLine($"✕ Timeout reached. Kustomization '{kustomizationName}' did not become ready within the specified timeout of {timeout} seconds.");
           Environment.Exit(1);
         }
+        else if (successFullKustomizations.Contains(kustomizationName))
+        {
+          continue;
+        }
       }
-
-      if (successFullKustomizations.Contains(kustomizationName))
-        continue;
 
       switch (statusName)
       {
