@@ -2,7 +2,7 @@ using KSail.Provisioners.Cluster;
 
 namespace KSail.Commands.Down.Handlers;
 
-static class KSailDownK3dCommandHandler
+static class KSailDownCommandHandler
 {
   static readonly K3dProvisioner provisioner = new();
 

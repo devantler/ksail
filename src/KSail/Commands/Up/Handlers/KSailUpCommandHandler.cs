@@ -8,7 +8,7 @@ static class KSailUpCommandHandler
 {
   static readonly K3dProvisioner clusterProvisioner = new();
   static readonly DockerProvisioner dockerProvisioner = new();
-  internal static async Task HandleAsync(string name, bool pullThroughRegistries, string configPath)
+  internal static async Task HandleAsync(string name, string configPath, bool pullThroughRegistries)
   {
     await dockerProvisioner.CheckReadyAsync();
 
