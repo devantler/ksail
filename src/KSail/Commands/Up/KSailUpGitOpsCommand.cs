@@ -4,7 +4,7 @@ using KSail.Commands.Lint.Handlers;
 using KSail.Commands.Up.Handlers;
 using KSail.Commands.Up.Options;
 using KSail.Commands.Up.Validators;
-using KSail.Models.K3d;
+using KSail.Models;
 using KSail.Options;
 using YamlDotNet.Serialization;
 

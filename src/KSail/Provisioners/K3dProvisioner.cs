@@ -1,10 +1,10 @@
 using KSail.CLIWrappers;
 
-namespace KSail.Provisioners.Cluster;
+namespace KSail.Provisioners;
 
-sealed class K3dProvisioner() : IClusterProvisioner
+sealed class K3dProvisioner() : IProvisioner
 {
-  public async Task ProvisionAsync(string name, bool pullThroughRegistries, string? configPath = null)
+  internal static async Task ProvisionAsync(string name, bool pullThroughRegistries, string? configPath = null)
   {
     Console.WriteLine($"🚀 Provisioning K3d cluster '{name}'...");
     if (!string.IsNullOrEmpty(configPath))
@@ -18,13 +18,13 @@ sealed class K3dProvisioner() : IClusterProvisioner
     Console.WriteLine();
   }
 
-  public async Task DeprovisionAsync(string name)
+  internal static async Task DeprovisionAsync(string name)
   {
     Console.WriteLine($"🔥 Destroying K3d cluster '{name}'...");
     await K3dCLIWrapper.DeleteClusterAsync(name);
   }
 
-  public async Task ListAsync()
+  internal static async Task ListAsync()
   {
     Console.WriteLine("📋 Listing K3d clusters...");
     await K3dCLIWrapper.ListClustersAsync();

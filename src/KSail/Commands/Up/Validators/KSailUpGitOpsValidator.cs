@@ -1,6 +1,6 @@
 using System.CommandLine.Parsing;
 using KSail.Commands.Up.Options;
-using KSail.Models.K3d;
+using KSail.Models;
 using KSail.Options;
 using YamlDotNet.Serialization;
 
