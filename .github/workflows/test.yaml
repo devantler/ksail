@@ -64,18 +64,3 @@ jobs:
 
           dotnet run --project ./src/KSail/KSail.csproj -- up gitops -c ./k3d/k3d-config.yaml
           dotnet run --project ./src/KSail/KSail.csproj -- down -n test
-          - name: 🐎 Print free CPU
-      - name: ⚠️💬 Print namespaces on failure
-        if: failure()
-        run: $GITHUB_SCRIPTS_DIR/e2e-k8s-debug-failure-namespaces.sh
-      - name: ⚠️⛔️ Print errors on failure
-        if: failure()
-        run: $GITHUB_SCRIPTS_DIR/e2e-k8s-debug-failure-errors.sh
-      - name: ⚠️📝 Print logs on failure
-        if: failure()
-        run: $GITHUB_SCRIPTS_DIR/e2e-k8s-debug-failure-logs.sh
-      - name: ⚠️📑 Print descriptions on failure
-        if: failure()
-        run: $GITHUB_SCRIPTS_DIR/e2e-k8s-debug-failure-descriptions.sh
-      - name: 🚦 Check for use of deprecated APIs
-        run: $GITHUB_SCRIPTS_DIR/e2e-k8s-check-deprecated-apis.sh
