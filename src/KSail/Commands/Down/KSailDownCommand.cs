@@ -10,7 +10,6 @@ sealed class KSailDownCommand : Command
   internal KSailDownCommand() : base("down", "Destroy a K8s cluster")
   {
     AddOption(nameOption);
-
     this.SetHandler(KSailDownCommandHandler.HandleAsync, nameOption);
   }
 }

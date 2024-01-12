@@ -2,7 +2,7 @@ using System.CommandLine;
 
 namespace KSail.Commands.Up.Options;
 
-sealed class ConfigPathOption() : Option<string>(
- ["--config-path", "-cp"],
+sealed class ConfigOption() : Option<string>(
+ ["--config", "-c"],
   "Path to the cluster configuration file"
 );

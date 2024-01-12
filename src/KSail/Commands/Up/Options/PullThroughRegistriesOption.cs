@@ -5,5 +5,5 @@ namespace KSail.Commands.Up.Options;
 sealed class PullThroughRegistriesOption() : Option<bool>(
  ["--pull-through-registries", "-ptr"],
   () => true,
-  "Use pull-through registries"
+  "Enable pull-through registries"
 );

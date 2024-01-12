@@ -12,7 +12,7 @@ namespace KSail.Commands.Up;
 
 sealed class KSailUpGitOpsCommand : Command
 {
-  readonly ManifestsPathOption manifestsPathOption = new() { IsRequired = true };
+  readonly ManifestsOption manifestsOption = new() { IsRequired = true };
   readonly FluxKustomizationPathOption fluxKustomizationPathOption = new();
   readonly TimeoutOption timeoutOption = new();
   readonly SOPSOption sopsOption = new() { IsRequired = true };
@@ -21,10 +21,10 @@ sealed class KSailUpGitOpsCommand : Command
   internal KSailUpGitOpsCommand(
     NameOption nameOption,
     PullThroughRegistriesOption pullThroughRegistriesOption,
-    ConfigPathOption configPathOption
-  ) : base("gitops", "Create a K8s cluster with GitOps")
+    ConfigOption configOption
+  ) : base("gitops", "Create a GitOps-enabled K8s cluster")
   {
-    AddOption(manifestsPathOption);
+    AddOption(manifestsOption);
     AddOption(fluxKustomizationPathOption);
     AddOption(timeoutOption);
     AddOption(sopsOption);
@@ -32,7 +32,7 @@ sealed class KSailUpGitOpsCommand : Command
     AddValidator(
       async commandResult => await KSailUpGitOpsValidator.ValidateAsync(
         commandResult, nameOption,
-        configPathOption, manifestsPathOption,
+        configOption, manifestsOption,
         fluxKustomizationPathOption
       )
     );
@@ -42,9 +42,9 @@ sealed class KSailUpGitOpsCommand : Command
       name = config?.Metadata.Name ?? name;
       fluxKustomizationPath = string.IsNullOrEmpty(fluxKustomizationPath) ? $"clusters/{name}/flux" : fluxKustomizationPath;
       await KSailLintCommandHandler.HandleAsync(name, manifestsPath);
-      await KSailUpCommandHandler.HandleAsync(name, pullThroughRegistries, configPath);
+      await KSailUpCommandHandler.HandleAsync(name, configPath, pullThroughRegistries);
       await KSailUpGitOpsCommandHandler.HandleAsync(name, manifestsPath, fluxKustomizationPath, sops);
-      await KSailCheckCommandHandler.HandleAsync(name, timeout, new CancellationToken());
-    }, nameOption, configPathOption, manifestsPathOption, fluxKustomizationPathOption, timeoutOption, pullThroughRegistriesOption, sopsOption);
+      await KSailCheckCommandHandler.HandleAsync(name, new CancellationToken());
+    }, nameOption, configOption, manifestsOption, fluxKustomizationPathOption, pullThroughRegistriesOption, sopsOption);
   }
 }

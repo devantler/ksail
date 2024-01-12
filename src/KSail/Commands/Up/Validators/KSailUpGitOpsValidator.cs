@@ -9,10 +9,10 @@ namespace KSail.Commands.Up.Validators;
 static class KSailUpGitOpsValidator
 {
   static readonly Deserializer yamlDeserializer = new();
-  internal static Task ValidateAsync(CommandResult commandResult, NameOption nameOption, ConfigPathOption configPathOption, ManifestsPathOption _manifestsPathOption, FluxKustomizationPathOption _fluxKustomizationPathOption)
+  internal static Task ValidateAsync(CommandResult commandResult, NameOption nameOption, ConfigOption configOption, ManifestsOption _manifestsOption, FluxKustomizationPathOption _fluxKustomizationPathOption)
   {
     string? name = commandResult.GetValueForOption(nameOption);
-    string? configPath = commandResult.GetValueForOption(configPathOption);
+    string? configPath = commandResult.GetValueForOption(configOption);
     var config = string.IsNullOrEmpty(configPath) ? null : yamlDeserializer.Deserialize<K3dConfig>(File.ReadAllText(configPath));
     name = config?.Metadata.Name ?? name;
     if (string.IsNullOrEmpty(name))
@@ -22,13 +22,13 @@ static class KSailUpGitOpsValidator
     }
     if (configPath != null && !ValidatePathExists(configPath))
     {
-      commandResult.ErrorMessage += $"Invalid option '{configPathOption.Aliases.First()} {configPath}'. Path does not exist...{Environment.NewLine}";
+      commandResult.ErrorMessage += $"Invalid option '{configOption.Aliases.First()} {configPath}'. Path does not exist...{Environment.NewLine}";
       return Task.CompletedTask;
     }
-    string? manifestsPath = commandResult.GetValueForOption(_manifestsPathOption);
+    string? manifestsPath = commandResult.GetValueForOption(_manifestsOption);
     if (!ValidatePathExists(manifestsPath))
     {
-      commandResult.ErrorMessage += $"Invalid option '{_manifestsPathOption.Aliases.First()} {manifestsPath ?? "null"}'. Path does not exist...{Environment.NewLine}";
+      commandResult.ErrorMessage += $"Invalid option '{_manifestsOption.Aliases.First()} {manifestsPath ?? "null"}'. Path does not exist...{Environment.NewLine}";
     }
     string? fluxKustomizationPath = commandResult.GetValueForOption(_fluxKustomizationPathOption);
     fluxKustomizationPath = string.IsNullOrEmpty(fluxKustomizationPath) ? $"clusters/{name}/flux" : fluxKustomizationPath;
