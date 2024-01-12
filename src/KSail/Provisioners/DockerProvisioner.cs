@@ -2,9 +2,9 @@
 using Docker.DotNet;
 using Docker.DotNet.Models;
 
-namespace KSail.Provisioners.ContainerOrchestrator;
+namespace KSail.Provisioners;
 
-sealed class DockerProvisioner : IContainerOrchestratorProvisioner
+sealed class DockerProvisioner : IProvisioner
 {
   readonly DockerClient dockerClient = new DockerClientConfiguration(
     new Uri("unix:///var/run/docker.sock")

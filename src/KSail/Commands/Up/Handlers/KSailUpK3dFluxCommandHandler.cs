@@ -1,13 +1,11 @@
 using KSail.Commands.Update.Handlers;
-using KSail.Provisioners.ContainerOrchestrator;
-using KSail.Provisioners.GitOps;
+using KSail.Provisioners;
 using KSail.Provisioners.SecretManagement;
 
 namespace KSail.Commands.Up.Handlers;
 
 static class KSailUpGitOpsCommandHandler
 {
-  static readonly FluxProvisioner gitOpsProvisioner = new();
   static readonly KubernetesProvisioner kubernetesProvisioner = new();
   static readonly DockerProvisioner dockerRegistryProvisioner = new();
   static readonly SOPSProvisioner secretManagementProvisioner = new();
@@ -26,13 +24,13 @@ static class KSailUpGitOpsCommandHandler
     if (sops)
     {
       Console.WriteLine("🔐 Adding SOPS GPG key...");
-      await secretManagementProvisioner.CreateKeysAsync();
+      await SOPSProvisioner.CreateKeysAsync();
       await secretManagementProvisioner.ProvisionAsync();
       await SOPSProvisioner.CreateSOPSConfigAsync(manifestsPath);
       Console.WriteLine();
     }
 
-    await gitOpsProvisioner.CheckPrerequisitesAsync();
-    await gitOpsProvisioner.InstallAsync($"oci://host.k3d.internal:5050/{name}", fluxKustomizationPath);
+    await FluxProvisioner.CheckPrerequisitesAsync();
+    await FluxProvisioner.InstallAsync($"oci://host.k3d.internal:5050/{name}", fluxKustomizationPath);
   }
 }

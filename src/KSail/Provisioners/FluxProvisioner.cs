@@ -1,18 +1,17 @@
-
 using KSail.CLIWrappers;
 
-namespace KSail.Provisioners.GitOps;
+namespace KSail.Provisioners;
 
-sealed class FluxProvisioner : IGitOpsProvisioner
+sealed class FluxProvisioner : IProvisioner
 {
-  public async Task CheckPrerequisitesAsync()
+  internal static async Task CheckPrerequisitesAsync()
   {
     Console.WriteLine("🔄 Checking Flux prerequisites are satisfied...");
     await FluxCLIWrapper.CheckPrerequisitesAsync();
     Console.WriteLine();
   }
 
-  public async Task InstallAsync(string sourceUrl, string fluxKustomizationPathOption)
+  internal static async Task InstallAsync(string sourceUrl, string fluxKustomizationPathOption)
   {
     Console.WriteLine("🔄 Installing Flux...");
     await FluxCLIWrapper.InstallAsync();
@@ -25,14 +24,14 @@ sealed class FluxProvisioner : IGitOpsProvisioner
     Console.WriteLine();
   }
 
-  public async Task UninstallAsync()
+  internal static async Task UninstallAsync()
   {
     Console.WriteLine("🔄 Uninstalling Flux...");
     await FluxCLIWrapper.UninstallAsync();
     Console.WriteLine();
   }
 
-  public async Task PushManifestsAsync(string ociUrl, string manifestsPath)
+  internal static async Task PushManifestsAsync(string ociUrl, string manifestsPath)
   {
     Console.WriteLine($"📥 Pushing manifests to {ociUrl}...");
     await FluxCLIWrapper.PushManifestsAsync(ociUrl, manifestsPath);
