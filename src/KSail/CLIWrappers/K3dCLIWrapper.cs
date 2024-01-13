@@ -16,7 +16,6 @@ static class K3dCLIWrapper
         (PlatformID.Unix, Architecture.Arm64, true) => "k3d_darwin-arm64",
         (PlatformID.Unix, Architecture.X64, false) => "k3d_linux-amd64",
         (PlatformID.Unix, Architecture.Arm64, false) => "k3d_linux-arm64",
-        (PlatformID.Unix, Architecture.Arm, false) => "k3d_linux-arm",
         _ => throw new PlatformNotSupportedException()
       };
       return Cli.Wrap($"{AppContext.BaseDirectory}assets/binaries/{binary}");
