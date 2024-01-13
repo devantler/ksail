@@ -8,7 +8,7 @@ sealed class KSailSOPSCommand : Command
 {
   readonly ShowPublicKeyOption showPublicKeyOption = new();
   readonly ShowPrivateKeyOption showPrivateKeyOption = new();
-  internal KSailSOPSCommand() : base("sops", "Manage SOPS GPG key")
+  internal KSailSOPSCommand() : base("sops", "Manage SOPS key")
   {
     AddOption(showPublicKeyOption);
     AddOption(showPrivateKeyOption);
@@ -17,7 +17,7 @@ sealed class KSailSOPSCommand : Command
     {
       if (!result.GetValueForOption(showPublicKeyOption) && !result.GetValueForOption(showPrivateKeyOption))
       {
-        Console.WriteLine($"✕ Either '{showPublicKeyOption.Aliases.First()}' or '{showPrivateKeyOption.Aliases.First()}' must be specified to list SOPS GPG keys...");
+        Console.WriteLine($"✕ Either '{showPublicKeyOption.Aliases.First()}' or '{showPrivateKeyOption.Aliases.First()}' must be specified to list SOPS keys...");
         Environment.Exit(1);
       }
     });
