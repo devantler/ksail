@@ -1,6 +1,5 @@
 using KSail.Commands.Update.Handlers;
 using KSail.Provisioners;
-using KSail.Provisioners.SecretManagement;
 
 namespace KSail.Commands.Up.Handlers;
 
@@ -23,7 +22,7 @@ static class KSailUpGitOpsCommandHandler
 
     if (sops)
     {
-      Console.WriteLine("🔐 Adding SOPS GPG key...");
+      Console.WriteLine("🔐 Adding SOPS key...");
       await SOPSProvisioner.CreateKeysAsync();
       await secretManagementProvisioner.ProvisionAsync();
       await SOPSProvisioner.CreateSOPSConfigAsync(manifestsPath);
