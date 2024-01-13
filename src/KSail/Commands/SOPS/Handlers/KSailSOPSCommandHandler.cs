@@ -1,4 +1,4 @@
-using KSail.Provisioners.SecretManagement;
+using KSail.Provisioners;
 
 namespace KSail.Commands.SOPS.Handlers;
 
