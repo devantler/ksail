@@ -3,6 +3,7 @@ download_and_update() {
   repo=$1
   binary=$2
   is_tarball=$3
+  unpackage=$4
 
   version_latest=$(curl -s https://api.github.com/repos/"$repo"/releases/latest | grep tag_name | cut -d '"' -f 4)
   if [ -z "$version_latest" ]; then
@@ -41,8 +42,16 @@ download_and_update() {
       else
         curl -s https://api.github.com/repos/"$repo"/releases/latest | grep browser_download_url | grep $arch | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/binaries/"${binary}"_"${arch}"
       fi
+      if [ "$unpackage" = true ]; then
+        echo "Unpackaging new version of $binary"
+        mv src/KSail/assets/binaries/"${binary}"_${arch}/* src/KSail/assets/binaries/
+        # Rename to nameOfFile*_arch for example age_darwin_amd64 or age-keygen_darwin_amd64 where
+        find src/KSail/assets/binaries -name "${binary}*" ! -name "*_${arch}" -type f | while read file; do mv "$file" "${file%.*}_${arch}"; done
+        rm -rf src/KSail/assets/binaries/"${binary}"_${arch}
+      fi
       echo "Making new version of $binary executable"
-      chmod +x src/KSail/assets/binaries/"${binary}"_${arch}
+      # Glob chmod +x ${binary}*
+      find src/KSail/assets/binaries -name "${binary}*_${arch}" -type f -exec chmod +x {} \;
     done
     echo "Update version in requirements.txt"
     if [ ! -f src/KSail/assets/binaries/requirements.txt ]; then
@@ -58,8 +67,9 @@ download_and_update() {
 }
 
 set -e
-download_and_update "fluxcd/flux2" "flux" true
-download_and_update "k3d-io/k3d" "k3d" false
-download_and_update "yannh/kubeconform" "kubeconform" true
-download_and_update "kubernetes-sigs/kustomize" "kustomize" true
+download_and_update "fluxcd/flux2" "flux" true false
+download_and_update "k3d-io/k3d" "k3d" false false
+download_and_update "yannh/kubeconform" "kubeconform" true false
+download_and_update "kubernetes-sigs/kustomize" "kustomize" true false
+download_and_update "FiloSottile/age" "age" true true
 find src/KSail/assets/binaries -name "LICENSE" -type f -delete
