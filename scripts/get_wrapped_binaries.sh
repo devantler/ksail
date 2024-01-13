@@ -36,7 +36,10 @@ download_and_update() {
         curl -s https://api.github.com/repos/"$repo"/releases/latest | grep browser_download_url | grep $arch | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/binaries/"${binary}"_${arch}.tar.gz
         echo "Extracting new version of $binary"
         tar -xzf src/KSail/assets/binaries/"${binary}"_${arch}.tar.gz -C src/KSail/assets/binaries/
-        mv src/KSail/assets/binaries/"$binary" src/KSail/assets/binaries/"${binary}"_${arch}
+        # if not a folder, rename to binary_arch
+        if [ ! -d src/KSail/assets/binaries/"${binary}" ]; then
+          mv src/KSail/assets/binaries/"${binary}" src/KSail/assets/binaries/"${binary}"_${arch}
+        fi
         echo "Removing tar.gz files"
         rm src/KSail/assets/binaries/"${binary}"_${arch}.tar.gz
       else
@@ -44,10 +47,14 @@ download_and_update() {
       fi
       if [ "$unpackage" = true ]; then
         echo "Unpackaging new version of $binary"
-        mv src/KSail/assets/binaries/"${binary}"_${arch}/* src/KSail/assets/binaries/
-        # Rename to nameOfFile*_arch for example age_darwin_amd64 or age-keygen_darwin_amd64 where
-        find src/KSail/assets/binaries -name "${binary}*" ! -name "*_${arch}" -type f | while read file; do mv "$file" "${file%.*}_${arch}"; done
-        rm -rf src/KSail/assets/binaries/"${binary}"_${arch}
+        for file in src/KSail/assets/binaries/"${binary}"/*; do
+          fileName=$(basename "$file")
+          # if file is not LICENSE, rename to binary_arch
+          if [ "$fileName" != "LICENSE" ]; then
+            mv "$file" src/KSail/assets/binaries/"${fileName}"_"${arch}"
+          fi
+        done
+        rm -rf src/KSail/assets/binaries/"${binary}"
       fi
       echo "Making new version of $binary executable"
       # Glob chmod +x ${binary}*
@@ -67,9 +74,9 @@ download_and_update() {
 }
 
 set -e
-download_and_update "fluxcd/flux2" "flux" true false
-download_and_update "k3d-io/k3d" "k3d" false false
-download_and_update "yannh/kubeconform" "kubeconform" true false
-download_and_update "kubernetes-sigs/kustomize" "kustomize" true false
+# download_and_update "fluxcd/flux2" "flux" true false
+# download_and_update "k3d-io/k3d" "k3d" false false
+# download_and_update "yannh/kubeconform" "kubeconform" true false
+# download_and_update "kubernetes-sigs/kustomize" "kustomize" true false
 download_and_update "FiloSottile/age" "age" true true
 find src/KSail/assets/binaries -name "LICENSE" -type f -delete
