@@ -1,8 +1,5 @@
 name: Test
 
-env:
-  GITHUB_SCRIPTS_DIR: ./.github/scripts
-
 on:
   pull_request:
     branches: [main]
@@ -58,8 +55,6 @@ jobs:
         uses: actions/checkout@v4
       - name: ⚙️ Setup .NET
         uses: actions/setup-dotnet@v4
-      - name: ⚙️ Setup GPG
-        run: sudo apt-get install gnupg
       - name: 🧪 Test
         run: |
           dotnet run --project ./src/KSail/KSail.csproj -- up gitops -n test
@@ -67,25 +62,3 @@ jobs:
 
           dotnet run --project ./src/KSail/KSail.csproj -- up gitops -c ./k3d/k3d-config.yaml
           dotnet run --project ./src/KSail/KSail.csproj -- down -n test
-      - name: 🐎 Print free CPU
-        if: always()
-        run: |
-          top -bn2 | grep '%Cpu' | tail -1 | grep -P '(....|...) id,' | awk -v cores=$(nproc --all) '{print "CPU Usage: " 100-($8/cores) "% (" cores " cores)"}'
-      - name: 🧠 Print free memory
-        if: always()
-        run: |
-          free -m | awk 'NR==2{printf "Memory Usage: %s/%sMB (%.2f%%)\n", $3,$2,$3*100/$2 }'
-      - name: ⚠️💬 Print namespaces on failure
-        if: failure()
-        run: $GITHUB_SCRIPTS_DIR/e2e-k8s-debug-failure-namespaces.sh
-      - name: ⚠️⛔️ Print errors on failure
-        if: failure()
-        run: $GITHUB_SCRIPTS_DIR/e2e-k8s-debug-failure-errors.sh
-      - name: ⚠️📝 Print logs on failure
-        if: failure()
-        run: $GITHUB_SCRIPTS_DIR/e2e-k8s-debug-failure-logs.sh
-      - name: ⚠️📑 Print descriptions on failure
-        if: failure()
-        run: $GITHUB_SCRIPTS_DIR/e2e-k8s-debug-failure-descriptions.sh
-      - name: 🚦 Check for use of deprecated APIs
-        run: $GITHUB_SCRIPTS_DIR/e2e-k8s-check-deprecated-apis.sh
