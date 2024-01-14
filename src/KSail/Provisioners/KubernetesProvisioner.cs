@@ -28,14 +28,14 @@ sealed class KubernetesProvisioner : IProvisioner, IDisposable
 
   internal async Task CreateSecretAsync(string name, Dictionary<string, string> data, string @namespace = "default")
   {
-    Console.WriteLine($"► Deploying '{name}' secret to '{@namespace}' namespace...");
+    Console.WriteLine($"► Deploying '{name}' secret to '{@namespace}' namespace");
     var sopsGpgSecret = new V1Secret
     {
       ApiVersion = "v1",
       Kind = "Secret",
       Metadata = new V1ObjectMeta
       {
-        Name = "sops-gpg",
+        Name = "sops-age",
         NamespaceProperty = "flux-system"
       },
       Type = "Opaque",

@@ -25,7 +25,7 @@ static class KSailUpGitOpsCommandHandler
       Console.WriteLine("🔐 Adding SOPS key...");
       await SOPSProvisioner.CreateKeysAsync();
       await secretManagementProvisioner.ProvisionAsync();
-      await SOPSProvisioner.CreateSOPSConfigAsync(manifestsPath);
+      await SOPSProvisioner.CreateSOPSConfigAsync($"{manifestsPath}/../.sops.yaml");
       Console.WriteLine();
     }
 

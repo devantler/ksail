@@ -8,30 +8,46 @@ sealed class SOPSProvisioner : IProvisioner, IDisposable
 
   internal static async Task CreateKeysAsync()
   {
-    if (File.Exists("ksail_sops.agekey"))
+    if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.ksail/ksail_sops.agekey"))
     {
-      Console.WriteLine("✔ Using existing SOPS key...");
+      Console.WriteLine("✔ Using existing SOPS key");
       return;
     }
 
     Console.WriteLine("► Generating new SOPS key...");
-    await AgeKeygenCLIWrapper.GenerateKeyAsync();
+    await AgeCLIWrapper.GenerateKeyAsync();
   }
 
   public async Task ProvisionAsync()
   {
-    string ageKey = await File.ReadAllTextAsync("ksail_sops.agekey");
-    await kubernetesProvisioner.CreateSecretAsync("sops-gpg", new Dictionary<string, string>
+    string ageKey = await File.ReadAllTextAsync(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.ksail/ksail_sops.agekey");
+    await kubernetesProvisioner.CreateSecretAsync("sops-age", new Dictionary<string, string>
     {
-      ["sops.asc"] = ageKey
+      ["ksail_sops.agekey"] = ageKey
     }, "flux-system");
   }
 
-  internal static Task CreateSOPSConfigAsync(string configPath) => throw new NotImplementedException();
+  internal static async Task CreateSOPSConfigAsync(string configPath)
+  {
+    Console.WriteLine($"► Creating SOPS config '{configPath}'");
+    string config = $"""
+    creation_rules:
+      - path_regex: .sops.yaml
+        encrypted_regex: ^(data|stringData)$
+        age: {await GetPublicKeyAsync()}
+    """;
+    await File.WriteAllTextAsync($"{configPath}", config);
+  }
 
-  internal static Task ShowPublicKeyAsync() => throw new NotImplementedException();
+  internal static async Task<string> GetPublicKeyAsync()
+  {
+    string publicKeyLine = (await File.ReadAllLinesAsync($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/ksail_sops.agekey")).Skip(1).First();
+    int startIndex = publicKeyLine.IndexOf("age", StringComparison.Ordinal);
+    return publicKeyLine[startIndex..];
+  }
 
-  internal static Task ShowPrivateKeyAsync() => throw new NotImplementedException();
+  internal static async Task<string> GetPrivateKeyAsync() =>
+    (await File.ReadAllLinesAsync($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/ksail_sops.agekey")).Last();
 
   public void Dispose()
   {
