@@ -1,8 +1,7 @@
 name: Require Pull Request Labels
 on:
   pull_request:
-    types: [opened, labeled, unlabeled, synchronize]
-
+    types: [opened, reopened, labeled, unlabeled, synchronize, ready_for_review]
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
