@@ -3,12 +3,16 @@ using KSail.Commands.Up.Options;
 using KSail.Models;
 using KSail.Options;
 using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace KSail.Commands.Up.Validators;
 
 static class KSailUpGitOpsValidator
 {
-  static readonly Deserializer yamlDeserializer = new();
+  static readonly IDeserializer yamlDeserializer = new DeserializerBuilder()
+    .WithNamingConvention(CamelCaseNamingConvention.Instance)
+    .IgnoreUnmatchedProperties()
+    .Build();
   internal static Task ValidateAsync(CommandResult commandResult, NameOption nameOption, ConfigOption configOption, ManifestsOption _manifestsOption, FluxKustomizationPathOption _fluxKustomizationPathOption)
   {
     string? name = commandResult.GetValueForOption(nameOption);

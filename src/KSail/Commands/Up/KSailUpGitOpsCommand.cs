@@ -7,6 +7,7 @@ using KSail.Commands.Up.Validators;
 using KSail.Models;
 using KSail.Options;
 using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace KSail.Commands.Up;
 
@@ -16,7 +17,10 @@ sealed class KSailUpGitOpsCommand : Command
   readonly FluxKustomizationPathOption fluxKustomizationPathOption = new();
   readonly TimeoutOption timeoutOption = new();
   readonly SOPSOption sopsOption = new() { IsRequired = true };
-  static readonly Deserializer yamlDeserializer = new();
+  static readonly IDeserializer yamlDeserializer = new DeserializerBuilder()
+    .WithNamingConvention(CamelCaseNamingConvention.Instance)
+    .IgnoreUnmatchedProperties()
+    .Build();
 
   internal KSailUpGitOpsCommand(
     NameOption nameOption,
