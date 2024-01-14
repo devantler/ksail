@@ -74,14 +74,9 @@ System:
 Tools:
 
 - [Docker](https://www.docker.com) (required)
-- [SOPS](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwiBwqfUh9aDAxViVPEDHUBJBxQQFnoECAMQAQ&url=https%3A%2F%2Fgithub.com%2Fgetsops%2Fsops&usg=AOvVaw1VL2ENXs82bAZnq5jAzeH_&opi=89978449) (required if you want to use SOPS for managing secrets.)
+- [SOPS](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&ved=2ahUKEwiBwqfUh9aDAxViVPEDHUBJBxQQFnoECAMQAQ&url=https%3A%2F%2Fgithub.com%2Fgetsops%2Fsops&usg=AOvVaw1VL2ENXs82bAZnq5jAzeH_&opi=89978449) (optional, if you want to use SOPS for managing secrets.)
 - [K9s](https://k9scli.io) (optional, but recommended for debugging.)
 - [VScode Extension - Run on Save(pucelle.run-on-save)](https://github.com/pucelle/vscode-run-on-save) (optional, but recommended to run `ksail update` on save, to enable a seamless developer experience.)
-
-Temporary dependencies:
-
-- `gnupg` (required if you want to use SOPS for managing secrets.)
-  - I will eventually embed Age into KSail, and remove this dependency.
 
 ### Installation
 
