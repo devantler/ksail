@@ -16,10 +16,9 @@
 ├── autocomplete
 ├── k3d
 ├── k8s
-│   └── clusters
-│       └── test
-│           ├── flux
-│           └── infrastructure
+│   ├── clusters
+│   │   └── test
+│   └── infrastructure
 ├── scripts
 ├── src
 │   └── KSail
@@ -54,7 +53,7 @@
     ├── KSail.Tests.Integration
     └── KSail.Tests.Unit
 
-42 directories
+41 directories
 ```
 <!-- readme-tree end -->
 
