@@ -15,7 +15,7 @@ static class KSailLintCommandHandler
 
     if (string.IsNullOrEmpty(name))
     {
-      Console.WriteLine("❌ Name of the cluster is required...");
+      Console.WriteLine("✕ Name of the cluster is required...");
       Environment.Exit(1);
     }
 
@@ -54,7 +54,7 @@ static class KSailLintCommandHandler
         }
         catch (YamlException e)
         {
-          Console.WriteLine($"❌ Validation failed for {manifest}. {e.Message}...");
+          Console.WriteLine($"✕ Validation failed for {manifest}. {e.Message}...");
           Environment.Exit(1);
         }
       }

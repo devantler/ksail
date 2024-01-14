@@ -29,4 +29,7 @@ sealed class K3dProvisioner() : IProvisioner
     Console.WriteLine("📋 Listing K3d clusters...");
     await K3dCLIWrapper.ListClustersAsync();
   }
+
+  internal static async Task<bool> ExistsAsync(string name) =>
+    await K3dCLIWrapper.GetClusterAsync(name);
 }

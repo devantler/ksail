@@ -1,6 +1,5 @@
 using KSail.Commands.Update.Handlers;
 using KSail.Provisioners;
-using KSail.Provisioners.SecretManagement;
 
 namespace KSail.Commands.Up.Handlers;
 
@@ -12,7 +11,7 @@ static class KSailUpGitOpsCommandHandler
 
   internal static async Task HandleAsync(string name, string manifestsPath, string fluxKustomizationPath, bool sops)
   {
-    fluxKustomizationPath = string.IsNullOrEmpty(fluxKustomizationPath) ? $"./clusters/{name}/flux" : fluxKustomizationPath;
+    fluxKustomizationPath = string.IsNullOrEmpty(fluxKustomizationPath) ? $"./clusters/{name}" : fluxKustomizationPath;
 
     Console.WriteLine("🧮 Creating OCI registry...");
     await dockerRegistryProvisioner.CreateRegistryAsync("manifests", 5050);
@@ -23,10 +22,10 @@ static class KSailUpGitOpsCommandHandler
 
     if (sops)
     {
-      Console.WriteLine("🔐 Adding SOPS GPG key...");
+      Console.WriteLine("🔐 Adding SOPS key...");
       await SOPSProvisioner.CreateKeysAsync();
       await secretManagementProvisioner.ProvisionAsync();
-      await SOPSProvisioner.CreateSOPSConfigAsync(manifestsPath);
+      await SOPSProvisioner.CreateSOPSConfigAsync($"{manifestsPath}/../.sops.yaml");
       Console.WriteLine();
     }
 

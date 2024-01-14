@@ -3,12 +3,16 @@ using KSail.Commands.Up.Options;
 using KSail.Models;
 using KSail.Options;
 using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
 
 namespace KSail.Commands.Up.Validators;
 
 static class KSailUpGitOpsValidator
 {
-  static readonly Deserializer yamlDeserializer = new();
+  static readonly IDeserializer yamlDeserializer = new DeserializerBuilder()
+    .WithNamingConvention(CamelCaseNamingConvention.Instance)
+    .IgnoreUnmatchedProperties()
+    .Build();
   internal static Task ValidateAsync(CommandResult commandResult, NameOption nameOption, ConfigOption configOption, ManifestsOption _manifestsOption, FluxKustomizationPathOption _fluxKustomizationPathOption)
   {
     string? name = commandResult.GetValueForOption(nameOption);
@@ -31,7 +35,7 @@ static class KSailUpGitOpsValidator
       commandResult.ErrorMessage += $"Invalid option '{_manifestsOption.Aliases.First()} {manifestsPath ?? "null"}'. Path does not exist...{Environment.NewLine}";
     }
     string? fluxKustomizationPath = commandResult.GetValueForOption(_fluxKustomizationPathOption);
-    fluxKustomizationPath = string.IsNullOrEmpty(fluxKustomizationPath) ? $"clusters/{name}/flux" : fluxKustomizationPath;
+    fluxKustomizationPath = string.IsNullOrEmpty(fluxKustomizationPath) ? $"clusters/{name}" : fluxKustomizationPath;
     string? realFluxKustomizationPath = Path.Join(manifestsPath, fluxKustomizationPath);
     if (!ValidatePathExists(realFluxKustomizationPath))
     {

@@ -31,3 +31,6 @@ registries:
       "quay.io":
         endpoint:
           - http://host.k3d.internal:5005
+      "mcr.microsoft.com":
+        endpoint:
+          - http://host.k3d.internal:5006

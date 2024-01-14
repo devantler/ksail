@@ -19,7 +19,7 @@ sealed class DockerProvisioner : IProvisioner
     }
     catch (Exception)
     {
-      Console.WriteLine("🐳❌ Could not connect to Docker. Is Docker running?");
+      Console.WriteLine("✕ Could not connect to Docker. Is Docker running?");
       Environment.Exit(1);
     }
     Console.WriteLine("✔ Docker is running...");

@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using CliWrap;
+using CliWrap.Buffered;
 
 namespace KSail.CLIWrappers;
 
@@ -15,7 +16,6 @@ static class K3dCLIWrapper
         (PlatformID.Unix, Architecture.Arm64, true) => "k3d_darwin-arm64",
         (PlatformID.Unix, Architecture.X64, false) => "k3d_linux-amd64",
         (PlatformID.Unix, Architecture.Arm64, false) => "k3d_linux-arm64",
-        (PlatformID.Unix, Architecture.Arm, false) => "k3d_linux-arm",
         _ => throw new PlatformNotSupportedException()
       };
       return Cli.Wrap($"{AppContext.BaseDirectory}assets/binaries/{binary}");
@@ -47,6 +47,13 @@ static class K3dCLIWrapper
   {
     var cmd = K3d.WithArguments($"cluster delete {name}");
     _ = await CLIRunner.RunAsync(cmd);
+  }
+
+  internal static async Task<bool> GetClusterAsync(string name)
+  {
+    var cmd = K3d.WithArguments($"cluster get {name}").WithValidation(CommandResultValidation.None);
+    var result = await cmd.ExecuteBufferedAsync();
+    return result.ExitCode == 0;
   }
 
   internal static async Task ListClustersAsync()

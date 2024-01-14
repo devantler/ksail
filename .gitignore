@@ -4,3 +4,6 @@
 # .NET
 bin
 obj
+
+# Temporary files
+*.tmp*

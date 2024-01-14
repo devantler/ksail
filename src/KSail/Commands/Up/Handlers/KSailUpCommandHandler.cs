@@ -10,7 +10,11 @@ static class KSailUpCommandHandler
   {
     await dockerProvisioner.CheckReadyAsync();
 
-    await KSailDownCommandHandler.HandleAsync(name);
+    // Check if cluster already exists
+    if (await K3dProvisioner.ExistsAsync(name))
+    {
+      await KSailDownCommandHandler.HandleAsync(name);
+    }
     if (pullThroughRegistries)
     {
       Console.WriteLine("🧮 Creating pull-through registries...");

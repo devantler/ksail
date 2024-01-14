@@ -16,7 +16,6 @@ static class KubeconformCLIWrapper
         (PlatformID.Unix, Architecture.Arm64, true) => "kubeconform_darwin-arm64",
         (PlatformID.Unix, Architecture.X64, false) => "kubeconform_linux-amd64",
         (PlatformID.Unix, Architecture.Arm64, false) => "kubeconform_linux-arm64",
-        (PlatformID.Unix, Architecture.Arm, false) => "kubeconform_linux-arm",
         _ => throw new PlatformNotSupportedException()
       };
       return Cli.Wrap($"{AppContext.BaseDirectory}assets/binaries/{binary}");
