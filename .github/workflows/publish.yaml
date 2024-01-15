@@ -39,9 +39,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            ksail-osx-x64
-            ksail-osx-arm64
-            ksail-linux-x64
+            ksail-darwin-amd64
+            ksail-darwin-arm64
+            ksail-linux-amd64
             ksail-linux-arm64
             ksail.tar.gz
       - name: 🍺 Brew tap
