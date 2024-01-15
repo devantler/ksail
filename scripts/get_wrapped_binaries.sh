@@ -57,7 +57,7 @@ download_and_update() {
             mv "$file" src/KSail/assets/binaries/"${fileName}"_"${arch}"
           fi
         done
-        rm -rf src/KSail/assets/binaries/"${subfolder}"_*
+        rm -rf src/KSail/assets/binaries/"${subfolder}"
       fi
       echo "Making new version of $binary executable"
       find src/KSail/assets/binaries -name "${binary}*_${arch}" -type f -exec chmod +x {} \;
