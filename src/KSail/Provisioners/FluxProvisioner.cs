@@ -6,35 +6,31 @@ sealed class FluxProvisioner : IProvisioner
 {
   internal static async Task CheckPrerequisitesAsync()
   {
-    Console.WriteLine("🔄 Checking Flux prerequisites are satisfied...");
+    console.WriteLine("🔄 Checking Flux prerequisites are satisfied...");
     await FluxCLIWrapper.CheckPrerequisitesAsync();
-    Console.WriteLine();
+    console.WriteLine();
   }
 
   internal static async Task InstallAsync(string sourceUrl, string fluxKustomizationPathOption)
   {
-    Console.WriteLine("🔄 Installing Flux...");
+    console.WriteLine("🔄 Installing Flux...");
     await FluxCLIWrapper.InstallAsync();
-    Console.WriteLine();
-    Console.WriteLine("🔄 Creating Flux OCI source...");
+    console.WriteLine();
+    console.WriteLine("🔄 Creating Flux OCI source...");
     await FluxCLIWrapper.CreateSourceOCIAsync(sourceUrl);
-    Console.WriteLine();
-    Console.WriteLine("🔄 Creating Flux kustomization...");
+    console.WriteLine();
+    console.WriteLine("🔄 Creating Flux kustomization...");
     await FluxCLIWrapper.CreateKustomizationAsync(fluxKustomizationPathOption);
-    Console.WriteLine();
+    console.WriteLine();
   }
 
   internal static async Task UninstallAsync()
   {
-    Console.WriteLine("🔄 Uninstalling Flux...");
+    console.WriteLine("🔄 Uninstalling Flux...");
     await FluxCLIWrapper.UninstallAsync();
-    Console.WriteLine();
+    console.WriteLine();
   }
 
-  internal static async Task PushManifestsAsync(string ociUrl, string manifestsPath)
-  {
-    Console.WriteLine($"📥 Pushing manifests to {ociUrl}...");
+  internal static async Task PushManifestsAsync(string ociUrl, string manifestsPath) =>
     await FluxCLIWrapper.PushManifestsAsync(ociUrl, manifestsPath);
-    Console.WriteLine();
-  }
 }

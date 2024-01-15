@@ -8,13 +8,15 @@ sealed class KSailCheckCommand : Command
 {
   readonly NameOption nameOption = new("The name of the cluster to check.") { IsRequired = true };
   readonly TimeoutOption timeoutOption = new();
+  readonly KSailCheckCommandHandler kSailCheckCommandHandler;
 
-  internal KSailCheckCommand() : base("check", "Check the status of the cluster.")
+  internal KSailCheckCommand(IConsole console) : base("check", "Check the status of the cluster.")
   {
+    kSailCheckCommandHandler = new(console);
     AddOption(nameOption);
     AddOption(timeoutOption);
     this.SetHandler((name, timeout) =>
-      _ = KSailCheckCommandHandler.HandleAsync(
+      _ = kSailCheckCommandHandler.HandleAsync(
         name,
         timeout,
         new CancellationToken()

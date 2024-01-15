@@ -1,12 +1,14 @@
 
+using System.CommandLine;
 using System.Runtime.InteropServices;
 using CliWrap;
 
 namespace KSail.CLIWrappers;
 
-static class KubeconformCLIWrapper
+class KubeconformCLIWrapper(IConsole console)
 {
-  internal static Command Kubeconform
+  readonly CLIRunner cliRunner = new(console);
+  internal static CliWrap.Command Kubeconform
   {
     get
     {
@@ -22,9 +24,9 @@ static class KubeconformCLIWrapper
     }
   }
 
-  internal static async void Run(string[] kubeconformFlags, string[] kubeconformConfig, string manifest)
+  internal async void Run(string[] kubeconformFlags, string[] kubeconformConfig, string manifest)
   {
     var cmd = Kubeconform.WithArguments(kubeconformFlags.Concat(kubeconformConfig).Concat(new[] { manifest }).ToArray());
-    _ = await CLIRunner.RunAsync(cmd, silent: true);
+    _ = await cliRunner.RunAsync(cmd, silent: true);
   }
 }

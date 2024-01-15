@@ -11,7 +11,7 @@ sealed class KubernetesProvisioner : IProvisioner, IDisposable
   /// <inheritdoc/>
   internal async Task CreateNamespaceAsync(string name)
   {
-    Console.WriteLine($"🌐 Creating '{name}' namespace...");
+    console.WriteLine($"🌐 Creating '{name}' namespace...");
     var fluxSystemNamespace = new V1Namespace
     {
       ApiVersion = "v1",
@@ -22,13 +22,13 @@ sealed class KubernetesProvisioner : IProvisioner, IDisposable
       }
     };
     _ = await kubernetesClient.CreateNamespaceAsync(fluxSystemNamespace);
-    Console.WriteLine("✔ Namespace created...");
-    Console.WriteLine();
+    console.WriteLine("✔ Namespace created...");
+    console.WriteLine();
   }
 
   internal async Task CreateSecretAsync(string name, Dictionary<string, string> data, string @namespace = "default")
   {
-    Console.WriteLine($"► Deploying '{name}' secret to '{@namespace}' namespace");
+    console.WriteLine($"► Deploying '{name}' secret to '{@namespace}' namespace");
     var sopsGpgSecret = new V1Secret
     {
       ApiVersion = "v1",

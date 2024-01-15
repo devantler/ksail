@@ -4,6 +4,7 @@
 # .NET
 bin
 obj
+*.received.*
 
 # Temporary files
 *.tmp*

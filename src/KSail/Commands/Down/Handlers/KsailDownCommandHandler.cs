@@ -1,12 +1,14 @@
+using System.CommandLine;
 using KSail.Provisioners;
 
 namespace KSail.Commands.Down.Handlers;
 
-static class KSailDownCommandHandler
+class KSailDownCommandHandler(IConsole console)
 {
-  internal static async Task HandleAsync(string name)
+  readonly IConsole console = console;
+  internal async Task HandleAsync(string name)
   {
     await K3dProvisioner.DeprovisionAsync(name);
-    Console.WriteLine();
+    console.WriteLine("");
   }
 }

@@ -6,7 +6,7 @@ sealed class K3dProvisioner() : IProvisioner
 {
   internal static async Task ProvisionAsync(string name, bool pullThroughRegistries, string? configPath = null)
   {
-    Console.WriteLine($"🚀 Provisioning K3d cluster '{name}'...");
+    console.WriteLine($"🚀 Provisioning K3d cluster '{name}'...");
     if (!string.IsNullOrEmpty(configPath))
     {
       await K3dCLIWrapper.CreateClusterFromConfigAsync(configPath);
@@ -15,18 +15,18 @@ sealed class K3dProvisioner() : IProvisioner
     {
       await K3dCLIWrapper.CreateClusterAsync(name, pullThroughRegistries);
     }
-    Console.WriteLine();
+    console.WriteLine();
   }
 
   internal static async Task DeprovisionAsync(string name)
   {
-    Console.WriteLine($"🔥 Destroying K3d cluster '{name}'...");
+    console.WriteLine($"🔥 Destroying K3d cluster '{name}'...");
     await K3dCLIWrapper.DeleteClusterAsync(name);
   }
 
   internal static async Task ListAsync()
   {
-    Console.WriteLine("📋 Listing K3d clusters...");
+    console.WriteLine("📋 Listing K3d clusters...");
     await K3dCLIWrapper.ListClustersAsync();
   }
 

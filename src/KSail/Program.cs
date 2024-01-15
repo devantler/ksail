@@ -1,4 +1,5 @@
 ﻿using System.CommandLine;
+using System.CommandLine.IO;
 using System.Runtime.InteropServices;
 using KSail.Commands;
 
@@ -15,6 +16,6 @@ else
     File.SetUnixFileMode(file, UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute);
   }
 
-  var ksailCommand = new KSailCommand();
+  var ksailCommand = new KSailCommand(new SystemConsole());
   _ = await ksailCommand.InvokeAsync(args);
 }

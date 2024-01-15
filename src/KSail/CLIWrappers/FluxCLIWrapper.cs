@@ -1,12 +1,14 @@
 using CliWrap;
 using IdentityModel;
+using System.CommandLine;
 using System.Runtime.InteropServices;
 
 namespace KSail.CLIWrappers;
 
-static class FluxCLIWrapper
+class FluxCLIWrapper(IConsole console)
 {
-  static Command Flux
+  readonly CLIRunner cliRunner = new(console);
+  static CliWrap.Command Flux
   {
     get
     {
@@ -22,19 +24,19 @@ static class FluxCLIWrapper
     }
   }
 
-  internal static async Task CheckPrerequisitesAsync()
+  internal async Task CheckPrerequisitesAsync()
   {
     var cmd = Flux.WithArguments("check --pre");
-    _ = await CLIRunner.RunAsync(cmd);
+    _ = await cliRunner.RunAsync(cmd);
   }
 
-  internal static async Task InstallAsync()
+  internal async Task InstallAsync()
   {
     var cmd = Flux.WithArguments("install");
-    _ = await CLIRunner.RunAsync(cmd);
+    _ = await cliRunner.RunAsync(cmd);
   }
 
-  internal static async Task CreateSourceOCIAsync(string sourceUrl)
+  internal async Task CreateSourceOCIAsync(string sourceUrl)
   {
     var cmd = Flux.WithArguments(
       [
@@ -47,9 +49,9 @@ static class FluxCLIWrapper
         "--tag=latest"
       ]
     );
-    _ = await CLIRunner.RunAsync(cmd);
+    _ = await cliRunner.RunAsync(cmd);
   }
-  internal static async Task CreateKustomizationAsync(string fluxKustomizationPathOption)
+  internal async Task CreateKustomizationAsync(string fluxKustomizationPathOption)
   {
     var cmd = Flux.WithArguments(
       [
@@ -60,15 +62,15 @@ static class FluxCLIWrapper
         $"--path={fluxKustomizationPathOption}"
       ]
     );
-    _ = await CLIRunner.RunAsync(cmd);
+    _ = await cliRunner.RunAsync(cmd);
   }
-  internal static async Task UninstallAsync()
+  internal async Task UninstallAsync()
   {
     var cmd = Flux.WithArguments("uninstall");
-    _ = await CLIRunner.RunAsync(cmd);
+    _ = await cliRunner.RunAsync(cmd);
   }
 
-  internal static async Task PushManifestsAsync(string ociUrl, string manifestsPath)
+  internal async Task PushManifestsAsync(string ociUrl, string manifestsPath)
   {
     long currentTimeEpoch = DateTime.Now.ToEpochTime();
     var pushCmd = Flux.WithArguments(
@@ -89,7 +91,7 @@ static class FluxCLIWrapper
         "--tag=latest"
       ]
     );
-    _ = await CLIRunner.RunAsync(pushCmd);
-    _ = await CLIRunner.RunAsync(tagCmd);
+    _ = await cliRunner.RunAsync(pushCmd);
+    _ = await cliRunner.RunAsync(tagCmd);
   }
 }

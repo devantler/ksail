@@ -11,7 +11,7 @@ sealed class KSailSOPSCommand : Command
   readonly ShowPrivateKeyOption showPrivateKeyOption = new();
   readonly EncryptOption encryptOption = new();
   readonly DecryptOption decryptOption = new();
-  internal KSailSOPSCommand() : base("sops", "Manage SOPS key")
+  internal KSailSOPSCommand(IConsole console) : base("sops", "Manage SOPS key")
   {
     AddOption(generateKeyOption);
     AddOption(showPublicKeyOption);

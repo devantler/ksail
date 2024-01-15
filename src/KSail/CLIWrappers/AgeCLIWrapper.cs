@@ -1,11 +1,13 @@
 using CliWrap;
+using System.CommandLine;
 using System.Runtime.InteropServices;
 
 namespace KSail.CLIWrappers;
 
-static class AgeCLIWrapper
+class AgeCLIWrapper(IConsole console)
 {
-  static Command AgeKeygen
+  readonly CLIRunner cliRunner = new(console);
+  static CliWrap.Command AgeKeygen
   {
     get
     {
@@ -21,7 +23,7 @@ static class AgeCLIWrapper
     }
   }
 
-  internal static async Task GenerateKeyAsync()
+  internal async Task GenerateKeyAsync()
   {
     if (!Directory.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail"))
     {
@@ -32,7 +34,7 @@ static class AgeCLIWrapper
       File.Delete($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/ksail_sops.agekey");
     }
     var cmd = AgeKeygen.WithArguments($"-o {Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/ksail_sops.agekey");
-    _ = await CLIRunner.RunAsync(cmd, silent: true);
+    _ = await cliRunner.RunAsync(cmd, silent: true);
     WriteKeysToDefaultKeysTxt();
   }
 
