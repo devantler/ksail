@@ -12,8 +12,10 @@ namespace KSail.Commands;
 
 sealed class KSailCommand : RootCommand
 {
+  readonly IConsole console;
   internal KSailCommand(IConsole console) : base("KSail is a CLI tool for provisioning GitOps enabled K8s clusters in Docker.")
   {
+    this.console = console;
     AddCommand(new KSailUpCommand(console));
     AddCommand(new KSailDownCommand(console));
     AddCommand(new KSailUpdateCommand(console));
@@ -24,12 +26,12 @@ sealed class KSailCommand : RootCommand
 
     this.SetHandler(() =>
     {
-      Introduction(console);
+      Introduction();
       _ = this.InvokeAsync("--help", console);
     });
   }
 
-  static void Introduction(IConsole console)
+  void Introduction()
   {
     if (console is not null)
     {
