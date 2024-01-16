@@ -5,6 +5,7 @@
 bin
 obj
 *.received.*
+**/TestResults/
 
 # Temporary files
 *.tmp*
