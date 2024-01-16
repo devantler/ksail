@@ -1,13 +1,11 @@
 using CliWrap;
-using System.CommandLine;
 using System.Runtime.InteropServices;
 
 namespace KSail.CLIWrappers;
 
-class AgeCLIWrapper(IConsole console)
+internal class AgeCLIWrapper()
 {
-  readonly CLIRunner cliRunner = new(console);
-  static CliWrap.Command AgeKeygen
+  private static Command AgeKeygen
   {
     get
     {
@@ -23,7 +21,7 @@ class AgeCLIWrapper(IConsole console)
     }
   }
 
-  internal async Task GenerateKeyAsync()
+  internal static async Task GenerateKeyAsync()
   {
     if (!Directory.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail"))
     {
@@ -34,11 +32,11 @@ class AgeCLIWrapper(IConsole console)
       File.Delete($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/ksail_sops.agekey");
     }
     var cmd = AgeKeygen.WithArguments($"-o {Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/ksail_sops.agekey");
-    _ = await cliRunner.RunAsync(cmd, silent: true);
+    _ = await CLIRunner.RunAsync(cmd, silent: true);
     WriteKeysToDefaultKeysTxt();
   }
 
-  static void WriteKeysToDefaultKeysTxt()
+  private static void WriteKeysToDefaultKeysTxt()
   {
     string ksailSopsAgeKey = $"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/ksail_sops.agekey";
     if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
@@ -55,7 +53,7 @@ class AgeCLIWrapper(IConsole console)
     }
   }
 
-  static void AppendOrReplaceKey(string ksailSopsAgeKey, string keysTxtFolder, string keysTxt)
+  private static void AppendOrReplaceKey(string ksailSopsAgeKey, string keysTxtFolder, string keysTxt)
   {
     if (!Directory.Exists(keysTxtFolder))
     {

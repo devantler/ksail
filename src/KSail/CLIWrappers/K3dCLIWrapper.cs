@@ -1,14 +1,12 @@
-using System.CommandLine;
 using System.Runtime.InteropServices;
 using CliWrap;
 using CliWrap.Buffered;
 
 namespace KSail.CLIWrappers;
 
-class K3dCLIWrapper(IConsole console)
+internal class K3dCLIWrapper()
 {
-  readonly CLIRunner cliRunner = new(console);
-  static CliWrap.Command K3d
+  private static Command K3d
   {
     get
     {
@@ -24,43 +22,49 @@ class K3dCLIWrapper(IConsole console)
     }
   }
 
-  internal async Task CreateClusterAsync(string name, bool pullThroughRegistries)
+  internal static async
+  Task
+CreateClusterAsync(string name, string configPath)
   {
-    var cmd = pullThroughRegistries
-      ? K3d.WithArguments(
+    var cmd = K3d.WithArguments(
         [
           "cluster",
           "create",
           $"{name}",
+          $"--config={configPath}",
           $"--registry-config={AppContext.BaseDirectory}assets/k3d/registry-config.yaml"
         ]
-      )
-      : K3d.WithArguments($"cluster create {name}");
-    _ = await cliRunner.RunAsync(cmd);
+      );
+    _ = await CLIRunner.RunAsync(cmd);
   }
 
-  internal async Task CreateClusterFromConfigAsync(string configPath)
+  internal static async Task StartClusterAsync(string name)
   {
-    var cmd = K3d.WithArguments($"cluster create --config {configPath}");
-    _ = await cliRunner.RunAsync(cmd);
+    var cmd = K3d.WithArguments($"cluster start {name}");
+    _ = await CLIRunner.RunAsync(cmd);
+  }
+  internal static async Task StopClusterAsync(string name)
+  {
+    var cmd = K3d.WithArguments($"cluster stop {name}");
+    _ = await CLIRunner.RunAsync(cmd);
   }
 
-  internal async Task DeleteClusterAsync(string name)
+  internal static async Task DeleteClusterAsync(string name)
   {
     var cmd = K3d.WithArguments($"cluster delete {name}");
-    _ = await cliRunner.RunAsync(cmd);
+    _ = await CLIRunner.RunAsync(cmd);
   }
 
   internal static async Task<bool> GetClusterAsync(string name)
   {
     var cmd = K3d.WithArguments($"cluster get {name}").WithValidation(CommandResultValidation.None);
     var result = await cmd.ExecuteBufferedAsync();
-    return result.ExitCode == 0;
+    return result.IsSuccess;
   }
 
-  internal async Task ListClustersAsync()
+  internal static async Task<string> ListClustersAsync()
   {
     var cmd = K3d.WithArguments("cluster list");
-    _ = await cliRunner.RunAsync(cmd);
+    return await CLIRunner.RunAsync(cmd);
   }
 }

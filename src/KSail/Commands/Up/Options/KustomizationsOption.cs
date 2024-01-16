@@ -2,7 +2,7 @@ using System.CommandLine;
 
 namespace KSail.Commands.Up.Options;
 
-sealed class FluxKustomizationPathOption() : Option<string>(
- ["--flux-kustomization-path", "-fkp"],
+internal sealed class KustomizationsOption() : Option<string>(
+ ["--kustomizations", "-k"],
   "Path to the flux kustomization directory"
 );

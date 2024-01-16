@@ -4,14 +4,14 @@ using KSail.Commands.SOPS.Options;
 
 namespace KSail.Commands.SOPS;
 
-sealed class KSailSOPSCommand : Command
+internal sealed class KSailSOPSCommand : Command
 {
-  readonly GenerateKeyOption generateKeyOption = new();
-  readonly ShowPublicKeyOption showPublicKeyOption = new();
-  readonly ShowPrivateKeyOption showPrivateKeyOption = new();
-  readonly EncryptOption encryptOption = new();
-  readonly DecryptOption decryptOption = new();
-  internal KSailSOPSCommand(IConsole console) : base("sops", "Manage SOPS key")
+  private readonly GenerateKeyOption generateKeyOption = new();
+  private readonly ShowPublicKeyOption showPublicKeyOption = new();
+  private readonly ShowPrivateKeyOption showPrivateKeyOption = new();
+  private readonly EncryptOption encryptOption = new();
+  private readonly DecryptOption decryptOption = new();
+  internal KSailSOPSCommand() : base("sops", "Manage SOPS key")
   {
     AddOption(generateKeyOption);
     AddOption(showPublicKeyOption);

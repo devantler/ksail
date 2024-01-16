@@ -1,4 +1,3 @@
-using System.CommandLine;
 using System.Text;
 using CliWrap;
 using CliWrap.EventStream;
@@ -6,10 +5,9 @@ using CliWrap.Exceptions;
 
 namespace KSail.CLIWrappers;
 
-class CLIRunner(IConsole console)
+internal class CLIRunner()
 {
-  readonly IConsole console = console;
-  public async Task<string> RunAsync(CliWrap.Command command, CommandResultValidation validation = CommandResultValidation.ZeroExitCode, bool silent = false)
+  public static async Task<string> RunAsync(Command command, CommandResultValidation validation = CommandResultValidation.ZeroExitCode, bool silent = false)
   {
     StringBuilder result = new();
     try
@@ -24,7 +22,7 @@ class CLIRunner(IConsole console)
           }
           if (!silent)
           {
-            console.WriteLine(cmdEvent.ToString() ?? "");
+            Console.WriteLine(cmdEvent.ToString() ?? "");
           }
           _ = result.AppendLine(cmdEvent.ToString());
         }
@@ -32,7 +30,7 @@ class CLIRunner(IConsole console)
     }
     catch (CommandExecutionException e)
     {
-      console.WriteLine($"🚨 An error occurred while running '{command}': {e.Message}...");
+      Console.WriteLine($"🚨 An error occurred while running '{command}': {e.Message}...");
       Environment.Exit(1);
     }
     return result.ToString();

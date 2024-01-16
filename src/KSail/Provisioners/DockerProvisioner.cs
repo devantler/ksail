@@ -4,43 +4,43 @@ using Docker.DotNet.Models;
 
 namespace KSail.Provisioners;
 
-sealed class DockerProvisioner : IProvisioner
+internal sealed class DockerProvisioner : IProvisioner
 {
-  readonly DockerClient dockerClient = new DockerClientConfiguration(
+  private readonly DockerClient dockerClient = new DockerClientConfiguration(
     new Uri("unix:///var/run/docker.sock")
   ).CreateClient();
 
   internal async Task CheckReadyAsync()
   {
-    console.WriteLine("🐳 Checking Docker is running...");
+    Console.WriteLine("🐳 Checking Docker is running...");
     try
     {
       await dockerClient.System.PingAsync();
     }
     catch (Exception)
     {
-      console.WriteLine("✕ Could not connect to Docker. Is Docker running?");
+      Console.WriteLine("✕ Could not connect to Docker. Is Docker running?");
       Environment.Exit(1);
     }
-    console.WriteLine("✔ Docker is running...");
-    console.WriteLine();
+    Console.WriteLine("✔ Docker is running...");
+    Console.WriteLine();
   }
 
   internal async Task CreateRegistryAsync(string name, int port, Uri? proxyUrl = null)
   {
     if (proxyUrl != null)
     {
-      console.WriteLine($"► Creating pull-through registry '{name}' on port '{port}' for '{proxyUrl}'...");
+      Console.WriteLine($"► Creating pull-through registry '{name}' on port '{port}' for '{proxyUrl}'...");
     }
     else
     {
-      console.WriteLine($"► Creating registry '{name}' on port '{port}'...");
+      Console.WriteLine($"► Creating registry '{name}' on port '{port}'...");
     }
     bool registryExists = await GetContainerId(name) != null;
 
     if (registryExists)
     {
-      console.WriteLine($"✔ Registry '{name}' already exists. Skipping...");
+      Console.WriteLine($"✔ Registry '{name}' already exists. Skipping...");
       return;
     }
     CreateContainerResponse registry;
@@ -83,7 +83,7 @@ sealed class DockerProvisioner : IProvisioner
     }
     catch (DockerApiException e)
     {
-      console.WriteLine($" Could not create registry '{name}'. {e.Message}...");
+      Console.WriteLine($" Could not create registry '{name}'. {e.Message}...");
       Environment.Exit(1);
     }
   }
@@ -99,7 +99,7 @@ sealed class DockerProvisioner : IProvisioner
     }
   }
 
-  async Task<string?> GetContainerId(string name)
+  private async Task<string?> GetContainerId(string name)
   {
     var containers = await dockerClient.Containers.ListContainersAsync(new ContainersListParameters
     {

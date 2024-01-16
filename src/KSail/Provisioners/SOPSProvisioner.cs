@@ -2,19 +2,19 @@ using KSail.CLIWrappers;
 
 namespace KSail.Provisioners;
 
-sealed class SOPSProvisioner : IProvisioner, IDisposable
+internal sealed class SOPSProvisioner : IProvisioner, IDisposable
 {
-  readonly KubernetesProvisioner kubernetesProvisioner = new();
+  private readonly KubernetesProvisioner kubernetesProvisioner = new();
 
   internal static async Task CreateKeysAsync()
   {
     if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.ksail/ksail_sops.agekey"))
     {
-      console.WriteLine("✔ Using existing SOPS key");
+      Console.WriteLine("✔ Using existing SOPS key");
       return;
     }
 
-    console.WriteLine("► Generating new SOPS key...");
+    Console.WriteLine("► Generating new SOPS key...");
     await AgeCLIWrapper.GenerateKeyAsync();
   }
 
@@ -29,7 +29,7 @@ sealed class SOPSProvisioner : IProvisioner, IDisposable
 
   internal static async Task CreateSOPSConfigAsync(string configPath)
   {
-    console.WriteLine($"► Creating SOPS config '{configPath}'");
+    Console.WriteLine($"► Creating SOPS config '{configPath}'");
     string config = $"""
     creation_rules:
       - path_regex: .sops.yaml

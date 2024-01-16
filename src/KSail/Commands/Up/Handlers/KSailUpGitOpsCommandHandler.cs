@@ -1,36 +1,38 @@
-using System.CommandLine;
+using KSail.Commands.Check.Handlers;
 using KSail.Commands.Update.Handlers;
 using KSail.Provisioners;
 
 namespace KSail.Commands.Up.Handlers;
 
-static class KSailUpGitOpsCommandHandler
+internal static class KSailUpGitOpsCommandHandler
 {
-  static readonly KubernetesProvisioner kubernetesProvisioner = new();
-  static readonly DockerProvisioner dockerRegistryProvisioner = new();
-  static readonly SOPSProvisioner secretManagementProvisioner = new();
+  private static readonly KubernetesProvisioner kubernetesProvisioner = new();
+  private static readonly DockerProvisioner dockerProvisioner = new();
+  private static readonly SOPSProvisioner sopsProvisioner = new();
 
-  internal static async Task HandleAsync(IConsole console, string name, string manifestsPath, string fluxKustomizationPath, bool sops)
+  internal static async Task HandleAsync(string name, string configPath, string manifestsPath, string kustomizationsPath, int timeout, bool noSOPS)
   {
-    fluxKustomizationPath = string.IsNullOrEmpty(fluxKustomizationPath) ? $"./clusters/{name}" : fluxKustomizationPath;
+    kustomizationsPath = string.IsNullOrEmpty(kustomizationsPath) ? $"clusters/{name}" : kustomizationsPath;
 
-    console.WriteLine("🧮 Creating OCI registry...");
-    await dockerRegistryProvisioner.CreateRegistryAsync("manifests", 5050);
-    console.WriteLine();
+    Console.WriteLine("🧮 Creating OCI registry...");
+    await dockerProvisioner.CreateRegistryAsync("manifests", 5050);
+    Console.WriteLine("");
 
-    await KSailUpdateCommandHandler.HandleAsync(console, name, manifestsPath);
+    await KSailUpdateCommandHandler.HandleAsync(name, manifestsPath);
+    await K3dProvisioner.ProvisionAsync(name, configPath);
     await kubernetesProvisioner.CreateNamespaceAsync("flux-system");
 
-    if (sops)
+    if (!noSOPS)
     {
-      console.WriteLine("🔐 Adding SOPS key...");
+      Console.WriteLine("🔐 Adding SOPS key...");
       await SOPSProvisioner.CreateKeysAsync();
-      await secretManagementProvisioner.ProvisionAsync();
+      await sopsProvisioner.ProvisionAsync();
       await SOPSProvisioner.CreateSOPSConfigAsync($"{manifestsPath}/../.sops.yaml");
-      console.WriteLine();
+      Console.WriteLine("");
     }
 
     await FluxProvisioner.CheckPrerequisitesAsync();
-    await FluxProvisioner.InstallAsync($"oci://host.k3d.internal:5050/{name}", fluxKustomizationPath);
+    await FluxProvisioner.InstallAsync($"oci://host.k3d.internal:5050/{name}", kustomizationsPath);
+    await KSailCheckCommandHandler.HandleAsync(name, timeout, new CancellationToken());
   }
 }

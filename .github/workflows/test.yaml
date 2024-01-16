@@ -56,9 +56,4 @@ jobs:
       - name: ⚙️ Setup .NET
         uses: actions/setup-dotnet@v4
       - name: 🧪 Test
-        run: |
-          dotnet run --project ./src/KSail/KSail.csproj -- up gitops -n test
-          dotnet run --project ./src/KSail/KSail.csproj -- down -n test
-
-          dotnet run --project ./src/KSail/KSail.csproj -- up gitops -c ./k3d/k3d-config.yaml
-          dotnet run --project ./src/KSail/KSail.csproj -- down -n test
+        run: dotnet test

@@ -3,7 +3,7 @@ using k8s.Autorest;
 
 namespace KSail.Extensions;
 
-static class KubernetesExtensions
+internal static class KubernetesExtensions
 {
   internal static Task<HttpOperationResponse<object>> ListKustomizationsWithHttpMessagesAsync(this Kubernetes kubernetesClient, CancellationToken cancellationToken)
   {

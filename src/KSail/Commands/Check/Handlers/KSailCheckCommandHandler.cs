@@ -1,4 +1,3 @@
-using System.CommandLine;
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
@@ -7,16 +6,16 @@ using k8s.Models;
 using KSail.Extensions;
 
 namespace KSail.Commands.Check.Handlers;
-class KSailCheckCommandHandler(IConsole console)
-{
-  static readonly HashSet<string> kustomizations = [];
-  static readonly HashSet<string> successFullKustomizations = [];
-  static readonly Stopwatch stopwatch = Stopwatch.StartNew();
-  readonly IConsole console = console;
 
-  internal async Task HandleAsync(string name, int timeout, CancellationToken cancellationToken)
+internal class KSailCheckCommandHandler()
+{
+  private static readonly HashSet<string> kustomizations = [];
+  private static readonly HashSet<string> successFullKustomizations = [];
+  private static readonly Stopwatch stopwatch = Stopwatch.StartNew();
+
+  internal static async Task HandleAsync(string name, int timeout, CancellationToken cancellationToken)
   {
-    console.WriteLine("👀 Checking the status the cluster...");
+    Console.WriteLine("👀 Checking the status the cluster...");
     var kubernetesClient = CreateKubernetesClientFromClusterName(name);
     var responseTask = kubernetesClient.ListKustomizationsWithHttpMessagesAsync(cancellationToken);
 
@@ -31,12 +30,12 @@ class KSailCheckCommandHandler(IConsole console)
       {
         if (successFullKustomizations.Count == kustomizations.Count)
         {
-          console.WriteLine("✔ All kustomizations are ready!");
+          Console.WriteLine("✔ All kustomizations are ready!");
           Environment.Exit(0);
         }
         else if (stopwatch.Elapsed.TotalSeconds >= timeout)
         {
-          console.WriteLine($"✕ Timeout reached. Kustomization '{kustomizationName}' did not become ready within the specified timeout of {timeout} seconds.");
+          Console.WriteLine($"✕ Timeout reached. Kustomization '{kustomizationName}' did not become ready within the specified timeout of {timeout} seconds.");
           Environment.Exit(1);
         }
         else if (successFullKustomizations.Contains(kustomizationName))
@@ -54,36 +53,36 @@ class KSailCheckCommandHandler(IConsole console)
           HandleReadyStatus(kustomizationName);
           break;
         default:
-          console.WriteLine($"► Waiting for kustomization '{kustomizationName}' to be ready. It is currently {statusName?.ToLower(CultureInfo.InvariantCulture)}...");
+          Console.WriteLine($"► Waiting for kustomization '{kustomizationName}' to be ready. It is currently {statusName?.ToLower(CultureInfo.InvariantCulture)}...");
           break;
       }
     }
   }
 
-  void HandleReadyStatus(string kustomizationName)
+  private static void HandleReadyStatus(string kustomizationName)
   {
-    console.WriteLine($"✔ Kustomization '{kustomizationName}' is ready!");
+    Console.WriteLine($"✔ Kustomization '{kustomizationName}' is ready!");
     _ = successFullKustomizations.Add(kustomizationName);
     stopwatch.Restart();
   }
 
-  void HandleFailedStatus(V1CustomResourceDefinition kustomization, string kustomizationName)
+  private static void HandleFailedStatus(V1CustomResourceDefinition kustomization, string kustomizationName)
   {
-    console.WriteLine($"✕ Kustomization '{kustomizationName}' failed!");
+    Console.WriteLine($"✕ Kustomization '{kustomizationName}' failed!");
     string? message = kustomization?.Status.Conditions.FirstOrDefault()?.Message;
-    console.WriteLine($"✕ {message}");
+    Console.WriteLine($"✕ {message}");
     Environment.Exit(1);
   }
 
-  Kubernetes CreateKubernetesClientFromClusterName(string name)
+  private static Kubernetes CreateKubernetesClientFromClusterName(string name)
   {
     var kubeConfig = KubernetesClientConfiguration.LoadKubeConfig();
     var context = kubeConfig.Contexts.FirstOrDefault(c => c.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
 
     if (context == null)
     {
-      console.WriteLine($"✕ Could not find a context matching the cluster name '{name}' in the kubeconfig file.");
-      console.WriteLine($"   Available contexts are: {string.Join(", ", kubeConfig.Contexts.Select(c => c.Name))}");
+      Console.WriteLine($"✕ Could not find a context matching the cluster name '{name}' in the kubeconfig file.");
+      Console.WriteLine($"   Available contexts are: {string.Join(", ", kubeConfig.Contexts.Select(c => c.Name))}");
       Environment.Exit(1);
     }
     var config = KubernetesClientConfiguration.BuildConfigFromConfigObject(kubeConfig, context.Name);

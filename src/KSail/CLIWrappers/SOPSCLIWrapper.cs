@@ -1,14 +1,11 @@
 using CliWrap;
-using System.CommandLine;
 using System.Runtime.InteropServices;
 
 namespace KSail.CLIWrappers;
 
-class SOPSCLIWrapper(IConsole console)
+internal class SOPSCLIWrapper()
 {
-  readonly CLIRunner cliRunner = new(console);
-
-  static CliWrap.Command SOPS
+  private static Command SOPS
   {
     get
     {
@@ -24,24 +21,24 @@ class SOPSCLIWrapper(IConsole console)
     }
   }
 
-  internal async Task DecryptAsync(string decrypt)
+  internal static async Task DecryptAsync(string decrypt)
   {
     if (!File.Exists(decrypt))
     {
-      console.WriteLine($"✖ File '{decrypt}' does not exist");
+      Console.WriteLine($"✖ File '{decrypt}' does not exist");
       Environment.Exit(1);
     }
     var cmd = SOPS.WithArguments($"-d -i {decrypt}");
-    _ = await cliRunner.RunAsync(cmd, silent: true);
+    _ = await CLIRunner.RunAsync(cmd, silent: true);
   }
-  internal async Task EncryptAsync(string encrypt)
+  internal static async Task EncryptAsync(string encrypt)
   {
     if (!File.Exists(encrypt))
     {
-      console.WriteLine($"✖ File '{encrypt}' does not exist");
+      Console.WriteLine($"✖ File '{encrypt}' does not exist");
       Environment.Exit(1);
     }
     var cmd = SOPS.WithArguments($"-e -i {encrypt}");
-    _ = await cliRunner.RunAsync(cmd, silent: true);
+    _ = await CLIRunner.RunAsync(cmd, silent: true);
   }
 }

@@ -1,26 +1,25 @@
 using System.CommandLine;
+using KSail.Arguments;
 using KSail.Commands.Check.Handlers;
 using KSail.Options;
 
 namespace KSail.Commands.Check;
 
-sealed class KSailCheckCommand : Command
+internal sealed class KSailCheckCommand : Command
 {
-  readonly NameOption nameOption = new("The name of the cluster to check.") { IsRequired = true };
-  readonly TimeoutOption timeoutOption = new();
-  readonly KSailCheckCommandHandler kSailCheckCommandHandler;
+  private readonly NameArgument nameArgument = new();
+  private readonly TimeoutOption timeoutOption = new();
 
-  internal KSailCheckCommand(IConsole console) : base("check", "Check the status of the cluster.")
+  internal KSailCheckCommand() : base("check", "Check the status of the cluster.")
   {
-    kSailCheckCommandHandler = new(console);
-    AddOption(nameOption);
+    AddArgument(nameArgument);
     AddOption(timeoutOption);
     this.SetHandler((name, timeout) =>
-      _ = kSailCheckCommandHandler.HandleAsync(
+      _ = KSailCheckCommandHandler.HandleAsync(
         name,
         timeout,
         new CancellationToken()
-      ), nameOption, timeoutOption
+      ), nameArgument, timeoutOption
     );
   }
 }

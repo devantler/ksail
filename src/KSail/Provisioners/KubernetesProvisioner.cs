@@ -4,14 +4,14 @@ using k8s.Models;
 
 namespace KSail.Provisioners;
 
-sealed class KubernetesProvisioner : IProvisioner, IDisposable
+internal sealed class KubernetesProvisioner : IProvisioner, IDisposable
 {
-  readonly Kubernetes kubernetesClient = new(KubernetesClientConfiguration.BuildDefaultConfig());
+  private readonly Kubernetes kubernetesClient = new(KubernetesClientConfiguration.BuildDefaultConfig());
 
   /// <inheritdoc/>
   internal async Task CreateNamespaceAsync(string name)
   {
-    console.WriteLine($"🌐 Creating '{name}' namespace...");
+    Console.WriteLine($"🌐 Creating '{name}' namespace...");
     var fluxSystemNamespace = new V1Namespace
     {
       ApiVersion = "v1",
@@ -22,13 +22,13 @@ sealed class KubernetesProvisioner : IProvisioner, IDisposable
       }
     };
     _ = await kubernetesClient.CreateNamespaceAsync(fluxSystemNamespace);
-    console.WriteLine("✔ Namespace created...");
-    console.WriteLine();
+    Console.WriteLine("✔ Namespace created...");
+    Console.WriteLine();
   }
 
   internal async Task CreateSecretAsync(string name, Dictionary<string, string> data, string @namespace = "default")
   {
-    console.WriteLine($"► Deploying '{name}' secret to '{@namespace}' namespace");
+    Console.WriteLine($"► Deploying '{name}' secret to '{@namespace}' namespace");
     var sopsGpgSecret = new V1Secret
     {
       ApiVersion = "v1",

@@ -1,4 +1,3 @@
-using System.CommandLine;
 using System.Formats.Tar;
 using KSail.CLIWrappers;
 using YamlDotNet.Core;
@@ -7,23 +6,20 @@ using YamlDotNet.Serialization;
 
 namespace KSail.Commands.Lint.Handlers;
 
-class KSailLintCommandHandler(IConsole console)
+internal class KSailLintCommandHandler()
 {
-  static readonly HttpClient httpClient = new();
-  readonly IConsole console = console;
-  readonly KubeconformCLIWrapper kubeconformCLIWrapper = new(console);
-  readonly CLIRunner cliRunner = new(console);
-  internal async Task HandleAsync(string name, string manifestsPath)
+  private static readonly HttpClient httpClient = new();
+  internal static async Task HandleAsync(string name, string manifestsPath)
   {
-    console.WriteLine("🧹 Linting manifest files...");
+    Console.WriteLine("🧹 Linting manifest files...");
 
     if (string.IsNullOrEmpty(name))
     {
-      console.WriteLine("✕ Name of the cluster is required...");
+      Console.WriteLine("✕ Name of the cluster is required...");
       Environment.Exit(1);
     }
 
-    console.WriteLine("► Downloading Flux OpenAPI schemas...");
+    Console.WriteLine("► Downloading Flux OpenAPI schemas...");
     const string url = "https://github.com/fluxcd/flux2/releases/latest/download/crd-schemas.tar.gz";
     var directoryInfo = Directory.CreateDirectory("/tmp/flux-crd-schemas/master-standalone-strict");
     await using (var file = await httpClient.GetStreamAsync(url).ConfigureAwait(false))
@@ -34,12 +30,12 @@ class KSailLintCommandHandler(IConsole console)
 
     ValidateYaml(manifestsPath);
     await ValidateKustomizationsAsync(name, manifestsPath);
-    console.WriteLine("");
+    Console.WriteLine("");
   }
 
-  void ValidateYaml(string manifestsPath)
+  private static void ValidateYaml(string manifestsPath)
   {
-    console.WriteLine("► Validating YAML files with YAMLDotNet...");
+    Console.WriteLine("► Validating YAML files with YAMLDotNet...");
     try
     {
       foreach (string manifest in Directory.GetFiles(manifestsPath, "*.yaml", SearchOption.AllDirectories))
@@ -58,19 +54,19 @@ class KSailLintCommandHandler(IConsole console)
         }
         catch (YamlException e)
         {
-          console.WriteLine($"✕ Validation failed for {manifest}. {e.Message}...");
+          Console.WriteLine($"✕ Validation failed for {manifest}. {e.Message}...");
           Environment.Exit(1);
         }
       }
     }
     catch (YamlException e)
     {
-      console.WriteLine($"🚨 An error occurred while validating YAML files: {e.Message}...");
+      Console.WriteLine($"🚨 An error occurred while validating YAML files: {e.Message}...");
       Environment.Exit(1);
     }
   }
 
-  async Task ValidateKustomizationsAsync(string name, string manifestsPath)
+  private static async Task ValidateKustomizationsAsync(string name, string manifestsPath)
   {
     string[] kubeconformFlags = ["-skip=Secret"];
     string[] kubeconformConfig = ["-strict", "-ignore-missing-schemas", "-schema-location", "default", "-schema-location", "/tmp/flux-crd-schemas", "-verbose"];
@@ -78,25 +74,25 @@ class KSailLintCommandHandler(IConsole console)
     string clusterPath = $"{manifestsPath}/clusters/{name}";
     if (!Directory.Exists(clusterPath))
     {
-      console.WriteLine($"🚨 Cluster '{name}' not found in path '{clusterPath}'...");
+      Console.WriteLine($"🚨 Cluster '{name}' not found in path '{clusterPath}'...");
       Environment.Exit(1);
     }
-    console.WriteLine($"► Validating cluster '{name}' with Kubeconform...");
+    Console.WriteLine($"► Validating cluster '{name}' with Kubeconform...");
     foreach (string manifest in Directory.GetFiles(clusterPath, "*.yaml", SearchOption.AllDirectories))
     {
-      kubeconformCLIWrapper.Run(kubeconformFlags, kubeconformConfig, manifest);
+      KubeconformCLIWrapper.Run(kubeconformFlags, kubeconformConfig, manifest);
     }
 
     string[] kustomizeFlags = ["--load-restrictor=LoadRestrictionsNone"];
     const string kustomization = "kustomization.yaml";
-    console.WriteLine("► Validating kustomizations with Kustomize and Kubeconform...");
+    Console.WriteLine("► Validating kustomizations with Kustomize and Kubeconform...");
     foreach (string manifest in Directory.GetFiles(manifestsPath, kustomization, SearchOption.AllDirectories))
     {
       string kustomizationPath = manifest.Replace(kustomization, "", StringComparison.Ordinal);
       var kustomizeBuildCmd = KustomizeCLIWrapper.Kustomize.WithArguments(["build", kustomizationPath, .. kustomizeFlags]);
       var kubeconformCmd = KubeconformCLIWrapper.Kubeconform.WithArguments([.. kubeconformFlags, .. kubeconformConfig]);
       var cmd = kustomizeBuildCmd | kubeconformCmd;
-      _ = await cliRunner.RunAsync(cmd);
+      _ = await CLIRunner.RunAsync(cmd);
     }
   }
 }

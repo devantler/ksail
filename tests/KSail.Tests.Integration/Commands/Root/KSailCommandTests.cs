@@ -1,31 +1,31 @@
 using System.CommandLine;
 using System.CommandLine.IO;
-using KSail.Commands;
+using KSail.Commands.Root;
 
-namespace KSail.Tests.Integration.Commands;
+namespace KSail.Tests.Integration.Commands.Root;
 
 /// <summary>
-/// Tests for the <see cref="KSailCommand"/> class.
+/// Tests for the <see cref="KSailRootCommand"/> class.
 /// </summary>
 [UsesVerify]
-public class KSailCommandTests
+public class KSailRootCommandTests
 {
   /// <summary>
   /// Tests that the 'ksail' command succeeds and returns the introduction and help text.
   /// </summary>
   [Fact]
-  public async void NoOptions_SucceedsAndPrintsIntroductionAndHelp()
+  public async void NoArgsOrOptions_SucceedsAndPrintsIntroductionAndHelp()
   {
     //Arrange
     var console = new TestConsole();
-    var ksailCommand = new KSailCommand(console);
+    var ksailCommand = new KSailRootCommand(console);
 
     //Act
     int exitCode = await ksailCommand.InvokeAsync("", console);
 
     //Assert
     Assert.Equal(0, exitCode);
-    _ = await Verify(console.Out.ToString());
+    _ = await Verify(console.Error.ToString() + console.Out);
   }
 
   /// <summary>
@@ -36,7 +36,7 @@ public class KSailCommandTests
   {
     //Arrange
     var console = new TestConsole();
-    var ksailCommand = new KSailCommand(console);
+    var ksailCommand = new KSailRootCommand(console);
 
     //Act
     int exitCode = await ksailCommand.InvokeAsync("--help", console);
