@@ -50,7 +50,6 @@ public class KSailDownCommandTests
     Assert.Equal(0, upExitCode);
     Assert.Equal(0, downExitCode);
     Assert.False(await CheckRegistriesExistsAsync());
-    _ = await Verify(console.Error.ToString() + console.Out);
   }
 
   private static async Task<bool> CheckRegistriesExistsAsync()

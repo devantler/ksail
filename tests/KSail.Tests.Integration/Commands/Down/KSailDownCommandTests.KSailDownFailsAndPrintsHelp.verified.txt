@@ -1,0 +1,17 @@
+﻿Required argument missing for command: 'down'.
+
+Description:
+  Destroy a K8s cluster
+
+Usage:
+  down <name> [options]
+
+Arguments:
+  <name>
+
+Options:
+  --version       Show version information
+  -?, -h, --help  Show help and usage information
+
+
+
