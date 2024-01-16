@@ -94,8 +94,7 @@ internal sealed class DockerProvisioner : IProvisioner
 
     if (string.IsNullOrEmpty(containerId))
     {
-      Console.WriteLine($"✕ Could not find registry '{name}'...");
-      Environment.Exit(1);
+      Console.WriteLine($"✕ Could not find registry '{name}'. Skipping...");
     }
     else
     {
