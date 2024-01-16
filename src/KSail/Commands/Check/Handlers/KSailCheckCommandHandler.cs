@@ -82,7 +82,7 @@ internal class KSailCheckCommandHandler()
     if (context == null)
     {
       Console.WriteLine($"✕ Could not find a context matching the cluster name '{name}' in the kubeconfig file.");
-      Console.WriteLine($"   Available contexts are: {string.Join(", ", kubeConfig.Contexts.Select(c => c.Name))}");
+      Console.WriteLine($"  Available contexts are: {string.Join(", ", kubeConfig.Contexts.Select(c => c.Name))}");
       Environment.Exit(1);
     }
     var config = KubernetesClientConfiguration.BuildConfigFromConfigObject(kubeConfig, context.Name);
