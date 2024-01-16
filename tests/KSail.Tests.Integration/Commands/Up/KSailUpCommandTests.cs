@@ -11,8 +11,11 @@ namespace KSail.Tests.Integration.Commands.Up;
 /// Tests for the <see cref="KSailUpCommand"/> class.
 /// </summary>
 [UsesVerify]
-public class KSailUpCommandTests : IDisposable
+public class KSailUpCommandTests : IAsyncLifetime
 {
+  /// <inheritdoc/>
+  public Task InitializeAsync() => Task.CompletedTask;
+
   /// <summary>
   /// Tests that the <c>ksail up</c> command fails and prints help.
   /// </summary>
@@ -98,11 +101,9 @@ public class KSailUpCommandTests : IDisposable
   }
 
   /// <inheritdoc/>
-  public async void Dispose()
+  public async Task DisposeAsync()
   {
     var ksailDownCommand = new KSailDownCommand();
     _ = await ksailDownCommand.InvokeAsync("ksail");
-
-    GC.SuppressFinalize(this);
   }
 }
