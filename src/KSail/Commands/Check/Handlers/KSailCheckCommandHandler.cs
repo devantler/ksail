@@ -67,9 +67,8 @@ internal class KSailCheckCommandHandler()
 
   private static void HandleReadyStatus(string kustomizationName)
   {
-    Console.WriteLine($"✔ Kustomization '{kustomizationName}' is ready!");
+    Console.WriteLine($"✔ Kustomization '{kustomizationName}' is ready! Resetting timer...");
     _ = successFullKustomizations.Add(kustomizationName);
-    Console.WriteLine("► Resetting timer...");
     stopwatch.Restart();
   }
 
