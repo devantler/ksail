@@ -87,15 +87,6 @@ public class KSailUpCommandTests : IDisposable
     _ = await Verify(clusters);
   }
 
-  /// <inheritdoc/>
-  public async void Dispose()
-  {
-    var ksailDownCommand = new KSailDownCommand();
-    _ = await ksailDownCommand.InvokeAsync("ksail");
-
-    GC.SuppressFinalize(this);
-  }
-
   private static async Task AssertRegistriesExist()
   {
     await DockerAssert.ContainerExistsAsync("proxy-docker.io");
@@ -105,4 +96,14 @@ public class KSailUpCommandTests : IDisposable
     await DockerAssert.ContainerExistsAsync("proxy-quay.io");
     await DockerAssert.ContainerExistsAsync("proxy-mcr.microsoft.com");
   }
+
+  /// <inheritdoc/>
+  public async void Dispose()
+  {
+    var ksailDownCommand = new KSailDownCommand();
+    _ = await ksailDownCommand.InvokeAsync("ksail");
+
+    GC.SuppressFinalize(this);
+  }
+
 }
