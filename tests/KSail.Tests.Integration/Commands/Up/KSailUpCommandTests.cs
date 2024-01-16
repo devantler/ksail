@@ -11,6 +11,7 @@ namespace KSail.Tests.Integration.Commands.Up;
 /// Tests for the <see cref="KSailUpCommand"/> class.
 /// </summary>
 [UsesVerify]
+[Collection("KSail.Tests.Integration")]
 public class KSailUpCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
@@ -67,7 +68,7 @@ public class KSailUpCommandTests : IAsyncLifetime
 
     //Assert
     Assert.Equal(0, exitCode);
-    await AssertRegistriesExist();
+    Assert.True(await CheckRegistriesExistAsync());
     _ = await Verify(clusters);
   }
 
@@ -86,18 +87,18 @@ public class KSailUpCommandTests : IAsyncLifetime
 
     //Assert
     Assert.Equal(0, exitCode);
-    await AssertRegistriesExist();
+    Assert.True(await CheckRegistriesExistAsync());
     _ = await Verify(clusters);
   }
 
-  private static async Task AssertRegistriesExist()
+  private static async Task<bool> CheckRegistriesExistAsync()
   {
-    await DockerAssert.ContainerExistsAsync("proxy-docker.io");
-    await DockerAssert.ContainerExistsAsync("proxy-registry.k8s.io");
-    await DockerAssert.ContainerExistsAsync("proxy-gcr.io");
-    await DockerAssert.ContainerExistsAsync("proxy-ghcr.io");
-    await DockerAssert.ContainerExistsAsync("proxy-quay.io");
-    await DockerAssert.ContainerExistsAsync("proxy-mcr.microsoft.com");
+    return await DockerTestUtils.ContainerExistsAsync("proxy-docker.io")
+      && await DockerTestUtils.ContainerExistsAsync("proxy-registry.k8s.io")
+      && await DockerTestUtils.ContainerExistsAsync("proxy-gcr.io")
+      && await DockerTestUtils.ContainerExistsAsync("proxy-ghcr.io")
+      && await DockerTestUtils.ContainerExistsAsync("proxy-quay.io")
+      && await DockerTestUtils.ContainerExistsAsync("proxy-mcr.microsoft.com");
   }
 
   /// <inheritdoc/>
