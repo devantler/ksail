@@ -1,10 +1,9 @@
 using System.CommandLine;
 using System.CommandLine.IO;
-using Docker.DotNet;
-using Docker.DotNet.Models;
 using KSail.CLIWrappers;
 using KSail.Commands.Down;
 using KSail.Commands.Up;
+using KSail.Tests.Integration.TestUtils;
 
 namespace KSail.Tests.Integration.Commands.Up;
 
@@ -14,9 +13,6 @@ namespace KSail.Tests.Integration.Commands.Up;
 [UsesVerify]
 public class KSailUpCommandTests : IDisposable
 {
-  private readonly DockerClient dockerClient =
-    new DockerClientConfiguration(new Uri("unix:///var/run/docker.sock")).CreateClient();
-
   /// <summary>
   /// Tests that the <c>ksail up</c> command fails and prints help.
   /// </summary>
@@ -65,16 +61,10 @@ public class KSailUpCommandTests : IDisposable
     //Act
     int exitCode = await ksailUpCommand.InvokeAsync($"ksail --config {Directory.GetCurrentDirectory()}/assets/k3d/k3d-config.yaml --no-gitops", new TestConsole());
     string clusters = await K3dCLIWrapper.ListClustersAsync();
-    var containers = await dockerClient.Containers.ListContainersAsync(new ContainersListParameters());
 
     //Assert
     Assert.Equal(0, exitCode);
-    Assert.Contains(containers, container => container.Names.Contains("/proxy-docker.io"));
-    Assert.Contains(containers, container => container.Names.Contains("/proxy-registry.k8s.io"));
-    Assert.Contains(containers, container => container.Names.Contains("/proxy-gcr.io"));
-    Assert.Contains(containers, container => container.Names.Contains("/proxy-ghcr.io"));
-    Assert.Contains(containers, container => container.Names.Contains("/proxy-quay.io"));
-    Assert.Contains(containers, container => container.Names.Contains("/proxy-mcr.microsoft.com"));
+    await AssertRegistriesExist();
     _ = await Verify(clusters);
   }
 
@@ -90,16 +80,10 @@ public class KSailUpCommandTests : IDisposable
     //Act
     int exitCode = await ksailUpCommand.InvokeAsync($"ksail --config {Directory.GetCurrentDirectory()}/assets/k3d/k3d-config.yaml --manifests {Directory.GetCurrentDirectory()}/assets/k8s", new TestConsole());
     string clusters = await K3dCLIWrapper.ListClustersAsync();
-    var containers = await dockerClient.Containers.ListContainersAsync(new ContainersListParameters());
 
     //Assert
     Assert.Equal(0, exitCode);
-    Assert.Contains(containers, container => container.Names.Contains("/proxy-docker.io"));
-    Assert.Contains(containers, container => container.Names.Contains("/proxy-registry.k8s.io"));
-    Assert.Contains(containers, container => container.Names.Contains("/proxy-gcr.io"));
-    Assert.Contains(containers, container => container.Names.Contains("/proxy-ghcr.io"));
-    Assert.Contains(containers, container => container.Names.Contains("/proxy-quay.io"));
-    Assert.Contains(containers, container => container.Names.Contains("/proxy-mcr.microsoft.com"));
+    await AssertRegistriesExist();
     _ = await Verify(clusters);
   }
 
@@ -115,16 +99,10 @@ public class KSailUpCommandTests : IDisposable
     //Act
     int exitCode = await ksailUpCommand.InvokeAsync($"--config {Directory.GetCurrentDirectory()}/assets/k3d/k3d-config.yaml --no-gitops", new TestConsole());
     string clusters = await K3dCLIWrapper.ListClustersAsync();
-    var containers = await dockerClient.Containers.ListContainersAsync(new ContainersListParameters());
 
     //Assert
     Assert.Equal(0, exitCode);
-    Assert.Contains(containers, container => container.Names.Contains("/proxy-docker.io"));
-    Assert.Contains(containers, container => container.Names.Contains("/proxy-registry.k8s.io"));
-    Assert.Contains(containers, container => container.Names.Contains("/proxy-gcr.io"));
-    Assert.Contains(containers, container => container.Names.Contains("/proxy-ghcr.io"));
-    Assert.Contains(containers, container => container.Names.Contains("/proxy-quay.io"));
-    Assert.Contains(containers, container => container.Names.Contains("/proxy-mcr.microsoft.com"));
+    await AssertRegistriesExist();
     _ = await Verify(clusters);
   }
 
@@ -135,5 +113,15 @@ public class KSailUpCommandTests : IDisposable
     _ = await ksailDownCommand.InvokeAsync("ksail");
 
     GC.SuppressFinalize(this);
+  }
+
+  private static async Task AssertRegistriesExist()
+  {
+    await DockerAssert.ContainerExistsAsync("proxy-docker.io");
+    await DockerAssert.ContainerExistsAsync("proxy-registry.k8s.io");
+    await DockerAssert.ContainerExistsAsync("proxy-gcr.io");
+    await DockerAssert.ContainerExistsAsync("proxy-ghcr.io");
+    await DockerAssert.ContainerExistsAsync("proxy-quay.io");
+    await DockerAssert.ContainerExistsAsync("proxy-mcr.microsoft.com");
   }
 }

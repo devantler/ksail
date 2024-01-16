@@ -11,6 +11,7 @@ internal sealed class KubernetesProvisioner : IProvisioner, IDisposable
   /// <inheritdoc/>
   internal async Task CreateNamespaceAsync(string name)
   {
+    // Reload config to ensure we're using the latest version
     Console.WriteLine($"🌐 Creating '{name}' namespace...");
     var fluxSystemNamespace = new V1Namespace
     {

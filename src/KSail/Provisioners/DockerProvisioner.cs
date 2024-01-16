@@ -6,11 +6,11 @@ namespace KSail.Provisioners;
 
 internal sealed class DockerProvisioner : IProvisioner
 {
-  private readonly DockerClient dockerClient = new DockerClientConfiguration(
+  private static readonly DockerClient dockerClient = new DockerClientConfiguration(
     new Uri("unix:///var/run/docker.sock")
   ).CreateClient();
 
-  internal async Task CheckReadyAsync()
+  internal static async Task CheckReadyAsync()
   {
     Console.WriteLine("🐳 Checking Docker is running...");
     try
@@ -26,7 +26,7 @@ internal sealed class DockerProvisioner : IProvisioner
     Console.WriteLine();
   }
 
-  internal async Task CreateRegistryAsync(string name, int port, Uri? proxyUrl = null)
+  internal static async Task CreateRegistryAsync(string name, int port, Uri? proxyUrl = null)
   {
     if (proxyUrl != null)
     {
@@ -36,7 +36,7 @@ internal sealed class DockerProvisioner : IProvisioner
     {
       Console.WriteLine($"► Creating registry '{name}' on port '{port}'...");
     }
-    bool registryExists = await GetContainerId(name) != null;
+    bool registryExists = await GetContainerIdAsync(name) != null;
 
     if (registryExists)
     {
@@ -88,18 +88,23 @@ internal sealed class DockerProvisioner : IProvisioner
     }
   }
 
-  internal async Task DeleteRegistryAsync(string name)
+  internal static async Task DeleteRegistryAsync(string name)
   {
-    string? containerId = await GetContainerId(name);
+    string? containerId = await GetContainerIdAsync(name);
 
-    if (containerId != null)
+    if (string.IsNullOrEmpty(containerId))
+    {
+      Console.WriteLine($"✕ Could not find registry '{name}'...");
+      Environment.Exit(1);
+    }
+    else
     {
       _ = await dockerClient.Containers.StopContainerAsync(containerId, new ContainerStopParameters());
       await dockerClient.Containers.RemoveContainerAsync(containerId, new ContainerRemoveParameters());
     }
   }
 
-  private async Task<string?> GetContainerId(string name)
+  internal static async Task<string?> GetContainerIdAsync(string name)
   {
     var containers = await dockerClient.Containers.ListContainersAsync(new ContainersListParameters
     {

@@ -7,19 +7,17 @@ namespace KSail.Commands.Up.Handlers;
 internal static class KSailUpGitOpsCommandHandler
 {
   private static readonly KubernetesProvisioner kubernetesProvisioner = new();
-  private static readonly DockerProvisioner dockerProvisioner = new();
   private static readonly SOPSProvisioner sopsProvisioner = new();
 
-  internal static async Task HandleAsync(string name, string configPath, string manifestsPath, string kustomizationsPath, int timeout, bool noSOPS)
+  internal static async Task HandleAsync(string name, string manifestsPath, string kustomizationsPath, int timeout, bool noSOPS)
   {
     kustomizationsPath = string.IsNullOrEmpty(kustomizationsPath) ? $"clusters/{name}" : kustomizationsPath;
 
     Console.WriteLine("🧮 Creating OCI registry...");
-    await dockerProvisioner.CreateRegistryAsync("manifests", 5050);
+    await DockerProvisioner.CreateRegistryAsync("manifests", 5050);
     Console.WriteLine("");
 
     await KSailUpdateCommandHandler.HandleAsync(name, manifestsPath);
-    await K3dProvisioner.ProvisionAsync(name, configPath);
     await kubernetesProvisioner.CreateNamespaceAsync("flux-system");
 
     if (!noSOPS)
