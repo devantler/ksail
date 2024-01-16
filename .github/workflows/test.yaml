@@ -21,7 +21,7 @@ jobs:
       - name: ⚙️ Setup .NET
         uses: actions/setup-dotnet@v4
       - name: 🧪 Test
-        run: dotnet test --collect:"XPlat Code Coverage" --configuration Release --no-build
+        run: dotnet test --collect:"XPlat Code Coverage"
       - name: 📄 Upload Code Coverage to CodeCov
         uses: codecov/codecov-action@v3
         with:
