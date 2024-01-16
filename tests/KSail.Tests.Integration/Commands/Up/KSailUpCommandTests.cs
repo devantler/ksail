@@ -105,5 +105,4 @@ public class KSailUpCommandTests : IDisposable
 
     GC.SuppressFinalize(this);
   }
-
 }
