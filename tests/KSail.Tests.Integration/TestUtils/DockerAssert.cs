@@ -8,5 +8,6 @@ internal static class DockerAssert
   {
     string? container = await DockerProvisioner.GetContainerIdAsync(name);
     Assert.NotNull(container);
+    Assert.NotEmpty(container);
   }
 }

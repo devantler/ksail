@@ -22,16 +22,16 @@ internal class KSailCheckCommandHandler()
     await foreach (var (type, kustomization) in responseTask.WatchAsync<V1CustomResourceDefinition, object>(cancellationToken: cancellationToken))
     {
       string? kustomizationName = kustomization?.Metadata.Name ??
-        throw new NoNullAllowedException("Kustomization name is null");
+        throw new InvalidOperationException("Kustomization name is null");
       string? statusName = kustomization?.Status.Conditions.FirstOrDefault()?.Type ??
-        throw new NoNullAllowedException("Kustomization status is null");
+        throw new InvalidOperationException("Kustomization status is null");
 
       if (!kustomizations.Add(kustomizationName))
       {
         if (successFullKustomizations.Count == kustomizations.Count)
         {
           Console.WriteLine("✔ All kustomizations are ready!");
-          Environment.Exit(0);
+          return;
         }
         else if (stopwatch.Elapsed.TotalSeconds >= timeout)
         {
