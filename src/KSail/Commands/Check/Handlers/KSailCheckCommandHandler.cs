@@ -53,11 +53,11 @@ internal class KSailCheckCommandHandler()
           HandleReadyStatus(kustomizationName);
           break;
         default:
-          string? conditionMessage = kustomization?.Status.Conditions.FirstOrDefault()?.Message;
+
           Console.WriteLine($"► Waiting for kustomization '{kustomizationName}' to be ready. It is currently {statusName?.ToLower(CultureInfo.InvariantCulture)}...");
-          if (!string.IsNullOrWhiteSpace(conditionMessage))
+          foreach (var condition in kustomization?.Status.Conditions ?? Enumerable.Empty<V1CustomResourceDefinitionCondition>())
           {
-            Console.WriteLine($"  Message: {conditionMessage}");
+            Console.WriteLine($"  {condition.Message}");
           }
           Console.WriteLine($"  Elapsed time: {stopwatch.Elapsed.TotalSeconds}/{timeout} seconds");
           break;
@@ -69,6 +69,7 @@ internal class KSailCheckCommandHandler()
   {
     Console.WriteLine($"✔ Kustomization '{kustomizationName}' is ready!");
     _ = successFullKustomizations.Add(kustomizationName);
+    Console.WriteLine("► Resetting timer...");
     stopwatch.Restart();
   }
 
