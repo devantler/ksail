@@ -35,7 +35,7 @@ internal class KSailCheckCommandHandler()
         }
         else if (stopwatch.Elapsed.TotalSeconds >= timeout)
         {
-          Console.WriteLine($"✕ Timeout reached. Kustomization '{kustomizationName}' did not become ready within the specified timeout of {timeout} seconds.");
+          Console.WriteLine($"✕ Timeout reached. Kustomization '{kustomizationName}' did not become ready within the specified time limit of {timeout} seconds.");
           Environment.Exit(1);
         }
         else if (successFullKustomizations.Contains(kustomizationName))
@@ -53,7 +53,13 @@ internal class KSailCheckCommandHandler()
           HandleReadyStatus(kustomizationName);
           break;
         default:
+          string? conditionMessage = kustomization?.Status.Conditions.FirstOrDefault()?.Message;
           Console.WriteLine($"► Waiting for kustomization '{kustomizationName}' to be ready. It is currently {statusName?.ToLower(CultureInfo.InvariantCulture)}...");
+          if (!string.IsNullOrWhiteSpace(conditionMessage))
+          {
+            Console.WriteLine($"  Message: {conditionMessage}");
+          }
+          Console.WriteLine($"  Elapsed time: {stopwatch.Elapsed.TotalSeconds}/{timeout} seconds");
           break;
       }
     }

@@ -105,6 +105,6 @@ public class KSailUpCommandTests : IAsyncLifetime
   public async Task DisposeAsync()
   {
     var ksailDownCommand = new KSailDownCommand();
-    _ = await ksailDownCommand.InvokeAsync("ksail");
+    _ = await ksailDownCommand.InvokeAsync("ksail --delete-pull-through-registries");
   }
 }

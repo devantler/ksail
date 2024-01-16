@@ -30,8 +30,7 @@ internal class CLIRunner()
     }
     catch (CommandExecutionException e)
     {
-      Console.WriteLine($"🚨 An error occurred while running '{command}': {e.Message}...");
-      Environment.Exit(1);
+      throw new InvalidOperationException($"🚨 An error occurred while running '{command}': {e.Message}...");
     }
     return result.ToString();
   }

@@ -52,9 +52,9 @@ internal class KSailLintCommandHandler()
             object? doc = deserializer.Deserialize(parser);
           }
         }
-        catch (YamlException e)
+        catch (YamlException)
         {
-          Console.WriteLine($"✕ Validation failed for {manifest}. {e.Message}...");
+          Console.WriteLine($"✕ Validation failed for {manifest}...");
           Environment.Exit(1);
         }
       }
@@ -92,7 +92,15 @@ internal class KSailLintCommandHandler()
       var kustomizeBuildCmd = KustomizeCLIWrapper.Kustomize.WithArguments(["build", kustomizationPath, .. kustomizeFlags]);
       var kubeconformCmd = KubeconformCLIWrapper.Kubeconform.WithArguments([.. kubeconformFlags, .. kubeconformConfig]);
       var cmd = kustomizeBuildCmd | kubeconformCmd;
-      _ = await CLIRunner.RunAsync(cmd);
+      try
+      {
+        _ = await CLIRunner.RunAsync(cmd);
+      }
+      catch (InvalidOperationException)
+      {
+        Console.WriteLine($"✕ Validation failed for '{manifest}'...");
+        Environment.Exit(1);
+      }
     }
   }
 }
