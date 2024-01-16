@@ -17,7 +17,7 @@ public class KSailUpCommandTests : IDisposable
   /// Tests that the <c>ksail up</c> command fails and prints help.
   /// </summary>
   [Fact]
-  public async void NoArgsAndOptions_FailsAndPrintsHelp()
+  public async void KSailUpFailsAndPrintsHelp()
   {
     //Arrange
     var console = new TestConsole();
@@ -35,7 +35,7 @@ public class KSailUpCommandTests : IDisposable
   /// Tests that the <c>ksail up [name]</c> command fails and prints help.
   /// </summary>
   [Fact]
-  public async void NameArg_FailsAndPrintsHelp()
+  public async void KSailUpNameFailsAndPrintsHelp()
   {
     //Arrange
     var console = new TestConsole();
@@ -53,7 +53,7 @@ public class KSailUpCommandTests : IDisposable
   /// Tests that the <c>ksail up [name] --config [config-path] --no-gitops</c> command succeeds and creates a cluster.
   /// </summary>
   [Fact]
-  public async void NameArgConfigAndNoGitOps_SucceedsAndCreatesCluster()
+  public async void KSailUpNameConfigNoGitOpsSucceedsAndCreatesCluster()
   {
     //Arrange
     var ksailUpCommand = new KSailUpCommand();
@@ -72,32 +72,13 @@ public class KSailUpCommandTests : IDisposable
   /// Tests that the <c>ksail up [name] --config [config-path] --manifests [manifests-path]</c> command succeeds and creates a cluster.
   /// </summary>
   [Fact]
-  public async void NameArgConfigAndManifests_SucceedsAndCreatesCluster()
+  public async void KSailUpNameConfigManifestsSucceedsAndCreatesCluster()
   {
     //Arrange
     var ksailUpCommand = new KSailUpCommand();
 
     //Act
     int exitCode = await ksailUpCommand.InvokeAsync($"ksail --config {Directory.GetCurrentDirectory()}/assets/k3d/k3d-config.yaml --manifests {Directory.GetCurrentDirectory()}/assets/k8s", new TestConsole());
-    string clusters = await K3dCLIWrapper.ListClustersAsync();
-
-    //Assert
-    Assert.Equal(0, exitCode);
-    await AssertRegistriesExist();
-    _ = await Verify(clusters);
-  }
-
-  /// <summary>
-  /// Tests that the <c>ksail up --config [config-path] --no-gitops</c> command succeeds and creates a cluster.
-  /// </summary>
-  [Fact]
-  public async void ConfigAndNoGitOps_SucceedsAndCreatesCluster()
-  {
-    //Arrange
-    var ksailUpCommand = new KSailUpCommand();
-
-    //Act
-    int exitCode = await ksailUpCommand.InvokeAsync($"--config {Directory.GetCurrentDirectory()}/assets/k3d/k3d-config.yaml --no-gitops", new TestConsole());
     string clusters = await K3dCLIWrapper.ListClustersAsync();
 
     //Assert
