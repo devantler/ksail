@@ -14,31 +14,33 @@
 ├── .github
 │   └── workflows
 ├── autocomplete
-├── k3d
-├── k8s
-│   ├── clusters
-│   │   └── test
-│   └── infrastructure
 ├── scripts
 ├── src
 │   └── KSail
+│       ├── Arguments
 │       ├── CLIWrappers
 │       ├── Commands
 │       │   ├── Check
 │       │   │   └── Handlers
 │       │   ├── Down
-│       │   │   └── Handlers
+│       │   │   ├── Handlers
+│       │   │   └── Options
 │       │   ├── Lint
 │       │   │   └── Handlers
 │       │   ├── List
 │       │   │   └── Handlers
+│       │   ├── Root
+│       │   │   └── Handlers
 │       │   ├── SOPS
 │       │   │   ├── Handlers
 │       │   │   └── Options
+│       │   ├── Start
+│       │   │   └── Handlers
+│       │   ├── Stop
+│       │   │   └── Handlers
 │       │   ├── Up
 │       │   │   ├── Handlers
-│       │   │   ├── Options
-│       │   │   └── Validators
+│       │   │   └── Options
 │       │   └── Update
 │       │       └── Handlers
 │       ├── Enums
@@ -50,10 +52,28 @@
 │           ├── binaries
 │           └── k3d
 └── tests
-    ├── KSail.Tests.Integration
-    └── KSail.Tests.Unit
+    └── KSail.Tests.Integration
+        ├── Commands
+        │   ├── Check
+        │   ├── Down
+        │   ├── Hosts
+        │   ├── Lint
+        │   ├── List
+        │   ├── Root
+        │   ├── SOPS
+        │   ├── Start
+        │   ├── Stop
+        │   ├── Up
+        │   └── Update
+        ├── TestUtils
+        └── assets
+            ├── k3d
+            └── k8s
+                ├── clusters
+                │   └── ksail
+                └── infrastructure
 
-41 directories
+61 directories
 ```
 <!-- readme-tree end -->
 
