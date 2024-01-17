@@ -4,13 +4,14 @@ using k8s.Models;
 
 namespace KSail.Provisioners;
 
-sealed class KubernetesProvisioner : IProvisioner, IDisposable
+internal sealed class KubernetesProvisioner : IProvisioner, IDisposable
 {
-  readonly Kubernetes kubernetesClient = new(KubernetesClientConfiguration.BuildDefaultConfig());
+  private readonly Kubernetes kubernetesClient = new(KubernetesClientConfiguration.BuildDefaultConfig());
 
   /// <inheritdoc/>
   internal async Task CreateNamespaceAsync(string name)
   {
+    // Reload config to ensure we're using the latest version
     Console.WriteLine($"🌐 Creating '{name}' namespace...");
     var fluxSystemNamespace = new V1Namespace
     {

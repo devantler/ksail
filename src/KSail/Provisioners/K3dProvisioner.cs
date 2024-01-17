@@ -2,19 +2,12 @@ using KSail.CLIWrappers;
 
 namespace KSail.Provisioners;
 
-sealed class K3dProvisioner() : IProvisioner
+internal sealed class K3dProvisioner() : IProvisioner
 {
-  internal static async Task ProvisionAsync(string name, bool pullThroughRegistries, string? configPath = null)
+  internal static async Task ProvisionAsync(string name, string configPath)
   {
     Console.WriteLine($"🚀 Provisioning K3d cluster '{name}'...");
-    if (!string.IsNullOrEmpty(configPath))
-    {
-      await K3dCLIWrapper.CreateClusterFromConfigAsync(configPath);
-    }
-    else
-    {
-      await K3dCLIWrapper.CreateClusterAsync(name, pullThroughRegistries);
-    }
+    await K3dCLIWrapper.CreateClusterAsync(name, configPath);
     Console.WriteLine();
   }
 
@@ -27,7 +20,7 @@ sealed class K3dProvisioner() : IProvisioner
   internal static async Task ListAsync()
   {
     Console.WriteLine("📋 Listing K3d clusters...");
-    await K3dCLIWrapper.ListClustersAsync();
+    _ = await K3dCLIWrapper.ListClustersAsync();
   }
 
   internal static async Task<bool> ExistsAsync(string name) =>

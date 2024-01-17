@@ -3,30 +3,26 @@ using KSail.Provisioners;
 
 namespace KSail.Commands.Up.Handlers;
 
-static class KSailUpCommandHandler
+internal static class KSailUpCommandHandler
 {
-  static readonly DockerProvisioner dockerProvisioner = new();
-  internal static async Task HandleAsync(string name, string configPath, bool pullThroughRegistries)
+  internal static async Task HandleAsync(string name, string configPath)
   {
-    await dockerProvisioner.CheckReadyAsync();
+    await DockerProvisioner.CheckReadyAsync();
 
-    // Check if cluster already exists
     if (await K3dProvisioner.ExistsAsync(name))
     {
       await KSailDownCommandHandler.HandleAsync(name);
     }
-    if (pullThroughRegistries)
-    {
-      Console.WriteLine("🧮 Creating pull-through registries...");
-      await dockerProvisioner.CreateRegistryAsync("proxy-docker.io", 5001, new Uri("https://registry-1.docker.io"));
-      await dockerProvisioner.CreateRegistryAsync("proxy-registry.k8s.io", 5002, new Uri("https://registry.k8s.io"));
-      await dockerProvisioner.CreateRegistryAsync("proxy-gcr.io", 5003, new Uri("https://gcr.io"));
-      await dockerProvisioner.CreateRegistryAsync("proxy-ghcr.io", 5004, new Uri("https://ghcr.io"));
-      await dockerProvisioner.CreateRegistryAsync("proxy-quay.io", 5005, new Uri("https://quay.io"));
-      await dockerProvisioner.CreateRegistryAsync("proxy-mcr.microsoft.com", 5006, new Uri("https://mcr.microsoft.com"));
-      Console.WriteLine();
-    }
 
-    await K3dProvisioner.ProvisionAsync(name, pullThroughRegistries, configPath);
+    Console.WriteLine("🧮 Creating pull-through registries...");
+    await DockerProvisioner.CreateRegistryAsync("proxy-docker.io", 5001, new Uri("https://registry-1.docker.io"));
+    await DockerProvisioner.CreateRegistryAsync("proxy-registry.k8s.io", 5002, new Uri("https://registry.k8s.io"));
+    await DockerProvisioner.CreateRegistryAsync("proxy-gcr.io", 5003, new Uri("https://gcr.io"));
+    await DockerProvisioner.CreateRegistryAsync("proxy-ghcr.io", 5004, new Uri("https://ghcr.io"));
+    await DockerProvisioner.CreateRegistryAsync("proxy-quay.io", 5005, new Uri("https://quay.io"));
+    await DockerProvisioner.CreateRegistryAsync("proxy-mcr.microsoft.com", 5006, new Uri("https://mcr.microsoft.com"));
+    Console.WriteLine();
+
+    await K3dProvisioner.ProvisionAsync(name, configPath);
   }
 }

@@ -1,4 +1,5 @@
 using System.CommandLine;
+using KSail.Arguments;
 using KSail.Commands.Up.Handlers;
 using KSail.Commands.Up.Options;
 using KSail.Models;
@@ -8,34 +9,41 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace KSail.Commands.Up;
 
-sealed class KSailUpCommand : Command
+internal sealed class KSailUpCommand : Command
 {
-  readonly NameOption nameOption = new("Name of the cluster");
-  readonly ConfigOption configOption = new();
-  readonly PullThroughRegistriesOption pullThroughRegistriesOption = new() { IsRequired = true };
-  static readonly IDeserializer yamlDeserializer = new DeserializerBuilder()
+  private readonly NameArgument nameArgument = new() { Arity = ArgumentArity.ZeroOrOne };
+  private readonly ConfigOption configOption = new() { IsRequired = true };
+  private readonly ManifestsOption manifestsOption = new();
+  private readonly KustomizationsOption kustomizationsOption = new();
+  private readonly TimeoutOption timeoutOption = new();
+  private readonly NoSOPSOption noSOPSOption = new();
+  private readonly NoGitOpsOption noGitOpsOption = new();
+  private static readonly IDeserializer yamlDeserializer = new DeserializerBuilder()
     .WithNamingConvention(CamelCaseNamingConvention.Instance)
     .IgnoreUnmatchedProperties()
     .Build();
   internal KSailUpCommand() : base("up", "Create a K8s cluster")
   {
-    AddGlobalOptions();
-    AddCommands();
+    AddArgument(nameArgument);
+    AddOption(configOption);
+    AddOption(manifestsOption);
+    AddOption(kustomizationsOption);
+    AddOption(timeoutOption);
+    AddOption(noSOPSOption);
+    AddOption(noGitOpsOption);
 
-    this.SetHandler(async (name, configPath, pullThroughRegistries) =>
+    this.SetHandler(async (name, configPath, manifestsPath, kustomizationsPath, timeout, noSOPS, noGitOps) =>
     {
-      //IgnoreUnma
-      var config = string.IsNullOrEmpty(configPath) ? null : yamlDeserializer.Deserialize<K3dConfig>(File.ReadAllText(configPath));
-      name = config?.Metadata.Name ?? name;
-      await KSailUpCommandHandler.HandleAsync(name, configPath, pullThroughRegistries);
-    }, nameOption, configOption, pullThroughRegistriesOption);
+      var config = yamlDeserializer.Deserialize<K3dConfig>(File.ReadAllText(configPath));
+      if (string.IsNullOrEmpty(name))
+      {
+        name = config?.Metadata.Name ?? name;
+      }
+      await KSailUpCommandHandler.HandleAsync(name, configPath);
+      if (!noGitOps)
+      {
+        await KSailUpGitOpsCommandHandler.HandleAsync(name, manifestsPath, kustomizationsPath, timeout, noSOPS);
+      }
+    }, nameArgument, configOption, manifestsOption, kustomizationsOption, timeoutOption, noSOPSOption, noGitOpsOption);
   }
-  void AddGlobalOptions()
-  {
-    AddGlobalOption(nameOption);
-    AddGlobalOption(pullThroughRegistriesOption);
-    AddGlobalOption(configOption);
-  }
-
-  void AddCommands() => AddCommand(new KSailUpGitOpsCommand(nameOption, pullThroughRegistriesOption, configOption));
 }

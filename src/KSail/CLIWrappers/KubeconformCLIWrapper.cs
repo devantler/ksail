@@ -1,10 +1,9 @@
-
 using System.Runtime.InteropServices;
 using CliWrap;
 
 namespace KSail.CLIWrappers;
 
-static class KubeconformCLIWrapper
+internal class KubeconformCLIWrapper()
 {
   internal static Command Kubeconform
   {

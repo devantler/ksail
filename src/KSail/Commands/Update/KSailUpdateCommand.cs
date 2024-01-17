@@ -1,20 +1,21 @@
 using System.CommandLine;
+using KSail.Arguments;
 using KSail.Commands.Update.Handlers;
 using KSail.Options;
 
 namespace KSail.Commands.Update;
 
-sealed class KSailUpdateCommand : Command
+internal sealed class KSailUpdateCommand : Command
 {
-  readonly NameOption nameOption = new("The name of the cluster to update manifests for") { IsRequired = true };
-  readonly ManifestsOption manifestsOption = new() { IsRequired = true };
+  private readonly NameArgument nameArgument = new();
+  private readonly ManifestsOption manifestsOption = new() { IsRequired = true };
   internal KSailUpdateCommand() : base(
     "update",
     "Update manifests in an OCI registry"
   )
   {
-    AddOption(nameOption);
+    AddArgument(nameArgument);
     AddOption(manifestsOption);
-    this.SetHandler(KSailUpdateCommandHandler.HandleAsync, nameOption, manifestsOption);
+    this.SetHandler(KSailUpdateCommandHandler.HandleAsync, nameArgument, manifestsOption);
   }
 }

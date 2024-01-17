@@ -3,7 +3,7 @@ using KSail.Commands.List.Handlers;
 
 namespace KSail.Commands.List;
 
-sealed class KSailListCommand : Command
+internal sealed class KSailListCommand : Command
 {
   internal KSailListCommand() : base("list", "List running clusters") =>
     this.SetHandler(KSailListCommandHandler.HandleAsync);

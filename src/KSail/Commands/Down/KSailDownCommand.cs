@@ -1,15 +1,18 @@
 using System.CommandLine;
+using KSail.Arguments;
 using KSail.Commands.Down.Handlers;
-using KSail.Options;
+using KSail.Commands.Down.Options;
 
 namespace KSail.Commands.Down;
 
-sealed class KSailDownCommand : Command
+internal sealed class KSailDownCommand : Command
 {
-  readonly NameOption nameOption = new("Name of the cluster to destroy") { IsRequired = true };
+  private readonly NameArgument nameArgument = new();
+  private readonly DeletePullThroughRegistriesOption deletePullThroughRegistriesOption = new();
   internal KSailDownCommand() : base("down", "Destroy a K8s cluster")
   {
-    AddOption(nameOption);
-    this.SetHandler(KSailDownCommandHandler.HandleAsync, nameOption);
+    AddArgument(nameArgument);
+    AddOption(deletePullThroughRegistriesOption);
+    this.SetHandler(KSailDownCommandHandler.HandleAsync, nameArgument, deletePullThroughRegistriesOption);
   }
 }

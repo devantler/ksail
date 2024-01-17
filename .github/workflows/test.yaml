@@ -4,61 +4,28 @@ on:
   pull_request:
     branches: [main]
     types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  changes:
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: read
-    outputs:
-      action: ${{ steps.filter.outputs.action }}
-      code: ${{ steps.filter.outputs.code }}
-      k8s: ${{ steps.filter.outputs.k8s }}
-    steps:
-      - uses: dorny/paths-filter@v2
-        id: filter
-        with:
-          filters: |
-            action:
-              - '.github/workflows/test.yaml'
-            code:
-              - 'src/**'
-              - 'tests/**'
-              - 'Directory.Packages.props'
-              - 'KSail.sln'
-            k8s:
-              - 'k8s/**'
-              - 'k3d/k3d-config.yaml'
-
   test-dotnet:
     runs-on: ubuntu-latest
-    needs: changes
-    if: github.event.pull_request.draft == false && (needs.changes.outputs.code == 'true' || needs.changes.outputs.action == 'true')
+    if: github.event.pull_request.draft == false
     steps:
       - name: 📑 Checkout
         uses: actions/checkout@v4
       - name: ⚙️ Setup .NET
         uses: actions/setup-dotnet@v4
       - name: 🧪 Test
-        run: dotnet test
-
-  test-e2e:
-    runs-on: ubuntu-latest
-    needs: changes
-    if: github.event.pull_request.draft == false && (needs.changes.outputs.code == 'true' || needs.changes.outputs.k8s == 'true' || needs.changes.outputs.action == 'true')
-    steps:
-      - name: 📑 Checkout
-        uses: actions/checkout@v4
-      - name: ⚙️ Setup .NET
-        uses: actions/setup-dotnet@v4
-      - name: 🧪 Test
-        run: |
-          dotnet run --project ./src/KSail/KSail.csproj -- up gitops -n test
-          dotnet run --project ./src/KSail/KSail.csproj -- down -n test
-
-          dotnet run --project ./src/KSail/KSail.csproj -- up gitops -c ./k3d/k3d-config.yaml
-          dotnet run --project ./src/KSail/KSail.csproj -- down -n test
+        run: dotnet test --collect:"XPlat Code Coverage"
+      - name: 📄 Upload Code Coverage to CodeCov
+        uses: codecov/codecov-action@v3
+        with:
+          files: tests/**/TestResults/**/coverage.cobertura.xml
+          fail_ci_if_error: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

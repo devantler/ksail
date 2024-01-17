@@ -2,7 +2,7 @@ using KSail.CLIWrappers;
 
 namespace KSail.Provisioners;
 
-sealed class FluxProvisioner : IProvisioner
+internal sealed class FluxProvisioner : IProvisioner
 {
   internal static async Task CheckPrerequisitesAsync()
   {
@@ -31,10 +31,6 @@ sealed class FluxProvisioner : IProvisioner
     Console.WriteLine();
   }
 
-  internal static async Task PushManifestsAsync(string ociUrl, string manifestsPath)
-  {
-    Console.WriteLine($"📥 Pushing manifests to {ociUrl}...");
+  internal static async Task PushManifestsAsync(string ociUrl, string manifestsPath) =>
     await FluxCLIWrapper.PushManifestsAsync(ociUrl, manifestsPath);
-    Console.WriteLine();
-  }
 }

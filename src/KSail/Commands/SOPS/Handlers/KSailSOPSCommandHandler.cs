@@ -3,7 +3,7 @@ using KSail.Provisioners;
 
 namespace KSail.Commands.SOPS.Handlers;
 
-static class KSailSOPSCommandHandler
+internal class KSailSOPSCommandHandler()
 {
   internal static async Task HandleAsync(bool generateKey, bool showPublicKey, bool showPrivateKey, string encrypt, string decrypt)
   {
@@ -39,6 +39,6 @@ static class KSailSOPSCommandHandler
     {
       throw new InvalidOperationException("You must specify either --generate-key, --show-public-key, --show-private-key, --encrypt or --decrypt");
     }
-    Console.WriteLine();
+    Console.WriteLine("");
   }
 }

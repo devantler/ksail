@@ -3,9 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace KSail.CLIWrappers;
 
-static class AgeCLIWrapper
+internal class AgeCLIWrapper()
 {
-  static Command AgeKeygen
+  private static Command AgeKeygen
   {
     get
     {
@@ -36,7 +36,7 @@ static class AgeCLIWrapper
     WriteKeysToDefaultKeysTxt();
   }
 
-  static void WriteKeysToDefaultKeysTxt()
+  private static void WriteKeysToDefaultKeysTxt()
   {
     string ksailSopsAgeKey = $"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/ksail_sops.agekey";
     if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
@@ -53,7 +53,7 @@ static class AgeCLIWrapper
     }
   }
 
-  static void AppendOrReplaceKey(string ksailSopsAgeKey, string keysTxtFolder, string keysTxt)
+  private static void AppendOrReplaceKey(string ksailSopsAgeKey, string keysTxtFolder, string keysTxt)
   {
     if (!Directory.Exists(keysTxtFolder))
     {

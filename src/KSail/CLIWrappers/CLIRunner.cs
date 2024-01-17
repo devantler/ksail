@@ -5,7 +5,7 @@ using CliWrap.Exceptions;
 
 namespace KSail.CLIWrappers;
 
-static class CLIRunner
+internal class CLIRunner()
 {
   public static async Task<string> RunAsync(Command command, CommandResultValidation validation = CommandResultValidation.ZeroExitCode, bool silent = false)
   {
@@ -16,9 +16,13 @@ static class CLIRunner
       {
         if (cmdEvent is StandardOutputCommandEvent or StandardErrorCommandEvent)
         {
+          if (cmdEvent is null)
+          {
+            throw new InvalidOperationException("🚨 Command event is 'null'");
+          }
           if (!silent)
           {
-            Console.WriteLine(cmdEvent);
+            Console.WriteLine(cmdEvent.ToString() ?? "");
           }
           _ = result.AppendLine(cmdEvent.ToString());
         }
@@ -26,8 +30,7 @@ static class CLIRunner
     }
     catch (CommandExecutionException e)
     {
-      Console.WriteLine($"🚨 An error occurred while running '{command}': {e.Message}...");
-      Environment.Exit(1);
+      throw new InvalidOperationException($"🚨 An error occurred while running '{command}': {e.Message}...");
     }
     return result.ToString();
   }

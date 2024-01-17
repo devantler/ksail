@@ -4,9 +4,9 @@ using CliWrap.Buffered;
 
 namespace KSail.CLIWrappers;
 
-static class K3dCLIWrapper
+internal class K3dCLIWrapper()
 {
-  static Command K3d
+  private static Command K3d
   {
     get
     {
@@ -22,24 +22,30 @@ static class K3dCLIWrapper
     }
   }
 
-  internal static async Task CreateClusterAsync(string name, bool pullThroughRegistries)
+  internal static async
+  Task
+CreateClusterAsync(string name, string configPath)
   {
-    var cmd = pullThroughRegistries
-      ? K3d.WithArguments(
+    var cmd = K3d.WithArguments(
         [
           "cluster",
           "create",
           $"{name}",
+          $"--config={configPath}",
           $"--registry-config={AppContext.BaseDirectory}assets/k3d/registry-config.yaml"
         ]
-      )
-      : K3d.WithArguments($"cluster create {name}");
+      );
     _ = await CLIRunner.RunAsync(cmd);
   }
 
-  internal static async Task CreateClusterFromConfigAsync(string configPath)
+  internal static async Task StartClusterAsync(string name)
   {
-    var cmd = K3d.WithArguments($"cluster create --config {configPath}");
+    var cmd = K3d.WithArguments($"cluster start {name}");
+    _ = await CLIRunner.RunAsync(cmd);
+  }
+  internal static async Task StopClusterAsync(string name)
+  {
+    var cmd = K3d.WithArguments($"cluster stop {name}");
     _ = await CLIRunner.RunAsync(cmd);
   }
 
@@ -53,12 +59,12 @@ static class K3dCLIWrapper
   {
     var cmd = K3d.WithArguments($"cluster get {name}").WithValidation(CommandResultValidation.None);
     var result = await cmd.ExecuteBufferedAsync();
-    return result.ExitCode == 0;
+    return result.IsSuccess;
   }
 
-  internal static async Task ListClustersAsync()
+  internal static async Task<string> ListClustersAsync()
   {
     var cmd = K3d.WithArguments("cluster list");
-    _ = await CLIRunner.RunAsync(cmd);
+    return await CLIRunner.RunAsync(cmd);
   }
 }

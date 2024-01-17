@@ -1,19 +1,20 @@
 using System.CommandLine;
+using KSail.Arguments;
 using KSail.Commands.Lint.Handlers;
 using KSail.Options;
 
 namespace KSail.Commands.Lint;
 
-sealed class KSailLintCommand : Command
+internal sealed class KSailLintCommand : Command
 {
-  readonly NameOption nameOption = new("Name of the cluster to lint") { IsRequired = true };
-  readonly ManifestsOption manifestsOption = new() { IsRequired = true };
+  private readonly NameArgument nameArgument = new();
+  private readonly ManifestsOption manifestsOption = new() { IsRequired = true };
   internal KSailLintCommand() : base(
    "lint", "Lint manifest files"
   )
   {
+    AddArgument(nameArgument);
     AddOption(manifestsOption);
-    AddOption(nameOption);
-    this.SetHandler(KSailLintCommandHandler.HandleAsync, nameOption, manifestsOption);
+    this.SetHandler(KSailLintCommandHandler.HandleAsync, nameArgument, manifestsOption);
   }
 }

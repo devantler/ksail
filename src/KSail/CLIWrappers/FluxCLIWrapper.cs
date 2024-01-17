@@ -4,9 +4,9 @@ using System.Runtime.InteropServices;
 
 namespace KSail.CLIWrappers;
 
-static class FluxCLIWrapper
+internal class FluxCLIWrapper()
 {
-  static Command Flux
+  private static Command Flux
   {
     get
     {

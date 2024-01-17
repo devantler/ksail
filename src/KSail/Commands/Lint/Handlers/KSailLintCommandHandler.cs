@@ -6,9 +6,9 @@ using YamlDotNet.Serialization;
 
 namespace KSail.Commands.Lint.Handlers;
 
-static class KSailLintCommandHandler
+internal class KSailLintCommandHandler()
 {
-  static readonly HttpClient httpClient = new();
+  private static readonly HttpClient httpClient = new();
   internal static async Task HandleAsync(string name, string manifestsPath)
   {
     Console.WriteLine("🧹 Linting manifest files...");
@@ -30,10 +30,10 @@ static class KSailLintCommandHandler
 
     ValidateYaml(manifestsPath);
     await ValidateKustomizationsAsync(name, manifestsPath);
-    Console.WriteLine();
+    Console.WriteLine("");
   }
 
-  static void ValidateYaml(string manifestsPath)
+  private static void ValidateYaml(string manifestsPath)
   {
     Console.WriteLine("► Validating YAML files with YAMLDotNet...");
     try
@@ -52,9 +52,9 @@ static class KSailLintCommandHandler
             object? doc = deserializer.Deserialize(parser);
           }
         }
-        catch (YamlException e)
+        catch (YamlException)
         {
-          Console.WriteLine($"✕ Validation failed for {manifest}. {e.Message}...");
+          Console.WriteLine($"✕ Validation failed for {manifest}...");
           Environment.Exit(1);
         }
       }
@@ -66,9 +66,7 @@ static class KSailLintCommandHandler
     }
   }
 
-  static async
-  Task
-ValidateKustomizationsAsync(string name, string manifestsPath)
+  private static async Task ValidateKustomizationsAsync(string name, string manifestsPath)
   {
     string[] kubeconformFlags = ["-skip=Secret"];
     string[] kubeconformConfig = ["-strict", "-ignore-missing-schemas", "-schema-location", "default", "-schema-location", "/tmp/flux-crd-schemas", "-verbose"];
@@ -94,7 +92,15 @@ ValidateKustomizationsAsync(string name, string manifestsPath)
       var kustomizeBuildCmd = KustomizeCLIWrapper.Kustomize.WithArguments(["build", kustomizationPath, .. kustomizeFlags]);
       var kubeconformCmd = KubeconformCLIWrapper.Kubeconform.WithArguments([.. kubeconformFlags, .. kubeconformConfig]);
       var cmd = kustomizeBuildCmd | kubeconformCmd;
-      _ = await CLIRunner.RunAsync(cmd);
+      try
+      {
+        _ = await CLIRunner.RunAsync(cmd);
+      }
+      catch (InvalidOperationException)
+      {
+        Console.WriteLine($"✕ Validation failed for '{manifest}'...");
+        Environment.Exit(1);
+      }
     }
   }
 }
