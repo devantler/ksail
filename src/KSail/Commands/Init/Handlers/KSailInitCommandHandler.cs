@@ -59,14 +59,32 @@ static class KSailInitCommandHandler
       apiVersion: kustomize.toolkit.fluxcd.io/v1
       kind: Kustomization
       metadata:
-        name: infrastructure
+        name: infrastructure-services
         namespace: flux-system
       spec:
         interval: 1m
         sourceRef:
           kind: OCIRepository
           name: flux-system
-        path: ./clusters/{name}/infrastructure
+        path: ./clusters/{name}/infrastructure/services
+        prune: true
+        wait: true
+        decryption:
+          provider: sops
+          secretRef:
+            name: sops-age
+      ---
+      apiVersion: kustomize.toolkit.fluxcd.io/v1
+      kind: Kustomization
+      metadata:
+        name: infrastructure-configs
+        namespace: flux-system
+      spec:
+        interval: 1m
+        sourceRef:
+          kind: OCIRepository
+          name: flux-system
+        path: ./clusters/{name}/infrastructure/configs
         prune: true
         wait: true
         decryption:
@@ -129,17 +147,33 @@ static class KSailInitCommandHandler
 
   static async void CreateKustomizations(string clusterDirectory)
   {
-    string infrastructureDirectory = Path.Combine(clusterDirectory, "infrastructure");
-    _ = Directory.CreateDirectory(infrastructureDirectory) ?? throw new InvalidOperationException($"🚨 Could not create the infrastructure directory at {infrastructureDirectory}.");
+    string infrastructureServicesDirectory = Path.Combine(clusterDirectory, "infrastructure/services");
+    _ = Directory.CreateDirectory(infrastructureServicesDirectory) ?? throw new InvalidOperationException($"🚨 Could not create the infrastructure directory at {infrastructureServicesDirectory}.");
     const string infrastructureKustomizationContent = """
       apiVersion: kustomize.config.k8s.io/v1beta1
       kind: Kustomization
-      resources: []
+      resources:
+        - https://github.com/devantler/oci-registry//k8s/cert-manager?ref=v0.0.3
+        - https://github.com/devantler/oci-registry//k8s/traefik?ref=v0.0.3
       """;
-    string infrastructureKustomizationPath = Path.Combine(infrastructureDirectory, "kustomization.yaml");
-    var infrastructureKustomizationFile = File.Create(infrastructureKustomizationPath) ?? throw new InvalidOperationException($"🚨 Could not create the infrastructure kustomization.yaml file at {infrastructureKustomizationPath}.");
-    await infrastructureKustomizationFile.WriteAsync(Encoding.UTF8.GetBytes(infrastructureKustomizationContent));
-    await infrastructureKustomizationFile.FlushAsync();
+    string infrastructureServicesKustomizationPath = Path.Combine(infrastructureServicesDirectory, "kustomization.yaml");
+    var infrastructureServicesKustomizationFile = File.Create(infrastructureServicesKustomizationPath) ?? throw new InvalidOperationException($"🚨 Could not create the infrastructure kustomization.yaml file at {infrastructureServicesKustomizationPath}.");
+    await infrastructureServicesKustomizationFile.WriteAsync(Encoding.UTF8.GetBytes(infrastructureKustomizationContent));
+    await infrastructureServicesKustomizationFile.FlushAsync();
+
+    string infrastructureConfigsDirectory = Path.Combine(clusterDirectory, "infrastructure/configs");
+    _ = Directory.CreateDirectory(infrastructureConfigsDirectory) ?? throw new InvalidOperationException($"🚨 Could not create the infrastructure directory at {infrastructureConfigsDirectory}.");
+    const string infrastructureConfigsKustomizationContent = """
+      apiVersion: kustomize.config.k8s.io/v1beta1
+      kind: Kustomization
+      resources:
+        - https://raw.githubusercontent.com/devantler/oci-registry/v0.0.2/k8s/cert-manager/certificates/cluster-issuer-certificate.yaml
+        - https://raw.githubusercontent.com/devantler/oci-registry/v0.0.2/k8s/cert-manager/cluster-issuers/selfsigned-cluster-issuer.yaml
+      """;
+    string infrastructureConfigsKustomizationPath = Path.Combine(infrastructureConfigsDirectory, "kustomization.yaml");
+    var infrastructureConfigsKustomizationFile = File.Create(infrastructureConfigsKustomizationPath) ?? throw new InvalidOperationException($"🚨 Could not create the infrastructure kustomization.yaml file at {infrastructureConfigsKustomizationPath}.");
+    await infrastructureConfigsKustomizationFile.WriteAsync(Encoding.UTF8.GetBytes(infrastructureConfigsKustomizationContent));
+    await infrastructureConfigsKustomizationFile.FlushAsync();
 
     string appsDirectory = Path.Combine(clusterDirectory, "apps");
     _ = Directory.CreateDirectory(appsDirectory) ?? throw new InvalidOperationException($"🚨 Could not create the apps directory at {appsDirectory}.");
@@ -158,12 +192,27 @@ static class KSailInitCommandHandler
     const string variablesKustomizationContent = """
       apiVersion: kustomize.config.k8s.io/v1beta1
       kind: Kustomization
-      resources: []
+      resources:
+        - variables.yaml
       """;
     string variablesKustomizationPath = Path.Combine(variablesDirectory, "kustomization.yaml");
     var variablesKustomizationFile = File.Create(variablesKustomizationPath) ?? throw new InvalidOperationException($"🚨 Could not create the variables kustomization.yaml file at {variablesKustomizationPath}.");
     await variablesKustomizationFile.WriteAsync(Encoding.UTF8.GetBytes(variablesKustomizationContent));
     await variablesKustomizationFile.FlushAsync();
+
+    string variablesYamlContent = $"""
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: variables
+      data:
+        cluster_domain: test
+        cluster_issuer_name: selfsigned-cluster-issuer
+      """;
+    string variablesYamlPath = Path.Combine(variablesDirectory, "variables.yaml");
+    var variablesYamlFile = File.Create(variablesYamlPath) ?? throw new InvalidOperationException($"🚨 Could not create the variables.yaml file at {variablesYamlPath}.");
+    await variablesYamlFile.WriteAsync(Encoding.UTF8.GetBytes(variablesYamlContent));
+    await variablesYamlFile.FlushAsync();
   }
 
   static async void CreateConfig(string name)
