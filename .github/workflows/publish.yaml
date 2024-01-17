@@ -34,7 +34,7 @@ jobs:
           dotnet publish -c Release -r linux-arm64 src/KSail/KSail.csproj /p:Version=$version
           mv src/KSail/bin/Release/net8.0/linux-arm64/publish/ksail ksail-linux-arm64
 
-          tar -czf ksail.tar.gz ksail-osx-x64 ksail-osx-arm64 ksail-linux-x64 ksail-linux-arm64
+          tar -czf ksail.tar.gz ksail-darwin-amd64 ksail-darwin-arm64 ksail-linux-amd64 ksail-linux-arm64
 
       - name: 🎉 Release
         uses: softprops/action-gh-release@v1
