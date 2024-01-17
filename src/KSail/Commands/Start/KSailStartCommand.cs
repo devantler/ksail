@@ -4,9 +4,9 @@ using KSail.Commands.Start.Handlers;
 
 namespace KSail.Commands.Start;
 
-internal sealed class KSailStartCommand : Command
+sealed class KSailStartCommand : Command
 {
-  private readonly NameArgument nameArgument = new();
+  readonly NameArgument nameArgument = new();
 
   internal KSailStartCommand() : base("start", "Start a K8s cluster")
   {

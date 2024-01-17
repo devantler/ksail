@@ -4,14 +4,14 @@ using KSail.Provisioners;
 
 namespace KSail.Commands.Up.Handlers;
 
-internal static class KSailUpGitOpsCommandHandler
+static class KSailUpGitOpsCommandHandler
 {
-  private static readonly KubernetesProvisioner kubernetesProvisioner = new();
-  private static readonly SOPSProvisioner sopsProvisioner = new();
+  static readonly KubernetesProvisioner kubernetesProvisioner = new();
+  static readonly SOPSProvisioner sopsProvisioner = new();
 
   internal static async Task HandleAsync(string name, string manifestsPath, string kustomizationsPath, int timeout, bool noSOPS)
   {
-    kustomizationsPath = string.IsNullOrEmpty(kustomizationsPath) ? $"clusters/{name}" : kustomizationsPath;
+    kustomizationsPath = string.IsNullOrEmpty(kustomizationsPath) ? $"clusters/{name}/flux-system" : kustomizationsPath;
 
     Console.WriteLine("🧮 Creating OCI registry...");
     await DockerProvisioner.CreateRegistryAsync("manifests", 5050);

@@ -9,16 +9,16 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace KSail.Commands.Up;
 
-internal sealed class KSailUpCommand : Command
+sealed class KSailUpCommand : Command
 {
-  private readonly NameArgument nameArgument = new() { Arity = ArgumentArity.ZeroOrOne };
-  private readonly ConfigOption configOption = new() { IsRequired = true };
-  private readonly ManifestsOption manifestsOption = new();
-  private readonly KustomizationsOption kustomizationsOption = new();
-  private readonly TimeoutOption timeoutOption = new();
-  private readonly NoSOPSOption noSOPSOption = new();
-  private readonly NoGitOpsOption noGitOpsOption = new();
-  private static readonly IDeserializer yamlDeserializer = new DeserializerBuilder()
+  readonly NameArgument nameArgument = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly ConfigOption configOption = new() { IsRequired = true };
+  readonly ManifestsOption manifestsOption = new();
+  readonly KustomizationsOption kustomizationsOption = new();
+  readonly TimeoutOption timeoutOption = new();
+  readonly NoSOPSOption noSOPSOption = new();
+  readonly NoGitOpsOption noGitOpsOption = new();
+  static readonly IDeserializer yamlDeserializer = new DeserializerBuilder()
     .WithNamingConvention(CamelCaseNamingConvention.Instance)
     .IgnoreUnmatchedProperties()
     .Build();

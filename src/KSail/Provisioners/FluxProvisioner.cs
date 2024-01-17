@@ -2,7 +2,7 @@ using KSail.CLIWrappers;
 
 namespace KSail.Provisioners;
 
-internal sealed class FluxProvisioner : IProvisioner
+sealed class FluxProvisioner : IProvisioner
 {
   internal static async Task CheckPrerequisitesAsync()
   {

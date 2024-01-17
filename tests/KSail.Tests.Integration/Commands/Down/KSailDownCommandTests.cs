@@ -17,7 +17,7 @@ public class KSailDownCommandTests
   /// Tests that the <c>ksail down</c> command fails and prints help.
   /// </summary>
   [Fact]
-  public async void KSailDownFailsAndPrintsHelp()
+  public async void KSailDown_FailsAndPrintsHelp()
   {
     //Arrange
     var console = new TestConsole();
@@ -35,7 +35,7 @@ public class KSailDownCommandTests
   /// Tests that the <c>ksail down [name]</c> command succeeds and deletes a cluster.
   /// </summary>
   [Fact]
-  public async void KSailDownNameSucceedsAndDeletesCluster()
+  public async void KSailDownName_SucceedsAndDeletesCluster()
   {
     //Arrange
     var console = new TestConsole();
@@ -52,7 +52,7 @@ public class KSailDownCommandTests
     Assert.False(await CheckRegistriesExistsAsync());
   }
 
-  private static async Task<bool> CheckRegistriesExistsAsync()
+  static async Task<bool> CheckRegistriesExistsAsync()
   {
     return await DockerTestUtils.ContainerExistsAsync("proxy-docker.io")
       && await DockerTestUtils.ContainerExistsAsync("proxy-registry.k8s.io")

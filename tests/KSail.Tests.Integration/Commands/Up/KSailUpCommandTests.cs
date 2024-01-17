@@ -21,7 +21,7 @@ public class KSailUpCommandTests : IAsyncLifetime
   /// Tests that the <c>ksail up</c> command fails and prints help.
   /// </summary>
   [Fact]
-  public async void KSailUpFailsAndPrintsHelp()
+  public async void KSailUp_FailsAndPrintsHelp()
   {
     //Arrange
     var console = new TestConsole();
@@ -39,7 +39,7 @@ public class KSailUpCommandTests : IAsyncLifetime
   /// Tests that the <c>ksail up [name]</c> command fails and prints help.
   /// </summary>
   [Fact]
-  public async void KSailUpNameFailsAndPrintsHelp()
+  public async void KSailUpName_FailsAndPrintsHelp()
   {
     //Arrange
     var console = new TestConsole();
@@ -57,7 +57,7 @@ public class KSailUpCommandTests : IAsyncLifetime
   /// Tests that the <c>ksail up [name] --config [config-path] --no-gitops</c> command succeeds and creates a cluster.
   /// </summary>
   [Fact]
-  public async void KSailUpNameConfigNoGitOpsSucceedsAndCreatesCluster()
+  public async void KSailUpNameConfigNoGitOps_SucceedsAndCreatesCluster()
   {
     //Arrange
     var ksailUpCommand = new KSailUpCommand();
@@ -76,7 +76,7 @@ public class KSailUpCommandTests : IAsyncLifetime
   /// Tests that the <c>ksail up [name] --config [config-path] --manifests [manifests-path]</c> command succeeds and creates a cluster.
   /// </summary>
   [Fact]
-  public async void KSailUpNameConfigManifestsSucceedsAndCreatesCluster()
+  public async void KSailUpNameConfigManifests_SucceedsAndCreatesCluster()
   {
     //Arrange
     var ksailUpCommand = new KSailUpCommand();
@@ -91,7 +91,7 @@ public class KSailUpCommandTests : IAsyncLifetime
     _ = await Verify(clusters);
   }
 
-  private static async Task<bool> CheckRegistriesExistAsync()
+  static async Task<bool> CheckRegistriesExistAsync()
   {
     return await DockerTestUtils.ContainerExistsAsync("proxy-docker.io")
       && await DockerTestUtils.ContainerExistsAsync("proxy-registry.k8s.io")

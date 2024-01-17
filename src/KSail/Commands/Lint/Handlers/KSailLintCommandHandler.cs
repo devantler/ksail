@@ -6,9 +6,9 @@ using YamlDotNet.Serialization;
 
 namespace KSail.Commands.Lint.Handlers;
 
-internal class KSailLintCommandHandler()
+class KSailLintCommandHandler()
 {
-  private static readonly HttpClient httpClient = new();
+  static readonly HttpClient httpClient = new();
   internal static async Task HandleAsync(string name, string manifestsPath)
   {
     Console.WriteLine("🧹 Linting manifest files...");
@@ -33,7 +33,7 @@ internal class KSailLintCommandHandler()
     Console.WriteLine("");
   }
 
-  private static void ValidateYaml(string manifestsPath)
+  static void ValidateYaml(string manifestsPath)
   {
     Console.WriteLine("► Validating YAML files with YAMLDotNet...");
     try
@@ -66,7 +66,7 @@ internal class KSailLintCommandHandler()
     }
   }
 
-  private static async Task ValidateKustomizationsAsync(string name, string manifestsPath)
+  static async Task ValidateKustomizationsAsync(string name, string manifestsPath)
   {
     string[] kubeconformFlags = ["-skip=Secret"];
     string[] kubeconformConfig = ["-strict", "-ignore-missing-schemas", "-schema-location", "default", "-schema-location", "/tmp/flux-crd-schemas", "-verbose"];

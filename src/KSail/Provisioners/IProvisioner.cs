@@ -1,3 +1,3 @@
 namespace KSail.Provisioners;
 
-internal interface IProvisioner;
+interface IProvisioner;

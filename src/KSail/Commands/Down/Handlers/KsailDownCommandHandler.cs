@@ -2,7 +2,7 @@ using KSail.Provisioners;
 
 namespace KSail.Commands.Down.Handlers;
 
-internal class KSailDownCommandHandler()
+class KSailDownCommandHandler()
 {
   internal static async Task HandleAsync(string name, bool deletePullThroughRegistries = false)
   {
@@ -15,7 +15,7 @@ internal class KSailDownCommandHandler()
     Console.WriteLine();
   }
 
-  private static async Task DeletePullThroughRegistriesAsync()
+  static async Task DeletePullThroughRegistriesAsync()
   {
     await DockerProvisioner.DeleteRegistryAsync("proxy-docker.io");
     await DockerProvisioner.DeleteRegistryAsync("proxy-registry.k8s.io");

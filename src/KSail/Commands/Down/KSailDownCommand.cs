@@ -5,10 +5,10 @@ using KSail.Commands.Down.Options;
 
 namespace KSail.Commands.Down;
 
-internal sealed class KSailDownCommand : Command
+sealed class KSailDownCommand : Command
 {
-  private readonly NameArgument nameArgument = new();
-  private readonly DeletePullThroughRegistriesOption deletePullThroughRegistriesOption = new();
+  readonly NameArgument nameArgument = new();
+  readonly DeletePullThroughRegistriesOption deletePullThroughRegistriesOption = new();
   internal KSailDownCommand() : base("down", "Destroy a K8s cluster")
   {
     AddArgument(nameArgument);

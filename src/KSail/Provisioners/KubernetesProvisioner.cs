@@ -4,9 +4,9 @@ using k8s.Models;
 
 namespace KSail.Provisioners;
 
-internal sealed class KubernetesProvisioner : IProvisioner, IDisposable
+sealed class KubernetesProvisioner : IProvisioner, IDisposable
 {
-  private readonly Kubernetes kubernetesClient = new(KubernetesClientConfiguration.BuildDefaultConfig());
+  readonly Kubernetes kubernetesClient = new(KubernetesClientConfiguration.BuildDefaultConfig());
 
   /// <inheritdoc/>
   internal async Task CreateNamespaceAsync(string name)

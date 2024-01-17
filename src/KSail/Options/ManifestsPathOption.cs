@@ -2,7 +2,7 @@ using System.CommandLine;
 
 namespace KSail.Options;
 
-internal sealed class ManifestsOption()
+sealed class ManifestsOption()
  : Option<string>(
     ["--manifests", "-m"],
     () => "./k8s",

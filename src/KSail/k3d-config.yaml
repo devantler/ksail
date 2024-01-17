@@ -1,0 +1,13 @@
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: yes
+volumes:
+  - volume: k3d-yes-storage:/var/lib/rancher/k3s/storage
+network: k3d-yes
+options:
+  k3s:
+    extraArgs:
+      - arg: "--disable=traefik"
+        nodeFilters:
+          - server:*

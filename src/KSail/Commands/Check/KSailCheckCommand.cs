@@ -5,10 +5,10 @@ using KSail.Options;
 
 namespace KSail.Commands.Check;
 
-internal sealed class KSailCheckCommand : Command
+sealed class KSailCheckCommand : Command
 {
-  private readonly NameArgument nameArgument = new();
-  private readonly TimeoutOption timeoutOption = new();
+  readonly NameArgument nameArgument = new();
+  readonly TimeoutOption timeoutOption = new();
 
   internal KSailCheckCommand() : base("check", "Check the status of the cluster.")
   {

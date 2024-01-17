@@ -2,9 +2,9 @@ using KSail.CLIWrappers;
 
 namespace KSail.Provisioners;
 
-internal sealed class SOPSProvisioner : IProvisioner, IDisposable
+sealed class SOPSProvisioner : IProvisioner, IDisposable
 {
-  private readonly KubernetesProvisioner kubernetesProvisioner = new();
+  readonly KubernetesProvisioner kubernetesProvisioner = new();
 
   internal static async Task CreateKeysAsync()
   {

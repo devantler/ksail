@@ -5,10 +5,10 @@ using KSail.Options;
 
 namespace KSail.Commands.Lint;
 
-internal sealed class KSailLintCommand : Command
+sealed class KSailLintCommand : Command
 {
-  private readonly NameArgument nameArgument = new();
-  private readonly ManifestsOption manifestsOption = new() { IsRequired = true };
+  readonly NameArgument nameArgument = new();
+  readonly ManifestsOption manifestsOption = new() { IsRequired = true };
   internal KSailLintCommand() : base(
    "lint", "Lint manifest files"
   )
