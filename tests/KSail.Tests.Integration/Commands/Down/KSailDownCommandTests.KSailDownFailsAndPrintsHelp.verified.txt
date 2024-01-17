@@ -10,8 +10,9 @@ Arguments:
   <name>
 
 Options:
-  --version       Show version information
-  -?, -h, --help  Show help and usage information
+  -d, --delete-pull-through-registries  Delete pull through registries [default: False]
+  --version                             Show version information
+  -?, -h, --help                        Show help and usage information
 
 
 
