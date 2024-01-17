@@ -6,11 +6,26 @@ static class KSailInitCommandHandler
 {
   internal static Task HandleAsync(string name, string manifests)
   {
+    Console.WriteLine($"📁 Initializing a new K8s GitOps project named '{name}'...");
     string clusterDirectory = CreateClusterDirectory(name, manifests);
 
-    CreateFluxKustomizations(name, clusterDirectory);
-    CreateKustomizations(clusterDirectory);
-    CreateConfig(name);
+    if (Directory.Exists(Path.Combine(clusterDirectory, name)))
+    {
+      Console.WriteLine($"✕ A cluster named '{name}' already exists at '{clusterDirectory}/{name}'. Skipping cluster creation.");
+    }
+    else
+    {
+      CreateFluxKustomizations(name, clusterDirectory);
+      CreateKustomizations(clusterDirectory);
+    }
+    if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "k3d-config.yaml")))
+    {
+      Console.WriteLine($"✕ A k3d-config.yaml file already exists at '{Directory.GetCurrentDirectory()}/k3d-config.yaml'. Skipping config creation.");
+    }
+    else
+    {
+      CreateConfig(name);
+    }
     return Task.CompletedTask;
   }
 
