@@ -26,6 +26,7 @@ static class KSailInitCommandHandler
     {
       CreateConfig(name);
     }
+    Console.WriteLine($"✔ Successfully initialized a new K8s GitOps project named '{name}'.");
     return Task.CompletedTask;
   }
 
@@ -63,6 +64,8 @@ static class KSailInitCommandHandler
         namespace: flux-system
       spec:
         interval: 1m
+        dependsOn:
+          - name: variables
         sourceRef:
           kind: OCIRepository
           name: flux-system
@@ -73,6 +76,10 @@ static class KSailInitCommandHandler
           provider: sops
           secretRef:
             name: sops-age
+        postBuild:
+          substituteFrom:
+            - kind: ConfigMap
+              name: variables
       ---
       apiVersion: kustomize.toolkit.fluxcd.io/v1
       kind: Kustomization
@@ -81,6 +88,9 @@ static class KSailInitCommandHandler
         namespace: flux-system
       spec:
         interval: 1m
+        dependsOn:
+          - name: variables
+          - name: infrastructure-services
         sourceRef:
           kind: OCIRepository
           name: flux-system
@@ -91,34 +101,14 @@ static class KSailInitCommandHandler
           provider: sops
           secretRef:
             name: sops-age
+        postBuild:
+          substituteFrom:
+            - kind: ConfigMap
+              name: variables
       """;
     var infrastructureYamlFile = File.Create(infrastructureYamlPath) ?? throw new InvalidOperationException($"🚨 Could not create the infrastructure.yaml file at {infrastructureYamlPath}.");
     await infrastructureYamlFile.WriteAsync(Encoding.UTF8.GetBytes(infrastructureYamlContent));
     await infrastructureYamlFile.FlushAsync();
-
-    string appsYamlContent = $"""
-      apiVersion: kustomize.toolkit.fluxcd.io/v1
-      kind: Kustomization
-      metadata:
-        name: apps
-        namespace: flux-system
-      spec:
-        interval: 1m
-        sourceRef:
-          kind: OCIRepository
-          name: flux-system
-        path: ./clusters/{name}/apps
-        prune: true
-        wait: true
-        decryption:
-          provider: sops
-          secretRef:
-            name: sops-age
-    """;
-    string appsYamlPath = Path.Combine(fluxDirectory, "apps.yaml");
-    var appsYamlFile = File.Create(appsYamlPath) ?? throw new InvalidOperationException($"🚨 Could not create the apps.yaml file at {appsYamlPath}.");
-    await appsYamlFile.WriteAsync(Encoding.UTF8.GetBytes(appsYamlContent));
-    await appsYamlFile.FlushAsync();
 
     string variablesYamlContent = $"""
       apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -175,18 +165,6 @@ static class KSailInitCommandHandler
     await infrastructureConfigsKustomizationFile.WriteAsync(Encoding.UTF8.GetBytes(infrastructureConfigsKustomizationContent));
     await infrastructureConfigsKustomizationFile.FlushAsync();
 
-    string appsDirectory = Path.Combine(clusterDirectory, "apps");
-    _ = Directory.CreateDirectory(appsDirectory) ?? throw new InvalidOperationException($"🚨 Could not create the apps directory at {appsDirectory}.");
-    const string appsKustomizationContent = """
-      apiVersion: kustomize.config.k8s.io/v1beta1
-      kind: Kustomization
-      resources: []
-      """;
-    string appsKustomizationPath = Path.Combine(appsDirectory, "kustomization.yaml");
-    var appsKustomizationFile = File.Create(appsKustomizationPath) ?? throw new InvalidOperationException($"🚨 Could not create the apps kustomization.yaml file at {appsKustomizationPath}.");
-    await appsKustomizationFile.WriteAsync(Encoding.UTF8.GetBytes(appsKustomizationContent));
-    await appsKustomizationFile.FlushAsync();
-
     string variablesDirectory = Path.Combine(clusterDirectory, "variables");
     _ = Directory.CreateDirectory(variablesDirectory) ?? throw new InvalidOperationException($"🚨 Could not create the variables directory at {variablesDirectory}.");
     const string variablesKustomizationContent = """
@@ -200,11 +178,12 @@ static class KSailInitCommandHandler
     await variablesKustomizationFile.WriteAsync(Encoding.UTF8.GetBytes(variablesKustomizationContent));
     await variablesKustomizationFile.FlushAsync();
 
-    string variablesYamlContent = $"""
+    const string variablesYamlContent = """
       apiVersion: v1
       kind: ConfigMap
       metadata:
         name: variables
+        namespace: flux-system
       data:
         cluster_domain: test
         cluster_issuer_name: selfsigned-cluster-issuer
