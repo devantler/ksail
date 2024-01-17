@@ -1,10 +1,10 @@
 # ⛴️🐳 KSail
 
-[![codecov](https://codecov.io/gh/devantler/ksail/graph/badge.svg?token=DNEO90PfNR)](https://codecov.io/gh/devantler/ksail)
-[![Test](https://github.com/devantler/ksail/actions/workflows/test.yaml/badge.svg?branch=main)](https://github.com/devantler/ksail/actions/workflows/test.yaml)
-
 > [!NOTE]
 > This is an early release of KSail. I am actively working on the tool, so if you encounter any issues, please let me know 🙏🏻
+
+[![Test](https://github.com/devantler/ksail/actions/workflows/test.yaml/badge.svg?branch=main)](https://github.com/devantler/ksail/actions/workflows/test.yaml)
+[![codecov](https://codecov.io/gh/devantler/ksail/graph/badge.svg?token=DNEO90PfNR)](https://codecov.io/gh/devantler/ksail)
 
 ![image](https://github.com/devantler/ksail/assets/26203420/83a77828-02e1-4d7a-92b7-9e89d0c4e509)
 
