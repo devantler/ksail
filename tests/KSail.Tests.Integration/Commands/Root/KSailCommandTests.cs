@@ -16,7 +16,6 @@ public class KSailRootCommandTests
   [Fact]
   public async void KSail_SucceedsAndPrintsIntroductionAndHelp()
   {
-    Console.WriteLine($"🧪 Running {nameof(KSail_SucceedsAndPrintsIntroductionAndHelp)} test...");
     //Arrange
     var console = new TestConsole();
     var ksailCommand = new KSailRootCommand(console);
@@ -35,7 +34,6 @@ public class KSailRootCommandTests
   [Fact]
   public async void KSailHelp_SucceedsAndPrintsHelp()
   {
-    Console.WriteLine($"🧪 Running {nameof(KSailHelp_SucceedsAndPrintsHelp)} test...");
     //Arrange
     var console = new TestConsole();
     var ksailCommand = new KSailRootCommand(console);
