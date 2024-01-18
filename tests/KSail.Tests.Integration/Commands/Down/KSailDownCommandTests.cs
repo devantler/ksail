@@ -45,7 +45,7 @@ public class KSailDownCommandTests
     var ksailDownCommand = new KSailDownCommand();
 
     //Act
-    int upExitCode = await ksailUpCommand.InvokeAsync($"ksail --config {Directory.GetCurrentDirectory()}/assets/k3d/k3d-config.yaml --no-gitops", console);
+    int upExitCode = await ksailUpCommand.InvokeAsync($"ksail --no-gitops", console);
     int downExitCode = await ksailDownCommand.InvokeAsync("ksail --delete-pull-through-registries", console);
 
     //Assert
