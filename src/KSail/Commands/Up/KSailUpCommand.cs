@@ -1,5 +1,4 @@
 using System.CommandLine;
-using System.Reflection.Metadata;
 using KSail.Arguments;
 using KSail.Commands.Up.Handlers;
 using KSail.Commands.Up.Options;
