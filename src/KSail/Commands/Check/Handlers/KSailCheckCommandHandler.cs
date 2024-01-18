@@ -53,7 +53,6 @@ class KSailCheckCommandHandler()
           HandleReadyStatus(kustomizationName);
           break;
         default:
-
           Console.WriteLine($"◎ Waiting for kustomization '{kustomizationName}' to be ready. It is currently {statusName?.ToLower(CultureInfo.InvariantCulture)}...");
           foreach (var condition in kustomization?.Status.Conditions ?? Enumerable.Empty<V1CustomResourceDefinitionCondition>())
           {
