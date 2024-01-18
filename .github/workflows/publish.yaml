@@ -39,34 +39,16 @@ jobs:
           chmod +x ksail-darwin-arm64
           chmod +x ksail-linux-amd64
           chmod +x ksail-linux-arm64
-      - name: 🔐 Sign ksail-darwin-amd64
-        uses: lando/code-sign-action@v2
-        with:
-          file: ksail-darwin-amd64
-          certificate-data: ${{ secrets.CERTIFICATES_P12 }}
-          certificate-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
-          apple-team-id: F2NXL88V7B
-      - name: 🔐 Sign ksail-darwin-arm64
-        uses: lando/code-sign-action@v2
-        with:
-          file: ksail-darwin-arm64
-          certificate-data: ${{ secrets.CERTIFICATES_P12 }}
-          certificate-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
-          apple-team-id: F2NXL88V7B
-      - name: 🔐 Sign ksail-linux-amd64
-        uses: lando/code-sign-action@v2
-        with:
-          file: ksail-linux-amd64
-          certificate-data: ${{ secrets.CERTIFICATES_P12 }}
-          certificate-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
-          apple-team-id: F2NXL88V7B
-      - name: 🔐 Sign ksail-linux-arm64
-        uses: lando/code-sign-action@v2
-        with:
-          file: ksail-linux-arm64
-          certificate-data: ${{ secrets.CERTIFICATES_P12 }}
-          certificate-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
-          apple-team-id: F2NXL88V7B
+      - name: 🔐 Sign binaries
+        run: |
+          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-darwin-amd64 --options=runtime --no-strict --entitlements ./.github/entitlements.xml -f
+          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-darwin-arm64 --options=runtime --no-strict --entitlements ./.github/entitlements.xml -f
+          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-linux-amd64 --options=runtime --no-strict --entitlements ./.github/entitlements.xml -f
+          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-linux-arm64 --options=runtime --no-strict --entitlements ./.github/entitlements.xml -f
+      - name: 🍏 Notarize
+        run: |
+          zip -r ksail.zip ksail-darwin-amd64 ksail-darwin-arm64 ksail-linux-amd64 ksail-linux-arm64
+          xcrun notarytool submit ksail.zip --keychain-profile ${{ secrets.APP_SPECIFIC_PASSWORD }} --wait
       - name: 📦 Tar binaries
         run: tar -czf ksail.tar.gz ksail-darwin-amd64 ksail-darwin-arm64 ksail-linux-amd64 ksail-linux-arm64
       - name: 🎉 Release
