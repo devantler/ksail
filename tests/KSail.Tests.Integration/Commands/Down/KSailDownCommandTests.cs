@@ -19,6 +19,7 @@ public class KSailDownCommandTests
   [Fact]
   public async void KSailDown_FailsAndPrintsHelp()
   {
+    Console.WriteLine($"🧪 Running {nameof(KSailDown_FailsAndPrintsHelp)} test...");
     //Arrange
     var console = new TestConsole();
     var ksailDownCommand = new KSailDownCommand();
@@ -37,6 +38,7 @@ public class KSailDownCommandTests
   [Fact]
   public async void KSailDownName_SucceedsAndDeletesCluster()
   {
+    Console.WriteLine($"🧪 Running {nameof(KSailDownName_SucceedsAndDeletesCluster)} test...");
     //Arrange
     var console = new TestConsole();
     var ksailUpCommand = new KSailUpCommand();

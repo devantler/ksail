@@ -1,4 +1,5 @@
 using KSail.Commands.Check.Handlers;
+using KSail.Commands.Lint.Handlers;
 using KSail.Commands.Update.Handlers;
 using KSail.Provisioners;
 
@@ -13,11 +14,13 @@ static class KSailUpGitOpsCommandHandler
   {
     kustomizationsPath = string.IsNullOrEmpty(kustomizationsPath) ? $"clusters/{name}/flux-system" : kustomizationsPath;
 
+    await KSailLintCommandHandler.HandleAsync(name, manifestsPath);
+
     Console.WriteLine("🧮 Creating OCI registry...");
     await DockerProvisioner.CreateRegistryAsync("manifests", 5050);
     Console.WriteLine("");
 
-    await KSailUpdateCommandHandler.HandleAsync(name, manifestsPath);
+    await KSailUpdateCommandHandler.HandleAsync(name, manifestsPath, true);
     await kubernetesProvisioner.CreateNamespaceAsync("flux-system");
 
     if (!noSOPS)

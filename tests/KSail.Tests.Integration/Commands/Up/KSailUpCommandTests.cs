@@ -23,6 +23,7 @@ public class KSailUpCommandTests : IAsyncLifetime
   [Fact]
   public async void KSailUp_FailsAndPrintsHelp()
   {
+    Console.WriteLine($"🧪 Running {nameof(KSailUp_FailsAndPrintsHelp)} test...");
     //Arrange
     var console = new TestConsole();
     var ksailUpCommand = new KSailUpCommand();
@@ -41,6 +42,7 @@ public class KSailUpCommandTests : IAsyncLifetime
   [Fact]
   public async void KSailUpName_FailsAndPrintsHelp()
   {
+    Console.WriteLine($"🧪 Running {nameof(KSailUpName_FailsAndPrintsHelp)} test...");
     //Arrange
     var console = new TestConsole();
     var ksailUpCommand = new KSailUpCommand();
@@ -59,6 +61,7 @@ public class KSailUpCommandTests : IAsyncLifetime
   [Fact]
   public async void KSailUpNameConfigNoGitOps_SucceedsAndCreatesCluster()
   {
+    Console.WriteLine($"🧪 Running {nameof(KSailUpNameConfigNoGitOps_SucceedsAndCreatesCluster)} test...");
     //Arrange
     var ksailUpCommand = new KSailUpCommand();
 
@@ -78,6 +81,7 @@ public class KSailUpCommandTests : IAsyncLifetime
   [Fact]
   public async void KSailUpNameConfigManifests_SucceedsAndCreatesCluster()
   {
+    Console.WriteLine($"🧪 Running {nameof(KSailUpNameConfigManifests_SucceedsAndCreatesCluster)} test...");
     //Arrange
     var ksailUpCommand = new KSailUpCommand();
 
