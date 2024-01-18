@@ -19,6 +19,11 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.x.x"
+      - name: 🔑 Add Cert to Keychain
+        uses: apple-actions/import-codesign-certs@v1
+        with:
+          p12-file-base64: ${{ secrets.CERTIFICATES_P12 }}
+          p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
       - name: 📦 Publish
         run: |
           version=$(echo "${{ github.ref_name }}" | sed -e 's/v//')
@@ -34,8 +39,27 @@ jobs:
           dotnet publish -c Release -r linux-arm64 src/KSail/KSail.csproj /p:Version=$version
           mv src/KSail/bin/Release/net8.0/linux-arm64/publish/ksail ksail-linux-arm64
 
-          tar -czf ksail.tar.gz ksail-darwin-amd64 ksail-darwin-arm64 ksail-linux-amd64 ksail-linux-arm64
-
+      - name: 🏃🏻 Chmod
+        run: |
+          chmod +x ksail-darwin-amd64
+          chmod +x ksail-darwin-arm64
+          chmod +x ksail-linux-amd64
+          chmod +x ksail-linux-arm64
+      - name: 🔐 Sign binaries
+        run: |
+          ./.github/scripts/sign.sh ksail-darwin-amd64 . "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ./.github/scripts/entitlements.plist
+          ./.github/scripts/sign.sh ksail-darwin-arm64 . "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ./.github/scripts/entitlements.plist
+          ./.github/scripts/sign.sh ksail-linux-amd64 . "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ./.github/scripts/entitlements.plist
+          ./.github/scripts/sign.sh ksail-linux-arm64 . "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ./.github/scripts/entitlements.plist
+      - name: 📦 Tar binaries
+        run: tar -czf ksail.tar.gz ksail-darwin-amd64 ksail-darwin-arm64 ksail-linux-amd64 ksail-linux-arm64
+      - name: 🍏 Notarize
+        run: |
+          ./github/scripts/notarize.sh nikolaiemildamm@icloud.com ${{ secrets.APP_SPECIFIC_PASSWORD }} group.com.devantler F2NXL88V7B ksail-darwin-amd64
+          ./github/scripts/notarize.sh nikolaiemildamm@icloud.com ${{ secrets.APP_SPECIFIC_PASSWORD }} group.com.devantler F2NXL88V7B ksail-darwin-arm64
+          ./github/scripts/notarize.sh nikolaiemildamm@icloud.com ${{ secrets.APP_SPECIFIC_PASSWORD }} group.com.devantler F2NXL88V7B ksail-linux-amd64
+          ./github/scripts/notarize.sh nikolaiemildamm@icloud.com ${{ secrets.APP_SPECIFIC_PASSWORD }} group.com.devantler F2NXL88V7B ksail-linux-arm64
+          ./github/scripts/notarize.sh nikolaiemildamm@icloud.com ${{ secrets.APP_SPECIFIC_PASSWORD }} group.com.devantler F2NXL88V7B ksail.tar.gz
       - name: 🎉 Release
         uses: softprops/action-gh-release@v1
         with:
