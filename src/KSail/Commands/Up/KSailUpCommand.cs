@@ -1,4 +1,5 @@
 using System.CommandLine;
+using System.Reflection.Metadata;
 using KSail.Arguments;
 using KSail.Commands.Up.Handlers;
 using KSail.Commands.Up.Options;
@@ -11,7 +12,7 @@ namespace KSail.Commands.Up;
 
 sealed class KSailUpCommand : Command
 {
-  readonly NameArgument nameArgument = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly NameArgument nameArgument = new() { Arity = ArgumentArity.ExactlyOne };
   readonly ConfigOption configOption = new() { IsRequired = true };
   readonly ManifestsOption manifestsOption = new();
   readonly KustomizationsOption kustomizationsOption = new();
@@ -34,7 +35,13 @@ sealed class KSailUpCommand : Command
 
     AddValidator(result =>
     {
-      string? configPath = result.GetValueForOption(configOption);
+      string? name = result.GetValueForArgument(nameArgument);
+      if (string.IsNullOrEmpty(name))
+      {
+        result.ErrorMessage = "Required argument 'Name' missing for command: 'up'.";
+        return;
+      }
+      string? configPath = $"{name}-{result.GetValueForOption(configOption)}";
       string? manifestsPath = result.GetValueForOption(manifestsOption);
       if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
       {
@@ -47,7 +54,14 @@ sealed class KSailUpCommand : Command
     });
     this.SetHandler(async (name, configPath, manifestsPath, kustomizationsPath, timeout, noSOPS, noGitOps) =>
     {
-      var config = yamlDeserializer.Deserialize<K3dConfig>(File.ReadAllText(configPath));
+      configPath = $"{name}-{configPath}";
+      string configContent;
+      K3dConfig? config = null;
+      if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
+      {
+        configContent = File.ReadAllText(configPath);
+        config = yamlDeserializer.Deserialize<K3dConfig>(configContent);
+      }
       if (string.IsNullOrEmpty(name))
       {
         name = config?.Metadata.Name ?? name;

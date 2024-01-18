@@ -1,10 +1,10 @@
-﻿Config file 'k3d-config.yaml' does not exist
+﻿Required argument 'Name' missing for command: 'up'.
 
 Description:
   Provision a K8s cluster
 
 Usage:
-  up [<name>] [options]
+  up <name> [options]
 
 Arguments:
   <name>

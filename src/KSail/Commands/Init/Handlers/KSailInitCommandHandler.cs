@@ -7,25 +7,27 @@ static class KSailInitCommandHandler
   internal static async Task HandleAsync(string name, string manifests)
   {
     Console.WriteLine($"📁 Initializing a new K8s GitOps project named '{name}'...");
-    string clusterDirectory = CreateClusterDirectory(name, manifests);
+    string clusterDirectory = Path.Combine(manifests, "clusters", name);
     if (Directory.Exists(clusterDirectory))
     {
       Console.WriteLine($"✕ A cluster named '{name}' already exists at '{clusterDirectory}/{name}'. Skipping cluster creation.");
     }
     else
     {
+      clusterDirectory = CreateClusterDirectory(name, manifests);
       await CreateFluxKustomizationsAsync(name, clusterDirectory);
       await CreateKustomizationsAsync(clusterDirectory);
     }
-    if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "k3d-config.yaml")))
+    if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), $"{name}-k3d-config.yaml")))
     {
-      Console.WriteLine($"✕ A k3d-config.yaml file already exists at '{Directory.GetCurrentDirectory()}/k3d-config.yaml'. Skipping config creation.");
+      Console.WriteLine($"✕ A k3d-config.yaml file already exists at '{Directory.GetCurrentDirectory()}/{name}-k3d-config.yaml'. Skipping config creation.");
     }
     else
     {
       await CreateConfigAsync(name);
     }
     Console.WriteLine($"✔ Successfully initialized a new K8s GitOps project named '{name}'.");
+    Console.WriteLine();
   }
 
   static string CreateFluxSystemDirectory(string clusterDirectory)
@@ -194,8 +196,8 @@ static class KSailInitCommandHandler
 
   static async Task CreateConfigAsync(string name)
   {
-    Console.WriteLine("✚ Creating config file './k3d-config.yaml'...");
-    string configPath = Path.Combine(Directory.GetCurrentDirectory(), "k3d-config.yaml");
+    Console.WriteLine($"✚ Creating config file './{name}-k3d-config.yaml'...");
+    string configPath = Path.Combine(Directory.GetCurrentDirectory(), $"{name}-k3d-config.yaml");
     string configContent = $"""
       apiVersion: k3d.io/v1alpha5
       kind: Simple

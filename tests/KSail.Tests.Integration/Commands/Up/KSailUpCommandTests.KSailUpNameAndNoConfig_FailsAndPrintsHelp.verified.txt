@@ -1,10 +1,10 @@
-﻿Config file 'k3d-config.yaml' does not exist
+﻿Config file 'ksail-k3d-config.yaml' does not exist
 
 Description:
   Provision a K8s cluster
 
 Usage:
-  up [<name>] [options]
+  up <name> [options]
 
 Arguments:
   <name>
