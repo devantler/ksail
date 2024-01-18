@@ -35,9 +35,14 @@ sealed class KSailUpCommand : Command
     AddValidator(result =>
     {
       string? configPath = result.GetValueForOption(configOption);
+      string? manifestsPath = result.GetValueForOption(manifestsOption);
       if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
       {
         result.ErrorMessage = $"Config file '{configPath}' does not exist";
+      }
+      else if (string.IsNullOrEmpty(manifestsPath) || !Directory.Exists(manifestsPath))
+      {
+        result.ErrorMessage = $"Manifests directory '{manifestsPath}' does not exist";
       }
     });
     this.SetHandler(async (name, configPath, manifestsPath, kustomizationsPath, timeout, noSOPS, noGitOps) =>
