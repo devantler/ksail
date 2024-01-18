@@ -1,4 +1,4 @@
-# ⛴️🐳 KSail
+# 🛥️🐳 KSail
 
 [![Test](https://github.com/devantler/ksail/actions/workflows/test.yaml/badge.svg?branch=main)](https://github.com/devantler/ksail/actions/workflows/test.yaml)
 [![codecov](https://codecov.io/gh/devantler/ksail/graph/badge.svg?token=DNEO90PfNR)](https://codecov.io/gh/devantler/ksail)
@@ -6,7 +6,7 @@
 > [!NOTE]
 > This is an early release of KSail. I am actively working on the tool, so if you encounter any issues, please let me know 🙏🏻
 
-![image](https://github.com/devantler/ksail/assets/26203420/83a77828-02e1-4d7a-92b7-9e89d0c4e509)
+![image](https://github.com/devantler/ksail/assets/26203420/c9bfa40b-5ac1-4c81-9511-b8124853e578)
 
 <details>
   <summary>Show/hide folder structure</summary>
