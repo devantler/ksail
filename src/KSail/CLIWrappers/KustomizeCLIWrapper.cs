@@ -3,7 +3,7 @@ using CliWrap;
 
 namespace KSail.CLIWrappers;
 
-internal static class KustomizeCLIWrapper
+static class KustomizeCLIWrapper
 {
   internal static Command Kustomize
   {

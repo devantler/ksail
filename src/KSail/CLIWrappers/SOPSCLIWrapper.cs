@@ -3,9 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace KSail.CLIWrappers;
 
-internal class SOPSCLIWrapper()
+class SOPSCLIWrapper()
 {
-  private static Command SOPS
+  static Command SOPS
   {
     get
     {

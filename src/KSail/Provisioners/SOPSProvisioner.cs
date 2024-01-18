@@ -2,9 +2,9 @@ using KSail.CLIWrappers;
 
 namespace KSail.Provisioners;
 
-internal sealed class SOPSProvisioner : IProvisioner, IDisposable
+sealed class SOPSProvisioner : IProvisioner, IDisposable
 {
-  private readonly KubernetesProvisioner kubernetesProvisioner = new();
+  readonly KubernetesProvisioner kubernetesProvisioner = new();
 
   internal static async Task CreateKeysAsync()
   {
@@ -29,7 +29,7 @@ internal sealed class SOPSProvisioner : IProvisioner, IDisposable
 
   internal static async Task CreateSOPSConfigAsync(string configPath)
   {
-    Console.WriteLine($"► Creating SOPS config '{configPath}'");
+    Console.WriteLine($"✚ Creating SOPS config '{configPath}'");
     string config = $"""
     creation_rules:
       - path_regex: .sops.yaml

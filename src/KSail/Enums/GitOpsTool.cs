@@ -1,6 +1,6 @@
 namespace KSail.Enums;
 
-internal enum GitOpsTool
+enum GitOpsTool
 {
   Flux = 0
 }

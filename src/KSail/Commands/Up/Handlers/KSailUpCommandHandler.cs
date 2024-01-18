@@ -3,7 +3,7 @@ using KSail.Provisioners;
 
 namespace KSail.Commands.Up.Handlers;
 
-internal static class KSailUpCommandHandler
+static class KSailUpCommandHandler
 {
   internal static async Task HandleAsync(string name, string configPath)
   {

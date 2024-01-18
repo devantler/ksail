@@ -1,4 +1,5 @@
 using System.CommandLine;
+using System.Reflection.Metadata;
 using KSail.Arguments;
 using KSail.Commands.Up.Handlers;
 using KSail.Commands.Up.Options;
@@ -9,20 +10,20 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace KSail.Commands.Up;
 
-internal sealed class KSailUpCommand : Command
+sealed class KSailUpCommand : Command
 {
-  private readonly NameArgument nameArgument = new() { Arity = ArgumentArity.ZeroOrOne };
-  private readonly ConfigOption configOption = new() { IsRequired = true };
-  private readonly ManifestsOption manifestsOption = new();
-  private readonly KustomizationsOption kustomizationsOption = new();
-  private readonly TimeoutOption timeoutOption = new();
-  private readonly NoSOPSOption noSOPSOption = new();
-  private readonly NoGitOpsOption noGitOpsOption = new();
-  private static readonly IDeserializer yamlDeserializer = new DeserializerBuilder()
+  readonly NameArgument nameArgument = new() { Arity = ArgumentArity.ExactlyOne };
+  readonly ConfigOption configOption = new() { IsRequired = true };
+  readonly ManifestsOption manifestsOption = new();
+  readonly KustomizationsOption kustomizationsOption = new();
+  readonly TimeoutOption timeoutOption = new();
+  readonly NoSOPSOption noSOPSOption = new();
+  readonly NoGitOpsOption noGitOpsOption = new();
+  static readonly IDeserializer yamlDeserializer = new DeserializerBuilder()
     .WithNamingConvention(CamelCaseNamingConvention.Instance)
     .IgnoreUnmatchedProperties()
     .Build();
-  internal KSailUpCommand() : base("up", "Create a K8s cluster")
+  internal KSailUpCommand() : base("up", "Provision a K8s cluster")
   {
     AddArgument(nameArgument);
     AddOption(configOption);
@@ -32,9 +33,35 @@ internal sealed class KSailUpCommand : Command
     AddOption(noSOPSOption);
     AddOption(noGitOpsOption);
 
+    AddValidator(result =>
+    {
+      string? name = result.GetValueForArgument(nameArgument);
+      if (string.IsNullOrEmpty(name))
+      {
+        result.ErrorMessage = "Required argument 'Name' missing for command: 'up'.";
+        return;
+      }
+      string? configPath = $"{name}-{result.GetValueForOption(configOption)}";
+      string? manifestsPath = result.GetValueForOption(manifestsOption);
+      if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
+      {
+        result.ErrorMessage = $"Config file '{configPath}' does not exist";
+      }
+      else if (string.IsNullOrEmpty(manifestsPath) || !Directory.Exists(manifestsPath))
+      {
+        result.ErrorMessage = $"Manifests directory '{manifestsPath}' does not exist";
+      }
+    });
     this.SetHandler(async (name, configPath, manifestsPath, kustomizationsPath, timeout, noSOPS, noGitOps) =>
     {
-      var config = yamlDeserializer.Deserialize<K3dConfig>(File.ReadAllText(configPath));
+      configPath = $"{name}-{configPath}";
+      string configContent;
+      K3dConfig? config = null;
+      if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
+      {
+        configContent = File.ReadAllText(configPath);
+        config = yamlDeserializer.Deserialize<K3dConfig>(configContent);
+      }
       if (string.IsNullOrEmpty(name))
       {
         name = config?.Metadata.Name ?? name;

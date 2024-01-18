@@ -2,7 +2,7 @@ using KSail.CLIWrappers;
 
 namespace KSail.Provisioners;
 
-internal sealed class K3dProvisioner() : IProvisioner
+sealed class K3dProvisioner() : IProvisioner
 {
   internal static async Task ProvisionAsync(string name, string configPath)
   {

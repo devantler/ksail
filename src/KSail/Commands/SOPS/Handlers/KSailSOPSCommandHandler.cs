@@ -3,7 +3,7 @@ using KSail.Provisioners;
 
 namespace KSail.Commands.SOPS.Handlers;
 
-internal class KSailSOPSCommandHandler()
+class KSailSOPSCommandHandler()
 {
   internal static async Task HandleAsync(bool generateKey, bool showPublicKey, bool showPrivateKey, string encrypt, string decrypt)
   {

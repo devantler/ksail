@@ -2,7 +2,7 @@ using KSail.Provisioners;
 
 namespace KSail.Tests.Integration.TestUtils;
 
-internal static class DockerTestUtils
+static class DockerTestUtils
 {
   internal static async Task<bool> ContainerExistsAsync(string name)
   {

@@ -3,7 +3,7 @@ using CliWrap;
 
 namespace KSail.CLIWrappers;
 
-internal class KubeconformCLIWrapper()
+class KubeconformCLIWrapper()
 {
   internal static Command Kubeconform
   {

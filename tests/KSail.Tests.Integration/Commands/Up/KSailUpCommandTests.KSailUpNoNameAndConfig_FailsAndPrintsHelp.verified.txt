@@ -1,18 +1,18 @@
-﻿Option '--config' is required.
+﻿Required argument 'Name' missing for command: 'up'.
 
 Description:
-  Create a K8s cluster
+  Provision a K8s cluster
 
 Usage:
-  up [<name>] [options]
+  up <name> [options]
 
 Arguments:
   <name>
 
 Options:
-  -c, --config <config> (REQUIRED)       Path to the cluster configuration file
+  -c, --config <config> (REQUIRED)       Path to the cluster configuration file [default: k3d-config.yaml]
   -m, --manifests <manifests>            Path to the manifests directory [default: ./k8s]
-  -k, --kustomizations <kustomizations>  Path to the flux kustomization directory
+  -k, --kustomizations <kustomizations>  Path to the flux kustomization directory [default: ./k8s/clusters/<name>/flux-system]
   -t, --timeout <timeout>                The timeout in seconds to wait for each kustomization to become ready. Defaults to 300 seconds. [default: 300]
   -ns, --no-sops                         Disable SOPS [default: False]
   -ng, --no-gitops                       Disable GitOps [default: False]

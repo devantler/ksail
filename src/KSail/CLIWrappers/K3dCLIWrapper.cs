@@ -4,9 +4,9 @@ using CliWrap.Buffered;
 
 namespace KSail.CLIWrappers;
 
-internal class K3dCLIWrapper()
+class K3dCLIWrapper()
 {
-  private static Command K3d
+  static Command K3d
   {
     get
     {

@@ -7,11 +7,11 @@ using KSail.Extensions;
 
 namespace KSail.Commands.Check.Handlers;
 
-internal class KSailCheckCommandHandler()
+class KSailCheckCommandHandler()
 {
-  private static readonly HashSet<string> kustomizations = [];
-  private static readonly HashSet<string> successFullKustomizations = [];
-  private static readonly Stopwatch stopwatch = Stopwatch.StartNew();
+  static readonly HashSet<string> kustomizations = [];
+  static readonly HashSet<string> successFullKustomizations = [];
+  static readonly Stopwatch stopwatch = Stopwatch.StartNew();
 
   internal static async Task HandleAsync(string name, int timeout, CancellationToken cancellationToken)
   {
@@ -53,8 +53,7 @@ internal class KSailCheckCommandHandler()
           HandleReadyStatus(kustomizationName);
           break;
         default:
-
-          Console.WriteLine($"► Waiting for kustomization '{kustomizationName}' to be ready. It is currently {statusName?.ToLower(CultureInfo.InvariantCulture)}...");
+          Console.WriteLine($"◎ Waiting for kustomization '{kustomizationName}' to be ready. It is currently {statusName?.ToLower(CultureInfo.InvariantCulture)}...");
           foreach (var condition in kustomization?.Status.Conditions ?? Enumerable.Empty<V1CustomResourceDefinitionCondition>())
           {
             Console.WriteLine($"  {condition.Message}");
@@ -65,14 +64,14 @@ internal class KSailCheckCommandHandler()
     }
   }
 
-  private static void HandleReadyStatus(string kustomizationName)
+  static void HandleReadyStatus(string kustomizationName)
   {
     Console.WriteLine($"✔ Kustomization '{kustomizationName}' is ready! Resetting timer...");
     _ = successFullKustomizations.Add(kustomizationName);
     stopwatch.Restart();
   }
 
-  private static void HandleFailedStatus(V1CustomResourceDefinition kustomization, string kustomizationName)
+  static void HandleFailedStatus(V1CustomResourceDefinition kustomization, string kustomizationName)
   {
     Console.WriteLine($"✕ Kustomization '{kustomizationName}' failed!");
     string? message = kustomization?.Status.Conditions.FirstOrDefault()?.Message;
@@ -80,7 +79,7 @@ internal class KSailCheckCommandHandler()
     Environment.Exit(1);
   }
 
-  private static Kubernetes CreateKubernetesClientFromClusterName(string name)
+  static Kubernetes CreateKubernetesClientFromClusterName(string name)
   {
     var kubeConfig = KubernetesClientConfiguration.LoadKubeConfig();
     var context = kubeConfig.Contexts.FirstOrDefault(c => c.Name.Contains(name, StringComparison.OrdinalIgnoreCase));

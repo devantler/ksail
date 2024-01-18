@@ -1,14 +1,16 @@
 using System.CommandLine;
 using KSail.Arguments;
 using KSail.Commands.Update.Handlers;
+using KSail.Commands.Update.Options;
 using KSail.Options;
 
 namespace KSail.Commands.Update;
 
-internal sealed class KSailUpdateCommand : Command
+sealed class KSailUpdateCommand : Command
 {
-  private readonly NameArgument nameArgument = new();
-  private readonly ManifestsOption manifestsOption = new() { IsRequired = true };
+  readonly NameArgument nameArgument = new();
+  readonly ManifestsOption manifestsOption = new() { IsRequired = true };
+  readonly NoLintOption noLintOption = new();
   internal KSailUpdateCommand() : base(
     "update",
     "Update manifests in an OCI registry"
@@ -16,6 +18,7 @@ internal sealed class KSailUpdateCommand : Command
   {
     AddArgument(nameArgument);
     AddOption(manifestsOption);
-    this.SetHandler(KSailUpdateCommandHandler.HandleAsync, nameArgument, manifestsOption);
+    AddOption(noLintOption);
+    this.SetHandler(KSailUpdateCommandHandler.HandleAsync, nameArgument, manifestsOption, noLintOption);
   }
 }

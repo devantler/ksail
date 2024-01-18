@@ -3,11 +3,14 @@ using KSail.Provisioners;
 
 namespace KSail.Commands.Update.Handlers;
 
-internal static class KSailUpdateCommandHandler
+static class KSailUpdateCommandHandler
 {
-  internal static async Task HandleAsync(string name, string manifestsPath)
+  internal static async Task HandleAsync(string name, string manifestsPath, bool noLint)
   {
-    await KSailLintCommandHandler.HandleAsync(name, manifestsPath);
+    if (!noLint)
+    {
+      await KSailLintCommandHandler.HandleAsync(name, manifestsPath);
+    }
     Console.WriteLine($"📥 Pushing manifests to {name}...");
     await FluxProvisioner.PushManifestsAsync($"oci://localhost:5050/{name}", manifestsPath);
     Console.WriteLine("");

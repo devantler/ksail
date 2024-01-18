@@ -4,9 +4,9 @@ using System.Runtime.InteropServices;
 
 namespace KSail.CLIWrappers;
 
-internal class FluxCLIWrapper()
+class FluxCLIWrapper()
 {
-  private static Command Flux
+  static Command Flux
   {
     get
     {
@@ -49,7 +49,7 @@ internal class FluxCLIWrapper()
     );
     _ = await CLIRunner.RunAsync(cmd);
   }
-  internal static async Task CreateKustomizationAsync(string fluxKustomizationPathOption)
+  internal static async Task CreateKustomizationAsync(string fluxKustomizationPath)
   {
     var cmd = Flux.WithArguments(
       [
@@ -57,7 +57,7 @@ internal class FluxCLIWrapper()
         "kustomization",
         "flux-system",
         "--source=OCIRepository/flux-system",
-        $"--path={fluxKustomizationPathOption}"
+        $"--path={fluxKustomizationPath}"
       ]
     );
     _ = await CLIRunner.RunAsync(cmd);

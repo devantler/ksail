@@ -4,9 +4,9 @@ using Docker.DotNet.Models;
 
 namespace KSail.Provisioners;
 
-internal sealed class DockerProvisioner : IProvisioner
+sealed class DockerProvisioner : IProvisioner
 {
-  private static readonly DockerClient dockerClient = new DockerClientConfiguration(
+  static readonly DockerClient dockerClient = new DockerClientConfiguration(
     new Uri("unix:///var/run/docker.sock")
   ).CreateClient();
 

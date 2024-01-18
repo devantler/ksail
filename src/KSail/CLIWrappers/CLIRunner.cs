@@ -5,7 +5,7 @@ using CliWrap.Exceptions;
 
 namespace KSail.CLIWrappers;
 
-internal class CLIRunner()
+class CLIRunner()
 {
   public static async Task<string> RunAsync(Command command, CommandResultValidation validation = CommandResultValidation.ZeroExitCode, bool silent = false)
   {

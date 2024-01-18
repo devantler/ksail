@@ -1,6 +1,7 @@
 using System.CommandLine;
 using System.CommandLine.IO;
 using KSail.Commands.Down;
+using KSail.Commands.Init;
 using KSail.Commands.Up;
 using KSail.Tests.Integration.TestUtils;
 
@@ -17,8 +18,9 @@ public class KSailDownCommandTests
   /// Tests that the <c>ksail down</c> command fails and prints help.
   /// </summary>
   [Fact]
-  public async void KSailDownFailsAndPrintsHelp()
+  public async void KSailDown_FailsAndPrintsHelp()
   {
+    Console.WriteLine($"🧪 Running {nameof(KSailDown_FailsAndPrintsHelp)} test...");
     //Arrange
     var console = new TestConsole();
     var ksailDownCommand = new KSailDownCommand();
@@ -35,24 +37,28 @@ public class KSailDownCommandTests
   /// Tests that the <c>ksail down [name]</c> command succeeds and deletes a cluster.
   /// </summary>
   [Fact]
-  public async void KSailDownNameSucceedsAndDeletesCluster()
+  public async void KSailDownName_SucceedsAndDeletesCluster()
   {
+    Console.WriteLine($"🧪 Running {nameof(KSailDownName_SucceedsAndDeletesCluster)} test...");
     //Arrange
     var console = new TestConsole();
+    var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();
     var ksailDownCommand = new KSailDownCommand();
 
     //Act
-    int upExitCode = await ksailUpCommand.InvokeAsync($"ksail --config {Directory.GetCurrentDirectory()}/assets/k3d/k3d-config.yaml --no-gitops", console);
+    int initExitCode = await ksailInitCommand.InvokeAsync("ksail", console);
+    int upExitCode = await ksailUpCommand.InvokeAsync($"ksail --no-gitops", console);
     int downExitCode = await ksailDownCommand.InvokeAsync("ksail --delete-pull-through-registries", console);
 
     //Assert
+    Assert.Equal(0, initExitCode);
     Assert.Equal(0, upExitCode);
     Assert.Equal(0, downExitCode);
     Assert.False(await CheckRegistriesExistsAsync());
   }
 
-  private static async Task<bool> CheckRegistriesExistsAsync()
+  static async Task<bool> CheckRegistriesExistsAsync()
   {
     return await DockerTestUtils.ContainerExistsAsync("proxy-docker.io")
       && await DockerTestUtils.ContainerExistsAsync("proxy-registry.k8s.io")

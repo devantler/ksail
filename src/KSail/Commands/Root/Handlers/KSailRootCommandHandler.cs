@@ -3,11 +3,11 @@ using Spectre.Console;
 
 namespace KSail.Commands.Root.Handlers;
 
-internal static class KSailRootCommandHandler
+static class KSailRootCommandHandler
 {
   public static void Handle(IConsole? console = null) => PrintIntroduction(console);
 
-  private static void PrintIntroduction(IConsole? console = null)
+  static void PrintIntroduction(IConsole? console = null)
   {
     if (console is null)
     {
@@ -19,7 +19,7 @@ internal static class KSailRootCommandHandler
     }
   }
 
-  private const string introduction = """
+  const string introduction = """
     🐳⛴️    [bold underline]Welcome to [blue]KSail[/]![/]    ⛴️ 🐳
                                          [blue]. . .[/]
                     __/___                 [blue]:[/]
