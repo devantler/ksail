@@ -32,6 +32,14 @@ sealed class KSailUpCommand : Command
     AddOption(noSOPSOption);
     AddOption(noGitOpsOption);
 
+    AddValidator(result =>
+    {
+      string? configPath = result.GetValueForOption(configOption);
+      if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
+      {
+        result.ErrorMessage = $"Config file '{configPath}' does not exist";
+      }
+    });
     this.SetHandler(async (name, configPath, manifestsPath, kustomizationsPath, timeout, noSOPS, noGitOps) =>
     {
       var config = yamlDeserializer.Deserialize<K3dConfig>(File.ReadAllText(configPath));

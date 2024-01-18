@@ -10,7 +10,7 @@ sealed class KSailCheckCommand : Command
   readonly NameArgument nameArgument = new();
   readonly TimeoutOption timeoutOption = new();
 
-  internal KSailCheckCommand() : base("check", "Check the status of the cluster.")
+  internal KSailCheckCommand() : base("check", "Check the status of the cluster")
   {
     AddArgument(nameArgument);
     AddOption(timeoutOption);
