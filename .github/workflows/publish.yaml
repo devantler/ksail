@@ -45,20 +45,13 @@ jobs:
           file: ksail-darwin-amd64
           certificate-data: ${{ secrets.CERTIFICATES_P12 }}
           certificate-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
-          apple-notary-user: nikolaiemildamm@icloud.com
-          apple-notary-password: ${{ secrets.APP_SPECIFIC_PASSWORD }}
-          apple-product-id: dev.devantler.ksail
           apple-team-id: F2NXL88V7B
-          options: --options runtime --entitlements ./.github/entitlements.xml
       - name: 🔐 Sign ksail-darwin-arm64
         uses: lando/code-sign-action@v2
         with:
           file: ksail-darwin-arm64
           certificate-data: ${{ secrets.CERTIFICATES_P12 }}
           certificate-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
-          apple-notary-user: devantler@icloud.com
-          apple-notary-password: ${{ secrets.APP_SPECIFIC_PASSWORD }}
-          apple-product-id: dev.devantler.ksail
           apple-team-id: F2NXL88V7B
       - name: 🔐 Sign ksail-linux-amd64
         uses: lando/code-sign-action@v2
@@ -66,9 +59,6 @@ jobs:
           file: ksail-linux-amd64
           certificate-data: ${{ secrets.CERTIFICATES_P12 }}
           certificate-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
-          apple-notary-user: nikolaiemildamm@icloud.com
-          apple-notary-password: ${{ secrets.APP_SPECIFIC_PASSWORD }}
-          apple-product-id: dev.devantler.ksail
           apple-team-id: F2NXL88V7B
       - name: 🔐 Sign ksail-linux-arm64
         uses: lando/code-sign-action@v2
@@ -76,9 +66,6 @@ jobs:
           file: ksail-linux-arm64
           certificate-data: ${{ secrets.CERTIFICATES_P12 }}
           certificate-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
-          apple-notary-user: devantler@icloud.com
-          apple-notary-password: ${{ secrets.APP_SPECIFIC_PASSWORD }}
-          apple-product-id: dev.devantler.ksail
           apple-team-id: F2NXL88V7B
       - name: 📦 Tar binaries
         run: tar -czf ksail.tar.gz ksail-darwin-amd64 ksail-darwin-arm64 ksail-linux-amd64 ksail-linux-arm64
