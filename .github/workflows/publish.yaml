@@ -50,6 +50,20 @@ jobs:
           codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-darwin-arm64 --options=runtime --no-strict --entitlements ./.github/entitlements.xml -f
           codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-linux-amd64 --options=runtime --no-strict --entitlements ./.github/entitlements.xml -f
           codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-linux-arm64 --options=runtime --no-strict --entitlements ./.github/entitlements.xml -f
+      - name: 📜 Notarize
+        run: |
+          echo "Create keychain profile"
+          xcrun notarytool store-credentials "notarytool-profile" --apple-id nikolaiemildamm@icloud.com --team-id F2NXL88V7B --password ${{ secrets.APP_SPECIFIC_PASSWORD }}
+
+          echo "Creating temp notarization archive"
+          zip -r notarization.zip ksail-darwin-amd64 ksail-darwin-arm64
+
+          echo "Notarize app"
+          xcrun notarytool submit "notarization.zip" --keychain-profile "notarytool-profile" --wait
+
+          echo "Attach staple"
+          xcrun stapler staple ksail-darwin-amd64
+          xcrun stapler staple ksail-darwin-arm64
       - name: 📦 Tar binaries
         run: tar -czf ksail.tar.gz ksail-darwin-amd64 ksail-darwin-arm64 ksail-linux-amd64 ksail-linux-arm64
       - name: 🎉 Release
