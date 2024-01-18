@@ -30,8 +30,9 @@ static class KSailInitCommandHandler
     return Task.CompletedTask;
   }
 
-  static string CreateFluxDirectory(string clusterDirectory)
+  static string CreateFluxSystemDirectory(string clusterDirectory)
   {
+    Console.WriteLine($"✚ Creating flux-system directory '{clusterDirectory}/flux-system'...");
     string fluxDirectory = Path.Combine(clusterDirectory, "flux-system");
     _ = Directory.CreateDirectory(fluxDirectory) ?? throw new InvalidOperationException($"🚨 Could not create the flux directory at {fluxDirectory}.");
     return fluxDirectory;
@@ -39,22 +40,16 @@ static class KSailInitCommandHandler
 
   static string CreateClusterDirectory(string name, string manifests)
   {
-    //Create the manifests directory if it doesn't exist
-    _ = Directory.CreateDirectory(manifests) ?? throw new InvalidOperationException($"🚨 Could not create the manifests directory at {manifests}.");
-
-    //Create a clusters directory in the manifests directory
-    string clustersDirectory = Path.Combine(manifests, "clusters");
-    _ = Directory.CreateDirectory(clustersDirectory) ?? throw new InvalidOperationException($"🚨 Could not create the clusters directory at {clustersDirectory}.");
-
-    //Create a cluster directory named after the name property in the clusters directory
-    string clusterDirectory = Path.Combine(clustersDirectory, name);
+    string clusterDirectory = Path.Combine(manifests, "clusters", name);
+    Console.WriteLine($"✚ Creating cluster directory '{clusterDirectory}'...");
     _ = Directory.CreateDirectory(clusterDirectory) ?? throw new InvalidOperationException($"🚨 Could not create the cluster directory at {clusterDirectory}.");
     return clusterDirectory;
   }
 
   static async void CreateFluxKustomizations(string name, string clusterDirectory)
   {
-    string fluxDirectory = CreateFluxDirectory(clusterDirectory);
+    Console.WriteLine($"✚ Creating flux infrastructure kustomization '{clusterDirectory}/flux-system/infrastucture.yaml'...");
+    string fluxDirectory = CreateFluxSystemDirectory(clusterDirectory);
     string infrastructureYamlPath = Path.Combine(fluxDirectory, "infrastructure.yaml");
     string infrastructureYamlContent = $"""
       apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -110,6 +105,7 @@ static class KSailInitCommandHandler
     await infrastructureYamlFile.WriteAsync(Encoding.UTF8.GetBytes(infrastructureYamlContent));
     await infrastructureYamlFile.FlushAsync();
 
+    Console.WriteLine($"✚ Creating flux variables kustomization '{clusterDirectory}/flux-system/variables.yaml'...");
     string variablesYamlContent = $"""
       apiVersion: kustomize.toolkit.fluxcd.io/v1
       kind: Kustomization
@@ -137,6 +133,7 @@ static class KSailInitCommandHandler
 
   static async void CreateKustomizations(string clusterDirectory)
   {
+    Console.WriteLine($"✚ Creating infrastructure-services kustomization '{clusterDirectory}/infrastructure/services/kustomization.yaml'...");
     string infrastructureServicesDirectory = Path.Combine(clusterDirectory, "infrastructure/services");
     _ = Directory.CreateDirectory(infrastructureServicesDirectory) ?? throw new InvalidOperationException($"🚨 Could not create the infrastructure directory at {infrastructureServicesDirectory}.");
     const string infrastructureKustomizationContent = """
@@ -151,6 +148,7 @@ static class KSailInitCommandHandler
     await infrastructureServicesKustomizationFile.WriteAsync(Encoding.UTF8.GetBytes(infrastructureKustomizationContent));
     await infrastructureServicesKustomizationFile.FlushAsync();
 
+    Console.WriteLine($"✚ Creating infrastructure-configs kustomization '{clusterDirectory}/infrastructure/configs/kustomization.yaml'...");
     string infrastructureConfigsDirectory = Path.Combine(clusterDirectory, "infrastructure/configs");
     _ = Directory.CreateDirectory(infrastructureConfigsDirectory) ?? throw new InvalidOperationException($"🚨 Could not create the infrastructure directory at {infrastructureConfigsDirectory}.");
     const string infrastructureConfigsKustomizationContent = """
@@ -165,6 +163,7 @@ static class KSailInitCommandHandler
     await infrastructureConfigsKustomizationFile.WriteAsync(Encoding.UTF8.GetBytes(infrastructureConfigsKustomizationContent));
     await infrastructureConfigsKustomizationFile.FlushAsync();
 
+    Console.WriteLine($"✚ Creating variables kustomization '{clusterDirectory}/variables/kustomization.yaml'...");
     string variablesDirectory = Path.Combine(clusterDirectory, "variables");
     _ = Directory.CreateDirectory(variablesDirectory) ?? throw new InvalidOperationException($"🚨 Could not create the variables directory at {variablesDirectory}.");
     const string variablesKustomizationContent = """
@@ -178,6 +177,7 @@ static class KSailInitCommandHandler
     await variablesKustomizationFile.WriteAsync(Encoding.UTF8.GetBytes(variablesKustomizationContent));
     await variablesKustomizationFile.FlushAsync();
 
+    Console.WriteLine($"✚ Creating variables file '{clusterDirectory}/variables/variables.yaml'...");
     const string variablesYamlContent = """
       apiVersion: v1
       kind: ConfigMap
@@ -196,6 +196,7 @@ static class KSailInitCommandHandler
 
   static async void CreateConfig(string name)
   {
+    Console.WriteLine($"✚ Creating config file '{Directory.GetCurrentDirectory()}/k3d-config.yaml'...");
     string configPath = Path.Combine(Directory.GetCurrentDirectory(), "k3d-config.yaml");
     string configContent = $"""
       apiVersion: k3d.io/v1alpha5
