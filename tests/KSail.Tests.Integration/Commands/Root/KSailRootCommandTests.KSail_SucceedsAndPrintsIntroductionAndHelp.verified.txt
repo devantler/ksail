@@ -19,12 +19,12 @@ Options:
 Commands:
   init <name>    Initialize a new K8s cluster
   up <name>      Provision a K8s cluster
+  list           List running clusters
+  update <name>  Update manifests in an OCI registry
   start <name>   Start a K8s cluster
   stop <name>    Stop a K8s cluster
-  list           List running clusters
   down <name>    Destroy a K8s cluster
-  update <name>  Update manifests in an OCI registry
-  lint <name>    Lint manifest files
   check <name>   Check the status of the cluster
+  lint <name>    Lint manifest files
   sops           Manage SOPS key
 
