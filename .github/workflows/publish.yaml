@@ -46,19 +46,15 @@ jobs:
           chmod +x ksail-linux-arm64
       - name: 🔐 Sign binaries
         run: |
-          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-darwin-amd64 --options=runtime --no-strict --entitlements ./.github/scripts/entitlements.plist -f
-          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-darwin-arm64 --options=runtime --no-strict --entitlements ./.github/scripts/entitlements.plist -f
-          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-linux-amd64 --options=runtime --no-strict --entitlements ./.github/scripts/entitlements.plist -f
-          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-linux-arm64 --options=runtime --no-strict --entitlements ./.github/scripts/entitlements.plist -f
+          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-darwin-amd64 --options=runtime --no-strict --entitlements ./.github/entitlements.plist -f
+          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-darwin-arm64 --options=runtime --no-strict --entitlements ./.github/entitlements.plist -f
+          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-linux-amd64 --options=runtime --no-strict --entitlements ./.github/entitlements.plist -f
+          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-linux-arm64 --options=runtime --no-strict --entitlements ./.github/entitlements.plist -f
       - name: 📦 Tar binaries
         run: tar -czf ksail.tar.gz ksail-darwin-amd64 ksail-darwin-arm64 ksail-linux-amd64 ksail-linux-arm64
       - name: 🍏 Notarize
         run: |
-          ./.github/scripts/notarize.sh nikolaiemildamm@icloud.com ${{ secrets.APP_SPECIFIC_PASSWORD }} group.com.devantler F2NXL88V7B ksail-darwin-amd64
-          ./.github/scripts/notarize.sh nikolaiemildamm@icloud.com ${{ secrets.APP_SPECIFIC_PASSWORD }} group.com.devantler F2NXL88V7B ksail-darwin-arm64
-          ./.github/scripts/notarize.sh nikolaiemildamm@icloud.com ${{ secrets.APP_SPECIFIC_PASSWORD }} group.com.devantler F2NXL88V7B ksail-linux-amd64
-          ./.github/scripts/notarize.sh nikolaiemildamm@icloud.com ${{ secrets.APP_SPECIFIC_PASSWORD }} group.com.devantler F2NXL88V7B ksail-linux-arm64
-          ./.github/scripts/notarize.sh nikolaiemildamm@icloud.com ${{ secrets.APP_SPECIFIC_PASSWORD }} group.com.devantler F2NXL88V7B ksail.tar.gz
+           xcrun notarytool submit ksail.tar.gz --keychain-profile ${{ secrets.APP_SPECIFIC_PASSWORD }} --wait
       - name: 🎉 Release
         uses: softprops/action-gh-release@v1
         with:
