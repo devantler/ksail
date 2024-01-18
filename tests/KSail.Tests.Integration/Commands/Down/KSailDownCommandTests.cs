@@ -1,6 +1,7 @@
 using System.CommandLine;
 using System.CommandLine.IO;
 using KSail.Commands.Down;
+using KSail.Commands.Init;
 using KSail.Commands.Up;
 using KSail.Tests.Integration.TestUtils;
 
@@ -41,14 +42,17 @@ public class KSailDownCommandTests
     Console.WriteLine($"🧪 Running {nameof(KSailDownName_SucceedsAndDeletesCluster)} test...");
     //Arrange
     var console = new TestConsole();
+    var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();
     var ksailDownCommand = new KSailDownCommand();
 
     //Act
+    int initExitCode = await ksailInitCommand.InvokeAsync("ksail", console);
     int upExitCode = await ksailUpCommand.InvokeAsync($"ksail --no-gitops", console);
     int downExitCode = await ksailDownCommand.InvokeAsync("ksail --delete-pull-through-registries", console);
 
     //Assert
+    Assert.Equal(0, initExitCode);
     Assert.Equal(0, upExitCode);
     Assert.Equal(0, downExitCode);
     Assert.False(await CheckRegistriesExistsAsync());
