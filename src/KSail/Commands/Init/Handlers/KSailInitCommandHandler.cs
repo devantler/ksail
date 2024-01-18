@@ -4,19 +4,18 @@ namespace KSail.Commands.Init.Handlers;
 
 static class KSailInitCommandHandler
 {
-  internal static Task HandleAsync(string name, string manifests)
+  internal static async Task HandleAsync(string name, string manifests)
   {
     Console.WriteLine($"📁 Initializing a new K8s GitOps project named '{name}'...");
     string clusterDirectory = CreateClusterDirectory(name, manifests);
-
-    if (Directory.Exists(Path.Combine(clusterDirectory, name)))
+    if (Directory.Exists(clusterDirectory))
     {
       Console.WriteLine($"✕ A cluster named '{name}' already exists at '{clusterDirectory}/{name}'. Skipping cluster creation.");
     }
     else
     {
-      CreateFluxKustomizations(name, clusterDirectory);
-      CreateKustomizations(clusterDirectory);
+      await CreateFluxKustomizationsAsync(name, clusterDirectory);
+      await CreateKustomizationsAsync(clusterDirectory);
     }
     if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "k3d-config.yaml")))
     {
@@ -24,10 +23,9 @@ static class KSailInitCommandHandler
     }
     else
     {
-      CreateConfig(name);
+      await CreateConfigAsync(name);
     }
     Console.WriteLine($"✔ Successfully initialized a new K8s GitOps project named '{name}'.");
-    return Task.CompletedTask;
   }
 
   static string CreateFluxSystemDirectory(string clusterDirectory)
@@ -46,7 +44,7 @@ static class KSailInitCommandHandler
     return clusterDirectory;
   }
 
-  static async void CreateFluxKustomizations(string name, string clusterDirectory)
+  static async Task CreateFluxKustomizationsAsync(string name, string clusterDirectory)
   {
     Console.WriteLine($"✚ Creating flux infrastructure kustomization '{clusterDirectory}/flux-system/infrastucture.yaml'...");
     string fluxDirectory = CreateFluxSystemDirectory(clusterDirectory);
@@ -131,7 +129,7 @@ static class KSailInitCommandHandler
     await variablesYamlFile.FlushAsync();
   }
 
-  static async void CreateKustomizations(string clusterDirectory)
+  static async Task CreateKustomizationsAsync(string clusterDirectory)
   {
     Console.WriteLine($"✚ Creating infrastructure-services kustomization '{clusterDirectory}/infrastructure/services/kustomization.yaml'...");
     string infrastructureServicesDirectory = Path.Combine(clusterDirectory, "infrastructure/services");
@@ -194,9 +192,9 @@ static class KSailInitCommandHandler
     await variablesYamlFile.FlushAsync();
   }
 
-  static async void CreateConfig(string name)
+  static async Task CreateConfigAsync(string name)
   {
-    Console.WriteLine($"✚ Creating config file '{Directory.GetCurrentDirectory()}/k3d-config.yaml'...");
+    Console.WriteLine("✚ Creating config file './k3d-config.yaml'...");
     string configPath = Path.Combine(Directory.GetCurrentDirectory(), "k3d-config.yaml");
     string configContent = $"""
       apiVersion: k3d.io/v1alpha5
