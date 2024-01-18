@@ -24,7 +24,7 @@ public class KSailUpCommandTests : IAsyncLifetime
   [Fact]
   public async void KSailUpNoNameAndNoConfig_FailsAndPrintsHelp()
   {
-    Console.WriteLine($"🧪 Running {nameof(KSailUpNameAndNoConfig_FailsAndPrintsHelp)} test...");
+    Console.WriteLine($"🧪 Running {nameof(KSailUpNoNameAndNoConfig_FailsAndPrintsHelp)} test...");
     //Arrange
     var testConsole = new TestConsole();
     var ksailUpCommand = new KSailUpCommand();
