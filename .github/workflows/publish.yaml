@@ -46,10 +46,10 @@ jobs:
           chmod +x ksail-linux-arm64
       - name: 🔐 Sign binaries
         run: |
-          ./.github/scripts/sign.sh ksail-darwin-amd64 ./ "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ./.github/scripts/entitlements.plist
-          ./.github/scripts/sign.sh ksail-darwin-arm64 ./ "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ./.github/scripts/entitlements.plist
-          ./.github/scripts/sign.sh ksail-linux-amd64 ./ "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ./.github/scripts/entitlements.plist
-          ./.github/scripts/sign.sh ksail-linux-arm64 ./ "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ./.github/scripts/entitlements.plist
+          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-darwin-amd64 --options=runtime --no-strict --entitlements ./.github/scripts/entitlements.plist
+          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-darwin-arm64 --options=runtime --no-strict --entitlements ./.github/scripts/entitlements.plist
+          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-linux-amd64 --options=runtime --no-strict --entitlements ./.github/scripts/entitlements.plist
+          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-linux-arm64 --options=runtime --no-strict --entitlements ./.github/scripts/entitlements.plist
       - name: 📦 Tar binaries
         run: tar -czf ksail.tar.gz ksail-darwin-amd64 ksail-darwin-arm64 ksail-linux-amd64 ksail-linux-arm64
       - name: 🍏 Notarize
