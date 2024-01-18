@@ -22,7 +22,7 @@ sealed class KSailUpCommand : Command
     .WithNamingConvention(CamelCaseNamingConvention.Instance)
     .IgnoreUnmatchedProperties()
     .Build();
-  internal KSailUpCommand() : base("up", "Create a K8s cluster")
+  internal KSailUpCommand() : base("up", "Provision a K8s cluster")
   {
     AddArgument(nameArgument);
     AddOption(configOption);

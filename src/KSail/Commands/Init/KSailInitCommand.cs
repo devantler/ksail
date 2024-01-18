@@ -9,7 +9,7 @@ sealed class KSailInitCommand : Command
 {
   readonly NameArgument nameArgument = new();
   readonly ManifestsOption manifestsOption = new() { IsRequired = true };
-  public KSailInitCommand() : base("init", "Initializes a new K8s GitOps project.")
+  public KSailInitCommand() : base("init", "Initialize a new K8s cluster")
   {
     AddArgument(nameArgument);
     AddOption(manifestsOption);
