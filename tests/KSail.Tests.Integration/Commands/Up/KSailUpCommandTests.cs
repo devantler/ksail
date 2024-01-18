@@ -57,6 +57,28 @@ public class KSailUpCommandTests : IAsyncLifetime
   }
 
   /// <summary>
+  /// Tests that the <c>ksail up</c> command fails and prints help when a config exists.
+  /// </summary>
+  [Fact]
+  public async void KSailUpNoNameAndConfig_FailsAndPrintsHelp()
+  {
+    Console.WriteLine($"🧪 Running {nameof(KSailUpNoNameAndConfig_FailsAndPrintsHelp)} test...");
+    //Arrange
+    var testConsole = new TestConsole();
+    var ksailInitCommand = new KSailInitCommand();
+    var ksailUpCommand = new KSailUpCommand();
+
+    //Act
+    int initExitCode = await ksailInitCommand.InvokeAsync("ksail", testConsole);
+    int upExitCode = await ksailUpCommand.InvokeAsync("", testConsole);
+
+    //Assert
+    Assert.Equal(0, initExitCode);
+    Assert.Equal(1, upExitCode);
+    _ = await Verify(testConsole.Error.ToString() + testConsole.Out);
+  }
+
+  /// <summary>
   /// Tests that the <c>ksail up [name]</c> command succeeds and creates a cluster.
   /// </summary>
   [Fact]
