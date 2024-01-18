@@ -54,7 +54,7 @@ class KSailCheckCommandHandler()
           break;
         default:
 
-          Console.WriteLine($"► Waiting for kustomization '{kustomizationName}' to be ready. It is currently {statusName?.ToLower(CultureInfo.InvariantCulture)}...");
+          Console.WriteLine($"◎ Waiting for kustomization '{kustomizationName}' to be ready. It is currently {statusName?.ToLower(CultureInfo.InvariantCulture)}...");
           foreach (var condition in kustomization?.Status.Conditions ?? Enumerable.Empty<V1CustomResourceDefinitionCondition>())
           {
             Console.WriteLine($"  {condition.Message}");
