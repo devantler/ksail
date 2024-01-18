@@ -15,6 +15,7 @@
 ```
 .
 ├── .github
+│   ├── scripts
 │   └── workflows
 ├── .vscode
 ├── autocomplete
@@ -74,7 +75,7 @@
         │   └── Update
         └── TestUtils
 
-59 directories
+60 directories
 ```
 <!-- readme-tree end -->
 
