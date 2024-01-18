@@ -53,7 +53,7 @@ jobs:
       - name: 🍏 Notarize
         run: |
           zip -r ksail.zip ksail-darwin-amd64 ksail-darwin-arm64 ksail-linux-amd64 ksail-linux-arm64
-          xcrun notarytool submit ksail.tar.gz --keychain-profile ${{ secrets.APP_SPECIFIC_PASSWORD }} --wait
+          xcrun notarytool submit ksail.zip --keychain-profile ${{ secrets.APP_SPECIFIC_PASSWORD }} --wait
       - name: 📦 Tar binaries
         run: tar -czf ksail.tar.gz ksail-darwin-amd64 ksail-darwin-arm64 ksail-linux-amd64 ksail-linux-arm64
       - name: 🎉 Release
