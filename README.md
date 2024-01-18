@@ -16,6 +16,7 @@
 .
 ├── .github
 │   └── workflows
+├── .vscode
 ├── autocomplete
 ├── scripts
 ├── src
@@ -28,6 +29,8 @@
 │       │   ├── Down
 │       │   │   ├── Handlers
 │       │   │   └── Options
+│       │   ├── Init
+│       │   │   └── Handlers
 │       │   ├── Lint
 │       │   │   └── Handlers
 │       │   ├── List
@@ -45,7 +48,8 @@
 │       │   │   ├── Handlers
 │       │   │   └── Options
 │       │   └── Update
-│       │       └── Handlers
+│       │       ├── Handlers
+│       │       └── Options
 │       ├── Enums
 │       ├── Extensions
 │       ├── Models
@@ -68,15 +72,9 @@
         │   ├── Stop
         │   ├── Up
         │   └── Update
-        ├── TestUtils
-        └── assets
-            ├── k3d
-            └── k8s
-                ├── clusters
-                │   └── ksail
-                └── infrastructure
+        └── TestUtils
 
-61 directories
+59 directories
 ```
 <!-- readme-tree end -->
 
