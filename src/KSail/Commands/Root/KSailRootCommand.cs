@@ -31,13 +31,13 @@ sealed class KSailRootCommand : RootCommand
   {
     AddCommand(new KSailInitCommand());
     AddCommand(new KSailUpCommand());
-    AddCommand(new KSailListCommand());
-    AddCommand(new KSailUpdateCommand());
     AddCommand(new KSailStartCommand());
     AddCommand(new KSailStopCommand());
     AddCommand(new KSailDownCommand());
-    AddCommand(new KSailCheckCommand());
+    AddCommand(new KSailUpdateCommand());
+    AddCommand(new KSailListCommand());
     AddCommand(new KSailLintCommand());
+    AddCommand(new KSailCheckCommand());
     AddCommand(new KSailSOPSCommand());
   }
 }
