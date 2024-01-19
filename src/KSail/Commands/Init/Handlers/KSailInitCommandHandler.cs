@@ -169,6 +169,7 @@ static class KSailInitCommandHandler
     const string variablesKustomizationContent = """
       apiVersion: kustomize.config.k8s.io/v1beta1
       kind: Kustomization
+      namespace: flux-system
       resources:
         - variables.yaml
       """;
