@@ -119,7 +119,14 @@ Manually:
 
 ### Usage
 
-To get started use the global help flag:
+Setting up a new cluster, and provisioning it in Docker is a simple matter. Just run these two commands:
+
+```shell
+ksail init <name-of-cluster>
+ksail up <name-of-cluster>
+```
+
+For more advanced use check out the global --help flag:
 
 ```shell
 ksail --help
