@@ -32,9 +32,9 @@ sealed class KSailRootCommand : RootCommand
     AddCommand(new KSailInitCommand());
     AddCommand(new KSailUpCommand());
     AddCommand(new KSailStartCommand());
+    AddCommand(new KSailUpdateCommand());
     AddCommand(new KSailStopCommand());
     AddCommand(new KSailDownCommand());
-    AddCommand(new KSailUpdateCommand());
     AddCommand(new KSailListCommand());
     AddCommand(new KSailLintCommand());
     AddCommand(new KSailCheckCommand());
