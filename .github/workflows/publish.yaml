@@ -38,12 +38,6 @@ jobs:
 
           dotnet publish -c Release -r linux-arm64 src/KSail/KSail.csproj /p:Version=$version
           mv src/KSail/bin/Release/net8.0/linux-arm64/publish/ksail ksail-linux-arm64
-      - name: 🏃🏻 Chmod
-        run: |
-          chmod +x ksail-darwin-amd64
-          chmod +x ksail-darwin-arm64
-          chmod +x ksail-linux-amd64
-          chmod +x ksail-linux-arm64
       - name: 🔐 Sign binaries
         run: |
           codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-darwin-amd64 --options=runtime --no-strict --entitlements ./.github/entitlements.xml -f
