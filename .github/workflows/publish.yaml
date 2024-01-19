@@ -62,8 +62,8 @@ jobs:
           xcrun notarytool submit "notarization.zip" --keychain-profile "notarytool-profile" --wait
 
           echo "Attach staple"
-          xcrun stapler staple ksail-darwin-amd64
-          xcrun stapler staple ksail-darwin-arm64
+          sudo xcrun stapler staple ksail-darwin-amd64
+          sudo xcrun stapler staple ksail-darwin-arm64
       - name: 📦 Tar binaries
         run: tar -czf ksail.tar.gz ksail-darwin-amd64 ksail-darwin-arm64 ksail-linux-amd64 ksail-linux-arm64
       - name: 🎉 Release
