@@ -44,6 +44,12 @@ jobs:
           codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-darwin-arm64 --options=runtime --no-strict --entitlements ./.github/entitlements.xml -f
           codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-linux-amd64 --options=runtime --no-strict --entitlements ./.github/entitlements.xml -f
           codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-linux-arm64 --options=runtime --no-strict --entitlements ./.github/entitlements.xml -f
+      - name: 🚧 Chmod binaries
+        run: |
+          chmod 755 ksail-darwin-amd64
+          chmod 755 ksail-darwin-arm64
+          chmod 755 ksail-linux-amd64
+          chmod 755 ksail-linux-arm64
       - name: 📜 Notarize
         run: |
           echo "Create keychain profile"
