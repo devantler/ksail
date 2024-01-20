@@ -135,19 +135,14 @@ ksail up <name-of-cluster>
 
 # --- Docker Container ---
 docker run --rm \
-  # Mount working directories
-  -v $(pwd):/app \
+  -v $(pwd):/app `# Mount working directories` \
   ghcr.io/devantler/ksail:latest init <name-of-cluster>
 
 docker run --rm \
-  # Mount Docker socket
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  # Mount working directories
-  -v $(pwd):/app \
-  # Mount KSail config files
-  -v $(pwd):/root/.ksail \
-  # Set network to host to allow KSail to access OCI registries running on localhost
-  --network host \
+  -v /var/run/docker.sock:/var/run/docker.sock `# Mount Docker socket` \
+  -v $(pwd):/app `# Mount working directories` \
+  -v $(pwd):/root/.ksail `# Mount KSail config files` \
+  --network host `# Set network to host to allow KSail to access OCI registries running on localhost` \
   ghcr.io/devantler/ksail:latest up <name-of-cluster>
 ```
 
