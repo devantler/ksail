@@ -136,7 +136,7 @@ ksail up <name-of-cluster>
 docker run --rm \
   # Mount working directories
   -v $(pwd):/app \
-  ksail init <name-of-cluster>
+  ghcr.io/devantler/ksail:latest init <name-of-cluster>
 
 docker run --rm \
   # Mount Docker socket
@@ -147,7 +147,7 @@ docker run --rm \
   -v $(pwd):/root/.ksail \
   # Set network to host to allow KSail to access OCI registries running on localhost
   --network host \
-  ksail up <name-of-cluster>
+  ghcr.io/devantler/ksail:latest up <name-of-cluster>
 ```
 
 For more intricate navigational techniques, consult the global --help flag:
@@ -157,7 +157,7 @@ For more intricate navigational techniques, consult the global --help flag:
 ksail --help
 
 # --- Docker Container ---
-docker run --rm ksail --help
+docker run --rm ghcr.io/devantler/ksail:latest --help
 ```
 
 ## What is KSail?
