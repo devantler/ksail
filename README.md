@@ -111,7 +111,7 @@ Tools:
 
 With Homebrew:
 
-```shell
+```sh
 brew tap devantler/formulas
 brew install ksail
 ```
@@ -128,7 +128,7 @@ KSail is built to run as either a local binary, or as a Docker container.
 
 Setting sail for your voyage and navigating beyond the shore with KSail is as straightforward as:
 
-```bash
+```sh
 # --- Local Binary ---
 ksail init <name-of-cluster>
 ksail up <name-of-cluster>
@@ -148,7 +148,7 @@ docker run --rm \
 
 For more intricate navigational techniques, consult the global --help flag:
 
-```shell
+```sh
 # --- Local Binary ---
 ksail --help
 
