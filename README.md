@@ -160,6 +160,16 @@ docker run --rm ghcr.io/devantler/ksail:latest --help
 
 KSail is a CLI tool designed to simplify the management of GitOps-enabled Kubernetes clusters in Docker. It provides a set of commands that allow you to easily create, manage, and dismantle GitOps-enabled clusters. KSail also integrates with SOPS for managing secrets in Git repositories and provides features for validating and verifying your clusters.
 
+KSail provides the following features:
+
+- **Initialize YAML and configuration:** KSail can be used to generate needed YAML and configuration files for your clusters.
+- **Create clusters:** KSail can be used to create GitOps-enabled Kubernetes clusters in Docker.
+- **Sync clusters:** KSail can be used to sync GitOps-enabled Kubernetes clusters in Docker (both manually and automatically).
+- **Lint manifests:** KSail can be used to lint your manifest files before deploying your clusters.
+- **Check cluster reconciliations:** KSail can be used to verify that your clusters reconcile successfully after deployment.
+- **Manage secrets:** KSail can be used to manage secrets in Git repositories.
+- **Docker Container Support:** KSail can be run as a Docker container.
+
 ## How does it work?
 
 KSail leverages several key technologies to provide its functionality:
@@ -169,8 +179,8 @@ KSail leverages several key technologies to provide its functionality:
 - **Flux GitOps:** KSail sets up Flux GitOps to manage the state of your clusters, with your manifest source serving as the single source of truth.
 - **Local OCI Registries:** KSail uses local OCI registries to store and distribute Docker images and manifests.
 - **SOPS and Age Integration:** KSail integrates with SOPS and Age for managing secrets in Git repositories.
-- **Manifest linting:** KSail lints your manifest files before deploying your clusters.
-- **Cluster Reconciliation Checking:** After deploying your clusters, KSail verifies that they reconcile successfully.
+- **Kustomize and Kubeconform Integration:** KSail integrates with Kustomize and Kubeconform for linting your manifest files before deploying your clusters.
+- **Kubernetes API:** KSail uses the Kubernetes API to verify that your clusters reconcile successfully after deployment.
 
 ## Why was it made?
 
@@ -182,6 +192,69 @@ There are currently two main use cases for KSail:
 
 - **Local Development:** KSail can be used to create and manage GitOps-enabled Kubernetes clusters in Docker for local development. This allows you to easily build and test your applications in a K8s environment.
 - **CI/CD:** KSail can be used to spin up GitOps-enabled Kubernetes clusters in CI/CD, to easily verify that your changes are working as expected before deploying them to your other environments.
+
+## Q&A
+
+### Why use KSail instead of e.g. k3d or kind?
+
+KSail is built on top of k3d, so it provides all the same functionality as k3d. However, KSail also provides additional functionality for managing GitOps-enabled Kubernetes clusters in Docker. For a GitOps-enabled cluster to work well locally in Docker, you need quite a few tools to be installed and configured. KSail aims to simplify this process by providing a set of commands that allow you to easily create, manage, and dismantle GitOps-enabled clusters.
+
+### How do I use KSail with CI/CD?
+
+You need to download the KSail binary into your CI/CD environment, and then run the KSail commands as you would locally. For example, if you are using GitHub Actions, you can use the following workflow:
+
+> [!WARNING]
+> The below example workflow has not been tested yet. I assume it will not work if you are trying to run this without `ksail init`, as there is currently no support for reading the ksail Age keys from the environment. When I get around to testing this, I will update this section.
+
+```yaml
+name: KSail
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ksail:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📑 Checkout
+        uses: actions/checkout@v4
+      - name: 🍺 Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+      - name: 🛥️🐳 Install KSail
+        run: brew install devantler/formulas/ksail
+      # You would normally not use the `init` command in CI/CD, but this is just an example
+      - name: 🛥️🐳📑 KSail Init
+        run: ksail init <name-of-cluster>
+      - name: 🛥️🐳🚀 KSail Up
+        run: ksail up <name-of-cluster>
+```
+
+### How do I use KSail with Cloud Providers?
+
+KSail is purposely designed to work with local Docker clusters. If you want to create clusters in the cloud, I recommend using an Infrastructure as Code (IaC) tool like Terraform or Pulumi to create your clusters and initialize Flux GitOps. You can still use KSail to generate the needed YAML and configuration files, but clusters in the cloud often require additional configuration and dependencies, so do not expect your Docker clusters to work in the cloud without some additional work.
+
+### What is next for KSail?
+
+I am currently working on stabilizing the tool, and ensure that it works as expected, and if not that it fails gracefully with informative error messages. I am also working on adding more tests, and improving the test coverage. Once I am happy with the stability of the tool, I will start working on adding more features.
+
+Features in the pipeline:
+
+- **Webhook Receiver Support:** KSail will be able to receive webhooks from your Git repository, and automatically sync your clusters when changes are made.
+- **Improved Secret Management:** KSail will make it easier to export and import secrets into your system, such that working collaboratively with KSail clusters will be easier.
+- **Improved Init Command:** Generating the YAML and configuration files for your clusters will be more customizable.
+- **Kind Support:** KSail will be able to create and manage GitOps-enabled Kubernetes clusters in Kind.
+
+Features I'm considering:
+
+- **Windows Support:** Ideally, KSail should work on all platforms, but the current setup has a few hindrances that make it difficult to support Windows. I am contemplating how to best solve this, or if I should just drop Windows support altogether.
+- **ArgoCD Support:** Ideally, KSail should work with any GitOps tool, but the current setup is tightly coupled to Flux. One big benefit of KSail is that the output of the tool can gradually evolve into a production-ready setup, but I am unsure whether this journey is applicable to other GitOps tools, where the setup is more UI-driven.
 
 ## Contributing
 
