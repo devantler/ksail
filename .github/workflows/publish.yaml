@@ -4,12 +4,14 @@ on:
   push:
     tags:
       - "v*.*.*"
+    branches: main
   workflow_dispatch:
 
 jobs:
-  publish:
-    name: Publish
+  publish-binaries:
+    name: Publish binaries
     runs-on: macos-latest
+    if: startsWith(github.ref, 'refs/tags/v')
     steps:
       - name: 📑 Checkout
         uses: actions/checkout@v4
@@ -73,3 +75,45 @@ jobs:
           token: ${{ secrets.HOMEBREW_GITHUB_API_TOKEN }}
           formulae: |
             devantler/formulas/ksail
+
+  publish-docker-image:
+    name: Publish Docker image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: 📑 Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/ksail
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            DOCKER_METADATA_OUTPUT_VERSION
+

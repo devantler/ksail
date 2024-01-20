@@ -123,17 +123,41 @@ Manually:
 
 ### Usage
 
+KSail is built to run as either a local binary, or as a Docker container.
+
 Setting sail for your voyage and navigating beyond the shore with KSail is as straightforward as:
 
-```shell
+```bash
+# --- Local Binary ---
 ksail init <name-of-cluster>
 ksail up <name-of-cluster>
+
+# --- Docker Container ---
+docker run --rm \
+  # Mount working directories
+  -v $(pwd):/app \
+  ksail init <name-of-cluster>
+
+docker run --rm \
+  # Mount Docker socket
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  # Mount working directories
+  -v $(pwd):/app \
+  # Mount KSail config files
+  -v $(pwd):/root/.ksail \
+  # Set network to host to allow KSail to access OCI registries running on localhost
+  --network host \
+  ksail up <name-of-cluster>
 ```
 
 For more intricate navigational techniques, consult the global --help flag:
 
 ```shell
+# --- Local Binary ---
 ksail --help
+
+# --- Docker Container ---
+docker run --rm ksail --help
 ```
 
 ## What is KSail?
