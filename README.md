@@ -142,7 +142,7 @@ docker run --rm \
   -v /var/run/docker.sock:/var/run/docker.sock `# Mount Docker socket` \
   -v $(pwd):/app `# Mount working directories` \
   -v $(pwd):/root/.ksail `# Mount KSail config files` \
-  --network host `# Set network to host to allow KSail to access OCI registries running on localhost` \
+  --network host `# Allow access to containers on localhost` \
   ghcr.io/devantler/ksail:latest up <name-of-cluster>
 ```
 
