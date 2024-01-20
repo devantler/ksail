@@ -238,7 +238,7 @@ jobs:
 
 ### How do I use KSail with Cloud Providers?
 
-KSail is purposely designed to work with local Docker clusters. If you want to create clusters in the cloud, I recommend using an Infrastructure as Code (IaC) tool like Terraform or Pulumi to create your clusters and initialize Flux GitOps. You can still use KSail to generate the needed YAML and configuration files, but clusters in the cloud often require additional configuration and dependencies, so do not expect your Docker clusters to work in the cloud without some additional work.
+KSail is purposely designed to work with local Docker clusters. If you want to create clusters in the cloud, I recommend using an Infrastructure as Code (IaC) tool like [Terraform](https://github.com/hashicorp/terraform) or [Pulumi](https://github.com/pulumi/pulumi) to create your clusters and initialize Flux GitOps. You can still use KSail to generate the needed YAML and configuration files, but clusters in the cloud often require additional configuration and dependencies, so do not expect your Docker clusters to work in the cloud without some additional work.
 
 ### What is next for KSail?
 
