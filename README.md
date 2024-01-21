@@ -250,11 +250,12 @@ Features in the pipeline:
 - **Improved Secret Management:** KSail will make it easier to export and import secrets into your system, such that working collaboratively with KSail clusters will be easier.
 - **Improved Init Command:** Generating the YAML and configuration files for your clusters will be more customizable.
 - **Kind Support:** KSail will be able to create and manage GitOps-enabled Kubernetes clusters in Kind.
+- **Setting hosts:** Services made accessible through ingresses cannot be reached without setting their dns in the hosts file. I believe it would be nice if KSail was able to do this in a friendly way.
 
 Features I'm considering:
 
 - **Windows Support:** Ideally, KSail should work on all platforms, but the current setup has a few hindrances that make it difficult to support Windows. I am contemplating how to best solve this, or if I should just drop Windows support altogether.
-- **ArgoCD Support:** Ideally, KSail should work with any GitOps tool, but the current setup is tightly coupled to Flux. One big benefit of KSail is that the output of the tool can gradually evolve into a production-ready setup, but I am unsure whether this journey is applicable to other GitOps tools, where the setup is more UI-driven.
+- **ArgoCD Support through Flamingo:** Working with YAML is a not necessarily the preffered approach for all, so I am contemplating including Flaming as a helm release provided by the `ksail init` command, so users can choose to create new releases from ArgoCDs proven UI.
 
 ## Contributing
 
