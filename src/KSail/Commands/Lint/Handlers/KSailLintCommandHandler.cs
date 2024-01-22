@@ -13,12 +13,6 @@ class KSailLintCommandHandler()
   {
     Console.WriteLine("🧹 Linting manifest files...");
 
-    if (string.IsNullOrEmpty(name))
-    {
-      Console.WriteLine("✕ Name of the cluster is required...");
-      Environment.Exit(1);
-    }
-
     Console.WriteLine("► Downloading Flux OpenAPI schemas...");
     const string url = "https://github.com/fluxcd/flux2/releases/latest/download/crd-schemas.tar.gz";
     var directoryInfo = Directory.CreateDirectory("/tmp/flux-crd-schemas/master-standalone-strict");
@@ -29,7 +23,17 @@ class KSailLintCommandHandler()
     }
 
     ValidateYaml(manifestsPath);
-    await ValidateKustomizationsAsync(name, manifestsPath);
+    if (string.IsNullOrEmpty(name))
+    {
+      foreach (string cluster in Directory.GetDirectories($"{manifestsPath}/clusters"))
+      {
+        await ValidateKustomizationsAsync(cluster, manifestsPath);
+      }
+    }
+    else
+    {
+      await ValidateKustomizationsAsync(name, manifestsPath);
+    }
     Console.WriteLine("");
   }
 

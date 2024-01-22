@@ -8,7 +8,7 @@ namespace KSail.Commands.Update;
 
 sealed class KSailUpdateCommand : Command
 {
-  readonly NameArgument nameArgument = new();
+  readonly NameArgument nameArgument = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly ManifestsOption manifestsOption = new() { IsRequired = true };
   readonly NoLintOption noLintOption = new();
   internal KSailUpdateCommand() : base(
