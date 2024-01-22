@@ -75,6 +75,8 @@ static class KSailInitCommandHandler
           substituteFrom:
             - kind: ConfigMap
               name: variables
+            - kind: Secret
+              name: variables-sensitive
       ---
       apiVersion: kustomize.toolkit.fluxcd.io/v1
       kind: Kustomization
@@ -100,6 +102,8 @@ static class KSailInitCommandHandler
           substituteFrom:
             - kind: ConfigMap
               name: variables
+            - kind: Secret
+              name: variables-sensitive
       """;
     var infrastructureYamlFile = File.Create(infrastructureYamlPath) ?? throw new InvalidOperationException($"🚨 Could not create the infrastructure.yaml file at {infrastructureYamlPath}.");
     await infrastructureYamlFile.WriteAsync(Encoding.UTF8.GetBytes(infrastructureYamlContent));
@@ -172,6 +176,7 @@ static class KSailInitCommandHandler
       namespace: flux-system
       resources:
         - variables.yaml
+        - variables-sensitive.sops.yaml
       """;
     string variablesKustomizationPath = Path.Combine(variablesDirectory, "kustomization.yaml");
     var variablesKustomizationFile = File.Create(variablesKustomizationPath) ?? throw new InvalidOperationException($"🚨 Could not create the variables kustomization.yaml file at {variablesKustomizationPath}.");
@@ -193,6 +198,21 @@ static class KSailInitCommandHandler
     var variablesYamlFile = File.Create(variablesYamlPath) ?? throw new InvalidOperationException($"🚨 Could not create the variables.yaml file at {variablesYamlPath}.");
     await variablesYamlFile.WriteAsync(Encoding.UTF8.GetBytes(variablesYamlContent));
     await variablesYamlFile.FlushAsync();
+
+    Console.WriteLine($"✚ Creating variables-sensitive file '{clusterDirectory}/variables/variables-sensitive.sops.yaml'...");
+    const string variablesSensitiveYamlContent = """
+      # You need to encrypt this file with SOPS manually.
+      # ksail sops --encrypt variables-sensitive.sops.yaml
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: variables-sensitive
+      stringData: {}
+      """;
+    string variablesSensitiveYamlPath = Path.Combine(variablesDirectory, "variables-sensitive.sops.yaml");
+    var variablesSensitiveYamlFile = File.Create(variablesSensitiveYamlPath) ?? throw new InvalidOperationException($"🚨 Could not create the variables-sensitive.sops.yaml file at {variablesSensitiveYamlPath}.");
+    await variablesSensitiveYamlFile.WriteAsync(Encoding.UTF8.GetBytes(variablesSensitiveYamlContent));
+    await variablesSensitiveYamlFile.FlushAsync();
   }
 
   static async Task CreateConfigAsync(string name)
