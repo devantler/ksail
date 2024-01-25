@@ -130,6 +130,9 @@ public class KSailUpCommandTests : IAsyncLifetime
     Assert.Equal(0, upExitCode);
     Assert.True(await CheckRegistriesExistAsync());
     _ = await Verify(clusters);
+
+    //Cleanup
+    Environment.SetEnvironmentVariable("KSAIL_SOPS_KEY", null);
   }
 
   static async Task<bool> CheckRegistriesExistAsync()
