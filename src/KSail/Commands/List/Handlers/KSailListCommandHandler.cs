@@ -4,5 +4,5 @@ namespace KSail.Commands.List.Handlers;
 
 sealed class KSailListCommandHandler
 {
-  internal static async Task HandleAsync() => await K3dProvisioner.ListAsync();
+  internal static Task<string> HandleAsync() => K3dProvisioner.ListAsync();
 }

@@ -21,7 +21,7 @@ class KubeconformCLIWrapper()
     }
   }
 
-  internal static async void Run(string[] kubeconformFlags, string[] kubeconformConfig, string manifest)
+  internal static async Task Run(string[] kubeconformFlags, string[] kubeconformConfig, string manifest)
   {
     var cmd = Kubeconform.WithArguments(kubeconformFlags.Concat(kubeconformConfig).Concat(new[] { manifest }).ToArray());
     _ = await CLIRunner.RunAsync(cmd, silent: true);

@@ -51,6 +51,7 @@ class KSailCheckCommandHandler()
       }
       switch (statusConditionType)
       {
+        //TODO: Implement check command with condition[1].type == healthy. This should work for all kustomizations.
         case "Failed":
           HandleFailedStatus(kustomization, kustomizationName);
           break;
@@ -63,7 +64,7 @@ class KSailCheckCommandHandler()
           {
             Console.WriteLine($"  {condition.Message}");
           }
-          Console.WriteLine($"  Elapsed time: {stopwatch.Elapsed.TotalSeconds}/{timeout} seconds");
+          Console.WriteLine($"  Elapsed time: {stopwatch.Elapsed.TotalSeconds} out of {timeout} seconds");
           break;
       }
     }

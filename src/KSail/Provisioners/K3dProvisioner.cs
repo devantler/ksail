@@ -11,14 +11,13 @@ sealed class K3dProvisioner() : IProvisioner
     Console.WriteLine();
   }
 
-  internal static async Task DeprovisionAsync(string name)
+  internal static Task DeprovisionAsync(string name)
   {
     Console.WriteLine($"🔥 Destroying K3d cluster '{name}'...");
-    await K3dCLIWrapper.DeleteClusterAsync(name);
+    return K3dCLIWrapper.DeleteClusterAsync(name);
   }
 
-  internal static async Task ListAsync() => _ = await K3dCLIWrapper.ListClustersAsync();
+  internal static async Task<string> ListAsync() => _ = await K3dCLIWrapper.ListClustersAsync();
 
-  internal static async Task<bool> ExistsAsync(string name) =>
-    await K3dCLIWrapper.GetClusterAsync(name);
+  internal static Task<bool> ExistsAsync(string name) => K3dCLIWrapper.GetClusterAsync(name);
 }

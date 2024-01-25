@@ -13,7 +13,7 @@ public class KSailRootCommandTests
   /// Tests that the 'ksail' command succeeds and returns the introduction and help text.
   /// </summary>
   [Fact]
-  public async void KSail_SucceedsAndPrintsIntroductionAndHelp()
+  public async Task KSail_SucceedsAndPrintsIntroductionAndHelp()
   {
     //Arrange
     var console = new TestConsole();
@@ -31,7 +31,7 @@ public class KSailRootCommandTests
   /// Tests that the 'ksail --help' command succeeds and returns the help text.
   /// </summary>
   [Fact]
-  public async void KSailHelp_SucceedsAndPrintsHelp()
+  public async Task KSailHelp_SucceedsAndPrintsHelp()
   {
     //Arrange
     var console = new TestConsole();

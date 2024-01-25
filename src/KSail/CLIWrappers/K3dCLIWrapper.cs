@@ -62,9 +62,9 @@ CreateClusterAsync(string name, string configPath)
     return result.IsSuccess;
   }
 
-  internal static async Task<string> ListClustersAsync()
+  internal static Task<string> ListClustersAsync()
   {
     var cmd = K3d.WithArguments("cluster list");
-    return await CLIRunner.RunAsync(cmd);
+    return CLIRunner.RunAsync(cmd);
   }
 }

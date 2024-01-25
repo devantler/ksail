@@ -13,9 +13,8 @@ public class KSailDownCommandTests
   /// Tests that the <c>ksail down</c> command fails and prints help.
   /// </summary>
   [Fact]
-  public async void KSailDown_FailsAndPrintsHelp()
+  public async Task KSailDown_FailsAndPrintsHelp()
   {
-    Console.WriteLine($"🧪 Running {nameof(KSailDown_FailsAndPrintsHelp)} test...");
     //Arrange
     var console = new TestConsole();
     var ksailDownCommand = new KSailDownCommand();

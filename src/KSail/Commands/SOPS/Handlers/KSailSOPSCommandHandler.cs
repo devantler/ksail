@@ -27,12 +27,10 @@ class KSailSOPSCommandHandler()
     }
     else if (showPublicKey)
     {
-      Console.WriteLine("🔐 SOPS public key (age):");
       Console.WriteLine(await SOPSProvisioner.GetPublicKeyAsync());
     }
     else if (showPrivateKey)
     {
-      Console.WriteLine("🔐 SOPS private key (age):");
       Console.WriteLine(await SOPSProvisioner.GetPrivateKeyAsync());
     }
     else if (!string.IsNullOrWhiteSpace(import))

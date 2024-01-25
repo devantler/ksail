@@ -85,7 +85,7 @@ class KSailLintCommandHandler()
     Console.WriteLine($"► Validating cluster '{name}' with Kubeconform...");
     foreach (string manifest in Directory.GetFiles(clusterPath, "*.yaml", SearchOption.AllDirectories))
     {
-      KubeconformCLIWrapper.Run(kubeconformFlags, kubeconformConfig, manifest);
+      await KubeconformCLIWrapper.Run(kubeconformFlags, kubeconformConfig, manifest);
     }
 
     string[] kustomizeFlags = ["--load-restrictor=LoadRestrictionsNone"];
