@@ -20,7 +20,20 @@ sealed class SOPSProvisioner : IProvisioner, IDisposable
 
   public async Task ProvisionAsync()
   {
-    string ageKey = await File.ReadAllTextAsync(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.ksail/ksail_sops.agekey");
+    string? ageKey;
+    if (Environment.GetEnvironmentVariable("KSAIL_SOPS_KEY") is string sopsKey)
+    {
+      Console.WriteLine("✔ Using SOPS key from KSAIL_SOPS_KEY");
+      ageKey = sopsKey;
+    }
+    else
+    {
+      if (!File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.ksail/ksail_sops.agekey"))
+      {
+        throw new FileNotFoundException("🚨 SOPS key not found");
+      }
+      ageKey = await File.ReadAllTextAsync(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.ksail/ksail_sops.agekey");
+    }
     await kubernetesProvisioner.CreateSecretAsync("sops-age", new Dictionary<string, string>
     {
       ["ksail_sops.agekey"] = ageKey
