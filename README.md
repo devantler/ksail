@@ -62,20 +62,15 @@
 └── tests
     └── KSail.Tests.Integration
         ├── Commands
-        │   ├── Check
         │   ├── Down
-        │   ├── Hosts
-        │   ├── Lint
         │   ├── List
         │   ├── Root
         │   ├── SOPS
-        │   ├── Start
-        │   ├── Stop
         │   ├── Up
         │   └── Update
         └── TestUtils
 
-59 directories
+54 directories
 ```
 <!-- readme-tree end -->
 
