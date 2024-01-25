@@ -10,12 +10,9 @@ namespace KSail.Tests.Integration.Commands.Up;
 /// <summary>
 /// Tests for the <see cref="KSailUpCommand"/> class.
 /// </summary>
-[Collection("KSail.Tests.Integration")]
-public class KSailUpCommandTests : IAsyncLifetime
+[Collection("KSail Tests Collection")]
+public class KSailUpCommandTests
 {
-  /// <inheritdoc/>
-  public async Task InitializeAsync() => await KSailTestUtils.Cleanup();
-
   /// <summary>
   /// Tests that the <c>ksail up</c> command fails and prints help.
   /// </summary>
@@ -129,7 +126,4 @@ public class KSailUpCommandTests : IAsyncLifetime
     //Cleanup
     Environment.SetEnvironmentVariable("KSAIL_SOPS_KEY", null);
   }
-
-  /// <inheritdoc/>
-  public Task DisposeAsync() => Task.CompletedTask;
 }
