@@ -8,7 +8,6 @@ namespace KSail.Commands.Up.Handlers;
 
 static class KSailUpGitOpsCommandHandler
 {
-  static readonly KubernetesProvisioner kubernetesProvisioner = new();
   static readonly SOPSProvisioner sopsProvisioner = new();
 
   internal static async Task HandleAsync(string name, string configPath, string manifestsPath, string kustomizationsPath, int timeout, bool noSOPS)
@@ -38,6 +37,7 @@ static class KSailUpGitOpsCommandHandler
     await KSailUpdateCommandHandler.HandleAsync(name, manifestsPath, true);
 
     await K3dProvisioner.ProvisionAsync(name, configPath);
+    var kubernetesProvisioner = new KubernetesProvisioner();
     await kubernetesProvisioner.CreateNamespaceAsync("flux-system");
 
     if (!noSOPS)

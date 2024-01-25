@@ -19,6 +19,7 @@ public class KSailListCommandTests
     //Arrange
     var console = new TestConsole();
     var ksailListCommand = new KSailListCommand();
+
     //Act
     int exitCode = await ksailListCommand.InvokeAsync("", console);
 
