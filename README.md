@@ -225,11 +225,10 @@ jobs:
         uses: Homebrew/actions/setup-homebrew@master
       - name: 🛥️🐳 Install KSail
         run: brew install devantler/formulas/ksail
-      # You would normally not use the `init` command in CI/CD, but this is just an example
-      - name: 🛥️🐳📑 KSail Init
-        run: ksail init <name-of-cluster>
       - name: 🛥️🐳🚀 KSail Up
         run: ksail up <name-of-cluster>
+        env:
+          KSAIL_SOPS_KEY: ${{ secrets.KSAIL_SOPS_KEY }}
 ```
 
 ### How do I use KSail with Cloud Providers?
