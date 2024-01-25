@@ -107,7 +107,7 @@ public class KSailUpCommandTests : IAsyncLifetime
   [Fact]
   public async void KSailUpNameAndConfigAndEnv_SucceedsAndCreatesCluster()
   {
-    Console.WriteLine($"🧪 Running {nameof(KSailUpNameAndConfig_SucceedsAndCreatesCluster)} test...");
+    Console.WriteLine($"🧪 Running {nameof(KSailUpNameAndConfigAndEnv_SucceedsAndCreatesCluster)} test...");
     //Arrange
     var console = new TestConsole();
     var ksailInitCommand = new KSailInitCommand();
