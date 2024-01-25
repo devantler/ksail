@@ -66,11 +66,10 @@
         │   ├── List
         │   ├── Root
         │   ├── SOPS
-        │   ├── Up
-        │   └── Update
+        │   └── Up
         └── TestUtils
 
-54 directories
+53 directories
 ```
 <!-- readme-tree end -->
 
