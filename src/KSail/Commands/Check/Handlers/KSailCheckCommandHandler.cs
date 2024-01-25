@@ -23,10 +23,6 @@ class KSailCheckCommandHandler()
     {
       string? kustomizationName = kustomization?.Metadata.Name ??
         throw new InvalidOperationException("Kustomization name is null");
-      if (!kustomization?.Status.Conditions.FirstOrDefault()?.Status.Equals("false", StringComparison.OrdinalIgnoreCase) == true)
-      {
-        continue;
-      }
       string? statusName = kustomization?.Status.Conditions.FirstOrDefault()?.Type ??
         throw new InvalidOperationException("Kustomization status is null");
 
@@ -47,7 +43,10 @@ class KSailCheckCommandHandler()
           continue;
         }
       }
-
+      if (kustomization?.Status.Conditions.FirstOrDefault()?.Status.Equals("false", StringComparison.OrdinalIgnoreCase) == false)
+      {
+        continue;
+      }
       switch (statusName)
       {
         case "Failed":
@@ -75,7 +74,7 @@ class KSailCheckCommandHandler()
     stopwatch.Restart();
   }
 
-  static void HandleFailedStatus(V1CustomResourceDefinition kustomization, string kustomizationName)
+  static void HandleFailedStatus(V1CustomResourceDefinition? kustomization, string kustomizationName)
   {
     Console.WriteLine($"✕ Kustomization '{kustomizationName}' failed!");
     string? message = kustomization?.Status.Conditions.FirstOrDefault()?.Message;
