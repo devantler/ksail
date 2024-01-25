@@ -7,10 +7,10 @@ namespace KSail.Commands.Lint;
 
 sealed class KSailLintCommand : Command
 {
-  readonly NameArgument nameArgument = new();
+  readonly NameArgument nameArgument = new() { Arity = ArgumentArity.ExactlyOne };
   readonly ManifestsOption manifestsOption = new() { IsRequired = true };
   internal KSailLintCommand() : base(
-   "lint", "Lint manifest files"
+    "lint", "Lint manifest files"
   )
   {
     AddArgument(nameArgument);
