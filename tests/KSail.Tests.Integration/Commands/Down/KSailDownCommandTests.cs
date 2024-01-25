@@ -12,8 +12,11 @@ namespace KSail.Tests.Integration.Commands.Down;
 /// </summary>
 [UsesVerify]
 [Collection("KSail.Tests.Integration")]
-public class KSailDownCommandTests
+public class KSailDownCommandTests : IAsyncLifetime
 {
+  /// <inheritdoc/>
+  public Task InitializeAsync() => Task.CompletedTask;
+
   /// <summary>
   /// Tests that the <c>ksail down</c> command fails and prints help.
   /// </summary>
@@ -66,5 +69,20 @@ public class KSailDownCommandTests
       && await DockerTestUtils.ContainerExistsAsync("proxy-ghcr.io")
       && await DockerTestUtils.ContainerExistsAsync("proxy-quay.io")
       && await DockerTestUtils.ContainerExistsAsync("proxy-mcr.microsoft.com");
+  }
+
+  /// <inheritdoc/>
+  public async Task DisposeAsync()
+  {
+    var ksailDownCommand = new KSailDownCommand();
+    _ = await ksailDownCommand.InvokeAsync("ksail --delete-pull-through-registries");
+    if (Directory.Exists("k8s"))
+    {
+      Directory.Delete("k8s", true);
+    }
+    if (File.Exists("ksail-k3d-config.yaml"))
+    {
+      File.Delete("ksail-k3d-config.yaml");
+    }
   }
 }
