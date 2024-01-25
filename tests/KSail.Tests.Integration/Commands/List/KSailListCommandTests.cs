@@ -13,7 +13,7 @@ public class KSailListCommandTests : IAsyncLifetime
   /// <inheritdoc/>
   public Task DisposeAsync() => Task.CompletedTask;
   /// <inheritdoc/>
-  public async Task InitializeAsync() => await KSailTestUtils.Cleanup();
+  public Task InitializeAsync() => KSailTestUtils.CleanupAsync();
   /// <summary>
   /// Tests that the <c>ksail up [name]</c> command succeeds and creates a cluster.
   /// </summary>

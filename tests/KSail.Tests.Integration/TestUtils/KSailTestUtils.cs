@@ -5,7 +5,7 @@ namespace KSail.Tests.Integration.TestUtils;
 
 static class KSailTestUtils
 {
-  internal static async Task Cleanup()
+  internal static async Task CleanupAsync()
   {
     var ksailDownCommand = new KSailDownCommand();
     _ = await ksailDownCommand.InvokeAsync("ksail --delete-pull-through-registries");

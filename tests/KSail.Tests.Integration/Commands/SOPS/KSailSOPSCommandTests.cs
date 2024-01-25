@@ -14,7 +14,7 @@ public class KSailSOPSCommandTests : IAsyncLifetime
   /// <inheritdoc/>
   public Task DisposeAsync() => Task.CompletedTask;
   /// <inheritdoc/>
-  public async Task InitializeAsync() => await KSailTestUtils.Cleanup();
+  public Task InitializeAsync() => KSailTestUtils.CleanupAsync();
 
   /// <summary>
   /// Tests that the 'ksail sops' command fails and prints the help text.

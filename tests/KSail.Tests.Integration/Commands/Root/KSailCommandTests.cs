@@ -14,7 +14,7 @@ public class KSailRootCommandTests : IAsyncLifetime
   /// <inheritdoc/>
   public Task DisposeAsync() => Task.CompletedTask;
   /// <inheritdoc/>
-  public async Task InitializeAsync() => await KSailTestUtils.Cleanup();
+  public Task InitializeAsync() => KSailTestUtils.CleanupAsync();
 
   /// <summary>
   /// Tests that the 'ksail' command succeeds and returns the introduction and help text.
