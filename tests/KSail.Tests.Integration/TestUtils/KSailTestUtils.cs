@@ -31,6 +31,5 @@ static class KSailTestUtils
     {
       _ = semaphore.Release();
     }
-
   }
 }
