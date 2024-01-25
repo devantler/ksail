@@ -13,7 +13,7 @@ public class KSailSOPSCommandTests
   /// Tests that the 'ksail sops' command fails and prints the help text.
   /// </summary>
   [Fact]
-  public async void KSailSOPS_FailsAndPrintsHelp()
+  public async Task KSailSOPS_FailsAndPrintsHelp()
   {
     //Arrange
     var console = new TestConsole();
@@ -31,7 +31,7 @@ public class KSailSOPSCommandTests
   /// Tests that the 'ksail sops --show-public-key' command prints the public key.
   /// </summary>
   [Fact]
-  public async void KSailSOPSShowPublicKey_PrintsPublicKey()
+  public async Task KSailSOPSShowPublicKey_PrintsPublicKey()
   {
     //Arrange
     var console = new TestConsole();
@@ -52,7 +52,7 @@ public class KSailSOPSCommandTests
   /// Tests that the 'ksail sops --show-private-key' command prints the private key.
   /// </summary>
   [Fact]
-  public async void KSailSOPSShowPrivateKey_PrintsPrivateKey()
+  public async Task KSailSOPSShowPrivateKey_PrintsPrivateKey()
   {
     //Arrange
     var console = new TestConsole();
@@ -73,7 +73,7 @@ public class KSailSOPSCommandTests
   /// Tests that the 'ksail sops --import [key]' command imports the key.
   /// </summary>
   [Fact]
-  public async void KSailSOPSImportKey_ImportsKey()
+  public async Task KSailSOPSImportKey_ImportsKey()
   {
     //Arrange
     var console = new TestConsole();
@@ -95,7 +95,7 @@ public class KSailSOPSCommandTests
   /// Tests that the 'ksail sops --import [keyPath]' command imports the key.
   /// </summary>
   [Fact]
-  public async void KSailSOPSImportKeyFromFile_ImportsKey()
+  public async Task KSailSOPSImportKeyFromFile_ImportsKey()
   {
     //Arrange
     var console = new TestConsole();
@@ -116,7 +116,7 @@ public class KSailSOPSCommandTests
   /// Tests that the 'ksail sops --export [path]' command exports the key to the specified path.
   /// </summary>
   [Fact]
-  public async void KSailSOPSExportKey_ExportsKey()
+  public async Task KSailSOPSExportKey_ExportsKey()
   {
     //Arrange
     var console = new TestConsole();
