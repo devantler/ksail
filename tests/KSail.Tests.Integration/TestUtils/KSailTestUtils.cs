@@ -5,7 +5,7 @@ namespace KSail.Tests.Integration.TestUtils;
 
 static class KSailTestUtils
 {
-  static readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+  static readonly SemaphoreSlim semaphore = new(1, 1);
   internal static async Task CleanupAsync()
   {
     await semaphore.WaitAsync();
