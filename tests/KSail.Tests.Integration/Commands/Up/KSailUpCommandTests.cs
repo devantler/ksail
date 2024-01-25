@@ -118,7 +118,7 @@ public class KSailUpCommandTests : IAsyncLifetime
     {
       _ = await ksailSOPSCommand.InvokeAsync("--generate-key", console);
     }
-    string key = File.ReadAllText(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey"));
+    string key = await File.ReadAllTextAsync(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey"));
     Environment.SetEnvironmentVariable("KSAIL_SOPS_KEY", key);
     int initExitCode = await ksailInitCommand.InvokeAsync("ksail", console);
     int upExitCode = await ksailUpCommand.InvokeAsync("ksail", console);

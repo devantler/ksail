@@ -4,5 +4,5 @@ namespace KSail.Commands.Stop.Handlers;
 
 static class KSailStopCommandHandler
 {
-  internal static async Task HandleAsync(string name) => await K3dCLIWrapper.StopClusterAsync(name);
+  internal static Task HandleAsync(string name) => K3dCLIWrapper.StopClusterAsync(name);
 }

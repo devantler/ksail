@@ -4,5 +4,5 @@ namespace KSail.Commands.Start.Handlers;
 
 static class KSailStartCommandHandler
 {
-  internal static async Task HandleAsync(string name) => await K3dCLIWrapper.StartClusterAsync(name);
+  internal static Task HandleAsync(string name) => K3dCLIWrapper.StartClusterAsync(name);
 }
