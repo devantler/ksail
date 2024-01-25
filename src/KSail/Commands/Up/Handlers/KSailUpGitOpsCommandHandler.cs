@@ -8,8 +8,6 @@ namespace KSail.Commands.Up.Handlers;
 
 static class KSailUpGitOpsCommandHandler
 {
-  static readonly SOPSProvisioner sopsProvisioner = new();
-
   internal static async Task HandleAsync(string name, string configPath, string manifestsPath, string kustomizationsPath, int timeout, bool noSOPS)
   {
     kustomizationsPath = string.IsNullOrEmpty(kustomizationsPath) ? $"clusters/{name}/flux-system" : kustomizationsPath;
@@ -43,6 +41,7 @@ static class KSailUpGitOpsCommandHandler
     if (!noSOPS)
     {
       Console.WriteLine("🔐 Adding SOPS key...");
+      var sopsProvisioner = new SOPSProvisioner();
       await sopsProvisioner.ProvisionAsync();
       Console.WriteLine("");
     }
