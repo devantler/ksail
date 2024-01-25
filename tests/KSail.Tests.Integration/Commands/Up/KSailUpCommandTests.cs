@@ -10,7 +10,6 @@ namespace KSail.Tests.Integration.Commands.Up;
 /// <summary>
 /// Tests for the <see cref="KSailUpCommand"/> class.
 /// </summary>
-[Collection("KSail Tests Collection")]
 public class KSailUpCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
