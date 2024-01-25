@@ -15,7 +15,7 @@ class KSailCheckCommandHandler()
 
   internal static async Task HandleAsync(string name, int timeout, CancellationToken cancellationToken)
   {
-    Console.WriteLine("👀 Checking the status the of cluster...");
+    Console.WriteLine("👀 Checking the status of the cluster...");
     var kubernetesClient = CreateKubernetesClientFromClusterName(name);
     var responseTask = kubernetesClient.ListKustomizationsWithHttpMessagesAsync(cancellationToken);
 
