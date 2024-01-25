@@ -51,6 +51,7 @@ class KSailCheckCommandHandler()
       }
       switch (statusConditionType)
       {
+        //TODO: Implement check command with condition[1].type == healthy. This should work for all kustomizations.
         case "Failed":
           HandleFailedStatus(kustomization, kustomizationName);
           break;

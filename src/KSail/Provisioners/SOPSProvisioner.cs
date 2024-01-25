@@ -23,6 +23,7 @@ sealed class SOPSProvisioner : IProvisioner, IDisposable
     if (Environment.GetEnvironmentVariable("KSAIL_SOPS_KEY") is string sopsKey)
     {
       Console.WriteLine("✔ Using SOPS key from KSAIL_SOPS_KEY");
+      _ = Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.ksail");
       await File.WriteAllTextAsync(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.ksail/ksail_sops.agekey", sopsKey);
     }
     if (!File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.ksail/ksail_sops.agekey"))
