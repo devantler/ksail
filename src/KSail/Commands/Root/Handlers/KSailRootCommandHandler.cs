@@ -20,7 +20,7 @@ static class KSailRootCommandHandler
   }
 
   const string introduction = """
-    🐳⛴️    [bold underline]Welcome to [blue]KSail[/]![/]    ⛴️ 🐳
+    🛥️ 🐳    [bold underline]Welcome to [blue]KSail[/]![/]    🛥️ 🐳
                                          [blue]. . .[/]
                     __/___                 [blue]:[/]
               _____/______|             ___[blue]|[/]____     |"\/"|

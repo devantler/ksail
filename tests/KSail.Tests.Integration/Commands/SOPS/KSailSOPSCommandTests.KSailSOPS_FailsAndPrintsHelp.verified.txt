@@ -1,0 +1,20 @@
+﻿No option specified
+
+Description:
+  Manage SOPS key
+
+Usage:
+  sops [options]
+
+Options:
+  -g, --generate-key       Generate a new key
+  -spk, --show-public-key  Show the public key
+  -sk, --show-private-key  Show the private key
+  -e, --encrypt <encrypt>  File to encrypt
+  -d, --decrypt <decrypt>  File to decrypt
+  -i, --import <import>    Import a key
+  -ex, --export <export>   Export a key
+  --version                Show version information
+  -?, -h, --help           Show help and usage information
+
+

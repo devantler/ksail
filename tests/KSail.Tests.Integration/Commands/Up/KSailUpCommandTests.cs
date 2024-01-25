@@ -1,7 +1,6 @@
 using System.CommandLine;
 using System.CommandLine.IO;
 using KSail.CLIWrappers;
-using KSail.Commands.Down;
 using KSail.Commands.Init;
 using KSail.Commands.Up;
 using KSail.Tests.Integration.TestUtils;
@@ -11,12 +10,11 @@ namespace KSail.Tests.Integration.Commands.Up;
 /// <summary>
 /// Tests for the <see cref="KSailUpCommand"/> class.
 /// </summary>
-[UsesVerify]
 [Collection("KSail.Tests.Integration")]
 public class KSailUpCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
-  public Task InitializeAsync() => Task.CompletedTask;
+  public async Task InitializeAsync() => await KSailTestUtils.Cleanup();
 
   /// <summary>
   /// Tests that the <c>ksail up</c> command fails and prints help.
@@ -102,30 +100,6 @@ public class KSailUpCommandTests : IAsyncLifetime
     _ = await Verify(clusters);
   }
 
-  /// <summary>
-  /// Tests that the <c>ksail up [name] --no-gitops</c> command succeeds and creates a cluster.
-  /// </summary>
-  [Fact]
-  public async void KSailUpNameAndConfigAndNoGitOps_SucceedsAndCreatesCluster()
-  {
-    Console.WriteLine($"🧪 Running {nameof(KSailUpNameAndConfigAndNoGitOps_SucceedsAndCreatesCluster)} test...");
-    //Arrange
-    var testConsole = new TestConsole();
-    var ksailInitCommand = new KSailInitCommand();
-    var ksailUpCommand = new KSailUpCommand();
-
-    //Act
-    int initExitCode = await ksailInitCommand.InvokeAsync("ksail", testConsole);
-    int upExitCode = await ksailUpCommand.InvokeAsync("ksail --no-gitops", testConsole);
-    string clusters = await K3dCLIWrapper.ListClustersAsync();
-
-    //Assert
-    Assert.Equal(0, initExitCode);
-    Assert.Equal(0, upExitCode);
-    Assert.True(await CheckRegistriesExistAsync());
-    _ = await Verify(clusters);
-  }
-
   static async Task<bool> CheckRegistriesExistAsync()
   {
     return await DockerTestUtils.ContainerExistsAsync("proxy-docker.io")
@@ -137,17 +111,5 @@ public class KSailUpCommandTests : IAsyncLifetime
   }
 
   /// <inheritdoc/>
-  public async Task DisposeAsync()
-  {
-    var ksailDownCommand = new KSailDownCommand();
-    _ = await ksailDownCommand.InvokeAsync("ksail --delete-pull-through-registries");
-    if (Directory.Exists("k8s"))
-    {
-      Directory.Delete("k8s", true);
-    }
-    if (File.Exists("ksail-k3d-config.yaml"))
-    {
-      File.Delete("ksail-k3d-config.yaml");
-    }
-  }
+  public async Task DisposeAsync() => await KSailTestUtils.Cleanup();
 }

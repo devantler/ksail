@@ -1,4 +1,4 @@
-name: GitHub Readme Tree
+name: Readme Tree
 
 on:
   push:

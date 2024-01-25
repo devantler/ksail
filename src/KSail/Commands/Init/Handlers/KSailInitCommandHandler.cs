@@ -1,4 +1,5 @@
 using System.Text;
+using KSail.Provisioners;
 
 namespace KSail.Commands.Init.Handlers;
 
@@ -26,6 +27,8 @@ static class KSailInitCommandHandler
     {
       await CreateConfigAsync(name);
     }
+    await SOPSProvisioner.CreateKeysAsync();
+    await SOPSProvisioner.CreateSOPSConfigAsync($"{manifests}/../.sops.yaml");
     Console.WriteLine($"✔ Successfully initialized a new K8s GitOps project named '{name}'.");
     Console.WriteLine();
   }
@@ -48,7 +51,7 @@ static class KSailInitCommandHandler
 
   static async Task CreateFluxKustomizationsAsync(string name, string clusterDirectory)
   {
-    Console.WriteLine($"✚ Creating flux infrastructure kustomization '{clusterDirectory}/flux-system/infrastucture.yaml'...");
+    Console.WriteLine($"✚ Creating flux infrastructure kustomization '{clusterDirectory}/flux-system/infrastructure.yaml'...");
     string fluxDirectory = CreateFluxSystemDirectory(clusterDirectory);
     string infrastructureYamlPath = Path.Combine(fluxDirectory, "infrastructure.yaml");
     string infrastructureYamlContent = $"""

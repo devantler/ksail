@@ -156,6 +156,12 @@ ksail --help
 docker run --rm ghcr.io/devantler/ksail:latest --help
 ```
 
+### Supported Environment Variables
+
+| Variable Name    | Description                                                | Default Value |
+| :--------------- | ---------------------------------------------------------- | :-----------: |
+| `KSAIL_SOPS_KEY` | The SOPS key to use for encrypting and decrypting secrets. |     `""`      |
+
 ## What is KSail?
 
 KSail is a CLI tool designed to simplify the management of GitOps-enabled Kubernetes clusters in Docker. It provides a set of commands that allow you to easily create, manage, and dismantle GitOps-enabled clusters. KSail also integrates with SOPS for managing secrets in Git repositories and provides features for validating and verifying your clusters.
@@ -199,9 +205,6 @@ KSail is built on top of k3d, so it provides all the same functionality as k3d. 
 
 You need to download the KSail binary into your CI/CD environment, and then run the KSail commands as you would locally. For example, if you are using GitHub Actions, you can use the following workflow:
 
-> [!WARNING]
-> The below example workflow has not been tested yet. I assume it will not work if you are trying to run this without `ksail init`, as there is currently no support for reading the ksail Age keys from the environment. When I get around to testing this, I will update this section.
-
 ```yaml
 name: KSail
 
@@ -225,11 +228,10 @@ jobs:
         uses: Homebrew/actions/setup-homebrew@master
       - name: 🛥️🐳 Install KSail
         run: brew install devantler/formulas/ksail
-      # You would normally not use the `init` command in CI/CD, but this is just an example
-      - name: 🛥️🐳📑 KSail Init
-        run: ksail init <name-of-cluster>
       - name: 🛥️🐳🚀 KSail Up
         run: ksail up <name-of-cluster>
+        env:
+          KSAIL_SOPS_KEY: ${{ secrets.KSAIL_SOPS_KEY }}
 ```
 
 ### How do I use KSail with Cloud Providers?
