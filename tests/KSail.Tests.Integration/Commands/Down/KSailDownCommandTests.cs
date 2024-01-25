@@ -12,7 +12,7 @@ namespace KSail.Tests.Integration.Commands.Down;
 public class KSailDownCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
-  public async Task DisposeAsync() => await KSailTestUtils.Cleanup();
+  public Task DisposeAsync() => Task.CompletedTask;
   /// <inheritdoc/>
   public async Task InitializeAsync() => await KSailTestUtils.Cleanup();
 

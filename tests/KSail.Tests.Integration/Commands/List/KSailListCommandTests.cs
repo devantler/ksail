@@ -11,7 +11,7 @@ namespace KSail.Tests.Integration.Commands.List;
 public class KSailListCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
-  public async Task DisposeAsync() => await KSailTestUtils.Cleanup();
+  public Task DisposeAsync() => Task.CompletedTask;
   /// <inheritdoc/>
   public async Task InitializeAsync() => await KSailTestUtils.Cleanup();
   /// <summary>
