@@ -46,9 +46,9 @@ class KSailSOPSCommandHandler()
       }
       else
       {
-        Console.WriteLine($"🔐 Importing SOPS key from stdin...");
+        Console.WriteLine("🔐 Importing SOPS key from stdin...");
         contents = import;
-        Console.WriteLine($"✔ SOPS key imported from stdin");
+        Console.WriteLine("✔ SOPS key imported from stdin");
       }
       await File.WriteAllTextAsync(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey"), contents);
     }
