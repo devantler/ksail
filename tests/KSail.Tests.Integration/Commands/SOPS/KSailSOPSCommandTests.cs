@@ -26,4 +26,46 @@ public class KSailSOPSCommandTests
     Assert.Equal(1, exitCode);
     _ = await Verify(console.Error.ToString() + console.Out);
   }
+
+  /// <summary>
+  /// Tests that the 'ksail sops --show-public-key' command prints the public key.
+  /// </summary>
+  [Fact]
+  public async void KSailSOPSShowPublicKey_PrintsPublicKey()
+  {
+    //Arrange
+    var console = new TestConsole();
+    var ksailSOPSCommand = new KSailSOPSCommand();
+
+    //Act
+    if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey")))
+    {
+      _ = await ksailSOPSCommand.InvokeAsync("--generate-key", console);
+    }
+    int exitCode = await ksailSOPSCommand.InvokeAsync("--show-public-key", console);
+
+    //Assert
+    Assert.Equal(0, exitCode);
+  }
+
+  /// <summary>
+  /// Tests that the 'ksail sops --show-private-key' command prints the private key.
+  /// </summary>
+  [Fact]
+  public async void KSailSOPSShowPrivateKey_PrintsPrivateKey()
+  {
+    //Arrange
+    var console = new TestConsole();
+    var ksailSOPSCommand = new KSailSOPSCommand();
+
+    //Act
+    if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey")))
+    {
+      _ = await ksailSOPSCommand.InvokeAsync("--generate-key", console);
+    }
+    int exitCode = await ksailSOPSCommand.InvokeAsync("--show-private-key", console);
+
+    //Assert
+    Assert.Equal(0, exitCode);
+  }
 }

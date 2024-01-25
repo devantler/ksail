@@ -65,7 +65,7 @@ class KSailSOPSCommandHandler()
     }
     else
     {
-      throw new InvalidOperationException("You must specify either --generate-key, --show-public-key, --show-private-key, --encrypt or --decrypt");
+      throw new InvalidOperationException("No option specified");
     }
     Console.WriteLine("");
   }
