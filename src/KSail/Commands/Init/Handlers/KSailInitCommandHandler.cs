@@ -1,4 +1,5 @@
 using System.Text;
+using KSail.Provisioners;
 
 namespace KSail.Commands.Init.Handlers;
 
@@ -26,6 +27,8 @@ static class KSailInitCommandHandler
     {
       await CreateConfigAsync(name);
     }
+    await SOPSProvisioner.CreateKeysAsync();
+    await SOPSProvisioner.CreateSOPSConfigAsync($"{manifests}/../.sops.yaml");
     Console.WriteLine($"✔ Successfully initialized a new K8s GitOps project named '{name}'.");
     Console.WriteLine();
   }

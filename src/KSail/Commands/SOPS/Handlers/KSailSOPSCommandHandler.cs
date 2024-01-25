@@ -5,7 +5,7 @@ namespace KSail.Commands.SOPS.Handlers;
 
 class KSailSOPSCommandHandler()
 {
-  internal static async Task HandleAsync(bool generateKey, bool showPublicKey, bool showPrivateKey, string encrypt, string decrypt)
+  internal static async Task HandleAsync(bool generateKey, bool showPublicKey, bool showPrivateKey, string encrypt, string decrypt, string import, string export)
   {
     if (generateKey)
     {
@@ -34,6 +34,30 @@ class KSailSOPSCommandHandler()
     {
       Console.WriteLine("🔐 SOPS private key (age):");
       Console.WriteLine(await SOPSProvisioner.GetPrivateKeyAsync());
+    }
+    else if (!string.IsNullOrWhiteSpace(import))
+    {
+      if (File.Exists(import))
+      {
+        Console.WriteLine($"🔐 Importing SOPS key from '{import}'...");
+        // Read all contents of the file
+        string contents = await File.ReadAllTextAsync(import);
+        // Write the contents to 
+
+        Console.WriteLine($"✔ SOPS key imported from '{import}'");
+      }
+      else
+      {
+        Console.WriteLine($"🔐 Importing SOPS key from stdin...");
+        await SOPSCLIWrapper.ImportAsync(import);
+        Console.WriteLine($"✔ SOPS key imported from stdin");
+      }
+    }
+    else if (!string.IsNullOrWhiteSpace(export))
+    {
+      Console.WriteLine($"🔐 Exporting SOPS key to '{export}'...");
+      await SOPSCLIWrapper.ExportAsync(export);
+      Console.WriteLine($"✔ SOPS key exported to '{export}'");
     }
     else
     {
