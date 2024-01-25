@@ -26,15 +26,15 @@ public class KSailUpCommandTests : IAsyncLifetime
   {
     Console.WriteLine($"🧪 Running {nameof(KSailUpNoNameAndNoConfig_FailsAndPrintsHelp)} test...");
     //Arrange
-    var testConsole = new TestConsole();
+    var console = new TestConsole();
     var ksailUpCommand = new KSailUpCommand();
 
     //Act
-    int exitCode = await ksailUpCommand.InvokeAsync("", testConsole);
+    int exitCode = await ksailUpCommand.InvokeAsync("", console);
 
     //Assert
     Assert.Equal(1, exitCode);
-    _ = await Verify(testConsole.Error.ToString() + testConsole.Out);
+    _ = await Verify(console.Error.ToString() + console.Out);
   }
 
   /// <summary>
@@ -45,15 +45,15 @@ public class KSailUpCommandTests : IAsyncLifetime
   {
     Console.WriteLine($"🧪 Running {nameof(KSailUpNameAndNoConfig_FailsAndPrintsHelp)} test...");
     //Arrange
-    var testConsole = new TestConsole();
+    var console = new TestConsole();
     var ksailUpCommand = new KSailUpCommand();
 
     //Act
-    int exitCode = await ksailUpCommand.InvokeAsync("ksail", testConsole);
+    int exitCode = await ksailUpCommand.InvokeAsync("ksail", console);
 
     //Assert
     Assert.Equal(1, exitCode);
-    _ = await Verify(testConsole.Error.ToString() + testConsole.Out);
+    _ = await Verify(console.Error.ToString() + console.Out);
   }
 
   /// <summary>
@@ -64,18 +64,18 @@ public class KSailUpCommandTests : IAsyncLifetime
   {
     Console.WriteLine($"🧪 Running {nameof(KSailUpNoNameAndConfig_FailsAndPrintsHelp)} test...");
     //Arrange
-    var testConsole = new TestConsole();
+    var console = new TestConsole();
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();
 
     //Act
-    int initExitCode = await ksailInitCommand.InvokeAsync("ksail", testConsole);
-    int upExitCode = await ksailUpCommand.InvokeAsync("", testConsole);
+    int initExitCode = await ksailInitCommand.InvokeAsync("ksail", console);
+    int upExitCode = await ksailUpCommand.InvokeAsync("", console);
 
     //Assert
     Assert.Equal(0, initExitCode);
     Assert.Equal(1, upExitCode);
-    _ = await Verify(testConsole.Error.ToString() + testConsole.Out);
+    _ = await Verify(console.Error.ToString() + console.Out);
   }
 
   /// <summary>
@@ -86,13 +86,13 @@ public class KSailUpCommandTests : IAsyncLifetime
   {
     Console.WriteLine($"🧪 Running {nameof(KSailUpNameAndConfig_SucceedsAndCreatesCluster)} test...");
     //Arrange
-    var testConsole = new TestConsole();
+    var console = new TestConsole();
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();
 
     //Act
-    int initExitCode = await ksailInitCommand.InvokeAsync("ksail", testConsole);
-    int upExitCode = await ksailUpCommand.InvokeAsync("ksail", testConsole);
+    int initExitCode = await ksailInitCommand.InvokeAsync("ksail", console);
+    int upExitCode = await ksailUpCommand.InvokeAsync("ksail", console);
 
     //Assert
     Assert.Equal(0, initExitCode);
@@ -122,13 +122,11 @@ public class KSailUpCommandTests : IAsyncLifetime
     Environment.SetEnvironmentVariable("KSAIL_SOPS_KEY", key);
     int initExitCode = await ksailInitCommand.InvokeAsync("ksail", console);
     int upExitCode = await ksailUpCommand.InvokeAsync("ksail", console);
+    Environment.SetEnvironmentVariable("KSAIL_SOPS_KEY", null);
 
     //Assert
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, upExitCode);
     Assert.True(await DockerTestUtils.CheckRegistriesExistAsync());
-
-    //Cleanup
-    Environment.SetEnvironmentVariable("KSAIL_SOPS_KEY", null);
   }
 }
