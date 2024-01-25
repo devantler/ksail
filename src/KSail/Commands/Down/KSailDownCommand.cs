@@ -7,7 +7,7 @@ namespace KSail.Commands.Down;
 
 sealed class KSailDownCommand : Command
 {
-  readonly NameArgument nameArgument = new();
+  readonly NameArgument nameArgument = new() { Arity = ArgumentArity.ExactlyOne };
   readonly DeletePullThroughRegistriesOption deletePullThroughRegistriesOption = new();
   internal KSailDownCommand() : base("down", "Destroy a K8s cluster")
   {
