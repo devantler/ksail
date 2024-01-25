@@ -102,30 +102,6 @@ public class KSailUpCommandTests : IAsyncLifetime
     _ = await Verify(clusters);
   }
 
-  /// <summary>
-  /// Tests that the <c>ksail up [name] --no-gitops</c> command succeeds and creates a cluster.
-  /// </summary>
-  [Fact]
-  public async void KSailUpNameAndConfigAndNoGitOps_SucceedsAndCreatesCluster()
-  {
-    Console.WriteLine($"🧪 Running {nameof(KSailUpNameAndConfigAndNoGitOps_SucceedsAndCreatesCluster)} test...");
-    //Arrange
-    var testConsole = new TestConsole();
-    var ksailInitCommand = new KSailInitCommand();
-    var ksailUpCommand = new KSailUpCommand();
-
-    //Act
-    int initExitCode = await ksailInitCommand.InvokeAsync("ksail", testConsole);
-    int upExitCode = await ksailUpCommand.InvokeAsync("ksail --no-gitops", testConsole);
-    string clusters = await K3dCLIWrapper.ListClustersAsync();
-
-    //Assert
-    Assert.Equal(0, initExitCode);
-    Assert.Equal(0, upExitCode);
-    Assert.True(await CheckRegistriesExistAsync());
-    _ = await Verify(clusters);
-  }
-
   static async Task<bool> CheckRegistriesExistAsync()
   {
     return await DockerTestUtils.ContainerExistsAsync("proxy-docker.io")

@@ -48,7 +48,7 @@ public class KSailDownCommandTests
 
     //Act
     int initExitCode = await ksailInitCommand.InvokeAsync("ksail", console);
-    int upExitCode = await ksailUpCommand.InvokeAsync("ksail --no-gitops", console);
+    int upExitCode = await ksailUpCommand.InvokeAsync("ksail", console);
     int downExitCode = await ksailDownCommand.InvokeAsync("ksail --delete-pull-through-registries", console);
 
     //Assert
