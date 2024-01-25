@@ -43,7 +43,7 @@ class KSailCheckCommandHandler()
           continue;
         }
       }
-      if (kustomization?.Status.Conditions.FirstOrDefault()?.Status.Equals("false", StringComparison.OrdinalIgnoreCase) == false)
+      if (kustomization?.Status.Conditions.FirstOrDefault()?.Status.Equals("false", StringComparison.OrdinalIgnoreCase) == true)
       {
         continue;
       }
