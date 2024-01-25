@@ -7,7 +7,6 @@ namespace KSail.Tests.Integration.Commands.Root;
 /// <summary>
 /// Tests for the <see cref="KSailRootCommand"/> class.
 /// </summary>
-[UsesVerify]
 public class KSailRootCommandTests
 {
   /// <summary>
