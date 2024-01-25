@@ -23,6 +23,10 @@ class KSailCheckCommandHandler()
     {
       string? kustomizationName = kustomization?.Metadata.Name ??
         throw new InvalidOperationException("Kustomization name is null");
+      if (!kustomization?.Status.Conditions.FirstOrDefault()?.Status.Equals("false", StringComparison.OrdinalIgnoreCase) == true)
+      {
+        continue;
+      }
       string? statusName = kustomization?.Status.Conditions.FirstOrDefault()?.Type ??
         throw new InvalidOperationException("Kustomization status is null");
 
