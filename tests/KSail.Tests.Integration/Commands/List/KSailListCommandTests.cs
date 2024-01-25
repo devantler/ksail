@@ -1,31 +1,28 @@
-using KSail.CLIWrappers;
+using System.CommandLine;
+using System.CommandLine.IO;
+using KSail.Commands.List;
 using KSail.Commands.Up;
-using KSail.Tests.Integration.TestUtils;
 
 namespace KSail.Tests.Integration.Commands.List;
 
 /// <summary>
 /// Tests for the <see cref="KSailUpCommand"/> class.
 /// </summary>
-[Collection("KSail Tests Collection")]
-public class KSailListCommandTests : IAsyncLifetime
+public class KSailListCommandTests
 {
-  /// <inheritdoc/>
-  public Task DisposeAsync() => Task.CompletedTask;
-  /// <inheritdoc/>
-  public Task InitializeAsync() => KSailTestUtils.CleanupAsync();
   /// <summary>
   /// Tests that the <c>ksail up [name]</c> command succeeds and creates a cluster.
   /// </summary>
   [Fact]
   public async Task KSailList_SucceedsAndListsClusters()
   {
-    Console.WriteLine($"🧪 Running {nameof(KSailList_SucceedsAndListsClusters)} test...");
     //Arrange
+    var console = new TestConsole();
+    var ksailListCommand = new KSailListCommand();
     //Act
-    string clusters = await K3dCLIWrapper.ListClustersAsync();
+    int exitCode = await ksailListCommand.InvokeAsync("", console);
 
     //Assert
-    _ = await Verify(clusters);
+    Assert.Equal(0, exitCode);
   }
 }

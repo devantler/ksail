@@ -17,7 +17,7 @@ sealed class K3dProvisioner() : IProvisioner
     return K3dCLIWrapper.DeleteClusterAsync(name);
   }
 
-  internal static async Task ListAsync() => _ = await K3dCLIWrapper.ListClustersAsync();
+  internal static async Task<string> ListAsync() => _ = await K3dCLIWrapper.ListClustersAsync();
 
   internal static Task<bool> ExistsAsync(string name) => K3dCLIWrapper.GetClusterAsync(name);
 }

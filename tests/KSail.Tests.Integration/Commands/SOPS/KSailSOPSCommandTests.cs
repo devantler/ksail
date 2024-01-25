@@ -1,21 +1,14 @@
 using System.CommandLine;
 using System.CommandLine.IO;
 using KSail.Commands.SOPS;
-using KSail.Tests.Integration.TestUtils;
 
 namespace KSail.Tests.Integration.Commands.SOPS;
 
 /// <summary>
 /// Tests for the <see cref="KSailSOPSCommand"/> class.
 /// </summary>
-[Collection("KSail Tests Collection")]
-public class KSailSOPSCommandTests : IAsyncLifetime
+public class KSailSOPSCommandTests
 {
-  /// <inheritdoc/>
-  public Task DisposeAsync() => Task.CompletedTask;
-  /// <inheritdoc/>
-  public Task InitializeAsync() => KSailTestUtils.CleanupAsync();
-
   /// <summary>
   /// Tests that the 'ksail sops' command fails and prints the help text.
   /// </summary>
