@@ -1,5 +1,6 @@
 using KSail.CLIWrappers;
 using KSail.Commands.Up;
+using KSail.Tests.Integration.TestUtils;
 
 namespace KSail.Tests.Integration.Commands.List;
 
@@ -10,7 +11,7 @@ namespace KSail.Tests.Integration.Commands.List;
 public class KSailListCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
-  public Task InitializeAsync() => Task.CompletedTask;
+  public async Task InitializeAsync() => await KSailTestUtils.Cleanup();
 
   /// <summary>
   /// Tests that the <c>ksail up [name]</c> command succeeds and creates a cluster.
@@ -28,5 +29,5 @@ public class KSailListCommandTests : IAsyncLifetime
   }
 
   /// <inheritdoc/>
-  public Task DisposeAsync() => Task.CompletedTask;
+  public async Task DisposeAsync() => await KSailTestUtils.Cleanup();
 }

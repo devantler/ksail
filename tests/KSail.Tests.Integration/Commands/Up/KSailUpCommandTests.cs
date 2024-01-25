@@ -1,7 +1,6 @@
 using System.CommandLine;
 using System.CommandLine.IO;
 using KSail.CLIWrappers;
-using KSail.Commands.Down;
 using KSail.Commands.Init;
 using KSail.Commands.Up;
 using KSail.Tests.Integration.TestUtils;
@@ -15,7 +14,7 @@ namespace KSail.Tests.Integration.Commands.Up;
 public class KSailUpCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
-  public Task InitializeAsync() => Task.CompletedTask;
+  public async Task InitializeAsync() => await KSailTestUtils.Cleanup();
 
   /// <summary>
   /// Tests that the <c>ksail up</c> command fails and prints help.
@@ -112,21 +111,5 @@ public class KSailUpCommandTests : IAsyncLifetime
   }
 
   /// <inheritdoc/>
-  public async Task DisposeAsync()
-  {
-    var ksailDownCommand = new KSailDownCommand();
-    _ = await ksailDownCommand.InvokeAsync("ksail --delete-pull-through-registries");
-    if (Directory.Exists("k8s"))
-    {
-      Directory.Delete("k8s", true);
-    }
-    if (File.Exists("ksail-k3d-config.yaml"))
-    {
-      File.Delete("ksail-k3d-config.yaml");
-    }
-    if (File.Exists(".sops.yaml"))
-    {
-      File.Delete(".sops.yaml");
-    }
-  }
+  public async Task DisposeAsync() => await KSailTestUtils.Cleanup();
 }
