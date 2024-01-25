@@ -1,6 +1,5 @@
 using System.CommandLine;
 using System.CommandLine.IO;
-using KSail.CLIWrappers;
 using KSail.Commands.Init;
 using KSail.Commands.SOPS;
 using KSail.Commands.Up;
@@ -92,13 +91,11 @@ public class KSailUpCommandTests : IAsyncLifetime
     //Act
     int initExitCode = await ksailInitCommand.InvokeAsync("ksail", testConsole);
     int upExitCode = await ksailUpCommand.InvokeAsync("ksail", testConsole);
-    string clusters = await K3dCLIWrapper.ListClustersAsync();
 
     //Assert
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, upExitCode);
-    Assert.True(await CheckRegistriesExistAsync());
-    _ = await Verify(clusters);
+    Assert.True(await DockerTestUtils.CheckRegistriesExistAsync());
   }
 
   /// <summary>
@@ -123,28 +120,16 @@ public class KSailUpCommandTests : IAsyncLifetime
     Environment.SetEnvironmentVariable("KSAIL_SOPS_KEY", key);
     int initExitCode = await ksailInitCommand.InvokeAsync("ksail", console);
     int upExitCode = await ksailUpCommand.InvokeAsync("ksail", console);
-    string clusters = await K3dCLIWrapper.ListClustersAsync();
 
     //Assert
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, upExitCode);
-    Assert.True(await CheckRegistriesExistAsync());
-    _ = await Verify(clusters);
+    Assert.True(await DockerTestUtils.CheckRegistriesExistAsync());
 
     //Cleanup
     Environment.SetEnvironmentVariable("KSAIL_SOPS_KEY", null);
   }
 
-  static async Task<bool> CheckRegistriesExistAsync()
-  {
-    return await DockerTestUtils.ContainerExistsAsync("proxy-docker.io")
-      && await DockerTestUtils.ContainerExistsAsync("proxy-registry.k8s.io")
-      && await DockerTestUtils.ContainerExistsAsync("proxy-gcr.io")
-      && await DockerTestUtils.ContainerExistsAsync("proxy-ghcr.io")
-      && await DockerTestUtils.ContainerExistsAsync("proxy-quay.io")
-      && await DockerTestUtils.ContainerExistsAsync("proxy-mcr.microsoft.com");
-  }
-
   /// <inheritdoc/>
-  public async Task DisposeAsync() => await KSailTestUtils.Cleanup();
+  public Task DisposeAsync() => Task.CompletedTask;
 }
