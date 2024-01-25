@@ -25,9 +25,10 @@ class KSailLintCommandHandler()
     ValidateYaml(manifestsPath);
     if (string.IsNullOrEmpty(name))
     {
-      foreach (string cluster in Directory.GetDirectories($"{manifestsPath}/clusters"))
+      foreach (string clusterPath in Directory.GetDirectories($"{manifestsPath}/clusters"))
       {
-        await ValidateKustomizationsAsync(cluster, manifestsPath);
+        string clusterName = clusterPath.Replace($"{manifestsPath}/clusters/", "", StringComparison.Ordinal);
+        await ValidateKustomizationsAsync(clusterName, manifestsPath);
       }
     }
     else
