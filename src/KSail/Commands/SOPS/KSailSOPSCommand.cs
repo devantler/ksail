@@ -28,12 +28,10 @@ sealed class KSailSOPSCommand : Command
       if (result.Children.Count == 0)
       {
         result.ErrorMessage = "No option specified";
-        _ = this.InvokeAsync("--help");
       }
       else if (result.Children.Count > 1)
       {
         result.ErrorMessage = "More than one option specified";
-        _ = this.InvokeAsync("--help");
       }
     });
 
