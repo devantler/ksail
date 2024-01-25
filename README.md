@@ -156,6 +156,12 @@ ksail --help
 docker run --rm ghcr.io/devantler/ksail:latest --help
 ```
 
+### Supported Environment Variables
+
+| Variable Name    | Description                                                | Default Value |
+| :--------------- | ---------------------------------------------------------- | :-----------: |
+| `KSAIL_SOPS_KEY` | The SOPS key to use for encrypting and decrypting secrets. |     `""`      |
+
 ## What is KSail?
 
 KSail is a CLI tool designed to simplify the management of GitOps-enabled Kubernetes clusters in Docker. It provides a set of commands that allow you to easily create, manage, and dismantle GitOps-enabled clusters. KSail also integrates with SOPS for managing secrets in Git repositories and provides features for validating and verifying your clusters.
