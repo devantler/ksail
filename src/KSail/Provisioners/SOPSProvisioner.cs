@@ -20,8 +20,8 @@ sealed class SOPSProvisioner : IProvisioner, IDisposable
 
   public async Task ProvisionAsync()
   {
-    string environmentVariable = Environment.GetEnvironmentVariable("KSAIL_SOPS_KEY") ?? "";
-    if (!string.IsNullOrEmpty(environmentVariable))
+    string sopsKey = Environment.GetEnvironmentVariable("KSAIL_SOPS_KEY") ?? "";
+    if (!string.IsNullOrEmpty(sopsKey))
     {
       Console.WriteLine("✔ Using SOPS key from KSAIL_SOPS_KEY");
       _ = Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.ksail");
