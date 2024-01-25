@@ -23,7 +23,9 @@ class KSailCheckCommandHandler()
     {
       string? kustomizationName = kustomization?.Metadata.Name ??
         throw new InvalidOperationException("Kustomization name is null");
-      string? statusName = kustomization?.Status.Conditions.FirstOrDefault()?.Type ??
+      string? statusConditionStatus = kustomization?.Status.Conditions.FirstOrDefault()?.Status ??
+        throw new InvalidOperationException("Kustomization status is null");
+      string? statusConditionType = kustomization?.Status.Conditions.FirstOrDefault()?.Type ??
         throw new InvalidOperationException("Kustomization status is null");
 
       if (!kustomizations.Add(kustomizationName))
@@ -43,11 +45,11 @@ class KSailCheckCommandHandler()
           continue;
         }
       }
-      if (kustomization?.Status.Conditions.FirstOrDefault()?.Status.Equals("false", StringComparison.OrdinalIgnoreCase) == true)
+      if (statusConditionStatus.Equals("false", StringComparison.OrdinalIgnoreCase))
       {
         continue;
       }
-      switch (statusName)
+      switch (statusConditionType)
       {
         case "Failed":
           HandleFailedStatus(kustomization, kustomizationName);
@@ -56,7 +58,7 @@ class KSailCheckCommandHandler()
           HandleReadyStatus(kustomizationName);
           break;
         default:
-          Console.WriteLine($"◎ Waiting for kustomization '{kustomizationName}' to be ready. It is currently {statusName?.ToLower(CultureInfo.InvariantCulture)}...");
+          Console.WriteLine($"◎ Waiting for kustomization '{kustomizationName}' to be ready. It is currently {statusConditionType?.ToLower(CultureInfo.InvariantCulture)}...");
           foreach (var condition in kustomization?.Status.Conditions ?? Enumerable.Empty<V1CustomResourceDefinitionCondition>())
           {
             Console.WriteLine($"  {condition.Message}");
