@@ -83,5 +83,9 @@ public class KSailDownCommandTests : IAsyncLifetime
     {
       File.Delete("ksail-k3d-config.yaml");
     }
+    if (File.Exists(".sops.yaml"))
+    {
+      File.Delete(".sops.yaml");
+    }
   }
 }
