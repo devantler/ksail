@@ -1,14 +1,21 @@
 using System.CommandLine;
 using System.CommandLine.IO;
 using KSail.Commands.Down;
+using KSail.Tests.Integration.TestUtils;
 
 namespace KSail.Tests.Integration.Commands.Down;
 
 /// <summary>
 /// Tests for the <see cref="KSailDownCommand"/> class.
 /// </summary>
-public class KSailDownCommandTests
+[Collection("KSail Tests Collection")]
+public class KSailDownCommandTests : IAsyncLifetime
 {
+  /// <inheritdoc/>
+  public async Task DisposeAsync() => await KSailTestUtils.Cleanup();
+  /// <inheritdoc/>
+  public async Task InitializeAsync() => await KSailTestUtils.Cleanup();
+
   /// <summary>
   /// Tests that the <c>ksail down</c> command fails and prints help.
   /// </summary>

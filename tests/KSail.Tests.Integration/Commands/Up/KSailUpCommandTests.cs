@@ -11,8 +11,13 @@ namespace KSail.Tests.Integration.Commands.Up;
 /// Tests for the <see cref="KSailUpCommand"/> class.
 /// </summary>
 [Collection("KSail Tests Collection")]
-public class KSailUpCommandTests
+public class KSailUpCommandTests : IAsyncLifetime
 {
+  /// <inheritdoc/>
+  public async Task DisposeAsync() => await KSailTestUtils.Cleanup();
+  /// <inheritdoc/>
+  public async Task InitializeAsync() => await KSailTestUtils.Cleanup();
+
   /// <summary>
   /// Tests that the <c>ksail up</c> command fails and prints help.
   /// </summary>

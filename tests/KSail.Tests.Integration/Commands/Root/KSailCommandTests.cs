@@ -1,14 +1,21 @@
 using System.CommandLine;
 using System.CommandLine.IO;
 using KSail.Commands.Root;
+using KSail.Tests.Integration.TestUtils;
 
 namespace KSail.Tests.Integration.Commands.Root;
 
 /// <summary>
 /// Tests for the <see cref="KSailRootCommand"/> class.
 /// </summary>
-public class KSailRootCommandTests
+[Collection("KSail Tests Collection")]
+public class KSailRootCommandTests : IAsyncLifetime
 {
+  /// <inheritdoc/>
+  public async Task DisposeAsync() => await KSailTestUtils.Cleanup();
+  /// <inheritdoc/>
+  public async Task InitializeAsync() => await KSailTestUtils.Cleanup();
+
   /// <summary>
   /// Tests that the 'ksail' command succeeds and returns the introduction and help text.
   /// </summary>
