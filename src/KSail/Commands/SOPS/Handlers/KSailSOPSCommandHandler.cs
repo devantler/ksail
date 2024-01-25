@@ -60,7 +60,7 @@ class KSailSOPSCommandHandler()
         throw new FileNotFoundException("🚨 SOPS key not found");
       }
       string contents = await File.ReadAllTextAsync(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey"));
-      await File.WriteAllTextAsync(export, contents);
+      await File.WriteAllTextAsync($"{export}/ksail_sops.agekey", contents);
       Console.WriteLine($"✔ SOPS key exported to '{export}'");
     }
     else
