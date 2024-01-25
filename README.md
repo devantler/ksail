@@ -199,9 +199,6 @@ KSail is built on top of k3d, so it provides all the same functionality as k3d. 
 
 You need to download the KSail binary into your CI/CD environment, and then run the KSail commands as you would locally. For example, if you are using GitHub Actions, you can use the following workflow:
 
-> [!WARNING]
-> The below example workflow has not been tested yet. I assume it will not work if you are trying to run this without `ksail init`, as there is currently no support for reading the ksail Age keys from the environment. When I get around to testing this, I will update this section.
-
 ```yaml
 name: KSail
 
