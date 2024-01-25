@@ -1,2 +1,0 @@
-﻿NAME    SERVERS   AGENTS   LOADBALANCER
-ksail   1/1       0/0      true
