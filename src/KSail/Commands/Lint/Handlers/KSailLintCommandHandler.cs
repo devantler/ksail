@@ -25,9 +25,9 @@ class KSailLintCommandHandler()
     ValidateYaml(manifestsPath);
     if (string.IsNullOrEmpty(name))
     {
-      foreach (string cluster in Directory.GetDirectories($"{manifestsPath}/clusters"))
+      foreach (string clusterPath in Directory.GetDirectories($"{manifestsPath}/clusters"))
       {
-        await ValidateKustomizationsAsync(cluster, manifestsPath);
+        await ValidateKustomizationsAsync(clusterPath, manifestsPath);
       }
     }
     else
@@ -70,18 +70,17 @@ class KSailLintCommandHandler()
     }
   }
 
-  static async Task ValidateKustomizationsAsync(string name, string manifestsPath)
+  static async Task ValidateKustomizationsAsync(string clusterPath, string manifestsPath)
   {
     string[] kubeconformFlags = ["-skip=Secret"];
     string[] kubeconformConfig = ["-strict", "-ignore-missing-schemas", "-schema-location", "default", "-schema-location", "/tmp/flux-crd-schemas", "-verbose"];
 
-    string clusterPath = $"{manifestsPath}/clusters/{name}";
     if (!Directory.Exists(clusterPath))
     {
-      Console.WriteLine($"🚨 Cluster '{name}' not found in path '{clusterPath}'...");
+      Console.WriteLine($"🚨 Cluster '{clusterPath}' not found...");
       Environment.Exit(1);
     }
-    Console.WriteLine($"► Validating cluster '{name}' with Kubeconform...");
+    Console.WriteLine($"► Validating cluster '{clusterPath}' with Kubeconform...");
     foreach (string manifest in Directory.GetFiles(clusterPath, "*.yaml", SearchOption.AllDirectories))
     {
       KubeconformCLIWrapper.Run(kubeconformFlags, kubeconformConfig, manifest);
