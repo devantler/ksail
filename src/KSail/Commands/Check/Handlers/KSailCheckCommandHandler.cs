@@ -64,7 +64,7 @@ class KSailCheckCommandHandler()
           {
             Console.WriteLine($"  {condition.Message}");
           }
-          Console.WriteLine($"  Elapsed time: {stopwatch.Elapsed.TotalSeconds}/{timeout} seconds");
+          Console.WriteLine($"  Elapsed time: {stopwatch.Elapsed.TotalSeconds} out of {timeout} seconds");
           break;
       }
     }
