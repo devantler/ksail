@@ -37,26 +37,30 @@ class KSailSOPSCommandHandler()
     }
     else if (!string.IsNullOrWhiteSpace(import))
     {
+      string? contents;
       if (File.Exists(import))
       {
         Console.WriteLine($"🔐 Importing SOPS key from '{import}'...");
-        // Read all contents of the file
-        string contents = await File.ReadAllTextAsync(import);
-        // Write the contents to 
-
+        contents = await File.ReadAllTextAsync(import);
         Console.WriteLine($"✔ SOPS key imported from '{import}'");
       }
       else
       {
         Console.WriteLine($"🔐 Importing SOPS key from stdin...");
-        await SOPSCLIWrapper.ImportAsync(import);
+        contents = import;
         Console.WriteLine($"✔ SOPS key imported from stdin");
       }
+      await File.WriteAllTextAsync(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey"), contents);
     }
     else if (!string.IsNullOrWhiteSpace(export))
     {
       Console.WriteLine($"🔐 Exporting SOPS key to '{export}'...");
-      await SOPSCLIWrapper.ExportAsync(export);
+      if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey")))
+      {
+        throw new FileNotFoundException("🚨 SOPS key not found");
+      }
+      string contents = await File.ReadAllTextAsync(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey"));
+      await File.WriteAllTextAsync(export, contents);
       Console.WriteLine($"✔ SOPS key exported to '{export}'");
     }
     else
