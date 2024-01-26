@@ -92,4 +92,10 @@ class FluxCLIWrapper()
     _ = await CLIRunner.RunAsync(pushCmd);
     _ = await CLIRunner.RunAsync(tagCmd);
   }
+
+  internal static async Task ReconcileAsync()
+  {
+    var cmd = Flux.WithArguments("reconcile source oci flux-system");
+    _ = await CLIRunner.RunAsync(cmd);
+  }
 }
