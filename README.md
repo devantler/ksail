@@ -238,7 +238,6 @@ I am currently working on stabilizing the tool, and ensure that it works as expe
 
 Features in the pipeline:
 
-- **Webhook Receiver Support:** KSail will be able to receive webhooks from your Git repository, and automatically sync your clusters when changes are made.
 - **Improved Init Command:** Generating the YAML and configuration files for your clusters will be more customizable.
 - **Kind Support:** KSail will be able to create and manage GitOps-enabled Kubernetes clusters in Kind.
 - **Setting hosts:** Services made accessible through ingresses cannot be reached without setting their dns in the hosts file. I believe it would be nice if KSail was able to do this in a friendly way.
