@@ -4,6 +4,7 @@ using KSail.Commands.Down;
 using KSail.Commands.Init;
 using KSail.Commands.Up;
 using KSail.Commands.Update;
+using KSail.Provisioners;
 using KSail.Tests.Integration.TestUtils;
 
 namespace KSail.Tests.Integration.Commands.Update;
@@ -17,7 +18,7 @@ public class KSailUpdateCommandTests : IAsyncLifetime
   /// <inheritdoc/>
   public Task DisposeAsync() => Task.CompletedTask;
   /// <inheritdoc/>
-  public Task InitializeAsync() => KSailTestUtils.CleanupAsync();
+  public Task InitializeAsync() => DockerProvisioner.DeleteRegistryAsync("manifests");
 
   /// <summary>
   /// Tests that the <c>ksail update</c> command fails and prints help.
@@ -45,18 +46,13 @@ public class KSailUpdateCommandTests : IAsyncLifetime
   {
     //Arrange
     var console = new TestConsole();
-    var ksailInitCommand = new KSailInitCommand();
-    var ksailUpCommand = new KSailUpCommand();
     var ksailUpdateCommand = new KSailUpdateCommand();
 
     //Act
-    int initExitCode = await ksailInitCommand.InvokeAsync("ksail", console);
-    int upExitCode = await ksailUpCommand.InvokeAsync("ksail", console);
+    await DockerProvisioner.CreateRegistryAsync("manifests", 5050);
     int updateExitCode = await ksailUpdateCommand.InvokeAsync("ksail", console);
 
     //Assert
-    Assert.Equal(0, initExitCode);
-    Assert.Equal(0, upExitCode);
     Assert.Equal(0, updateExitCode);
     _ = await Verify(console.Error.ToString() + console.Out);
   }
