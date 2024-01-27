@@ -1,0 +1,59 @@
+# top-most EditorConfig file
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.{cs}]
+# Rule: Set severity of analyzer diagnostics
+dotnet_analyzer_diagnostic.category-CodeQuality.severity = warning
+dotnet_analyzer_diagnostic.category-Design.severity = warning
+dotnet_analyzer_diagnostic.category-Documentation.severity = warning
+dotnet_analyzer_diagnostic.category-Globalization.severity = warning
+dotnet_analyzer_diagnostic.category-Interoperability.severity = warning
+dotnet_analyzer_diagnostic.category-Maintainability.severity = warning
+dotnet_analyzer_diagnostic.category-Naming.severity = warning
+dotnet_analyzer_diagnostic.category-Performance.severity = warning
+dotnet_analyzer_diagnostic.category-Reliability.severity = warning
+dotnet_analyzer_diagnostic.category-roslynator.severity = warning
+dotnet_analyzer_diagnostic.category-Security.severity = warning
+dotnet_analyzer_diagnostic.category-SingleFile.severity = warning
+dotnet_analyzer_diagnostic.category-Style.severity = warning
+dotnet_analyzer_diagnostic.category-Usage.severity = warning
+dotnet_diagnostic.rcs1228.severity = warning
+roslynator_analyzers.enabled_by_default = true
+roslynator_compiler_diagnostic_fixes.enabled = true
+roslynator_refactorings.enabled = true
+
+# Rule: Set personal preferences for analyzer diagnostics
+csharp_style_expression_bodied_accessors = when_on_single_line
+csharp_style_expression_bodied_constructors = when_on_single_line
+csharp_style_expression_bodied_indexers = when_on_single_line
+csharp_style_expression_bodied_lambdas = when_on_single_line
+csharp_style_expression_bodied_local_functions = when_on_single_line
+csharp_style_expression_bodied_methods = when_on_single_line
+csharp_style_expression_bodied_operators = when_on_single_line
+csharp_prefer_braces = when_multiline
+csharp_style_namespace_declarations = file_scoped
+csharp_style_var_elsewhere = true
+csharp_style_var_when_type_is_apparent = true
+dotnet_sort_system_directives_first = true
+dotnet_style_require_accessibility_modifiers = omit_if_default
+
+[*.{received,verified}.{txt,xml,json}]
+charset = "utf-8-bom"
+end_of_line = lf
+indent_size = unset
+indent_style = unset
+insert_final_newline = false
+tab_width = unset
+trim_trailing_whitespace = false
+
+[{*Test.cs,*Tests.cs}]
+#Rule: Identifiers are allowed to contain underscores
+dotnet_diagnostic.CA1707.severity = none
