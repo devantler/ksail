@@ -19,6 +19,9 @@ public class KSailUpdateCommandTests : IAsyncLifetime
   /// <inheritdoc/>
   public Task InitializeAsync() => KSailTestUtils.CleanupAsync();
 
+  /// <summary>
+  /// Tests that the <c>ksail update</c> command fails and prints help.
+  /// </summary>
   [Fact]
   public async Task KSailUpdate_FailsAndPrintsHelp()
   {
