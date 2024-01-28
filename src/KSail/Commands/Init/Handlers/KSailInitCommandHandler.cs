@@ -1,5 +1,5 @@
 using System.Text;
-using KSail.Services.Provisioners;
+using KSail.Provisioners;
 
 namespace KSail.Commands.Init.Handlers;
 

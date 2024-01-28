@@ -3,7 +3,7 @@ using System.CommandLine.IO;
 using KSail.Commands.Init;
 using KSail.Commands.SOPS;
 using KSail.Commands.Up;
-using KSail.Services.Provisioners.ContainerEngine;
+using KSail.Provisioners.ContainerEngine;
 using KSail.Tests.Integration.TestUtils;
 
 namespace KSail.Tests.Integration.Commands.Up;

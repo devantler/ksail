@@ -1,7 +1,7 @@
 using System.CommandLine.Binding;
 using KSail.Exceptions;
 
-namespace KSail.Services.Provisioners.KubernetesDistribution;
+namespace KSail.Provisioners.KubernetesDistribution;
 
 class KubernetesDistributionProvisionerBinder(Enums.KubernetesDistributionType kubernetesDistributionType) : BinderBase<IKubernetesDistributionProvisioner>
 {

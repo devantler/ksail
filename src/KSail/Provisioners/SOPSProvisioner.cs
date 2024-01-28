@@ -1,7 +1,7 @@
 using KSail.CLIWrappers;
-using KSail.Services.Provisioners.ContainerOrchestrator;
+using KSail.Provisioners.ContainerOrchestrator;
 
-namespace KSail.Services.Provisioners;
+namespace KSail.Provisioners;
 
 sealed class SOPSProvisioner() : IDisposable
 {

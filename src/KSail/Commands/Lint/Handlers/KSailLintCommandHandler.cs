@@ -60,7 +60,7 @@ class KSailLintCommandHandler()
         }
         catch (YamlException)
         {
-          throw new YamlException($"✕ Validation failed for {manifest}...");
+          throw new YamlException($"🚨 Validation failed for {manifest}...");
         }
       }
     }
@@ -106,7 +106,7 @@ class KSailLintCommandHandler()
       catch (InvalidOperationException)
       {
         Console.WriteLine($"✕ Validation failed for '{manifest}'...");
-        throw new KSailException($"✕ Validation failed for '{manifest}'...");
+        throw new KSailException($"🚨 Validation failed for '{manifest}'...");
       }
     }
   }

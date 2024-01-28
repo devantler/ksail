@@ -1,7 +1,7 @@
 using System.CommandLine;
 using KSail.Commands.List.Handlers;
 using KSail.Enums;
-using KSail.Services.Provisioners.KubernetesDistribution;
+using KSail.Provisioners.KubernetesDistribution;
 
 namespace KSail.Commands.List;
 

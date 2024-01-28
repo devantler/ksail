@@ -3,7 +3,7 @@ using k8s;
 using k8s.Models;
 using KSail.Enums;
 
-namespace KSail.Services.Provisioners.ContainerOrchestrator;
+namespace KSail.Provisioners.ContainerOrchestrator;
 
 sealed class KubernetesProvisioner : IContainerOrchestratorProvisioner, IDisposable
 {

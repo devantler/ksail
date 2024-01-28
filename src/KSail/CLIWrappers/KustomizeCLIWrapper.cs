@@ -15,7 +15,7 @@ static class KustomizeCLIWrapper
         (PlatformID.Unix, Architecture.Arm64, true) => "kustomize_darwin-arm64",
         (PlatformID.Unix, Architecture.X64, false) => "kustomize_linux-amd64",
         (PlatformID.Unix, Architecture.Arm64, false) => "kustomize_linux-arm64",
-        _ => throw new PlatformNotSupportedException()
+        _ => throw new PlatformNotSupportedException($"🚨 Unsupported platform: {Environment.OSVersion.Platform} {RuntimeInformation.ProcessArchitecture}"),
       };
       return Cli.Wrap($"{AppContext.BaseDirectory}assets/binaries/{binary}");
     }

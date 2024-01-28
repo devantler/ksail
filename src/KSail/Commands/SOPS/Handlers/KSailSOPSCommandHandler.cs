@@ -1,5 +1,5 @@
 using KSail.CLIWrappers;
-using KSail.Services.Provisioners;
+using KSail.Provisioners;
 
 namespace KSail.Commands.SOPS.Handlers;
 
@@ -63,7 +63,7 @@ class KSailSOPSCommandHandler()
     }
     else
     {
-      throw new InvalidOperationException("No option specified");
+      throw new InvalidOperationException("🚨 No option specified");
     }
     Console.WriteLine("");
   }

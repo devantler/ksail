@@ -1,4 +1,4 @@
-using KSail.Services.Provisioners.ContainerEngine;
+using KSail.Provisioners.ContainerEngine;
 
 namespace KSail.Tests.Integration.TestUtils;
 

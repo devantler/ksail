@@ -1,6 +1,6 @@
 using KSail.Enums;
 
-namespace KSail.Services.Provisioners.KubernetesDistribution;
+namespace KSail.Provisioners.KubernetesDistribution;
 
 interface IKubernetesDistributionProvisioner
 {

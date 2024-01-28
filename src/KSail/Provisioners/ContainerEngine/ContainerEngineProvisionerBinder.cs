@@ -1,7 +1,7 @@
 using System.CommandLine.Binding;
 using KSail.Exceptions;
 
-namespace KSail.Services.Provisioners.ContainerEngine;
+namespace KSail.Provisioners.ContainerEngine;
 
 class ContainerEngineProvisionerBinder(Enums.ContainerEngineType containerEngine) : BinderBase<IContainerEngineProvisioner>
 {

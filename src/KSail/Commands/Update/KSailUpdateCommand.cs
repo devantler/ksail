@@ -4,8 +4,8 @@ using KSail.Commands.Update.Handlers;
 using KSail.Commands.Update.Options;
 using KSail.Enums;
 using KSail.Options;
-using KSail.Services.Provisioners.GitOps;
-using KSail.Services.Provisioners.KubernetesDistribution;
+using KSail.Provisioners.GitOps;
+using KSail.Provisioners.KubernetesDistribution;
 
 namespace KSail.Commands.Update;
 

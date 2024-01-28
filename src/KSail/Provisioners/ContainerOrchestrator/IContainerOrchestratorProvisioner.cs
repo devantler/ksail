@@ -1,6 +1,6 @@
 using KSail.Enums;
 
-namespace KSail.Services.Provisioners.ContainerOrchestrator;
+namespace KSail.Provisioners.ContainerOrchestrator;
 
 interface IContainerOrchestratorProvisioner
 {

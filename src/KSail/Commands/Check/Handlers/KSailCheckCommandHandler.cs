@@ -21,11 +21,11 @@ class KSailCheckCommandHandler()
     await foreach (var (type, kustomization) in responseTask.WatchAsync<V1CustomResourceDefinition, object>(cancellationToken: cancellationToken))
     {
       string? kustomizationName = kustomization?.Metadata.Name ??
-        throw new InvalidOperationException("Kustomization name is null");
+        throw new InvalidOperationException("🚨 Kustomization name is null");
       string? statusConditionStatus = kustomization?.Status.Conditions.FirstOrDefault()?.Status ??
-        throw new InvalidOperationException("Kustomization status is null");
+        throw new InvalidOperationException("🚨 Kustomization status is null");
       string? statusConditionType = kustomization?.Status.Conditions.FirstOrDefault()?.Type ??
-        throw new InvalidOperationException("Kustomization status is null");
+        throw new InvalidOperationException("🚨 Kustomization status is null");
 
       if (!kustomizations.Add(kustomizationName))
       {
@@ -36,7 +36,7 @@ class KSailCheckCommandHandler()
         }
         else if (stopwatch.Elapsed.TotalSeconds >= timeout)
         {
-          throw new TimeoutException($"Kustomization '{kustomizationName}' did not become ready within the specified time limit of {timeout} seconds.");
+          throw new TimeoutException($"🚨 Kustomization '{kustomizationName}' did not become ready within the specified time limit of {timeout} seconds.");
         }
         else if (successFullKustomizations.Contains(kustomizationName))
         {
@@ -79,7 +79,7 @@ class KSailCheckCommandHandler()
   static void HandleFailedStatus(V1CustomResourceDefinition? kustomization, string kustomizationName)
   {
     string? message = kustomization?.Status.Conditions.FirstOrDefault()?.Message;
-    throw new KSailException($"✕ Kustomization '{kustomizationName}' failed with message: {message}");
+    throw new KSailException($"🚨 Kustomization '{kustomizationName}' failed with message: {message}");
   }
 
   static Kubernetes CreateKubernetesClientFromClusterName(string context)

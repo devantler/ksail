@@ -1,6 +1,6 @@
 using KSail.Enums;
 
-namespace KSail.Services.Provisioners.ContainerEngine;
+namespace KSail.Provisioners.ContainerEngine;
 
 interface IContainerEngineProvisioner
 {

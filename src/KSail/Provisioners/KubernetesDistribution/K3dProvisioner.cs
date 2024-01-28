@@ -1,7 +1,7 @@
 using KSail.CLIWrappers;
 using KSail.Enums;
 
-namespace KSail.Services.Provisioners.KubernetesDistribution;
+namespace KSail.Provisioners.KubernetesDistribution;
 
 sealed class K3dProvisioner() : IKubernetesDistributionProvisioner
 {

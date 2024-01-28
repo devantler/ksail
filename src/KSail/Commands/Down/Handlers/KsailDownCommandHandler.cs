@@ -1,5 +1,5 @@
-using KSail.Services.Provisioners.ContainerEngine;
-using KSail.Services.Provisioners.KubernetesDistribution;
+using KSail.Provisioners.ContainerEngine;
+using KSail.Provisioners.KubernetesDistribution;
 
 namespace KSail.Commands.Down.Handlers;
 

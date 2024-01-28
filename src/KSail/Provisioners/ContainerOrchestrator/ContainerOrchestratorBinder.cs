@@ -1,7 +1,7 @@
 using System.CommandLine.Binding;
 using KSail.Exceptions;
 
-namespace KSail.Services.Provisioners.ContainerOrchestrator;
+namespace KSail.Provisioners.ContainerOrchestrator;
 
 class ContainerOrchestratorProvisionerBinder(Enums.ContainerOrchestratorType containerOrchestrator) : BinderBase<IContainerOrchestratorProvisioner>
 {

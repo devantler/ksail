@@ -1,7 +1,7 @@
 using System.CommandLine.Binding;
 using KSail.Exceptions;
 
-namespace KSail.Services.Provisioners.GitOps;
+namespace KSail.Provisioners.GitOps;
 
 class GitOpsProvisionerBinder(Enums.GitOpsType gitOps) : BinderBase<IGitOpsProvisioner>
 {

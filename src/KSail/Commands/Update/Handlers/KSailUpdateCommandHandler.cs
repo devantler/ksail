@@ -1,6 +1,6 @@
 using KSail.Commands.Lint.Handlers;
-using KSail.Services.Provisioners.GitOps;
-using KSail.Services.Provisioners.KubernetesDistribution;
+using KSail.Provisioners.GitOps;
+using KSail.Provisioners.KubernetesDistribution;
 
 namespace KSail.Commands.Update.Handlers;
 

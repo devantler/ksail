@@ -3,7 +3,7 @@ using Docker.DotNet.Models;
 using KSail.Enums;
 using KSail.Exceptions;
 
-namespace KSail.Services.Provisioners.ContainerEngine;
+namespace KSail.Provisioners.ContainerEngine;
 
 sealed class DockerProvisioner : IContainerEngineProvisioner
 {

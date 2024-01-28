@@ -1,6 +1,6 @@
 using KSail.CLIWrappers;
 
-namespace KSail.Services.Provisioners.GitOps;
+namespace KSail.Provisioners.GitOps;
 
 sealed class FluxProvisioner : IGitOpsProvisioner
 {

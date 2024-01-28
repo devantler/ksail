@@ -16,7 +16,7 @@ class FluxCLIWrapper()
         (PlatformID.Unix, Architecture.Arm64, true) => "flux_darwin-arm64",
         (PlatformID.Unix, Architecture.X64, false) => "flux_linux-amd64",
         (PlatformID.Unix, Architecture.Arm64, false) => "flux_linux-arm64",
-        _ => throw new PlatformNotSupportedException()
+        _ => throw new PlatformNotSupportedException($"🚨 Unsupported platform: {Environment.OSVersion.Platform} {RuntimeInformation.ProcessArchitecture}"),
       };
       return Cli.Wrap($"{AppContext.BaseDirectory}assets/binaries/{binary}");
     }
