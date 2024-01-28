@@ -8,7 +8,7 @@ namespace KSail.Commands.Update;
 
 sealed class KSailUpdateCommand : Command
 {
-  readonly NameArgument nameArgument = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly NameArgument nameArgument = new() { Arity = ArgumentArity.ExactlyOne };
   readonly ManifestsOption manifestsOption = new() { IsRequired = true };
   readonly NoLintOption noLintOption = new();
   readonly NoReconcileOption noReconcileOption = new();
@@ -20,6 +20,7 @@ sealed class KSailUpdateCommand : Command
     AddArgument(nameArgument);
     AddOption(manifestsOption);
     AddOption(noLintOption);
+    AddOption(noReconcileOption);
     this.SetHandler(KSailUpdateCommandHandler.HandleAsync, nameArgument, manifestsOption, noLintOption, noReconcileOption);
   }
 }

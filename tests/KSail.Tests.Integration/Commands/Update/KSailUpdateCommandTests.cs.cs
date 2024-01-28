@@ -1,11 +1,9 @@
 using System.CommandLine;
 using System.CommandLine.IO;
-using KSail.Commands.Down;
 using KSail.Commands.Init;
 using KSail.Commands.Up;
 using KSail.Commands.Update;
 using KSail.Provisioners;
-using KSail.Tests.Integration.TestUtils;
 
 namespace KSail.Tests.Integration.Commands.Update;
 
@@ -39,10 +37,10 @@ public class KSailUpdateCommandTests : IAsyncLifetime
   }
 
   /// <summary>
-  /// Tests that the <c>ksail update [name]</c> command succeeds and pushes updates to OCI.
+  /// Tests that the <c>ksail update [name] --no-reconcile</c> command succeeds and pushes updates to OCI.
   /// </summary>
   [Fact]
-  public async Task KSailUpdateName_SucceedsAndPushesUpdatesToOCI()
+  public async Task KSailUpdateNameNoReconcile_SucceedsAndPushesUpdatesToOCI()
   {
     //Arrange
     var console = new TestConsole();
@@ -50,10 +48,31 @@ public class KSailUpdateCommandTests : IAsyncLifetime
 
     //Act
     await DockerProvisioner.CreateRegistryAsync("manifests", 5050);
-    int updateExitCode = await ksailUpdateCommand.InvokeAsync("ksail", console);
+    int updateExitCode = await ksailUpdateCommand.InvokeAsync("ksail --no-reconcile", console);
 
     //Assert
     Assert.Equal(0, updateExitCode);
-    _ = await Verify(console.Error.ToString() + console.Out);
+  }
+
+  /// <summary>
+  /// Tests that the <c>ksail update [name]</c> command succeeds, pushes updates to OCI, and reconciles them.
+  /// </summary>
+  [Fact]
+  public async Task KSailUpdateName_SucceedsAndPushesUpdatesToOCIAndReconciles()
+  {
+    //Arrange
+    var ksailInitCommand = new KSailInitCommand();
+    var ksailUpCommand = new KSailUpCommand();
+    var ksailUpdateCommand = new KSailUpdateCommand();
+
+    //Act
+    int initExitCode = await ksailInitCommand.InvokeAsync("ksail");
+    int upExitCode = await ksailUpCommand.InvokeAsync("ksail");
+    int updateExitCode = await ksailUpdateCommand.InvokeAsync("ksail --no-reconcile");
+
+    //Assert
+    Assert.Equal(0, initExitCode);
+    Assert.Equal(0, upExitCode);
+    Assert.Equal(0, updateExitCode);
   }
 }

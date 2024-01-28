@@ -33,5 +33,6 @@ sealed class FluxProvisioner : IProvisioner
 
   internal static Task PushManifestsAsync(string ociUrl, string manifestsPath) =>
     FluxCLIWrapper.PushManifestsAsync(ociUrl, manifestsPath);
-  internal static Task ReconcileAsync() => FluxCLIWrapper.ReconcileAsync();
+
+  internal static Task ReconcileAsync(string name) => FluxCLIWrapper.ReconcileAsync(name);
 }

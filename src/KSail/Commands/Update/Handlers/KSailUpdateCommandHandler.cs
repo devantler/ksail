@@ -15,8 +15,9 @@ static class KSailUpdateCommandHandler
     await FluxProvisioner.PushManifestsAsync($"oci://localhost:5050/{name}", manifestsPath);
     if (!noReconcile)
     {
+      Console.WriteLine();
       Console.WriteLine($"📥 Reconciling manifests on {name}...");
-      await FluxProvisioner.ReconcileAsync();
+      await FluxProvisioner.ReconcileAsync(name);
     }
     Console.WriteLine("");
   }
