@@ -55,6 +55,7 @@ CreateClusterAsync(string name, string configPath)
     _ = await CLIRunner.RunAsync(cmd);
   }
 
+  //TODO: Make the GetClusterAsync work with the CLIRunner.RunAsync method.
   internal static async Task<bool> GetClusterAsync(string name)
   {
     var cmd = K3d.WithArguments($"cluster get {name}").WithValidation(CommandResultValidation.None);

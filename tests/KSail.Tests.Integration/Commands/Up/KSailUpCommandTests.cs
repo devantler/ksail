@@ -82,13 +82,12 @@ public class KSailUpCommandTests : IAsyncLifetime
   public async Task KSailUpNameAndConfig_SucceedsAndCreatesCluster()
   {
     //Arrange
-    var console = new TestConsole();
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();
 
     //Act
-    int initExitCode = await ksailInitCommand.InvokeAsync("ksail", console);
-    int upExitCode = await ksailUpCommand.InvokeAsync("ksail", console);
+    int initExitCode = await ksailInitCommand.InvokeAsync("ksail");
+    int upExitCode = await ksailUpCommand.InvokeAsync("ksail");
 
     //Assert
     Assert.Equal(0, initExitCode);
@@ -103,7 +102,6 @@ public class KSailUpCommandTests : IAsyncLifetime
   public async Task KSailUpNameAndConfigAndEnv_SucceedsAndCreatesCluster()
   {
     //Arrange
-    var console = new TestConsole();
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();
     var ksailSOPSCommand = new KSailSOPSCommand();
@@ -111,12 +109,12 @@ public class KSailUpCommandTests : IAsyncLifetime
     //Act
     if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey")))
     {
-      _ = await ksailSOPSCommand.InvokeAsync("--generate-key", console);
+      _ = await ksailSOPSCommand.InvokeAsync("--generate-key");
     }
     string key = await File.ReadAllTextAsync(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey"));
     Environment.SetEnvironmentVariable("KSAIL_SOPS_KEY", key);
-    int initExitCode = await ksailInitCommand.InvokeAsync("ksail", console);
-    int upExitCode = await ksailUpCommand.InvokeAsync("ksail", console);
+    int initExitCode = await ksailInitCommand.InvokeAsync("ksail");
+    int upExitCode = await ksailUpCommand.InvokeAsync("ksail");
     Environment.SetEnvironmentVariable("KSAIL_SOPS_KEY", null);
 
     //Assert

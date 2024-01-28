@@ -44,12 +44,11 @@ public class KSailUpdateCommandTests : IAsyncLifetime
   public async Task KSailUpdateNameNoReconcile_SucceedsAndPushesUpdatesToOCI()
   {
     //Arrange
-    var console = new TestConsole();
     var ksailUpdateCommand = new KSailUpdateCommand();
 
     //Act
     await DockerProvisioner.CreateRegistryAsync("manifests", 5050);
-    int updateExitCode = await ksailUpdateCommand.InvokeAsync("ksail --no-reconcile", console);
+    int updateExitCode = await ksailUpdateCommand.InvokeAsync("ksail --no-reconcile");
 
     //Assert
     Assert.Equal(0, updateExitCode);

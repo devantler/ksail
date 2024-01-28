@@ -17,11 +17,10 @@ public class KSailListCommandTests
   public async Task KSailList_SucceedsAndListsClusters()
   {
     //Arrange
-    var console = new TestConsole();
     var ksailListCommand = new KSailListCommand();
 
     //Act
-    int exitCode = await ksailListCommand.InvokeAsync("", console);
+    int exitCode = await ksailListCommand.InvokeAsync("");
 
     //Assert
     Assert.Equal(0, exitCode);

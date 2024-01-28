@@ -33,6 +33,7 @@ class AgeCLIWrapper()
     }
     var cmd = AgeKeygen.WithArguments($"-o {Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/ksail_sops.agekey");
     _ = await CLIRunner.RunAsync(cmd, silent: true);
+    //TODO: Move the WriteKeysToDefaultKeysTxt method to a Helper class, and call it parent classes.
     WriteKeysToDefaultKeysTxt();
   }
 
@@ -53,6 +54,7 @@ class AgeCLIWrapper()
     }
   }
 
+  //TODO: Move the AppendOrReplaceKey method to a Helper class along with the WriteKeysToDefaultKeysTxt method.
   static void AppendOrReplaceKey(string ksailSopsAgeKey, string keysTxtFolder, string keysTxt)
   {
     if (!Directory.Exists(keysTxtFolder))
