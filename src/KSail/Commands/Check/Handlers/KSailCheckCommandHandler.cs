@@ -8,14 +8,14 @@ namespace KSail.Commands.Check.Handlers;
 
 class KSailCheckCommandHandler()
 {
-  static readonly HashSet<string> kustomizations = [];
-  static readonly HashSet<string> successFullKustomizations = [];
-  static readonly Stopwatch stopwatch = Stopwatch.StartNew();
+  readonly HashSet<string> _kustomizations = [];
+  readonly HashSet<string> _successFullKustomizations = [];
+  readonly Stopwatch _stopwatch = Stopwatch.StartNew();
 
-  internal static async Task HandleAsync(string clusterName, int timeout, CancellationToken cancellationToken)
+  internal async Task HandleAsync(string context, int timeout, CancellationToken cancellationToken)
   {
     Console.WriteLine("👀 Checking the status of the cluster...");
-    var kubernetesClient = CreateKubernetesClientFromClusterName(clusterName);
+    var kubernetesClient = CreateKubernetesClientFromClusterName(context);
     var responseTask = kubernetesClient.ListKustomizationsWithHttpMessagesAsync(cancellationToken);
 
     await foreach (var (type, kustomization) in responseTask.WatchAsync<V1CustomResourceDefinition, object>(cancellationToken: cancellationToken))
@@ -27,18 +27,18 @@ class KSailCheckCommandHandler()
       string? statusConditionType = kustomization?.Status.Conditions.FirstOrDefault()?.Type ??
         throw new InvalidOperationException("🚨 Kustomization status is null");
 
-      if (!kustomizations.Add(kustomizationName))
+      if (!_kustomizations.Add(kustomizationName))
       {
-        if (successFullKustomizations.Count == kustomizations.Count)
+        if (_successFullKustomizations.Count == _kustomizations.Count)
         {
           Console.WriteLine("✔ All kustomizations are ready!");
           return;
         }
-        else if (stopwatch.Elapsed.TotalSeconds >= timeout)
+        else if (_stopwatch.Elapsed.TotalSeconds >= timeout)
         {
           throw new TimeoutException($"🚨 Kustomization '{kustomizationName}' did not become ready within the specified time limit of {timeout} seconds.");
         }
-        else if (successFullKustomizations.Contains(kustomizationName))
+        else if (_successFullKustomizations.Contains(kustomizationName))
         {
           continue;
         }
@@ -63,17 +63,17 @@ class KSailCheckCommandHandler()
           {
             Console.WriteLine($"  {condition.Message}");
           }
-          Console.WriteLine($"  Elapsed time: {stopwatch.Elapsed.TotalSeconds:0}s out of {timeout}s");
+          Console.WriteLine($"  Elapsed time: {_stopwatch.Elapsed.TotalSeconds:0}s out of {timeout}s");
           break;
       }
     }
   }
 
-  static void HandleReadyStatus(string kustomizationName)
+  void HandleReadyStatus(string kustomizationName)
   {
     Console.WriteLine($"✔ Kustomization '{kustomizationName}' is ready! Resetting timer...");
-    _ = successFullKustomizations.Add(kustomizationName);
-    stopwatch.Restart();
+    _ = _successFullKustomizations.Add(kustomizationName);
+    _stopwatch.Restart();
   }
 
   static void HandleFailedStatus(V1CustomResourceDefinition? kustomization, string kustomizationName)

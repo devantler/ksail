@@ -15,12 +15,9 @@ class KSailUpdateCommandHandler(IKubernetesDistributionProvisioner kubernetesDis
     {
       await KSailLintCommandHandler.HandleAsync(clusterName, manifestsPath);
     }
-    Console.WriteLine($"📥 Pushing manifests to {clusterName}...");
     await _gitOpsProvisioner.PushManifestsAsync($"oci://localhost:5050/{clusterName}", manifestsPath);
     if (!noReconcile)
     {
-      Console.WriteLine();
-      Console.WriteLine($"📥 Reconciling manifests on {clusterName}...");
       var kubernetesDistributionType = await _kubernetesDistributionProvisioner.GetKubernetesDistributionTypeAsync();
       string context = $"{kubernetesDistributionType.ToString()?.ToLower(CultureInfo.InvariantCulture)}-{clusterName}";
       await _gitOpsProvisioner.ReconcileAsync(context);

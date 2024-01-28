@@ -44,9 +44,11 @@ class KSailUpCommandHandler(
     await _containerEngineProvisioner.CreateRegistryAsync("proxy-quay.io", 5005, new Uri("https://quay.io"));
     await _containerEngineProvisioner.CreateRegistryAsync("proxy-mcr.microsoft.com", 5006, new Uri("https://mcr.microsoft.com"));
     Console.WriteLine();
+
     Console.WriteLine("🧮 Creating OCI registry...");
     await _containerEngineProvisioner.CreateRegistryAsync("manifests", 5050);
     Console.WriteLine("");
+
     await new KSailUpdateCommandHandler(_kubernetesDistributionProvisioner, _gitOpsProvisioner).HandleAsync(clusterName, manifestsPath, true, true);
 
     await _kubernetesDistributionProvisioner.ProvisionAsync(clusterName, configPath);
@@ -63,6 +65,6 @@ class KSailUpCommandHandler(
     }
     var kubernetesDistribution = await _kubernetesDistributionProvisioner.GetKubernetesDistributionTypeAsync();
     await _gitOpsProvisioner.InstallAsync($"{kubernetesDistribution.ToString()?.ToLower(CultureInfo.InvariantCulture)}-{clusterName}", $"oci://host.k3d.internal:5050/{clusterName}", kustomizationsPath);
-    await KSailCheckCommandHandler.HandleAsync(clusterName, timeout, new CancellationToken());
+    await new KSailCheckCommandHandler().HandleAsync(context, timeout, new CancellationToken());
   }
 }
