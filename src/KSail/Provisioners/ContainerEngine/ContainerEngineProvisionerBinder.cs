@@ -1,9 +1,19 @@
 using System.CommandLine.Binding;
+using KSail.Exceptions;
 
 namespace KSail.Provisioners.ContainerEngine;
 
-class ContainerEngineProvisionerBinder : BinderBase<IContainerEngineProvisioner>
+class ContainerEngineProvisionerBinder(ContainerEngine containerEngine) : BinderBase<IContainerEngineProvisioner>
 {
+  readonly ContainerEngine containerEngine = containerEngine;
+
   protected override IContainerEngineProvisioner GetBoundValue(
-      BindingContext bindingContext) => new DockerProvisioner();
+      BindingContext bindingContext)
+  {
+    return containerEngine switch
+    {
+      ContainerEngine.Docker => new DockerProvisioner(),
+      _ => throw new KSailException($"🚨 Unknown container engine: {containerEngine}"),
+    };
+  }
 }

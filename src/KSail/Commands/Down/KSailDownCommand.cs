@@ -8,13 +8,14 @@ namespace KSail.Commands.Down;
 
 sealed class KSailDownCommand : Command
 {
-  readonly ContainerEngineProvisionerBinder containerEngineProvisionerBinder = new();
+  readonly ContainerEngineProvisionerBinder containerEngineProvisionerBinder = new(ContainerEngine.Docker);
   readonly NameArgument nameArgument = new() { Arity = ArgumentArity.ExactlyOne };
   readonly DeletePullThroughRegistriesOption deletePullThroughRegistriesOption = new();
   internal KSailDownCommand() : base("down", "Destroy a K8s cluster")
   {
     AddArgument(nameArgument);
     AddOption(deletePullThroughRegistriesOption);
+
     this.SetHandler(async (containerEngineProvisioner, nameArgument, deletePullThroughRegistriesOption) =>
     {
       var handler = new KSailDownCommandHandler(containerEngineProvisioner);

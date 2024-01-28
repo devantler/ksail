@@ -9,7 +9,7 @@ namespace KSail.Commands.Up;
 
 sealed class KSailUpCommand : Command
 {
-  readonly ContainerEngineProvisionerBinder containerEngineProvisionerBinder = new();
+  readonly ContainerEngineProvisionerBinder containerEngineProvisionerBinder = new(ContainerEngine.Docker);
   readonly NameArgument nameArgument = new() { Arity = ArgumentArity.ExactlyOne };
   readonly ConfigOption configOption = new() { IsRequired = true };
   readonly ManifestsOption manifestsOption = new();
