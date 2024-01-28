@@ -1,5 +1,6 @@
 using System.Formats.Tar;
 using KSail.CLIWrappers;
+using KSail.Exceptions;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
@@ -59,15 +60,13 @@ class KSailLintCommandHandler()
         }
         catch (YamlException)
         {
-          Console.WriteLine($"✕ Validation failed for {manifest}...");
-          Environment.Exit(1);
+          throw new YamlException($"✕ Validation failed for {manifest}...");
         }
       }
     }
     catch (YamlException e)
     {
-      Console.WriteLine($"🚨 An error occurred while validating YAML files: {e.Message}...");
-      Environment.Exit(1);
+      throw new YamlException($"🚨 An error occurred while validating YAML files: {e.Message}...");
     }
   }
 
@@ -83,8 +82,7 @@ class KSailLintCommandHandler()
     string clusterPath = $"{manifestsPath}/clusters/{name}";
     if (!Directory.Exists(clusterPath))
     {
-      Console.WriteLine($"🚨 Cluster '{name}' not found in path '{clusterPath}'...");
-      Environment.Exit(1);
+      throw new DirectoryNotFoundException($"🚨 Cluster '{name}' not found in path '{clusterPath}'...");
     }
     Console.WriteLine($"► Validating cluster '{name}' with Kubeconform...");
     foreach (string manifest in Directory.GetFiles(clusterPath, "*.yaml", SearchOption.AllDirectories))
@@ -108,7 +106,7 @@ class KSailLintCommandHandler()
       catch (InvalidOperationException)
       {
         Console.WriteLine($"✕ Validation failed for '{manifest}'...");
-        Environment.Exit(1);
+        throw new KSailException($"✕ Validation failed for '{manifest}'...");
       }
     }
   }

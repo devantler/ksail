@@ -1,4 +1,5 @@
 using CliWrap;
+using KSail.Exceptions;
 using System.Runtime.InteropServices;
 
 namespace KSail.CLIWrappers;
@@ -25,8 +26,7 @@ class SOPSCLIWrapper()
   {
     if (!File.Exists(decrypt))
     {
-      Console.WriteLine($"✖ File '{decrypt}' does not exist");
-      Environment.Exit(1);
+      throw new KSailException($"✖ File '{decrypt}' does not exist");
     }
     var cmd = SOPS.WithArguments($"-d -i {decrypt}");
     _ = await CLIRunner.RunAsync(cmd, silent: true);
@@ -35,8 +35,7 @@ class SOPSCLIWrapper()
   {
     if (!File.Exists(encrypt))
     {
-      Console.WriteLine($"✖ File '{encrypt}' does not exist");
-      Environment.Exit(1);
+      throw new KSailException($"✖ File '{encrypt}' does not exist");
     }
     var cmd = SOPS.WithArguments($"-e -i {encrypt}");
     _ = await CLIRunner.RunAsync(cmd, silent: true);

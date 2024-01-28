@@ -2,6 +2,7 @@ using System.Data;
 using System.Diagnostics;
 using k8s;
 using k8s.Models;
+using KSail.Exceptions;
 using KSail.Extensions;
 
 namespace KSail.Commands.Check.Handlers;
@@ -36,8 +37,7 @@ class KSailCheckCommandHandler()
         }
         else if (stopwatch.Elapsed.TotalSeconds >= timeout)
         {
-          Console.WriteLine($"✕ Timeout reached. Kustomization '{kustomizationName}' did not become ready within the specified time limit of {timeout} seconds.");
-          Environment.Exit(1);
+          throw new TimeoutException($"Kustomization '{kustomizationName}' did not become ready within the specified time limit of {timeout} seconds.");
         }
         else if (successFullKustomizations.Contains(kustomizationName))
         {
@@ -79,23 +79,20 @@ class KSailCheckCommandHandler()
 
   static void HandleFailedStatus(V1CustomResourceDefinition? kustomization, string kustomizationName)
   {
-    Console.WriteLine($"✕ Kustomization '{kustomizationName}' failed!");
     string? message = kustomization?.Status.Conditions.FirstOrDefault()?.Message;
-    Console.WriteLine($"✕ {message}");
-    Environment.Exit(1);
+    throw new KSailException($"✕ Kustomization '{kustomizationName}' failed with message: {message}");
   }
 
   static Kubernetes CreateKubernetesClientFromClusterName(string name)
   {
     var kubeConfig = KubernetesClientConfiguration.LoadKubeConfig();
-    var context = kubeConfig.Contexts.FirstOrDefault(c => c.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
-
-    if (context == null)
-    {
-      Console.WriteLine($"✕ Could not find a context matching the cluster name '{name}' in the kubeconfig file.");
-      Console.WriteLine($"  Available contexts are: {string.Join(", ", kubeConfig.Contexts.Select(c => c.Name))}");
-      Environment.Exit(1);
-    }
+    var context = kubeConfig.Contexts.FirstOrDefault(
+      c => c.Name.Contains(name, StringComparison.OrdinalIgnoreCase)
+    ) ?? throw new KSailException(
+        $"✕ Could not find a context matching the cluster name '{name}' in the kubeconfig file. " +
+        Environment.NewLine +
+        $"  Available contexts are: {string.Join(", ", kubeConfig.Contexts.Select(c => c.Name))}"
+      );
     var config = KubernetesClientConfiguration.BuildConfigFromConfigObject(kubeConfig, context.Name);
     return new Kubernetes(config);
   }
