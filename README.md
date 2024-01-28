@@ -238,14 +238,17 @@ I am currently working on stabilizing the tool, and ensure that it works as expe
 
 Features in the pipeline:
 
-- **Improved Init Command:** Generating the YAML and configuration files for your clusters will be more customizable.
+- **100% Test Coverage:** KSail is currently at ~80% test coverage, and I am working on getting it to 100%, to ensure that all intended use cases are thoroughly tested.
+- **Better Error Handling:** KSail currently has some issues with error handling, and I am working on improving this, so that it fails gracefully with informative error messages.
+- **Extra Args**: I intend to add support for passing extra arguments to the different commands, so users can choose to pass extra arguments to the underlying binaries if they so desire. If one command targets multiple binaries, e.g. `ksail up`, I intend to add support for passing extra arguments to the different binaries, e.g. `ksail up --flux-args="--some-arg" --k3d-args="--some-other-arg"`.
+- **Improved Init Command:** I intend to build a small template engine into KSail, so it is easier to extend and customize the generated files.
 - **Kind Support:** KSail will be able to create and manage GitOps-enabled Kubernetes clusters in Kind.
-- **Setting hosts:** Services made accessible through ingresses cannot be reached without setting their dns in the hosts file. I believe it would be nice if KSail was able to do this in a friendly way.
 
 Features I'm considering:
 
-- **Windows Support:** Ideally, KSail should work on all platforms, but the current setup has a few hindrances that make it difficult to support Windows. I am contemplating how to best solve this, or if I should just drop Windows support altogether.
 - **ArgoCD Support through Flamingo:** Working with YAML is a not necessarily the preffered approach for all, so I am contemplating including Flaming as a helm release provided by the `ksail init` command, so users can choose to create new releases from ArgoCDs proven UI.
+- **Windows Support:** Ideally, KSail should work on all platforms, but the current setup has a few hindrances that make it difficult to support Windows. I am contemplating how to best solve this, or if I should just drop Windows support altogether.
+- **Setting hosts:** Services made accessible through ingresses cannot be reached without setting their dns in the hosts file. I believe it would be nice if KSail was able to do this in a friendly way. EDIT: On second thought I do not believe this feature will be very flexible, so instead I am to document how this can be done manually, but as many might have different setups, or even local DNS servers, I do not believe this is a good fit for KSail.
 
 ## Contributing
 

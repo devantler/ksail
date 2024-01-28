@@ -1,0 +1,20 @@
+﻿Required argument missing for command: 'update'.
+
+Description:
+  Update manifests in an OCI registry
+
+Usage:
+  update <name> [options]
+
+Arguments:
+  <name>
+
+Options:
+  -m, --manifests <manifests> (REQUIRED)  Path to the manifests directory [default: ./k8s]
+  -nl, --no-lint                          Skip linting manifests [default: False]
+  -nr, --no-reconcile                     Skip reconciling manifests [default: False]
+  --version                               Show version information
+  -?, -h, --help                          Show help and usage information
+
+
+

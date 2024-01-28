@@ -71,6 +71,10 @@ class KSailLintCommandHandler()
     }
   }
 
+  //TODO: Refactor the ValidateKustomizationsAsync method
+  // Move the CLI commands to an appropriate CLIWrapper class.
+  // Extract methods
+  // Consider a helper class
   static async Task ValidateKustomizationsAsync(string name, string manifestsPath)
   {
     string[] kubeconformFlags = ["-skip=Secret"];

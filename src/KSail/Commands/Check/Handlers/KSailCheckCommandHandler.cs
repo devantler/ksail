@@ -1,6 +1,5 @@
 using System.Data;
 using System.Diagnostics;
-using System.Globalization;
 using k8s;
 using k8s.Models;
 using KSail.Extensions;
@@ -59,12 +58,13 @@ class KSailCheckCommandHandler()
           HandleReadyStatus(kustomizationName);
           break;
         default:
-          Console.WriteLine($"◎ Waiting for kustomization '{kustomizationName}' to be ready. It is currently {statusConditionType?.ToLower(CultureInfo.InvariantCulture)}...");
+          Console.WriteLine($"◎ Waiting for kustomization '{kustomizationName}' to be ready...");
+          Console.WriteLine($"  Current status: {statusConditionType}");
           foreach (var condition in kustomization?.Status.Conditions ?? Enumerable.Empty<V1CustomResourceDefinitionCondition>())
           {
             Console.WriteLine($"  {condition.Message}");
           }
-          Console.WriteLine($"  Elapsed time: {stopwatch.Elapsed.TotalSeconds} out of {timeout} seconds");
+          Console.WriteLine($"  Elapsed time: {stopwatch.Elapsed.TotalSeconds:0}s out of {timeout}s");
           break;
       }
     }

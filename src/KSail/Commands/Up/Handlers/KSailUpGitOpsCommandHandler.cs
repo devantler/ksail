@@ -32,7 +32,7 @@ static class KSailUpGitOpsCommandHandler
     Console.WriteLine("🧮 Creating OCI registry...");
     await DockerProvisioner.CreateRegistryAsync("manifests", 5050);
     Console.WriteLine("");
-    await KSailUpdateCommandHandler.HandleAsync(name, manifestsPath, true);
+    await KSailUpdateCommandHandler.HandleAsync(name, manifestsPath, true, true);
 
     await K3dProvisioner.ProvisionAsync(name, configPath);
     var kubernetesProvisioner = new KubernetesProvisioner();

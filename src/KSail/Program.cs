@@ -14,7 +14,13 @@ else
   {
     File.SetUnixFileMode(file, UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute);
   }
-
   var ksailCommand = new KSailRootCommand();
-  _ = await ksailCommand.InvokeAsync(args);
+  try
+  {
+    _ = await ksailCommand.InvokeAsync(args);
+  }
+  catch (Exception e)
+  {
+    Console.WriteLine(e.Message);
+  }
 }
