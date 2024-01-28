@@ -240,6 +240,7 @@ Features in the pipeline:
 
 - **100% Test Coverage:** KSail is currently at ~80% test coverage, and I am working on getting it to 100%, to ensure that all intended use cases are thoroughly tested.
 - **Better Error Handling:** KSail currently has some issues with error handling, and I am working on improving this, so that it fails gracefully with informative error messages.
+- **Extra Args**: I intend to add support for passing extra arguments to the different commands, so users can choose to pass extra arguments to the underlying binaries if they so desire. If one command targets multiple binaries, e.g. `ksail up`, I intend to add support for passing extra arguments to the different binaries, e.g. `ksail up --flux-args="--some-arg" --k3d-args="--some-other-arg"`.
 - **Improved Init Command:** I intend to build a small template engine into KSail, so it is easier to extend and customize the generated files.
 - **Kind Support:** KSail will be able to create and manage GitOps-enabled Kubernetes clusters in Kind.
 
