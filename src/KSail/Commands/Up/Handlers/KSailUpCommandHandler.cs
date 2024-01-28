@@ -65,6 +65,6 @@ class KSailUpCommandHandler(
     }
     var kubernetesDistribution = await _kubernetesDistributionProvisioner.GetKubernetesDistributionTypeAsync();
     await _gitOpsProvisioner.InstallAsync($"{kubernetesDistribution.ToString()?.ToLower(CultureInfo.InvariantCulture)}-{clusterName}", $"oci://host.k3d.internal:5050/{clusterName}", kustomizationsPath);
-    await new KSailCheckCommandHandler().HandleAsync(context, timeout, new CancellationToken());
+    await new KSailCheckCommandHandler().HandleAsync(context, timeout);
   }
 }

@@ -5,7 +5,7 @@ namespace KSail.Extensions;
 
 static class KubernetesExtensions
 {
-  internal static Task<HttpOperationResponse<object>> ListKustomizationsWithHttpMessagesAsync(this Kubernetes kubernetesClient, CancellationToken cancellationToken)
+  internal static Task<HttpOperationResponse<object>> ListKustomizationsWithHttpMessagesAsync(this Kubernetes kubernetesClient)
   {
     return kubernetesClient.CustomObjects.ListNamespacedCustomObjectWithHttpMessagesAsync(
       "kustomize.toolkit.fluxcd.io",
@@ -13,7 +13,7 @@ static class KubernetesExtensions
       "flux-system",
       "kustomizations",
       watch: true,
-      cancellationToken: cancellationToken
+      cancellationToken: new CancellationToken()
     );
   }
 }

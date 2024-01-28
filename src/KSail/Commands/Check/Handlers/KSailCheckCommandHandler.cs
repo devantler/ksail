@@ -12,13 +12,17 @@ class KSailCheckCommandHandler()
   readonly HashSet<string> _successFullKustomizations = [];
   readonly Stopwatch _stopwatch = Stopwatch.StartNew();
 
-  internal async Task HandleAsync(string context, int timeout, CancellationToken cancellationToken)
+  internal async Task HandleAsync(string context, int timeout, string? kubeconfig = null)
   {
     Console.WriteLine("👀 Checking the status of the cluster...");
-    var kubernetesClient = CreateKubernetesClientFromClusterName(context);
-    var responseTask = kubernetesClient.ListKustomizationsWithHttpMessagesAsync(cancellationToken);
+    var kubernetesClient = (kubeconfig is not null) switch
+    {
+      true => new Kubernetes(KubernetesClientConfiguration.BuildConfigFromConfigFile(kubeconfig)),
+      false => CreateKubernetesClientFromClusterName(context)
+    };
+    var responseTask = kubernetesClient.ListKustomizationsWithHttpMessagesAsync();
 
-    await foreach (var (type, kustomization) in responseTask.WatchAsync<V1CustomResourceDefinition, object>(cancellationToken: cancellationToken))
+    await foreach (var (type, kustomization) in responseTask.WatchAsync<V1CustomResourceDefinition, object>())
     {
       string? kustomizationName = kustomization?.Metadata.Name ??
         throw new InvalidOperationException("🚨 Kustomization name is null");
