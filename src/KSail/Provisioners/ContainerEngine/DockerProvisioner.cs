@@ -1,16 +1,16 @@
-
 using Docker.DotNet;
 using Docker.DotNet.Models;
+using KSail.Exceptions;
 
-namespace KSail.Provisioners;
+namespace KSail.Provisioners.ContainerEngine;
 
-sealed class DockerProvisioner : IProvisioner
+sealed class DockerProvisioner : IContainerEngineProvisioner
 {
-  static readonly DockerClient dockerClient = new DockerClientConfiguration(
+  readonly DockerClient dockerClient = new DockerClientConfiguration(
     new Uri("unix:///var/run/docker.sock")
   ).CreateClient();
 
-  internal static async Task CheckReadyAsync()
+  public async Task CheckReadyAsync()
   {
     Console.WriteLine("🐳 Checking Docker is running...");
     try
@@ -19,14 +19,13 @@ sealed class DockerProvisioner : IProvisioner
     }
     catch (Exception)
     {
-      Console.WriteLine("✕ Could not connect to Docker. Is Docker running?");
-      Environment.Exit(1);
+      throw new KSailException("✕ Could not connect to Docker. Is Docker running?");
     }
     Console.WriteLine("✔ Docker is running...");
     Console.WriteLine();
   }
 
-  internal static async Task CreateRegistryAsync(string name, int port, Uri? proxyUrl = null)
+  public async Task CreateRegistryAsync(string name, int port, Uri? proxyUrl = null)
   {
     if (proxyUrl != null)
     {
@@ -83,12 +82,10 @@ sealed class DockerProvisioner : IProvisioner
     }
     catch (DockerApiException e)
     {
-      Console.WriteLine($" Could not create registry '{name}'. {e.Message}...");
-      Environment.Exit(1);
+      throw new KSailException($"✕ Could not create registry '{name}'...", e);
     }
   }
-
-  internal static async Task DeleteRegistryAsync(string name)
+  public async Task DeleteRegistryAsync(string name)
   {
     string? containerId = await GetContainerIdAsync(name);
 
@@ -103,7 +100,7 @@ sealed class DockerProvisioner : IProvisioner
     }
   }
 
-  internal static async Task<string?> GetContainerIdAsync(string name)
+  public async Task<string?> GetContainerIdAsync(string name)
   {
     var containers = await dockerClient.Containers.ListContainersAsync(new ContainersListParameters
     {

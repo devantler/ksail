@@ -3,11 +3,13 @@ using KSail.Arguments;
 using KSail.Commands.Up.Handlers;
 using KSail.Commands.Up.Options;
 using KSail.Options;
+using KSail.Provisioners.ContainerEngine;
 
 namespace KSail.Commands.Up;
 
 sealed class KSailUpCommand : Command
 {
+  readonly ContainerEngineProvisionerBinder containerEngineProvisionerBinder = new();
   readonly NameArgument nameArgument = new() { Arity = ArgumentArity.ExactlyOne };
   readonly ConfigOption configOption = new() { IsRequired = true };
   readonly ManifestsOption manifestsOption = new();
@@ -42,10 +44,11 @@ sealed class KSailUpCommand : Command
         result.ErrorMessage = $"Manifests directory '{manifestsPath}' does not exist";
       }
     });
-    this.SetHandler(async (name, configPath, manifestsPath, kustomizationsPath, timeout, noSOPS) =>
+    this.SetHandler(async (containerEngineProvisioner, name, configPath, manifestsPath, kustomizationsPath, timeout, noSOPS) =>
     {
       configPath = $"{name}-{configPath}";
-      await KSailUpGitOpsCommandHandler.HandleAsync(name, configPath, manifestsPath, kustomizationsPath, timeout, noSOPS);
-    }, nameArgument, configOption, manifestsOption, kustomizationsOption, timeoutOption, noSOPSOption);
+      var handler = new KSailUpCommandHandler(containerEngineProvisioner);
+      await handler.HandleAsync(name, configPath, manifestsPath, kustomizationsPath, timeout, noSOPS);
+    }, containerEngineProvisionerBinder, nameArgument, configOption, manifestsOption, kustomizationsOption, timeoutOption, noSOPSOption);
   }
 }

@@ -1,10 +1,11 @@
-using KSail.Provisioners;
+using KSail.Provisioners.ContainerEngine;
 
 namespace KSail.Tests.Integration.TestUtils;
 
-static class DockerTestUtils
+sealed class DockerTestUtils(DockerProvisioner dockerProvisioner)
 {
-  internal static async Task<bool> CheckRegistriesExistAsync()
+  readonly DockerProvisioner DockerProvisioner = dockerProvisioner;
+  internal async Task<bool> CheckRegistriesExistAsync()
   {
     return await ContainerExistsAsync("proxy-docker.io")
       && await ContainerExistsAsync("proxy-registry.k8s.io")
@@ -13,7 +14,7 @@ static class DockerTestUtils
       && await ContainerExistsAsync("proxy-quay.io")
       && await ContainerExistsAsync("proxy-mcr.microsoft.com");
   }
-  internal static async Task<bool> ContainerExistsAsync(string name)
+  internal async Task<bool> ContainerExistsAsync(string name)
   {
     string? container = await DockerProvisioner.GetContainerIdAsync(name);
     return !string.IsNullOrEmpty(container);

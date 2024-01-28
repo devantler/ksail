@@ -3,7 +3,7 @@ using System.CommandLine.IO;
 using KSail.Commands.Init;
 using KSail.Commands.Up;
 using KSail.Commands.Update;
-using KSail.Provisioners;
+using KSail.Provisioners.ContainerEngine;
 using KSail.Tests.Integration.TestUtils;
 
 namespace KSail.Tests.Integration.Commands.Update;
@@ -46,6 +46,7 @@ public class KSailUpdateCommandTests : IAsyncLifetime
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpdateCommand = new KSailUpdateCommand();
+    var DockerProvisioner = new DockerProvisioner();
 
     //Act
     await DockerProvisioner.CreateRegistryAsync("manifests", 5050);
