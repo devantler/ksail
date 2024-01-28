@@ -4,7 +4,6 @@ namespace KSail.Services.Provisioners.GitOps;
 
 sealed class FluxProvisioner : IGitOpsProvisioner
 {
-  internal static Task ReconcileAsync(string name) => FluxCLIWrapper.ReconcileAsync(name);
   public async Task InstallAsync(string context, string sourceUrl, string path)
   {
     Console.WriteLine("🔄 Checking Flux prerequisites are satisfied...");
@@ -26,7 +25,7 @@ sealed class FluxProvisioner : IGitOpsProvisioner
     await FluxCLIWrapper.UninstallAsync(context);
     Console.WriteLine();
   }
-  async Task IGitOpsProvisioner.ReconcileAsync(string context)
+  public async Task ReconcileAsync(string context)
   {
     Console.WriteLine("🔄 Reconciling Flux...");
     await FluxCLIWrapper.ReconcileAsync(context);

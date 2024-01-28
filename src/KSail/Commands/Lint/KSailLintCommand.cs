@@ -7,14 +7,14 @@ namespace KSail.Commands.Lint;
 
 sealed class KSailLintCommand : Command
 {
-  readonly NameArgument _nameArgument = new();
+  readonly ClusterNameArgument _clusterNameArgument = new();
   readonly ManifestsOption _manifestsOption = new() { IsRequired = true };
   internal KSailLintCommand() : base(
    "lint", "Lint manifest files"
   )
   {
-    AddArgument(_nameArgument);
+    AddArgument(_clusterNameArgument);
     AddOption(_manifestsOption);
-    this.SetHandler(KSailLintCommandHandler.HandleAsync, _nameArgument, _manifestsOption);
+    this.SetHandler(KSailLintCommandHandler.HandleAsync, _clusterNameArgument, _manifestsOption);
   }
 }

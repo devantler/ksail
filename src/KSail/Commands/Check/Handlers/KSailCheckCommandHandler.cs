@@ -12,10 +12,10 @@ class KSailCheckCommandHandler()
   static readonly HashSet<string> successFullKustomizations = [];
   static readonly Stopwatch stopwatch = Stopwatch.StartNew();
 
-  internal static async Task HandleAsync(string name, int timeout, CancellationToken cancellationToken)
+  internal static async Task HandleAsync(string clusterName, int timeout, CancellationToken cancellationToken)
   {
     Console.WriteLine("👀 Checking the status of the cluster...");
-    var kubernetesClient = CreateKubernetesClientFromClusterName(name);
+    var kubernetesClient = CreateKubernetesClientFromClusterName(clusterName);
     var responseTask = kubernetesClient.ListKustomizationsWithHttpMessagesAsync(cancellationToken);
 
     await foreach (var (type, kustomization) in responseTask.WatchAsync<V1CustomResourceDefinition, object>(cancellationToken: cancellationToken))

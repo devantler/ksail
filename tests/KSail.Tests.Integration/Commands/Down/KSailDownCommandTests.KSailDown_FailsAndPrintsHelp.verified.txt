@@ -4,10 +4,10 @@ Description:
   Destroy a K8s cluster
 
 Usage:
-  down <name> [options]
+  down <clusterName> [options]
 
 Arguments:
-  <name>
+  <clusterName>
 
 Options:
   -d, --delete-pull-through-registries  Delete pull through registries [default: False]

@@ -18,7 +18,7 @@ sealed class KSailUpCommand : Command
   readonly KubernetesDistributionProvisionerBinder _kubernetesDistributionProvisionerBinder = new(KubernetesDistributionType.K3d);
   readonly ContainerOrchestratorProvisionerBinder _containerOrchestratorProvisionerBinder = new(ContainerOrchestratorType.Kubernetes);
   readonly GitOpsProvisionerBinder _gitOpsProvisionerBinder = new(GitOpsType.Flux);
-  readonly NameArgument _nameArgument = new() { Arity = ArgumentArity.ExactlyOne };
+  readonly ClusterNameArgument _clusterNameArgument = new() { Arity = ArgumentArity.ExactlyOne };
   readonly ConfigOption _configOption = new() { IsRequired = true };
   readonly ManifestsOption _manifestsOption = new();
   readonly KustomizationsOption _kustomizationsOption = new();
@@ -26,7 +26,7 @@ sealed class KSailUpCommand : Command
   readonly NoSOPSOption _noSOPSOption = new();
   internal KSailUpCommand() : base("up", "Provision a K8s cluster")
   {
-    AddArgument(_nameArgument);
+    AddArgument(_clusterNameArgument);
     AddOption(_configOption);
     AddOption(_manifestsOption);
     AddOption(_kustomizationsOption);
@@ -35,13 +35,13 @@ sealed class KSailUpCommand : Command
 
     AddValidator(result =>
     {
-      string? name = result.GetValueForArgument(_nameArgument);
-      if (string.IsNullOrEmpty(name))
+      string? clusterName = result.GetValueForArgument(_clusterNameArgument);
+      if (string.IsNullOrEmpty(clusterName))
       {
-        result.ErrorMessage = "Required argument 'Name' missing for command: 'up'.";
+        result.ErrorMessage = "Required argument 'ClusterName' missing for command: 'up'.";
         return;
       }
-      string? configPath = $"{name}-{result.GetValueForOption(_configOption)}";
+      string? configPath = $"{clusterName}-{result.GetValueForOption(_configOption)}";
       string? manifestsPath = result.GetValueForOption(_manifestsOption);
       if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
       {
@@ -64,6 +64,6 @@ sealed class KSailUpCommand : Command
         argumentsAndOptions.Timeout,
         argumentsAndOptions.NoSOPS
       );
-    }, _containerEngineProvisionerBinder, _kubernetesDistributionProvisionerBinder, _containerOrchestratorProvisionerBinder, _gitOpsProvisionerBinder, new KSailUpArgumentsAndOptionsBinder(_nameArgument, _configOption, _manifestsOption, _kustomizationsOption, _timeoutOption, _noSOPSOption));
+    }, _containerEngineProvisionerBinder, _kubernetesDistributionProvisionerBinder, _containerOrchestratorProvisionerBinder, _gitOpsProvisionerBinder, new KSailUpArgumentsAndOptionsBinder(_clusterNameArgument, _configOption, _manifestsOption, _kustomizationsOption, _timeoutOption, _noSOPSOption));
   }
 }

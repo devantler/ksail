@@ -38,7 +38,7 @@ public class KSailUpdateCommandTests : IAsyncLifetime
   }
 
   /// <summary>
-  /// Tests that the <c>ksail update [name] --no-reconcile</c> command succeeds and pushes updates to OCI.
+  /// Tests that the <c>ksail update [clusterName] --no-reconcile</c> command succeeds and pushes updates to OCI.
   /// </summary>
   [Fact]
   public async Task KSailUpdateNameNoReconcile_SucceedsAndPushesUpdatesToOCI()
@@ -59,7 +59,7 @@ public class KSailUpdateCommandTests : IAsyncLifetime
   }
 
   /// <summary>
-  /// Tests that the <c>ksail update [name]</c> command succeeds, pushes updates to OCI, and reconciles them.
+  /// Tests that the <c>ksail update [clusterName]</c> command succeeds, pushes updates to OCI, and reconciles them.
   /// </summary>
   [Fact]
   public async Task KSailUpdateName_SucceedsAndPushesUpdatesToOCIAndReconciles()

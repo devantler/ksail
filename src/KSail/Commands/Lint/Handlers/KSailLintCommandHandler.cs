@@ -10,7 +10,7 @@ namespace KSail.Commands.Lint.Handlers;
 class KSailLintCommandHandler()
 {
   static readonly HttpClient httpClient = new();
-  internal static async Task HandleAsync(string name, string manifestsPath)
+  internal static async Task HandleAsync(string clusterName, string manifestsPath)
   {
     Console.WriteLine("🧹 Linting manifest files...");
 
@@ -24,17 +24,17 @@ class KSailLintCommandHandler()
     }
 
     ValidateYaml(manifestsPath);
-    if (string.IsNullOrEmpty(name))
+    if (string.IsNullOrEmpty(clusterName))
     {
       foreach (string clusterPath in Directory.GetDirectories($"{manifestsPath}/clusters"))
       {
-        string clusterName = clusterPath.Replace($"{manifestsPath}/clusters/", "", StringComparison.Ordinal);
-        await ValidateKustomizationsAsync(clusterName, manifestsPath);
+        string name = clusterPath.Replace($"{manifestsPath}/clusters/", "", StringComparison.Ordinal);
+        await ValidateKustomizationsAsync(name, manifestsPath);
       }
     }
     else
     {
-      await ValidateKustomizationsAsync(name, manifestsPath);
+      await ValidateKustomizationsAsync(clusterName, manifestsPath);
     }
     Console.WriteLine("");
   }
@@ -74,17 +74,17 @@ class KSailLintCommandHandler()
   // Move the CLI commands to an appropriate CLIWrapper class.
   // Extract methods
   // Consider a helper class
-  static async Task ValidateKustomizationsAsync(string name, string manifestsPath)
+  static async Task ValidateKustomizationsAsync(string clusterName, string manifestsPath)
   {
     string[] kubeconformFlags = ["-skip=Secret"];
     string[] kubeconformConfig = ["-strict", "-ignore-missing-schemas", "-schema-location", "default", "-schema-location", "/tmp/flux-crd-schemas", "-verbose"];
 
-    string clusterPath = $"{manifestsPath}/clusters/{name}";
+    string clusterPath = $"{manifestsPath}/clusters/{clusterName}";
     if (!Directory.Exists(clusterPath))
     {
-      throw new DirectoryNotFoundException($"🚨 Cluster '{name}' not found in path '{clusterPath}'...");
+      throw new DirectoryNotFoundException($"🚨 Cluster '{clusterName}' not found in path '{clusterPath}'...");
     }
-    Console.WriteLine($"► Validating cluster '{name}' with Kubeconform...");
+    Console.WriteLine($"► Validating cluster '{clusterName}' with Kubeconform...");
     foreach (string manifest in Directory.GetFiles(clusterPath, "*.yaml", SearchOption.AllDirectories))
     {
       await KubeconformCLIWrapper.Run(kubeconformFlags, kubeconformConfig, manifest);

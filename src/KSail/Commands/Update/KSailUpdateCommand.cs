@@ -13,7 +13,7 @@ sealed class KSailUpdateCommand : Command
 {
   readonly KubernetesDistributionProvisionerBinder _kubernetesDistributionProvisionerBinder = new(KubernetesDistributionType.K3d);
   readonly GitOpsProvisionerBinder _gitOpsProvisionerBinder = new(GitOpsType.Flux);
-  readonly NameArgument _nameArgument = new() { Arity = ArgumentArity.ExactlyOne };
+  readonly ClusterNameArgument _clusterNameArgument = new() { Arity = ArgumentArity.ExactlyOne };
   readonly ManifestsOption _manifestsOption = new() { IsRequired = true };
   readonly NoLintOption _noLintOption = new();
   readonly NoReconcileOption _noReconcileOption = new();
@@ -22,14 +22,14 @@ sealed class KSailUpdateCommand : Command
     "Update manifests in an OCI registry"
   )
   {
-    AddArgument(_nameArgument);
+    AddArgument(_clusterNameArgument);
     AddOption(_manifestsOption);
     AddOption(_noLintOption);
     AddOption(_noReconcileOption);
-    this.SetHandler(async (kubernetesDistributionProvisioner, gitOpsProvisioner, name, manifests, noLint, noReconcile) =>
+    this.SetHandler(async (kubernetesDistributionProvisioner, gitOpsProvisioner, clusterName, manifests, noLint, noReconcile) =>
     {
       var handler = new KSailUpdateCommandHandler(kubernetesDistributionProvisioner, gitOpsProvisioner);
-      await handler.HandleAsync(name, manifests, noLint, noReconcile);
-    }, _kubernetesDistributionProvisionerBinder, _gitOpsProvisionerBinder, _nameArgument, _manifestsOption, _noLintOption, _noReconcileOption);
+      await handler.HandleAsync(clusterName, manifests, noLint, noReconcile);
+    }, _kubernetesDistributionProvisionerBinder, _gitOpsProvisionerBinder, _clusterNameArgument, _manifestsOption, _noLintOption, _noReconcileOption);
   }
 }

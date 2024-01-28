@@ -7,19 +7,19 @@ namespace KSail.Commands.Check;
 
 sealed class KSailCheckCommand : Command
 {
-  readonly NameArgument _nameArgument = new();
+  readonly ClusterNameArgument _clusterNameArgument = new();
   readonly TimeoutOption _timeoutOption = new();
 
   internal KSailCheckCommand() : base("check", "Check the status of the cluster")
   {
-    AddArgument(_nameArgument);
+    AddArgument(_clusterNameArgument);
     AddOption(_timeoutOption);
-    this.SetHandler((name, timeout) =>
+    this.SetHandler((clusterName, timeout) =>
       _ = KSailCheckCommandHandler.HandleAsync(
-        name,
+        clusterName,
         timeout,
         new CancellationToken()
-      ), _nameArgument, _timeoutOption
+      ), _clusterNameArgument, _timeoutOption
     );
   }
 }

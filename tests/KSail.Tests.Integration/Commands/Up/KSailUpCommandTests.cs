@@ -38,7 +38,7 @@ public class KSailUpCommandTests : IAsyncLifetime
   }
 
   /// <summary>
-  /// Tests that the <c>ksail up [name]</c> command fails and prints help when no config exists.
+  /// Tests that the <c>ksail up [clusterName]</c> command fails and prints help when no config exists.
   /// </summary>
   [Fact]
   public async Task KSailUpNameAndNoConfig_FailsAndPrintsHelp()
@@ -77,7 +77,7 @@ public class KSailUpCommandTests : IAsyncLifetime
   }
 
   /// <summary>
-  /// Tests that the <c>ksail up [name]</c> command succeeds and creates a cluster.
+  /// Tests that the <c>ksail up [clusterName]</c> command succeeds and creates a cluster.
   /// </summary>
   [Fact]
   public async Task KSailUpNameAndConfig_SucceedsAndCreatesCluster()
@@ -98,7 +98,7 @@ public class KSailUpCommandTests : IAsyncLifetime
   }
 
   /// <summary>
-  /// Tests that the <c>ksail up [name]</c> command with environment variables succeeds and creates a cluster.
+  /// Tests that the <c>ksail up [clusterName]</c> command with environment variables succeeds and creates a cluster.
   /// </summary>
   [Fact]
   public async Task KSailUpNameAndConfigAndEnv_SucceedsAndCreatesCluster()

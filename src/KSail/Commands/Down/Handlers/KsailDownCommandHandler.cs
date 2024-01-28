@@ -8,9 +8,9 @@ class KSailDownCommandHandler(IContainerEngineProvisioner containerEngineProvisi
   readonly IContainerEngineProvisioner _containerEngineProvisioner = containerEngineProvisioner;
   readonly IKubernetesDistributionProvisioner _kubernetesDistributionProvisioner = kubernetesDistributionProvisioner;
 
-  internal async Task HandleAsync(string name, bool deletePullThroughRegistries = false)
+  internal async Task HandleAsync(string clusterName, bool deletePullThroughRegistries = false)
   {
-    await _kubernetesDistributionProvisioner.DeprovisionAsync(name);
+    await _kubernetesDistributionProvisioner.DeprovisionAsync(clusterName);
     if (deletePullThroughRegistries)
     {
       await DeletePullThroughRegistriesAsync();
