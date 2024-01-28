@@ -3,7 +3,6 @@ using System.CommandLine.IO;
 using KSail.Commands.Init;
 using KSail.Commands.SOPS;
 using KSail.Commands.Up;
-using KSail.Provisioners.ContainerEngine;
 using KSail.Tests.Integration.TestUtils;
 
 namespace KSail.Tests.Integration.Commands.Up;
@@ -85,7 +84,6 @@ public class KSailUpCommandTests : IAsyncLifetime
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();
-    var dockerProvisioner = new DockerProvisioner();
 
     //Act
     int initExitCode = await ksailInitCommand.InvokeAsync("ksail");
@@ -94,7 +92,7 @@ public class KSailUpCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, upExitCode);
-    Assert.True(await new DockerTestUtils(dockerProvisioner).CheckRegistriesExistAsync());
+    Assert.True(await new DockerTestUtils().CheckRegistriesExistAsync());
   }
 
   /// <summary>
@@ -107,7 +105,6 @@ public class KSailUpCommandTests : IAsyncLifetime
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();
     var ksailSOPSCommand = new KSailSOPSCommand();
-    var dockerProvisioner = new DockerProvisioner();
 
     //Act
     if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey")))
@@ -123,6 +120,6 @@ public class KSailUpCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, upExitCode);
-    Assert.True(await new DockerTestUtils(dockerProvisioner).CheckRegistriesExistAsync());
+    Assert.True(await new DockerTestUtils().CheckRegistriesExistAsync());
   }
 }

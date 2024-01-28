@@ -2,9 +2,9 @@ using KSail.Provisioners.ContainerEngine;
 
 namespace KSail.Tests.Integration.TestUtils;
 
-sealed class DockerTestUtils(DockerProvisioner dockerProvisioner)
+sealed class DockerTestUtils()
 {
-  readonly DockerProvisioner _dockerProvisioner = dockerProvisioner;
+  readonly DockerProvisioner _dockerProvisioner = new();
   internal async Task<bool> CheckRegistriesExistAsync()
   {
     return await ContainerExistsAsync("proxy-docker.io")
