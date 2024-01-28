@@ -4,6 +4,7 @@ using KSail.Commands.Init;
 using KSail.Commands.Up;
 using KSail.Commands.Update;
 using KSail.Provisioners;
+using KSail.Tests.Integration.TestUtils;
 
 namespace KSail.Tests.Integration.Commands.Update;
 
@@ -16,7 +17,7 @@ public class KSailUpdateCommandTests : IAsyncLifetime
   /// <inheritdoc/>
   public Task DisposeAsync() => Task.CompletedTask;
   /// <inheritdoc/>
-  public Task InitializeAsync() => DockerProvisioner.DeleteRegistryAsync("manifests");
+  public Task InitializeAsync() => KSailTestUtils.CleanupAsync();
 
   /// <summary>
   /// Tests that the <c>ksail update</c> command fails and prints help.
