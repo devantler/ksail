@@ -69,7 +69,7 @@ public class KSailUpdateCommandTests : IAsyncLifetime
     //Act
     int initExitCode = await ksailInitCommand.InvokeAsync("ksail");
     int upExitCode = await ksailUpCommand.InvokeAsync("ksail");
-    int updateExitCode = await ksailUpdateCommand.InvokeAsync("ksail --no-reconcile");
+    int updateExitCode = await ksailUpdateCommand.InvokeAsync("ksail");
 
     //Assert
     Assert.Equal(0, initExitCode);

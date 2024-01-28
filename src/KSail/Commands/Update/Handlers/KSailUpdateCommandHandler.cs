@@ -17,7 +17,7 @@ static class KSailUpdateCommandHandler
     {
       Console.WriteLine();
       Console.WriteLine($"📥 Reconciling manifests on {name}...");
-      await FluxProvisioner.ReconcileAsync(name);
+      await FluxProvisioner.ReconcileAsync($"k3d-{name}");
     }
     Console.WriteLine("");
   }
