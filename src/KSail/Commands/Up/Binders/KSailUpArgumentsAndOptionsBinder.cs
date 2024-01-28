@@ -4,7 +4,7 @@ using System.CommandLine.Binding;
 namespace KSail.Commands.Up.Binders;
 
 class KSailUpArgumentsAndOptionsBinder(
-  Argument<string> nameArgument,
+  Argument<string> clusterNameArgument,
   Option<string> configOption,
   Option<string> manifestsOption,
   Option<string> kustomizationsOption,
@@ -12,7 +12,7 @@ class KSailUpArgumentsAndOptionsBinder(
   Option<bool> noSOPSOption
 ) : BinderBase<KSailUpArgumentsAndOptions>
 {
-  readonly Argument<string> _nameArgument = nameArgument;
+  readonly Argument<string> _clusterNameArgument = clusterNameArgument;
   readonly Option<string> _configOption = configOption;
   readonly Option<string> _manifestsOption = manifestsOption;
   readonly Option<string> _kustomizationsOption = kustomizationsOption;
@@ -22,7 +22,7 @@ class KSailUpArgumentsAndOptionsBinder(
   protected override KSailUpArgumentsAndOptions GetBoundValue(BindingContext bindingContext) =>
       new()
       {
-        Name = bindingContext.ParseResult.GetValueForArgument(_nameArgument),
+        ClusterName = bindingContext.ParseResult.GetValueForArgument(_clusterNameArgument),
         Config = bindingContext.ParseResult.GetValueForOption(_configOption) ?? string.Empty,
         Manifests = bindingContext.ParseResult.GetValueForOption(_manifestsOption) ?? string.Empty,
         Kustomizations = bindingContext.ParseResult.GetValueForOption(_kustomizationsOption) ?? string.Empty,

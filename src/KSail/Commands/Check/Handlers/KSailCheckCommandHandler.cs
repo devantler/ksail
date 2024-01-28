@@ -1,4 +1,3 @@
-using System.Data;
 using System.Diagnostics;
 using k8s;
 using k8s.Models;
@@ -83,17 +82,10 @@ class KSailCheckCommandHandler()
     throw new KSailException($"✕ Kustomization '{kustomizationName}' failed with message: {message}");
   }
 
-  static Kubernetes CreateKubernetesClientFromClusterName(string name)
+  static Kubernetes CreateKubernetesClientFromClusterName(string context)
   {
     var kubeConfig = KubernetesClientConfiguration.LoadKubeConfig();
-    var context = kubeConfig.Contexts.FirstOrDefault(
-      c => c.Name.Contains(name, StringComparison.OrdinalIgnoreCase)
-    ) ?? throw new KSailException(
-        $"✕ Could not find a context matching the cluster name '{name}' in the kubeconfig file. " +
-        Environment.NewLine +
-        $"  Available contexts are: {string.Join(", ", kubeConfig.Contexts.Select(c => c.Name))}"
-      );
-    var config = KubernetesClientConfiguration.BuildConfigFromConfigObject(kubeConfig, context.Name);
+    var config = KubernetesClientConfiguration.BuildConfigFromConfigObject(kubeConfig, context);
     return new Kubernetes(config);
   }
 }

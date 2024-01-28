@@ -14,11 +14,13 @@ namespace KSail.Commands.Up.Handlers;
 class KSailUpCommandHandler(
   IContainerEngineProvisioner containerEngineProvisioner,
   IKubernetesDistributionProvisioner kubernetesDistributionProvisioner,
+  IContainerOrchestratorProvisioner containerOrchestratorProvisioner,
   IGitOpsProvisioner gitOpsProvisioner
 )
 {
   readonly IContainerEngineProvisioner _containerEngineProvisioner = containerEngineProvisioner;
   readonly IKubernetesDistributionProvisioner _kubernetesDistributionProvisioner = kubernetesDistributionProvisioner;
+  readonly IContainerOrchestratorProvisioner _containerOrchestratorProvisioner = containerOrchestratorProvisioner;
   readonly IGitOpsProvisioner _gitOpsProvisioner = gitOpsProvisioner;
   internal async Task HandleAsync(string clusterName, string configPath, string manifestsPath, string kustomizationsPath, int timeout, bool noSOPS)
   {
@@ -48,14 +50,15 @@ class KSailUpCommandHandler(
     await new KSailUpdateCommandHandler(_kubernetesDistributionProvisioner, _gitOpsProvisioner).HandleAsync(clusterName, manifestsPath, true, true);
 
     await _kubernetesDistributionProvisioner.ProvisionAsync(clusterName, configPath);
-    var kubernetesProvisioner = new KubernetesProvisioner();
-    await kubernetesProvisioner.CreateNamespaceAsync("flux-system");
+    var kubernetesDistributionType = await _kubernetesDistributionProvisioner.GetKubernetesDistributionTypeAsync();
+    string context = $"{kubernetesDistributionType.ToString()?.ToLower(CultureInfo.InvariantCulture)}-{clusterName}";
+    await _containerOrchestratorProvisioner.CreateNamespaceAsync(context, "flux-system");
 
     if (!noSOPS)
     {
       Console.WriteLine("🔐 Adding SOPS key...");
       var sopsProvisioner = new SOPSProvisioner();
-      await sopsProvisioner.ProvisionAsync();
+      await sopsProvisioner.ProvisionAsync(context);
       Console.WriteLine("");
     }
     var kubernetesDistribution = await _kubernetesDistributionProvisioner.GetKubernetesDistributionTypeAsync();

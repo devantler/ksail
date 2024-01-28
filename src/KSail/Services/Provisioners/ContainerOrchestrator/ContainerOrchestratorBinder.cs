@@ -6,7 +6,6 @@ namespace KSail.Services.Provisioners.ContainerOrchestrator;
 class ContainerOrchestratorProvisionerBinder(Enums.ContainerOrchestratorType containerOrchestrator) : BinderBase<IContainerOrchestratorProvisioner>
 {
   readonly Enums.ContainerOrchestratorType _containerOrchestrator = containerOrchestrator;
-
   protected override IContainerOrchestratorProvisioner GetBoundValue(
       BindingContext bindingContext)
   {

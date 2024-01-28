@@ -6,6 +6,7 @@ using KSail.Commands.Up.Options;
 using KSail.Enums;
 using KSail.Options;
 using KSail.Services.Provisioners.ContainerEngine;
+using KSail.Services.Provisioners.ContainerOrchestrator;
 using KSail.Services.Provisioners.GitOps;
 using KSail.Services.Provisioners.KubernetesDistribution;
 
@@ -15,6 +16,7 @@ sealed class KSailUpCommand : Command
 {
   readonly ContainerEngineProvisionerBinder _containerEngineProvisionerBinder = new(ContainerEngineType.Docker);
   readonly KubernetesDistributionProvisionerBinder _kubernetesDistributionProvisionerBinder = new(KubernetesDistributionType.K3d);
+  readonly ContainerOrchestratorProvisionerBinder _containerOrchestratorProvisionerBinder = new(ContainerOrchestratorType.Kubernetes);
   readonly GitOpsProvisionerBinder _gitOpsProvisionerBinder = new(GitOpsType.Flux);
   readonly NameArgument _nameArgument = new() { Arity = ArgumentArity.ExactlyOne };
   readonly ConfigOption _configOption = new() { IsRequired = true };
@@ -50,18 +52,18 @@ sealed class KSailUpCommand : Command
         result.ErrorMessage = $"Manifests directory '{manifestsPath}' does not exist";
       }
     });
-    this.SetHandler(async (containerEngineProvisioner, kubernetesDistributionProvisioner, gitOpsProvisioner, argumentsAndOptions) =>
+    this.SetHandler(async (containerEngineProvisioner, kubernetesDistributionProvisioner, containerOrchestratorProvisioner, gitOpsProvisioner, argumentsAndOptions) =>
     {
-      argumentsAndOptions.Config = $"{argumentsAndOptions.Name}-{argumentsAndOptions.Config}";
-      var handler = new KSailUpCommandHandler(containerEngineProvisioner, kubernetesDistributionProvisioner, gitOpsProvisioner);
+      argumentsAndOptions.Config = $"{argumentsAndOptions.ClusterName}-{argumentsAndOptions.Config}";
+      var handler = new KSailUpCommandHandler(containerEngineProvisioner, kubernetesDistributionProvisioner, containerOrchestratorProvisioner, gitOpsProvisioner);
       await handler.HandleAsync(
-        argumentsAndOptions.Name,
+        argumentsAndOptions.ClusterName,
         argumentsAndOptions.Config,
         argumentsAndOptions.Manifests,
         argumentsAndOptions.Kustomizations,
         argumentsAndOptions.Timeout,
         argumentsAndOptions.NoSOPS
       );
-    }, _containerEngineProvisionerBinder, _kubernetesDistributionProvisionerBinder, _gitOpsProvisionerBinder, new KSailUpArgumentsAndOptionsBinder(_nameArgument, _configOption, _manifestsOption, _kustomizationsOption, _timeoutOption, _noSOPSOption));
+    }, _containerEngineProvisionerBinder, _kubernetesDistributionProvisionerBinder, _containerOrchestratorProvisionerBinder, _gitOpsProvisionerBinder, new KSailUpArgumentsAndOptionsBinder(_nameArgument, _configOption, _manifestsOption, _kustomizationsOption, _timeoutOption, _noSOPSOption));
   }
 }

@@ -3,7 +3,7 @@ using KSail.Services.Provisioners.ContainerOrchestrator;
 
 namespace KSail.Services.Provisioners;
 
-sealed class SOPSProvisioner : IDisposable
+sealed class SOPSProvisioner() : IDisposable
 {
   readonly KubernetesProvisioner _kubernetesProvisioner = new();
 
@@ -19,7 +19,7 @@ sealed class SOPSProvisioner : IDisposable
     await AgeCLIWrapper.GenerateKeyAsync();
   }
 
-  public async Task ProvisionAsync()
+  public async Task ProvisionAsync(string context)
   {
     string sopsKey = Environment.GetEnvironmentVariable("KSAIL_SOPS_KEY") ?? "";
     if (!string.IsNullOrEmpty(sopsKey))
@@ -31,7 +31,7 @@ sealed class SOPSProvisioner : IDisposable
     if (!File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.ksail/ksail_sops.agekey"))
       throw new FileNotFoundException("🚨 SOPS key not found");
     string ageKey = await File.ReadAllTextAsync(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.ksail/ksail_sops.agekey");
-    await _kubernetesProvisioner.CreateSecretAsync("sops-age", new Dictionary<string, string>
+    await _kubernetesProvisioner.CreateSecretAsync(context, "sops-age", new Dictionary<string, string>
     {
       ["ksail_sops.agekey"] = ageKey
     }, "flux-system");

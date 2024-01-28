@@ -1,17 +1,20 @@
 using System.Text;
 using k8s;
 using k8s.Models;
+using KSail.Enums;
 
 namespace KSail.Services.Provisioners.ContainerOrchestrator;
 
 sealed class KubernetesProvisioner : IContainerOrchestratorProvisioner, IDisposable
 {
-  readonly Kubernetes _kubernetesClient = new(KubernetesClientConfiguration.BuildDefaultConfig());
+  Kubernetes? _kubernetesClient;
 
   /// <inheritdoc/>
-  internal async Task CreateNamespaceAsync(string name)
+  public async Task CreateNamespaceAsync(string context, string name)
   {
-    // Reload config to ensure we're using the latest version
+    var kubeConfig = KubernetesClientConfiguration.LoadKubeConfig();
+    var config = KubernetesClientConfiguration.BuildConfigFromConfigObject(kubeConfig, context);
+    _kubernetesClient = new Kubernetes(config);
     Console.WriteLine($"🌐 Creating '{name}' namespace...");
     var fluxSystemNamespace = new V1Namespace
     {
@@ -27,8 +30,11 @@ sealed class KubernetesProvisioner : IContainerOrchestratorProvisioner, IDisposa
     Console.WriteLine();
   }
 
-  internal async Task CreateSecretAsync(string name, Dictionary<string, string> data, string @namespace = "default")
+  public async Task CreateSecretAsync(string context, string name, Dictionary<string, string> data, string @namespace = "default")
   {
+    var kubeConfig = KubernetesClientConfiguration.LoadKubeConfig();
+    var config = KubernetesClientConfiguration.BuildConfigFromConfigObject(kubeConfig, context);
+    _kubernetesClient = new Kubernetes(config);
     Console.WriteLine($"► Deploying '{name}' secret to '{@namespace}' namespace");
     var sopsGpgSecret = new V1Secret
     {
@@ -48,9 +54,11 @@ sealed class KubernetesProvisioner : IContainerOrchestratorProvisioner, IDisposa
     _ = await _kubernetesClient.CreateNamespacedSecretAsync(sopsGpgSecret, "flux-system");
   }
 
+  public Task<ContainerOrchestratorType> GetContainerOrchestratorTypeAsync() => Task.FromResult(ContainerOrchestratorType.Kubernetes);
+
   public void Dispose()
   {
-    _kubernetesClient.Dispose();
+    _kubernetesClient?.Dispose();
     GC.SuppressFinalize(this);
   }
 }
