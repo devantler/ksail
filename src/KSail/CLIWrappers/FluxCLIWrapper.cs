@@ -22,19 +22,19 @@ class FluxCLIWrapper()
     }
   }
 
-  internal static async Task CheckPrerequisitesAsync()
+  internal static async Task CheckPrerequisitesAsync(string context)
   {
-    var cmd = Flux.WithArguments("check --pre");
+    var cmd = Flux.WithArguments($"check --pre --context {context}");
     _ = await CLIRunner.RunAsync(cmd);
   }
 
-  internal static async Task InstallAsync()
+  internal static async Task InstallAsync(string context)
   {
-    var cmd = Flux.WithArguments("install");
+    var cmd = Flux.WithArguments($"install --context {context}");
     _ = await CLIRunner.RunAsync(cmd);
   }
 
-  internal static async Task CreateSourceOCIAsync(string sourceUrl)
+  internal static async Task CreateSourceOCIAsync(string context, string sourceUrl)
   {
     var cmd = Flux.WithArguments(
       [
@@ -44,12 +44,13 @@ class FluxCLIWrapper()
         "flux-system",
         $"--url={sourceUrl}",
         "--insecure",
-        "--tag=latest"
+        "--tag=latest",
+        $"--context={context}"
       ]
     );
     _ = await CLIRunner.RunAsync(cmd);
   }
-  internal static async Task CreateKustomizationAsync(string fluxKustomizationPath)
+  internal static async Task CreateKustomizationAsync(string context, string fluxKustomizationPath)
   {
     var cmd = Flux.WithArguments(
       [
@@ -57,18 +58,19 @@ class FluxCLIWrapper()
         "kustomization",
         "flux-system",
         "--source=OCIRepository/flux-system",
-        $"--path={fluxKustomizationPath}"
+        $"--path={fluxKustomizationPath}",
+        $"--context={context}"
       ]
     );
     _ = await CLIRunner.RunAsync(cmd);
   }
-  internal static async Task UninstallAsync()
+  internal static async Task UninstallAsync(string context)
   {
-    var cmd = Flux.WithArguments("uninstall");
+    var cmd = Flux.WithArguments($"uninstall --context {context}");
     _ = await CLIRunner.RunAsync(cmd);
   }
 
-  internal static async Task PushManifestsAsync(string ociUrl, string manifestsPath)
+  internal static async Task PushManifestsAsync(string context, string ociUrl, string manifestsPath)
   {
     long currentTimeEpoch = DateTime.Now.ToEpochTime();
     var pushCmd = Flux.WithArguments(
@@ -79,6 +81,7 @@ class FluxCLIWrapper()
         $"--path={manifestsPath}",
         $"--source={ociUrl}",
         $"--revision={currentTimeEpoch}",
+        $"--context={context}"
       ]
     );
     var tagCmd = Flux.WithArguments(

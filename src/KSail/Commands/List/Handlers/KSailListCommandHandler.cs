@@ -1,8 +1,10 @@
-using KSail.Provisioners;
+using KSail.Services.Provisioners.KubernetesDistribution;
 
 namespace KSail.Commands.List.Handlers;
 
-sealed class KSailListCommandHandler
+sealed class KSailListCommandHandler(IKubernetesDistributionProvisioner kubernetesDistributionProvisioner)
 {
-  internal static Task<string> HandleAsync() => K3dProvisioner.ListAsync();
+  readonly IKubernetesDistributionProvisioner _kubernetesDistributionProvisioner = kubernetesDistributionProvisioner;
+
+  internal Task<string> HandleAsync() => _kubernetesDistributionProvisioner.ListAsync();
 }

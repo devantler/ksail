@@ -1,6 +1,6 @@
 namespace KSail.Enums;
 
-enum K8sDistribution
+enum KubernetesDistributionType
 {
   K3d = 0
 }

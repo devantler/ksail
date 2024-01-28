@@ -1,23 +1,27 @@
 using KSail.Commands.Lint.Handlers;
-using KSail.Provisioners;
+using KSail.Services.Provisioners.GitOps;
+using KSail.Services.Provisioners.KubernetesDistribution;
 
 namespace KSail.Commands.Update.Handlers;
 
-static class KSailUpdateCommandHandler
+class KSailUpdateCommandHandler(IKubernetesDistributionProvisioner kubernetesDistributionProvisioner, IGitOpsProvisioner gitOpsProvisioner)
 {
-  internal static async Task HandleAsync(string name, string manifestsPath, bool noLint, bool noReconcile)
+  readonly IKubernetesDistributionProvisioner _kubernetesDistributionProvisioner = kubernetesDistributionProvisioner;
+  readonly IGitOpsProvisioner _gitOpsProvisioner = gitOpsProvisioner;
+  internal async Task HandleAsync(string name, string manifestsPath, bool noLint, bool noReconcile)
   {
     if (!noLint)
     {
       await KSailLintCommandHandler.HandleAsync(name, manifestsPath);
     }
     Console.WriteLine($"📥 Pushing manifests to {name}...");
-    await FluxProvisioner.PushManifestsAsync($"oci://localhost:5050/{name}", manifestsPath);
+    var kubernetesDistributionType = await _kubernetesDistributionProvisioner.GetKubernetesDistributionTypeAsync();
+    await _gitOpsProvisioner.PushManifestsAsync($"{kubernetesDistributionType}-{name}", $"oci://localhost:5050/{name}", manifestsPath);
     if (!noReconcile)
     {
       Console.WriteLine();
       Console.WriteLine($"📥 Reconciling manifests on {name}...");
-      await FluxProvisioner.ReconcileAsync($"k3d-{name}");
+      await _gitOpsProvisioner.ReconcileAsync($"{kubernetesDistributionType}-{name}");
     }
     Console.WriteLine("");
   }

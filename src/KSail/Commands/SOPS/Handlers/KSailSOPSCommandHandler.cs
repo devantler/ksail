@@ -1,5 +1,5 @@
 using KSail.CLIWrappers;
-using KSail.Provisioners;
+using KSail.Services.Provisioners;
 
 namespace KSail.Commands.SOPS.Handlers;
 

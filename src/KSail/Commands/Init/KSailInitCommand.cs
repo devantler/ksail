@@ -7,13 +7,13 @@ namespace KSail.Commands.Init;
 
 sealed class KSailInitCommand : Command
 {
-  readonly NameArgument nameArgument = new();
-  readonly ManifestsOption manifestsOption = new() { IsRequired = true };
+  readonly NameArgument _nameArgument = new();
+  readonly ManifestsOption _manifestsOption = new() { IsRequired = true };
   public KSailInitCommand() : base("init", "Initialize a new K8s cluster")
   {
-    AddArgument(nameArgument);
-    AddOption(manifestsOption);
+    AddArgument(_nameArgument);
+    AddOption(_manifestsOption);
 
-    this.SetHandler(KSailInitCommandHandler.HandleAsync, nameArgument, manifestsOption);
+    this.SetHandler(KSailInitCommandHandler.HandleAsync, _nameArgument, _manifestsOption);
   }
 }

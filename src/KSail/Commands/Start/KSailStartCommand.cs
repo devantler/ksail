@@ -6,12 +6,12 @@ namespace KSail.Commands.Start;
 
 sealed class KSailStartCommand : Command
 {
-  readonly NameArgument nameArgument = new();
+  readonly NameArgument _nameArgument = new();
 
   internal KSailStartCommand() : base("start", "Start a K8s cluster")
   {
-    AddArgument(nameArgument);
+    AddArgument(_nameArgument);
 
-    this.SetHandler(KSailStartCommandHandler.HandleAsync, nameArgument);
+    this.SetHandler(KSailStartCommandHandler.HandleAsync, _nameArgument);
   }
 }

@@ -1,15 +1,16 @@
-using KSail.Provisioners;
-using KSail.Provisioners.ContainerEngine;
+using KSail.Services.Provisioners.ContainerEngine;
+using KSail.Services.Provisioners.KubernetesDistribution;
 
 namespace KSail.Commands.Down.Handlers;
 
-class KSailDownCommandHandler(IContainerEngineProvisioner containerEngineProvisioner)
+class KSailDownCommandHandler(IContainerEngineProvisioner containerEngineProvisioner, IKubernetesDistributionProvisioner kubernetesDistributionProvisioner)
 {
-  readonly IContainerEngineProvisioner ContainerEngineProvisioner = containerEngineProvisioner;
+  readonly IContainerEngineProvisioner _containerEngineProvisioner = containerEngineProvisioner;
+  readonly IKubernetesDistributionProvisioner _kubernetesDistributionProvisioner = kubernetesDistributionProvisioner;
 
   internal async Task HandleAsync(string name, bool deletePullThroughRegistries = false)
   {
-    await K3dProvisioner.DeprovisionAsync(name);
+    await _kubernetesDistributionProvisioner.DeprovisionAsync(name);
     if (deletePullThroughRegistries)
     {
       await DeletePullThroughRegistriesAsync();
@@ -20,11 +21,11 @@ class KSailDownCommandHandler(IContainerEngineProvisioner containerEngineProvisi
 
   async Task DeletePullThroughRegistriesAsync()
   {
-    await ContainerEngineProvisioner.DeleteRegistryAsync("proxy-docker.io");
-    await ContainerEngineProvisioner.DeleteRegistryAsync("proxy-registry.k8s.io");
-    await ContainerEngineProvisioner.DeleteRegistryAsync("proxy-gcr.io");
-    await ContainerEngineProvisioner.DeleteRegistryAsync("proxy-ghcr.io");
-    await ContainerEngineProvisioner.DeleteRegistryAsync("proxy-quay.io");
-    await ContainerEngineProvisioner.DeleteRegistryAsync("proxy-mcr.microsoft.com");
+    await _containerEngineProvisioner.DeleteRegistryAsync("proxy-docker.io");
+    await _containerEngineProvisioner.DeleteRegistryAsync("proxy-registry.k8s.io");
+    await _containerEngineProvisioner.DeleteRegistryAsync("proxy-gcr.io");
+    await _containerEngineProvisioner.DeleteRegistryAsync("proxy-ghcr.io");
+    await _containerEngineProvisioner.DeleteRegistryAsync("proxy-quay.io");
+    await _containerEngineProvisioner.DeleteRegistryAsync("proxy-mcr.microsoft.com");
   }
 }

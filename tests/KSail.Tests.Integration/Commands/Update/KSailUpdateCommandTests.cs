@@ -3,7 +3,7 @@ using System.CommandLine.IO;
 using KSail.Commands.Init;
 using KSail.Commands.Up;
 using KSail.Commands.Update;
-using KSail.Provisioners.ContainerEngine;
+using KSail.Services.Provisioners.ContainerEngine;
 using KSail.Tests.Integration.TestUtils;
 
 namespace KSail.Tests.Integration.Commands.Update;
@@ -46,10 +46,10 @@ public class KSailUpdateCommandTests : IAsyncLifetime
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpdateCommand = new KSailUpdateCommand();
-    var DockerProvisioner = new DockerProvisioner();
+    var dockerProvisioner = new DockerProvisioner();
 
     //Act
-    await DockerProvisioner.CreateRegistryAsync("manifests", 5050);
+    await dockerProvisioner.CreateRegistryAsync("manifests", 5050);
     int initExitCode = await ksailInitCommand.InvokeAsync("ksail");
     int updateExitCode = await ksailUpdateCommand.InvokeAsync("ksail --no-reconcile");
 
