@@ -70,7 +70,7 @@ class FluxCLIWrapper()
     _ = await CLIRunner.RunAsync(cmd);
   }
 
-  internal static async Task PushManifestsAsync(string context, string ociUrl, string manifestsPath)
+  internal static async Task PushManifestsAsync(string ociUrl, string manifestsPath)
   {
     long currentTimeEpoch = DateTime.Now.ToEpochTime();
     var pushCmd = Flux.WithArguments(
@@ -80,8 +80,7 @@ class FluxCLIWrapper()
         $"{ociUrl}:{currentTimeEpoch}",
         $"--path={manifestsPath}",
         $"--source={ociUrl}",
-        $"--revision={currentTimeEpoch}",
-        $"--context={context}"
+        $"--revision={currentTimeEpoch}"
       ]
     );
     var tagCmd = Flux.WithArguments(

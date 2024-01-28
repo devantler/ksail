@@ -53,17 +53,19 @@ sealed class KSailUpCommand : Command
       }
     });
     this.SetHandler(async (containerEngineProvisioner, kubernetesDistributionProvisioner, containerOrchestratorProvisioner, gitOpsProvisioner, argumentsAndOptions) =>
-    {
-      argumentsAndOptions.Config = $"{argumentsAndOptions.ClusterName}-{argumentsAndOptions.Config}";
-      var handler = new KSailUpCommandHandler(containerEngineProvisioner, kubernetesDistributionProvisioner, containerOrchestratorProvisioner, gitOpsProvisioner);
-      await handler.HandleAsync(
-        argumentsAndOptions.ClusterName,
-        argumentsAndOptions.Config,
-        argumentsAndOptions.Manifests,
-        argumentsAndOptions.Kustomizations,
-        argumentsAndOptions.Timeout,
-        argumentsAndOptions.NoSOPS
-      );
-    }, _containerEngineProvisionerBinder, _kubernetesDistributionProvisionerBinder, _containerOrchestratorProvisionerBinder, _gitOpsProvisionerBinder, new KSailUpArgumentsAndOptionsBinder(_clusterNameArgument, _configOption, _manifestsOption, _kustomizationsOption, _timeoutOption, _noSOPSOption));
+      {
+        argumentsAndOptions.Config = $"{argumentsAndOptions.ClusterName}-{argumentsAndOptions.Config}";
+        var handler = new KSailUpCommandHandler(containerEngineProvisioner, kubernetesDistributionProvisioner, containerOrchestratorProvisioner, gitOpsProvisioner);
+        await handler.HandleAsync(
+          argumentsAndOptions.ClusterName,
+          argumentsAndOptions.Config,
+          argumentsAndOptions.Manifests,
+          argumentsAndOptions.Kustomizations,
+          argumentsAndOptions.Timeout,
+          argumentsAndOptions.NoSOPS
+        );
+      }, _containerEngineProvisionerBinder, _kubernetesDistributionProvisionerBinder, _containerOrchestratorProvisionerBinder, _gitOpsProvisionerBinder,
+      new KSailUpArgumentsAndOptionsBinder(_clusterNameArgument, _configOption, _manifestsOption, _kustomizationsOption, _timeoutOption, _noSOPSOption)
+    );
   }
 }

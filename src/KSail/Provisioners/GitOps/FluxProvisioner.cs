@@ -31,10 +31,10 @@ sealed class FluxProvisioner : IGitOpsProvisioner
     await FluxCLIWrapper.ReconcileAsync(context);
     Console.WriteLine();
   }
-  public async Task PushManifestsAsync(string context, string ociUrl, string manifestsPath)
+  public async Task PushManifestsAsync(string ociUrl, string manifestsPath)
   {
     Console.WriteLine("🔄 Pushing manifests...");
-    await FluxCLIWrapper.PushManifestsAsync(context, ociUrl, manifestsPath);
+    await FluxCLIWrapper.PushManifestsAsync(ociUrl, manifestsPath);
     Console.WriteLine();
   }
 }
