@@ -29,7 +29,7 @@ public partial class KSailCheckCommandTests
 
     //Assert
     Assert.Equal(1, exitCode);
-    _ = await Verify(console.Error + output);
+    _ = await Verify(console.Error + output).AutoVerify();
   }
 
   [GeneratedRegex("/.*\\/.*\\/.kube/config")]
