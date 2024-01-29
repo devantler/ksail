@@ -47,14 +47,12 @@
 │       │   ├── Stop
 │       │   │   └── Handlers
 │       │   ├── Up
-│       │   │   ├── Binders
 │       │   │   ├── Handlers
 │       │   │   └── Options
 │       │   └── Update
 │       │       ├── Handlers
 │       │       └── Options
 │       ├── Enums
-│       ├── Exceptions
 │       ├── Extensions
 │       ├── Options
 │       ├── Provisioners
@@ -70,6 +68,7 @@
         ├── Commands
         │   ├── Check
         │   ├── Down
+        │   ├── Lint
         │   ├── List
         │   ├── Root
         │   ├── SOPS
@@ -77,7 +76,7 @@
         │   └── Update
         └── TestUtils
 
-61 directories
+60 directories
 ```
 <!-- readme-tree end -->
 
