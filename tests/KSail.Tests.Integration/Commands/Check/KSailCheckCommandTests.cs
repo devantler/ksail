@@ -1,5 +1,6 @@
 using System.CommandLine;
 using System.CommandLine.IO;
+using System.Text.RegularExpressions;
 using KSail.Commands.Check;
 
 namespace KSail.Tests.Integration.Commands.Check;
@@ -7,11 +8,12 @@ namespace KSail.Tests.Integration.Commands.Check;
 /// <summary>
 /// Tests for the <see cref="KSailCheckCommand"/> class.
 /// </summary>
-public class KSailCheckCommandTests
+public partial class KSailCheckCommandTests
 {
   /// <summary>
   /// Tests that the <c>ksail check</c> command fails and prints help.
   /// </summary>
+  /// <exception cref="InvalidOperationException"></exception>
   [Fact]
   public async Task KSailCheck_FailsAndPrintsHelp()
   {
@@ -21,9 +23,15 @@ public class KSailCheckCommandTests
 
     //Act
     int exitCode = await ksailCheckCommand.InvokeAsync("", console);
+    string replacement = $"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.kube/config";
+    string? output = console.Out.ToString() ?? throw new InvalidOperationException("🚨 Console output is null");
+    output = HomeFolderRegex().Replace(output, replacement);
 
     //Assert
     Assert.Equal(1, exitCode);
-    _ = await Verify(console.Error.ToString() + console.Out);
+    _ = await Verify(console.Error + output);
   }
+
+  [GeneratedRegex("/.*\\/.*\\/.kube/config")]
+  private static partial Regex HomeFolderRegex();
 }
