@@ -1,5 +1,4 @@
 using System.CommandLine.Binding;
-using KSail.Exceptions;
 
 namespace KSail.Provisioners.KubernetesDistribution;
 
@@ -13,7 +12,7 @@ class KubernetesDistributionProvisionerBinder(Enums.KubernetesDistributionType k
     return _kubernetesDistributionType switch
     {
       Enums.KubernetesDistributionType.K3d => new K3dProvisioner(),
-      _ => throw new KSailException($"🚨 Unknown Kubernetes Distribution: {_kubernetesDistributionType}"),
+      _ => throw new NotSupportedException($"🚨 Kubernetes distribution '{_kubernetesDistributionType}' is not supported."),
     };
   }
 }

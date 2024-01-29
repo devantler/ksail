@@ -1,5 +1,4 @@
 using System.CommandLine.Binding;
-using KSail.Exceptions;
 
 namespace KSail.Provisioners.GitOps;
 
@@ -13,7 +12,7 @@ class GitOpsProvisionerBinder(Enums.GitOpsType gitOps) : BinderBase<IGitOpsProvi
     return _gitOps switch
     {
       Enums.GitOpsType.Flux => new FluxProvisioner(),
-      _ => throw new KSailException($"🚨 Unknown container engine: {_gitOps}"),
+      _ => throw new NotSupportedException($"🚨 GitOps Engine {_gitOps} is not supported."),
     };
   }
 }

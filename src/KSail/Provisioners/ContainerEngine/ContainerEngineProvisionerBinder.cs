@@ -1,5 +1,4 @@
 using System.CommandLine.Binding;
-using KSail.Exceptions;
 
 namespace KSail.Provisioners.ContainerEngine;
 
@@ -13,7 +12,7 @@ class ContainerEngineProvisionerBinder(Enums.ContainerEngineType containerEngine
     return _containerEngine switch
     {
       Enums.ContainerEngineType.Docker => new DockerProvisioner(),
-      _ => throw new KSailException($"🚨 Unknown container engine: {_containerEngine}"),
+      _ => throw new NotSupportedException($"🚨 Container engine type '{_containerEngine}' is not supported."),
     };
   }
 }

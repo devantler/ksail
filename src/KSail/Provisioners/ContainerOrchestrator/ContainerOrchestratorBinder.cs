@@ -1,5 +1,4 @@
 using System.CommandLine.Binding;
-using KSail.Exceptions;
 
 namespace KSail.Provisioners.ContainerOrchestrator;
 
@@ -12,7 +11,7 @@ class ContainerOrchestratorProvisionerBinder(Enums.ContainerOrchestratorType con
     return _containerOrchestrator switch
     {
       Enums.ContainerOrchestratorType.Kubernetes => new KubernetesProvisioner(),
-      _ => throw new KSailException($"🚨 Unknown container engine: {_containerOrchestrator}"),
+      _ => throw new NotSupportedException($"🚨 Container orchestrator type '{_containerOrchestrator}' is not supported."),
     };
   }
 }
