@@ -2,10 +2,17 @@ name: Test
 
 on:
   pull_request:
-    branches: [main]
+    branches: main
     types: [opened, synchronize, reopened, ready_for_review]
+    paths: 
+      - .github/workflows/test.yaml
+      - src/**
+      - tests/**
+      - KSail.sln
+      - Directory.Packages.props
+      - .editorconfig
   push:
-    branches: [main]
+    branches: main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
