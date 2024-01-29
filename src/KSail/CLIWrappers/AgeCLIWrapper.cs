@@ -15,7 +15,7 @@ class AgeCLIWrapper()
         (PlatformID.Unix, Architecture.Arm64, true) => "age-keygen_darwin-arm64",
         (PlatformID.Unix, Architecture.X64, false) => "age-keygen_linux-amd64",
         (PlatformID.Unix, Architecture.Arm64, false) => "age-keygen_linux-arm64",
-        _ => throw new PlatformNotSupportedException()
+        _ => throw new PlatformNotSupportedException($"🚨 Unsupported platform: {Environment.OSVersion.Platform} {RuntimeInformation.ProcessArchitecture}"),
       };
       return Cli.Wrap($"{AppContext.BaseDirectory}assets/binaries/{binary}");
     }

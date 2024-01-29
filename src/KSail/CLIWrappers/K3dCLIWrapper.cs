@@ -16,7 +16,7 @@ class K3dCLIWrapper()
         (PlatformID.Unix, Architecture.Arm64, true) => "k3d_darwin-arm64",
         (PlatformID.Unix, Architecture.X64, false) => "k3d_linux-amd64",
         (PlatformID.Unix, Architecture.Arm64, false) => "k3d_linux-arm64",
-        _ => throw new PlatformNotSupportedException()
+        _ => throw new PlatformNotSupportedException($"🚨 Unsupported platform: {Environment.OSVersion.Platform} {RuntimeInformation.ProcessArchitecture}"),
       };
       return Cli.Wrap($"{AppContext.BaseDirectory}assets/binaries/{binary}");
     }
@@ -24,13 +24,13 @@ class K3dCLIWrapper()
 
   internal static async
   Task
-CreateClusterAsync(string name, string configPath)
+CreateClusterAsync(string clusterName, string configPath)
   {
     var cmd = K3d.WithArguments(
         [
           "cluster",
           "create",
-          $"{name}",
+          $"{clusterName}",
           $"--config={configPath}",
           $"--registry-config={AppContext.BaseDirectory}assets/k3d/registry-config.yaml"
         ]
@@ -38,27 +38,27 @@ CreateClusterAsync(string name, string configPath)
     _ = await CLIRunner.RunAsync(cmd);
   }
 
-  internal static async Task StartClusterAsync(string name)
+  internal static async Task StartClusterAsync(string clusterName)
   {
-    var cmd = K3d.WithArguments($"cluster start {name}");
+    var cmd = K3d.WithArguments($"cluster start {clusterName}");
     _ = await CLIRunner.RunAsync(cmd);
   }
-  internal static async Task StopClusterAsync(string name)
+  internal static async Task StopClusterAsync(string clusterName)
   {
-    var cmd = K3d.WithArguments($"cluster stop {name}");
+    var cmd = K3d.WithArguments($"cluster stop {clusterName}");
     _ = await CLIRunner.RunAsync(cmd);
   }
 
-  internal static async Task DeleteClusterAsync(string name)
+  internal static async Task DeleteClusterAsync(string clusterName)
   {
-    var cmd = K3d.WithArguments($"cluster delete {name}");
+    var cmd = K3d.WithArguments($"cluster delete {clusterName}");
     _ = await CLIRunner.RunAsync(cmd);
   }
 
   //TODO: Make the GetClusterAsync work with the CLIRunner.RunAsync method.
-  internal static async Task<bool> GetClusterAsync(string name)
+  internal static async Task<bool> GetClusterAsync(string clusterName)
   {
-    var cmd = K3d.WithArguments($"cluster get {name}").WithValidation(CommandResultValidation.None);
+    var cmd = K3d.WithArguments($"cluster get {clusterName}").WithValidation(CommandResultValidation.None);
     var result = await cmd.ExecuteBufferedAsync();
     return result.IsSuccess;
   }

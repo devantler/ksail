@@ -6,12 +6,12 @@ namespace KSail.Commands.Stop;
 
 sealed class KSailStopCommand : Command
 {
-  readonly NameArgument nameArgument = new();
+  readonly ClusterNameArgument _clusterNameArgument = new();
 
   internal KSailStopCommand() : base("stop", "Stop a K8s cluster")
   {
-    AddArgument(nameArgument);
+    AddArgument(_clusterNameArgument);
 
-    this.SetHandler(KSailStopCommandHandler.HandleAsync, nameArgument);
+    this.SetHandler(KSailStopCommandHandler.HandleAsync, _clusterNameArgument);
   }
 }

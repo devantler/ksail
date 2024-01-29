@@ -63,7 +63,7 @@ class KSailSOPSCommandHandler()
     }
     else
     {
-      throw new InvalidOperationException("No option specified");
+      throw new InvalidOperationException("🚨 No option specified");
     }
     Console.WriteLine("");
   }

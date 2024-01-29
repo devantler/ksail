@@ -6,22 +6,22 @@ namespace KSail.Commands.SOPS;
 
 sealed class KSailSOPSCommand : Command
 {
-  readonly GenerateKeyOption generateKeyOption = new();
-  readonly ShowPublicKeyOption showPublicKeyOption = new();
-  readonly ShowPrivateKeyOption showPrivateKeyOption = new();
-  readonly EncryptOption encryptOption = new();
-  readonly DecryptOption decryptOption = new();
-  readonly ImportOption importOption = new();
-  readonly ExportOption exportOption = new();
+  readonly GenerateKeyOption _generateKeyOption = new();
+  readonly ShowPublicKeyOption _showPublicKeyOption = new();
+  readonly ShowPrivateKeyOption _showPrivateKeyOption = new();
+  readonly EncryptOption _encryptOption = new();
+  readonly DecryptOption _decryptOption = new();
+  readonly ImportOption _importOption = new();
+  readonly ExportOption _exportOption = new();
   internal KSailSOPSCommand() : base("sops", "Manage SOPS key")
   {
-    AddOption(generateKeyOption);
-    AddOption(showPublicKeyOption);
-    AddOption(showPrivateKeyOption);
-    AddOption(encryptOption);
-    AddOption(decryptOption);
-    AddOption(importOption);
-    AddOption(exportOption);
+    AddOption(_generateKeyOption);
+    AddOption(_showPublicKeyOption);
+    AddOption(_showPrivateKeyOption);
+    AddOption(_encryptOption);
+    AddOption(_decryptOption);
+    AddOption(_importOption);
+    AddOption(_exportOption);
 
     AddValidator(result =>
     {
@@ -35,6 +35,6 @@ sealed class KSailSOPSCommand : Command
       }
     });
 
-    this.SetHandler(KSailSOPSCommandHandler.HandleAsync, generateKeyOption, showPublicKeyOption, showPrivateKeyOption, encryptOption, decryptOption, importOption, exportOption);
+    this.SetHandler(KSailSOPSCommandHandler.HandleAsync, _generateKeyOption, _showPublicKeyOption, _showPrivateKeyOption, _encryptOption, _decryptOption, _importOption, _exportOption);
   }
 }

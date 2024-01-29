@@ -16,25 +16,25 @@ class FluxCLIWrapper()
         (PlatformID.Unix, Architecture.Arm64, true) => "flux_darwin-arm64",
         (PlatformID.Unix, Architecture.X64, false) => "flux_linux-amd64",
         (PlatformID.Unix, Architecture.Arm64, false) => "flux_linux-arm64",
-        _ => throw new PlatformNotSupportedException()
+        _ => throw new PlatformNotSupportedException($"🚨 Unsupported platform: {Environment.OSVersion.Platform} {RuntimeInformation.ProcessArchitecture}"),
       };
       return Cli.Wrap($"{AppContext.BaseDirectory}assets/binaries/{binary}");
     }
   }
 
-  internal static async Task CheckPrerequisitesAsync()
+  internal static async Task CheckPrerequisitesAsync(string context)
   {
-    var cmd = Flux.WithArguments("check --pre");
+    var cmd = Flux.WithArguments($"check --pre --context {context}");
     _ = await CLIRunner.RunAsync(cmd);
   }
 
-  internal static async Task InstallAsync()
+  internal static async Task InstallAsync(string context)
   {
-    var cmd = Flux.WithArguments("install");
+    var cmd = Flux.WithArguments($"install --context {context}");
     _ = await CLIRunner.RunAsync(cmd);
   }
 
-  internal static async Task CreateSourceOCIAsync(string sourceUrl)
+  internal static async Task CreateSourceOCIAsync(string context, string sourceUrl)
   {
     var cmd = Flux.WithArguments(
       [
@@ -44,12 +44,13 @@ class FluxCLIWrapper()
         "flux-system",
         $"--url={sourceUrl}",
         "--insecure",
-        "--tag=latest"
+        "--tag=latest",
+        $"--context={context}"
       ]
     );
     _ = await CLIRunner.RunAsync(cmd);
   }
-  internal static async Task CreateKustomizationAsync(string fluxKustomizationPath)
+  internal static async Task CreateKustomizationAsync(string context, string fluxKustomizationPath)
   {
     var cmd = Flux.WithArguments(
       [
@@ -57,14 +58,15 @@ class FluxCLIWrapper()
         "kustomization",
         "flux-system",
         "--source=OCIRepository/flux-system",
-        $"--path={fluxKustomizationPath}"
+        $"--path={fluxKustomizationPath}",
+        $"--context={context}"
       ]
     );
     _ = await CLIRunner.RunAsync(cmd);
   }
-  internal static async Task UninstallAsync()
+  internal static async Task UninstallAsync(string context)
   {
-    var cmd = Flux.WithArguments("uninstall");
+    var cmd = Flux.WithArguments($"uninstall --context {context}");
     _ = await CLIRunner.RunAsync(cmd);
   }
 
@@ -78,7 +80,7 @@ class FluxCLIWrapper()
         $"{ociUrl}:{currentTimeEpoch}",
         $"--path={manifestsPath}",
         $"--source={ociUrl}",
-        $"--revision={currentTimeEpoch}",
+        $"--revision={currentTimeEpoch}"
       ]
     );
     var tagCmd = Flux.WithArguments(
@@ -93,9 +95,9 @@ class FluxCLIWrapper()
     _ = await CLIRunner.RunAsync(tagCmd);
   }
 
-  internal static async Task ReconcileAsync(string name)
+  internal static async Task ReconcileAsync(string context)
   {
-    var cmd = Flux.WithArguments($"reconcile source oci flux-system --context {name}");
+    var cmd = Flux.WithArguments($"reconcile source oci flux-system --context {context}");
     _ = await CLIRunner.RunAsync(cmd);
   }
 }

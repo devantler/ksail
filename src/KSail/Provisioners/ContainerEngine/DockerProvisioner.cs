@@ -1,32 +1,32 @@
-
 using Docker.DotNet;
 using Docker.DotNet.Models;
+using KSail.Enums;
+using KSail.Exceptions;
 
-namespace KSail.Provisioners;
+namespace KSail.Provisioners.ContainerEngine;
 
-sealed class DockerProvisioner : IProvisioner
+sealed class DockerProvisioner : IContainerEngineProvisioner
 {
-  static readonly DockerClient dockerClient = new DockerClientConfiguration(
+  readonly DockerClient _dockerClient = new DockerClientConfiguration(
     new Uri("unix:///var/run/docker.sock")
   ).CreateClient();
 
-  internal static async Task CheckReadyAsync()
+  public async Task CheckReadyAsync()
   {
     Console.WriteLine("🐳 Checking Docker is running...");
     try
     {
-      await dockerClient.System.PingAsync();
+      await _dockerClient.System.PingAsync();
     }
     catch (Exception)
     {
-      Console.WriteLine("✕ Could not connect to Docker. Is Docker running?");
-      Environment.Exit(1);
+      throw new KSailException("✕ Could not connect to Docker. Is Docker running?");
     }
     Console.WriteLine("✔ Docker is running...");
     Console.WriteLine();
   }
 
-  internal static async Task CreateRegistryAsync(string name, int port, Uri? proxyUrl = null)
+  public async Task CreateRegistryAsync(string name, int port, Uri? proxyUrl = null)
   {
     if (proxyUrl != null)
     {
@@ -46,11 +46,11 @@ sealed class DockerProvisioner : IProvisioner
     CreateContainerResponse registry;
     try
     {
-      await dockerClient.Images.CreateImageAsync(new ImagesCreateParameters
+      await _dockerClient.Images.CreateImageAsync(new ImagesCreateParameters
       {
         FromImage = "registry:2"
       }, null, new Progress<JSONMessage>());
-      registry = await dockerClient.Containers.CreateContainerAsync(new CreateContainerParameters
+      registry = await _dockerClient.Containers.CreateContainerAsync(new CreateContainerParameters
       {
         Image = "registry:2",
         Name = name,
@@ -79,16 +79,14 @@ sealed class DockerProvisioner : IProvisioner
         $"REGISTRY_PROXY_REMOTEURL={proxyUrl}"
       } : null
       });
-      _ = await dockerClient.Containers.StartContainerAsync(registry.ID, new ContainerStartParameters());
+      _ = await _dockerClient.Containers.StartContainerAsync(registry.ID, new ContainerStartParameters());
     }
     catch (DockerApiException e)
     {
-      Console.WriteLine($" Could not create registry '{name}'. {e.Message}...");
-      Environment.Exit(1);
+      throw new KSailException($"✕ Could not create registry '{name}'...", e);
     }
   }
-
-  internal static async Task DeleteRegistryAsync(string name)
+  public async Task DeleteRegistryAsync(string name)
   {
     string? containerId = await GetContainerIdAsync(name);
 
@@ -98,14 +96,16 @@ sealed class DockerProvisioner : IProvisioner
     }
     else
     {
-      _ = await dockerClient.Containers.StopContainerAsync(containerId, new ContainerStopParameters());
-      await dockerClient.Containers.RemoveContainerAsync(containerId, new ContainerRemoveParameters());
+      _ = await _dockerClient.Containers.StopContainerAsync(containerId, new ContainerStopParameters());
+      await _dockerClient.Containers.RemoveContainerAsync(containerId, new ContainerRemoveParameters());
     }
   }
 
-  internal static async Task<string?> GetContainerIdAsync(string name)
+  public Task<ContainerEngineType> GetContainerEngineTypeAsync() => Task.FromResult(ContainerEngineType.Docker);
+
+  public async Task<string?> GetContainerIdAsync(string name)
   {
-    var containers = await dockerClient.Containers.ListContainersAsync(new ContainersListParameters
+    var containers = await _dockerClient.Containers.ListContainersAsync(new ContainersListParameters
     {
       All = true,
       Filters = new Dictionary<string, IDictionary<string, bool>>

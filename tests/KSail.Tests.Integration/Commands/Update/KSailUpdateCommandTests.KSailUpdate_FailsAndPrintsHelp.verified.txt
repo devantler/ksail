@@ -4,10 +4,10 @@ Description:
   Update manifests in an OCI registry
 
 Usage:
-  update <name> [options]
+  update <clusterName> [options]
 
 Arguments:
-  <name>
+  <clusterName>
 
 Options:
   -m, --manifests <manifests> (REQUIRED)  Path to the manifests directory [default: ./k8s]

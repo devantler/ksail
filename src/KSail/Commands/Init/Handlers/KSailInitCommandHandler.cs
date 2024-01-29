@@ -5,31 +5,31 @@ namespace KSail.Commands.Init.Handlers;
 
 static class KSailInitCommandHandler
 {
-  internal static async Task HandleAsync(string name, string manifests)
+  internal static async Task HandleAsync(string clusterName, string manifests)
   {
-    Console.WriteLine($"📁 Initializing a new K8s GitOps project named '{name}'...");
-    string clusterDirectory = Path.Combine(manifests, "clusters", name);
+    Console.WriteLine($"📁 Initializing a new K8s GitOps project named '{clusterName}'...");
+    string clusterDirectory = Path.Combine(manifests, "clusters", clusterName);
     if (Directory.Exists(clusterDirectory))
     {
-      Console.WriteLine($"✕ A cluster named '{name}' already exists at '{clusterDirectory}/{name}'. Skipping cluster creation.");
+      Console.WriteLine($"✕ A cluster named '{clusterName}' already exists at '{clusterDirectory}/{clusterName}'. Skipping cluster creation.");
     }
     else
     {
-      clusterDirectory = CreateClusterDirectory(name, manifests);
-      await CreateFluxKustomizationsAsync(name, clusterDirectory);
+      clusterDirectory = CreateClusterDirectory(clusterName, manifests);
+      await CreateFluxKustomizationsAsync(clusterName, clusterDirectory);
       await CreateKustomizationsAsync(clusterDirectory);
     }
-    if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), $"{name}-k3d-config.yaml")))
+    if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), $"{clusterName}-k3d-config.yaml")))
     {
-      Console.WriteLine($"✕ A k3d-config.yaml file already exists at '{Directory.GetCurrentDirectory()}/{name}-k3d-config.yaml'. Skipping config creation.");
+      Console.WriteLine($"✕ A k3d-config.yaml file already exists at '{Directory.GetCurrentDirectory()}/{clusterName}-k3d-config.yaml'. Skipping config creation.");
     }
     else
     {
-      await CreateConfigAsync(name);
+      await CreateConfigAsync(clusterName);
     }
     await SOPSProvisioner.CreateKeysAsync();
     await SOPSProvisioner.CreateSOPSConfigAsync($"{manifests}/../.sops.yaml");
-    Console.WriteLine($"✔ Successfully initialized a new K8s GitOps project named '{name}'.");
+    Console.WriteLine($"✔ Successfully initialized a new K8s GitOps project named '{clusterName}'.");
     Console.WriteLine();
   }
 
@@ -41,15 +41,15 @@ static class KSailInitCommandHandler
     return fluxDirectory;
   }
 
-  static string CreateClusterDirectory(string name, string manifests)
+  static string CreateClusterDirectory(string clusterName, string manifests)
   {
-    string clusterDirectory = Path.Combine(manifests, "clusters", name);
+    string clusterDirectory = Path.Combine(manifests, "clusters", clusterName);
     Console.WriteLine($"✚ Creating cluster directory '{clusterDirectory}'...");
     _ = Directory.CreateDirectory(clusterDirectory) ?? throw new InvalidOperationException($"🚨 Could not create the cluster directory at {clusterDirectory}.");
     return clusterDirectory;
   }
 
-  static async Task CreateFluxKustomizationsAsync(string name, string clusterDirectory)
+  static async Task CreateFluxKustomizationsAsync(string clusterName, string clusterDirectory)
   {
     Console.WriteLine($"✚ Creating flux infrastructure kustomization '{clusterDirectory}/flux-system/infrastructure.yaml'...");
     string fluxDirectory = CreateFluxSystemDirectory(clusterDirectory);
@@ -67,7 +67,7 @@ static class KSailInitCommandHandler
         sourceRef:
           kind: OCIRepository
           name: flux-system
-        path: ./clusters/{name}/infrastructure/services
+        path: ./clusters/{clusterName}/infrastructure/services
         prune: true
         wait: true
         decryption:
@@ -94,7 +94,7 @@ static class KSailInitCommandHandler
         sourceRef:
           kind: OCIRepository
           name: flux-system
-        path: ./clusters/{name}/infrastructure/configs
+        path: ./clusters/{clusterName}/infrastructure/configs
         prune: true
         wait: true
         decryption:
@@ -124,7 +124,7 @@ static class KSailInitCommandHandler
         sourceRef:
           kind: OCIRepository
           name: flux-system
-        path: ./clusters/{name}/variables
+        path: ./clusters/{clusterName}/variables
         prune: true
         wait: true
         decryption:
@@ -218,18 +218,18 @@ static class KSailInitCommandHandler
     await variablesSensitiveYamlFile.FlushAsync();
   }
 
-  static async Task CreateConfigAsync(string name)
+  static async Task CreateConfigAsync(string clusterName)
   {
-    Console.WriteLine($"✚ Creating config file './{name}-k3d-config.yaml'...");
-    string configPath = Path.Combine(Directory.GetCurrentDirectory(), $"{name}-k3d-config.yaml");
+    Console.WriteLine($"✚ Creating config file './{clusterName}-k3d-config.yaml'...");
+    string configPath = Path.Combine(Directory.GetCurrentDirectory(), $"{clusterName}-k3d-config.yaml");
     string configContent = $"""
       apiVersion: k3d.io/v1alpha5
       kind: Simple
       metadata:
-        name: {name}
+        name: {clusterName}
       volumes:
-        - volume: k3d-{name}-storage:/var/lib/rancher/k3s/storage
-      network: k3d-{name}
+        - volume: k3d-{clusterName}-storage:/var/lib/rancher/k3s/storage
+      network: k3d-{clusterName}
       options:
         k3s:
           extraArgs:
