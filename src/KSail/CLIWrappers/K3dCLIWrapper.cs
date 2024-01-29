@@ -22,9 +22,7 @@ class K3dCLIWrapper()
     }
   }
 
-  internal static async
-  Task
-CreateClusterAsync(string clusterName, string configPath)
+  internal static async Task<int> CreateClusterAsync(string clusterName, string configPath, CancellationToken token)
   {
     var cmd = K3d.WithArguments(
         [
@@ -35,37 +33,42 @@ CreateClusterAsync(string clusterName, string configPath)
           $"--registry-config={AppContext.BaseDirectory}assets/k3d/registry-config.yaml"
         ]
       );
-    _ = await CLIRunner.RunAsync(cmd);
+    var (ExitCode, _) = await CLIRunner.RunAsync(cmd, token);
+    return ExitCode;
   }
 
-  internal static async Task StartClusterAsync(string clusterName)
+  internal static async Task<int> StartClusterAsync(string clusterName, CancellationToken token)
   {
     var cmd = K3d.WithArguments($"cluster start {clusterName}");
-    _ = await CLIRunner.RunAsync(cmd);
+    var (ExitCode, _) = await CLIRunner.RunAsync(cmd, token);
+    return ExitCode;
   }
-  internal static async Task StopClusterAsync(string clusterName)
+  internal static async Task<int> StopClusterAsync(string clusterName, CancellationToken token)
   {
     var cmd = K3d.WithArguments($"cluster stop {clusterName}");
-    _ = await CLIRunner.RunAsync(cmd);
+    var (ExitCode, _) = await CLIRunner.RunAsync(cmd, token);
+    return ExitCode;
   }
 
-  internal static async Task DeleteClusterAsync(string clusterName)
+  internal static async Task<int> DeleteClusterAsync(string clusterName, CancellationToken token)
   {
     var cmd = K3d.WithArguments($"cluster delete {clusterName}");
-    _ = await CLIRunner.RunAsync(cmd);
+    var (ExitCode, _) = await CLIRunner.RunAsync(cmd, token);
+    return ExitCode;
   }
 
   //TODO: Make the GetClusterAsync work with the CLIRunner.RunAsync method.
-  internal static async Task<bool> GetClusterAsync(string clusterName)
+  internal static async Task<(int ExitCode, bool Result)> GetClusterAsync(string clusterName, CancellationToken token)
   {
     var cmd = K3d.WithArguments($"cluster get {clusterName}").WithValidation(CommandResultValidation.None);
-    var result = await cmd.ExecuteBufferedAsync();
-    return result.IsSuccess;
+    var result = await cmd.ExecuteBufferedAsync(cancellationToken: token);
+    return (0, result.IsSuccess);
   }
 
-  internal static Task<string> ListClustersAsync()
+  internal static async Task<(int ExitCode, string Result)> ListClustersAsync(CancellationToken token)
   {
     var cmd = K3d.WithArguments("cluster list");
-    return CLIRunner.RunAsync(cmd);
+    var (ExitCode, Result) = await CLIRunner.RunAsync(cmd, token);
+    return (ExitCode, Result);
   }
 }

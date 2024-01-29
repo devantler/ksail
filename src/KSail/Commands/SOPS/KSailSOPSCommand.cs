@@ -35,6 +35,18 @@ sealed class KSailSOPSCommand : Command
       }
     });
 
-    this.SetHandler(KSailSOPSCommandHandler.HandleAsync, _generateKeyOption, _showPublicKeyOption, _showPrivateKeyOption, _encryptOption, _decryptOption, _importOption, _exportOption);
+    this.SetHandler(async (context) =>
+    {
+      bool generateKey = context.ParseResult.GetValueForOption(_generateKeyOption);
+      bool showPublicKey = context.ParseResult.GetValueForOption(_showPublicKeyOption);
+      bool showPrivateKey = context.ParseResult.GetValueForOption(_showPrivateKeyOption);
+      string encrypt = context.ParseResult.GetValueForOption(_encryptOption) ?? "";
+      string decrypt = context.ParseResult.GetValueForOption(_decryptOption) ?? "";
+      string import = context.ParseResult.GetValueForOption(_importOption) ?? "";
+      string export = context.ParseResult.GetValueForOption(_exportOption) ?? "";
+
+      var token = context.GetCancellationToken();
+      _ = await KSailSOPSCommandHandler.HandleAsync(generateKey, showPublicKey, showPrivateKey, encrypt, decrypt, import, export, token);
+    });
   }
 }

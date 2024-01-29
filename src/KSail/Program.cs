@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using KSail.Commands.Root;
 
+int exitCode = 0;
 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 {
   Console.WriteLine("🚨 This application is not supported on Windows.");
@@ -15,12 +16,6 @@ else
     File.SetUnixFileMode(file, UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute);
   }
   var ksailCommand = new KSailRootCommand();
-  try
-  {
-    _ = await ksailCommand.InvokeAsync(args);
-  }
-  catch (Exception e)
-  {
-    Console.WriteLine(e.Message);
-  }
+  exitCode = await ksailCommand.InvokeAsync(args);
 }
+return exitCode;

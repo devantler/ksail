@@ -1,5 +1,4 @@
 using CliWrap;
-using KSail.Exceptions;
 using System.Runtime.InteropServices;
 
 namespace KSail.CLIWrappers;
@@ -22,22 +21,26 @@ class SOPSCLIWrapper()
     }
   }
 
-  internal static async Task DecryptAsync(string decrypt)
+  internal static async Task<int> DecryptAsync(string decrypt, CancellationToken token)
   {
     if (!File.Exists(decrypt))
     {
-      throw new KSailException($"🚨 File '{decrypt}' does not exist");
+      Console.WriteLine($"✕ File '{decrypt}' does not exist");
+      return 1;
     }
     var cmd = SOPS.WithArguments($"-d -i {decrypt}");
-    _ = await CLIRunner.RunAsync(cmd, silent: true);
+    var (ExitCode, _) = await CLIRunner.RunAsync(cmd, token, silent: true);
+    return ExitCode;
   }
-  internal static async Task EncryptAsync(string encrypt)
+  internal static async Task<int> EncryptAsync(string encrypt, CancellationToken token)
   {
     if (!File.Exists(encrypt))
     {
-      throw new KSailException($"🚨 File '{encrypt}' does not exist");
+      Console.WriteLine($"✕ File '{encrypt}' does not exist");
+      return 1;
     }
     var cmd = SOPS.WithArguments($"-e -i {encrypt}");
-    _ = await CLIRunner.RunAsync(cmd, silent: true);
+    var (ExitCode, _) = await CLIRunner.RunAsync(cmd, token, silent: true);
+    return ExitCode;
   }
 }

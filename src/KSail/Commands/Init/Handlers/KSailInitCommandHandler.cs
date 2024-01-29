@@ -5,7 +5,7 @@ namespace KSail.Commands.Init.Handlers;
 
 static class KSailInitCommandHandler
 {
-  internal static async Task HandleAsync(string clusterName, string manifests)
+  internal static async Task<int> HandleAsync(string clusterName, string manifests, CancellationToken token)
   {
     Console.WriteLine($"📁 Initializing a new K8s GitOps project named '{clusterName}'...");
     string clusterDirectory = Path.Combine(manifests, "clusters", clusterName);
@@ -27,10 +27,15 @@ static class KSailInitCommandHandler
     {
       await CreateConfigAsync(clusterName);
     }
-    await SOPSProvisioner.CreateKeysAsync();
+    if (await SOPSProvisioner.CreateKeysAsync(token) != 0)
+    {
+      return 1;
+    }
+
     await SOPSProvisioner.CreateSOPSConfigAsync($"{manifests}/../.sops.yaml");
     Console.WriteLine($"✔ Successfully initialized a new K8s GitOps project named '{clusterName}'.");
     Console.WriteLine();
+    return 0;
   }
 
   static string CreateFluxSystemDirectory(string clusterDirectory)

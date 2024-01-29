@@ -7,7 +7,7 @@ namespace KSail.Commands.Lint;
 
 sealed class KSailLintCommand : Command
 {
-  readonly ClusterNameArgument _clusterNameArgument = new();
+  readonly ClusterNameArgument _clusterNameArgument = new() { Arity = ArgumentArity.ExactlyOne };
   readonly ManifestsOption _manifestsOption = new() { IsRequired = true };
   internal KSailLintCommand() : base(
    "lint", "Lint manifest files"
@@ -15,6 +15,13 @@ sealed class KSailLintCommand : Command
   {
     AddArgument(_clusterNameArgument);
     AddOption(_manifestsOption);
-    this.SetHandler(KSailLintCommandHandler.HandleAsync, _clusterNameArgument, _manifestsOption);
+    this.SetHandler(async (context) =>
+    {
+      string clusterName = context.ParseResult.GetValueForArgument(_clusterNameArgument);
+      string manifests = context.ParseResult.GetValueForOption(_manifestsOption) ??
+        throw new InvalidOperationException("🚨 Manifests path is 'null'");
+      var token = context.GetCancellationToken();
+      _ = await KSailLintCommandHandler.HandleAsync(clusterName, manifests, token);
+    });
   }
 }

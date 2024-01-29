@@ -2,6 +2,8 @@ using System.CommandLine;
 using System.CommandLine.IO;
 using KSail.Commands.Init;
 using KSail.Commands.SOPS;
+using KSail.Commands.Start;
+using KSail.Commands.Stop;
 using KSail.Commands.Up;
 using KSail.Commands.Update;
 using KSail.Tests.Integration.TestUtils;
@@ -84,16 +86,22 @@ public class KSailUpCommandTests : IAsyncLifetime
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();
+    var ksailStopCommand = new KSailStopCommand();
+    var ksailStartCommand = new KSailStartCommand();
     var ksailUpdateCommand = new KSailUpdateCommand();
 
     //Act
     int initExitCode = await ksailInitCommand.InvokeAsync("ksail");
     int upExitCode = await ksailUpCommand.InvokeAsync("ksail");
+    int stopExitCode = await ksailStopCommand.InvokeAsync("ksail");
+    int startExitCode = await ksailStartCommand.InvokeAsync("ksail");
     int updateExitCode = await ksailUpdateCommand.InvokeAsync("ksail");
 
     //Assert
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, upExitCode);
+    Assert.Equal(0, stopExitCode);
+    Assert.Equal(0, startExitCode);
     Assert.Equal(0, updateExitCode);
     Assert.True(await new DockerTestUtils().CheckRegistriesExistAsync());
   }
@@ -108,6 +116,8 @@ public class KSailUpCommandTests : IAsyncLifetime
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();
     var ksailSOPSCommand = new KSailSOPSCommand();
+    var ksailStopCommand = new KSailStopCommand();
+    var ksailStartCommand = new KSailStartCommand();
     var ksailUpdateCommand = new KSailUpdateCommand();
 
     //Act
@@ -119,12 +129,16 @@ public class KSailUpCommandTests : IAsyncLifetime
     Environment.SetEnvironmentVariable("KSAIL_SOPS_KEY", key);
     int initExitCode = await ksailInitCommand.InvokeAsync("ksail");
     int upExitCode = await ksailUpCommand.InvokeAsync("ksail");
+    int stopExitCode = await ksailStopCommand.InvokeAsync("ksail");
+    int startExitCode = await ksailStartCommand.InvokeAsync("ksail");
     int updateExitCode = await ksailUpdateCommand.InvokeAsync("ksail");
     Environment.SetEnvironmentVariable("KSAIL_SOPS_KEY", null);
 
     //Assert
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, upExitCode);
+    Assert.Equal(0, stopExitCode);
+    Assert.Equal(0, startExitCode);
     Assert.Equal(0, updateExitCode);
     Assert.True(await new DockerTestUtils().CheckRegistriesExistAsync());
   }

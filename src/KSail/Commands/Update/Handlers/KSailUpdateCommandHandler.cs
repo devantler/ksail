@@ -9,19 +9,26 @@ class KSailUpdateCommandHandler(IKubernetesDistributionProvisioner kubernetesDis
 {
   readonly IKubernetesDistributionProvisioner _kubernetesDistributionProvisioner = kubernetesDistributionProvisioner;
   readonly IGitOpsProvisioner _gitOpsProvisioner = gitOpsProvisioner;
-  internal async Task HandleAsync(string clusterName, string manifestsPath, bool noLint, bool noReconcile)
+  internal async Task<int> HandleAsync(string clusterName, string manifestsPath, bool noLint, bool noReconcile, CancellationToken token)
   {
-    if (!noLint)
+    if (!noLint && await KSailLintCommandHandler.HandleAsync(clusterName, manifestsPath, token) != 0)
     {
-      await KSailLintCommandHandler.HandleAsync(clusterName, manifestsPath);
+      return 1;
     }
-    await _gitOpsProvisioner.PushManifestsAsync($"oci://localhost:5050/{clusterName}", manifestsPath);
+    if (await _gitOpsProvisioner.PushManifestsAsync($"oci://localhost:5050/{clusterName}", manifestsPath, token) != 0)
+    {
+      return 1;
+    }
     if (!noReconcile)
     {
       var kubernetesDistributionType = await _kubernetesDistributionProvisioner.GetKubernetesDistributionTypeAsync();
       string context = $"{kubernetesDistributionType.ToString()?.ToLower(CultureInfo.InvariantCulture)}-{clusterName}";
-      await _gitOpsProvisioner.ReconcileAsync(context);
+      if (await _gitOpsProvisioner.ReconcileAsync(context, token) != 0)
+      {
+        return 1;
+      }
     }
     Console.WriteLine("");
+    return 0;
   }
 }

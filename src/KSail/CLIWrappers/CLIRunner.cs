@@ -1,24 +1,24 @@
 using System.Text;
 using CliWrap;
 using CliWrap.EventStream;
-using CliWrap.Exceptions;
 
 namespace KSail.CLIWrappers;
 
 class CLIRunner()
 {
-  public static async Task<string> RunAsync(Command command, CommandResultValidation validation = CommandResultValidation.ZeroExitCode, bool silent = false)
+  public static async Task<(int ExitCode, string Result)> RunAsync(Command command, CancellationToken cancellationToken, CommandResultValidation validation = CommandResultValidation.ZeroExitCode, bool silent = false)
   {
     StringBuilder result = new();
     try
     {
-      await foreach (var cmdEvent in command.WithValidation(validation).ListenAsync())
+      await foreach (var cmdEvent in command.WithValidation(validation).ListenAsync(cancellationToken: cancellationToken))
       {
         if (cmdEvent is StandardOutputCommandEvent or StandardErrorCommandEvent)
         {
           if (cmdEvent is null)
           {
-            throw new InvalidOperationException("🚨 Command event is 'null'");
+            Console.WriteLine("✕ Command event is 'null'");
+            return (1, "");
           }
           if (!silent)
           {
@@ -28,10 +28,9 @@ class CLIRunner()
         }
       }
     }
-    catch (CommandExecutionException e)
+    catch
     {
-      throw new InvalidOperationException($"🚨 An error occurred while running '{command}': {e.Message}...");
     }
-    return result.ToString();
+    return (0, result.ToString());
   }
 }

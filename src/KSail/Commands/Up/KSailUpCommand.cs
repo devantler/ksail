@@ -1,9 +1,7 @@
 using System.CommandLine;
 using KSail.Arguments;
-using KSail.Commands.Up.Binders;
 using KSail.Commands.Up.Handlers;
 using KSail.Commands.Up.Options;
-using KSail.Enums;
 using KSail.Options;
 using KSail.Provisioners.ContainerEngine;
 using KSail.Provisioners.ContainerOrchestrator;
@@ -14,10 +12,6 @@ namespace KSail.Commands.Up;
 
 sealed class KSailUpCommand : Command
 {
-  readonly ContainerEngineProvisionerBinder _containerEngineProvisionerBinder = new(ContainerEngineType.Docker);
-  readonly KubernetesDistributionProvisionerBinder _kubernetesDistributionProvisionerBinder = new(KubernetesDistributionType.K3d);
-  readonly ContainerOrchestratorProvisionerBinder _containerOrchestratorProvisionerBinder = new(ContainerOrchestratorType.Kubernetes);
-  readonly GitOpsProvisionerBinder _gitOpsProvisionerBinder = new(GitOpsType.Flux);
   readonly ClusterNameArgument _clusterNameArgument = new() { Arity = ArgumentArity.ExactlyOne };
   readonly ConfigOption _configOption = new() { IsRequired = true };
   readonly ManifestsOption _manifestsOption = new();
@@ -52,20 +46,35 @@ sealed class KSailUpCommand : Command
         result.ErrorMessage = $"Manifests directory '{manifestsPath}' does not exist";
       }
     });
-    this.SetHandler(async (containerEngineProvisioner, kubernetesDistributionProvisioner, containerOrchestratorProvisioner, gitOpsProvisioner, argumentsAndOptions) =>
-      {
-        argumentsAndOptions.Config = $"{argumentsAndOptions.ClusterName}-{argumentsAndOptions.Config}";
-        var handler = new KSailUpCommandHandler(containerEngineProvisioner, kubernetesDistributionProvisioner, containerOrchestratorProvisioner, gitOpsProvisioner);
-        await handler.HandleAsync(
-          argumentsAndOptions.ClusterName,
-          argumentsAndOptions.Config,
-          argumentsAndOptions.Manifests,
-          argumentsAndOptions.Kustomizations,
-          argumentsAndOptions.Timeout,
-          argumentsAndOptions.NoSOPS
-        );
-      }, _containerEngineProvisionerBinder, _kubernetesDistributionProvisionerBinder, _containerOrchestratorProvisionerBinder, _gitOpsProvisionerBinder,
-      new KSailUpArgumentsAndOptionsBinder(_clusterNameArgument, _configOption, _manifestsOption, _kustomizationsOption, _timeoutOption, _noSOPSOption)
-    );
+    this.SetHandler(async (context) =>
+    {
+      var containerEngineProvisioner = new DockerProvisioner();
+      var kubernetesDistributionProvisioner = new K3dProvisioner();
+      var containerOrchestratorProvisioner = new KubernetesProvisioner();
+      var gitOpsProvisioner = new FluxProvisioner();
+
+      string clusterName = context.ParseResult.GetValueForArgument(_clusterNameArgument);
+      string? config = context.ParseResult.GetValueForOption(_configOption);
+      string? manifests = context.ParseResult.GetValueForOption(_manifestsOption) ??
+        throw new InvalidOperationException($"Required option '{_manifestsOption.Name}' missing for command: 'up'.");
+      string? kustomizations = context.ParseResult.GetValueForOption(_kustomizationsOption) ??
+        $"clusters/{clusterName}/flux-system";
+      int timeout = context.ParseResult.GetValueForOption(_timeoutOption);
+      bool noSOPS = context.ParseResult.GetValueForOption(_noSOPSOption);
+
+      config = $"{clusterName}-{config}";
+
+      var token = context.GetCancellationToken();
+      var handler = new KSailUpCommandHandler(containerEngineProvisioner, kubernetesDistributionProvisioner, containerOrchestratorProvisioner, gitOpsProvisioner);
+      _ = await handler.HandleAsync(
+        clusterName,
+        config,
+        manifests,
+        kustomizations,
+        timeout,
+        noSOPS,
+        token
+      );
+    });
   }
 }

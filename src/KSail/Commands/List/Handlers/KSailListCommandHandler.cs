@@ -6,5 +6,5 @@ sealed class KSailListCommandHandler(IKubernetesDistributionProvisioner kubernet
 {
   readonly IKubernetesDistributionProvisioner _kubernetesDistributionProvisioner = kubernetesDistributionProvisioner;
 
-  internal Task<string> HandleAsync() => _kubernetesDistributionProvisioner.ListAsync();
+  internal Task<(int ExitCode, string Result)> HandleAsync(CancellationToken token) => _kubernetesDistributionProvisioner.ListAsync(token);
 }

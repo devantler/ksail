@@ -21,7 +21,7 @@ class AgeCLIWrapper()
     }
   }
 
-  internal static async Task GenerateKeyAsync()
+  internal static async Task<int> GenerateKeyAsync(CancellationToken token)
   {
     if (!Directory.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail"))
     {
@@ -32,9 +32,16 @@ class AgeCLIWrapper()
       File.Delete($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/ksail_sops.agekey");
     }
     var cmd = AgeKeygen.WithArguments($"-o {Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/ksail_sops.agekey");
-    _ = await CLIRunner.RunAsync(cmd, silent: true);
+    var (ExitCode, Result) = await CLIRunner.RunAsync(cmd, token, silent: true);
+    if (ExitCode != 0)
+    {
+      Console.WriteLine($"✕ Failed to generate key with error: {Result.Last()}");
+      Console.WriteLine(Result.Last());
+      return 1;
+    }
     //TODO: Move the WriteKeysToDefaultKeysTxt method to a Helper class, and call it parent classes.
     WriteKeysToDefaultKeysTxt();
+    return 0;
   }
 
   static void WriteKeysToDefaultKeysTxt()

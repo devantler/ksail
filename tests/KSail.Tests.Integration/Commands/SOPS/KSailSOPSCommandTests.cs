@@ -1,5 +1,6 @@
 using System.CommandLine;
 using System.CommandLine.IO;
+using KSail.Commands.Init;
 using KSail.Commands.SOPS;
 
 namespace KSail.Tests.Integration.Commands.SOPS;
@@ -132,5 +133,26 @@ public class KSailSOPSCommandTests
 
     //Cleanup
     File.Delete("./ksail_sops.agekey");
+  }
+
+  /// <summary>
+  /// Tests that the 'ksail sops --encrypt [path]' and 'ksail sops --decrypt [path]' commands successfully encrypts and decrypts a file.
+  /// </summary>
+  [Fact]
+  public async Task KSailSOPSEncryptAndDecrypt_SuccessfullyEncryptsAndDecryptsFile()
+  {
+    // Arrange
+    var ksailInitCommand = new KSailInitCommand();
+    var ksailSOPSCommand = new KSailSOPSCommand();
+
+    // Act
+    int initExitCode = await ksailInitCommand.InvokeAsync("ksail");
+    int encryptExitCode = await ksailSOPSCommand.InvokeAsync("--encrypt k8s/clusters/ksail/variables/variables-sensitive.sops.yaml");
+    int decryptExitCode = await ksailSOPSCommand.InvokeAsync("--decrypt k8s/clusters/ksail/variables/variables-sensitive.sops.yaml");
+
+    // Assert
+    Assert.Equal(0, initExitCode);
+    Assert.Equal(0, encryptExitCode);
+    Assert.Equal(0, decryptExitCode);
   }
 }

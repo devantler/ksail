@@ -1,7 +1,5 @@
 using Docker.DotNet;
 using Docker.DotNet.Models;
-using KSail.Enums;
-using KSail.Exceptions;
 
 namespace KSail.Provisioners.ContainerEngine;
 
@@ -11,22 +9,24 @@ sealed class DockerProvisioner : IContainerEngineProvisioner
     new Uri("unix:///var/run/docker.sock")
   ).CreateClient();
 
-  public async Task CheckReadyAsync()
+  public async Task<int> CheckReadyAsync(CancellationToken token)
   {
     Console.WriteLine("🐳 Checking Docker is running...");
     try
     {
-      await _dockerClient.System.PingAsync();
+      await _dockerClient.System.PingAsync(token);
     }
     catch (Exception)
     {
-      throw new KSailException("✕ Could not connect to Docker. Is Docker running?");
+      Console.WriteLine("✕ Could not connect to Docker. Is Docker running?");
+      return 1;
     }
     Console.WriteLine("✔ Docker is running...");
     Console.WriteLine();
+    return 0;
   }
 
-  public async Task CreateRegistryAsync(string name, int port, Uri? proxyUrl = null)
+  public async Task<int> CreateRegistryAsync(string name, int port, CancellationToken token, Uri? proxyUrl = null)
   {
     if (proxyUrl != null)
     {
@@ -36,12 +36,16 @@ sealed class DockerProvisioner : IContainerEngineProvisioner
     {
       Console.WriteLine($"► Creating registry '{name}' on port '{port}'...");
     }
-    bool registryExists = await GetContainerIdAsync(name) != null;
+    var (ExitCode, RegistryExists) = await GetContainerIdAsync(name, token);
+    if (ExitCode != 0)
+    {
+      return 1;
+    }
 
-    if (registryExists)
+    if (RegistryExists != null)
     {
       Console.WriteLine($"✔ Registry '{name}' already exists. Skipping...");
-      return;
+      return 0;
     }
     CreateContainerResponse registry;
     try
@@ -81,29 +85,34 @@ sealed class DockerProvisioner : IContainerEngineProvisioner
       });
       _ = await _dockerClient.Containers.StartContainerAsync(registry.ID, new ContainerStartParameters());
     }
-    catch (DockerApiException e)
+    catch (DockerApiException)
     {
-      throw new KSailException($"✕ Could not create registry '{name}'...", e);
+      Console.WriteLine($"✕ Could not create registry '{name}'...");
+      return 1;
     }
+    return 0;
   }
-  public async Task DeleteRegistryAsync(string name)
+  public async Task<int> DeleteRegistryAsync(string name, CancellationToken token)
   {
-    string? containerId = await GetContainerIdAsync(name);
+    var (ExitCode, ContainerId) = await GetContainerIdAsync(name, token);
+    if (ExitCode != 0)
+    {
+      return 1;
+    }
 
-    if (string.IsNullOrEmpty(containerId))
+    if (string.IsNullOrEmpty(ContainerId))
     {
       Console.WriteLine($"✕ Could not find registry '{name}'. Skipping...");
     }
     else
     {
-      _ = await _dockerClient.Containers.StopContainerAsync(containerId, new ContainerStopParameters());
-      await _dockerClient.Containers.RemoveContainerAsync(containerId, new ContainerRemoveParameters());
+      _ = await _dockerClient.Containers.StopContainerAsync(ContainerId, new ContainerStopParameters(), token);
+      await _dockerClient.Containers.RemoveContainerAsync(ContainerId, new ContainerRemoveParameters(), token);
     }
+    return 0;
   }
 
-  public Task<ContainerEngineType> GetContainerEngineTypeAsync() => Task.FromResult(ContainerEngineType.Docker);
-
-  public async Task<string?> GetContainerIdAsync(string name)
+  public async Task<(int ExitCode, string? Result)> GetContainerIdAsync(string name, CancellationToken token)
   {
     var containers = await _dockerClient.Containers.ListContainersAsync(new ContainersListParameters
     {
@@ -115,8 +124,8 @@ sealed class DockerProvisioner : IContainerEngineProvisioner
           [name] = true
         }
       }
-    });
+    }, token);
 
-    return containers.FirstOrDefault()?.ID;
+    return (0, containers.FirstOrDefault()?.ID);
   }
 }
