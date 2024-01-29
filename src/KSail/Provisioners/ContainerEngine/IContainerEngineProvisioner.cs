@@ -5,8 +5,8 @@ namespace KSail.Provisioners.ContainerEngine;
 interface IContainerEngineProvisioner
 {
   Task<ContainerEngineType> GetContainerEngineTypeAsync();
-  Task CheckReadyAsync();
-  Task CreateRegistryAsync(string name, int port, Uri? proxyUrl = null);
-  Task DeleteRegistryAsync(string name);
-  Task<string?> GetContainerIdAsync(string name);
+  Task<int> CheckReadyAsync(CancellationToken token);
+  Task<int> CreateRegistryAsync(string name, int port, CancellationToken token, Uri? proxyUrl = null);
+  Task<int> DeleteRegistryAsync(string name, CancellationToken token);
+  Task<(int ExitCode, string? Result)> GetContainerIdAsync(string name, CancellationToken token);
 }

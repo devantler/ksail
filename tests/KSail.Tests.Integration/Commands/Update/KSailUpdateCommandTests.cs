@@ -46,11 +46,12 @@ public class KSailUpdateCommandTests : IAsyncLifetime
     var dockerProvisioner = new DockerProvisioner();
 
     //Act
-    await dockerProvisioner.CreateRegistryAsync("manifests", 5050);
+    int dockerProvisionerExitCode = await dockerProvisioner.CreateRegistryAsync("manifests", 5050, new CancellationToken());
     int initExitCode = await ksailInitCommand.InvokeAsync("ksail");
     int updateExitCode = await ksailUpdateCommand.InvokeAsync("ksail --no-reconcile");
 
     //Assert
+    Assert.Equal(0, dockerProvisionerExitCode);
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, updateExitCode);
   }

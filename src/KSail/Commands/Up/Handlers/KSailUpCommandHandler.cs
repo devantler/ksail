@@ -26,7 +26,10 @@ class KSailUpCommandHandler(
   {
     kustomizationsPath = string.IsNullOrEmpty(kustomizationsPath) ? $"clusters/{clusterName}/flux-system" : kustomizationsPath;
 
-    await _containerEngineProvisioner.CheckReadyAsync();
+    if (await _containerEngineProvisioner.CheckReadyAsync(token) != 0)
+    {
+      return 1;
+    }
 
     var (ExitCode, Result) = await _kubernetesDistributionProvisioner.ExistsAsync(clusterName, token);
     if (ExitCode != 0)
@@ -48,16 +51,37 @@ class KSailUpCommandHandler(
     }
 
     Console.WriteLine("🧮 Creating pull-through registries...");
-    await _containerEngineProvisioner.CreateRegistryAsync("proxy-docker.io", 5001, new Uri("https://registry-1.docker.io"));
-    await _containerEngineProvisioner.CreateRegistryAsync("proxy-registry.k8s.io", 5002, new Uri("https://registry.k8s.io"));
-    await _containerEngineProvisioner.CreateRegistryAsync("proxy-gcr.io", 5003, new Uri("https://gcr.io"));
-    await _containerEngineProvisioner.CreateRegistryAsync("proxy-ghcr.io", 5004, new Uri("https://ghcr.io"));
-    await _containerEngineProvisioner.CreateRegistryAsync("proxy-quay.io", 5005, new Uri("https://quay.io"));
-    await _containerEngineProvisioner.CreateRegistryAsync("proxy-mcr.microsoft.com", 5006, new Uri("https://mcr.microsoft.com"));
+    if (await _containerEngineProvisioner.CreateRegistryAsync("proxy-docker.io", 5001, token, new Uri("https://registry-1.docker.io")) != 0)
+    {
+      return 1;
+    }
+    if (await _containerEngineProvisioner.CreateRegistryAsync("proxy-registry.k8s.io", 5002, token, new Uri("https://registry.k8s.io")) != 0)
+    {
+      return 1;
+    }
+    if (await _containerEngineProvisioner.CreateRegistryAsync("proxy-gcr.io", 5003, token, new Uri("https://gcr.io")) != 0)
+    {
+      return 1;
+    }
+    if (await _containerEngineProvisioner.CreateRegistryAsync("proxy-ghcr.io", 5004, token, new Uri("https://ghcr.io")) != 0)
+    {
+      return 1;
+    }
+    if (await _containerEngineProvisioner.CreateRegistryAsync("proxy-quay.io", 5005, token, new Uri("https://quay.io")) != 0)
+    {
+      return 1;
+    }
+    if (await _containerEngineProvisioner.CreateRegistryAsync("proxy-mcr.microsoft.com", 5006, token, new Uri("https://mcr.microsoft.com")) != 0)
+    {
+      return 1;
+    }
     Console.WriteLine();
 
     Console.WriteLine("🧮 Creating OCI registry...");
-    await _containerEngineProvisioner.CreateRegistryAsync("manifests", 5050);
+    if (await _containerEngineProvisioner.CreateRegistryAsync("manifests", 5050, token) != 0)
+    {
+      return 1;
+    }
     Console.WriteLine("");
 
     if (await new KSailUpdateCommandHandler(_kubernetesDistributionProvisioner, _gitOpsProvisioner).HandleAsync(clusterName, manifestsPath, true, true, token) != 0)

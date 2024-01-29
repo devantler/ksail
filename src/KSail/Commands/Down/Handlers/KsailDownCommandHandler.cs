@@ -14,22 +14,24 @@ class KSailDownCommandHandler(IContainerEngineProvisioner containerEngineProvisi
     {
       return 1;
     }
-    if (deletePullThroughRegistries)
+    if (deletePullThroughRegistries && await DeletePullThroughRegistriesAsync(token) != 0)
     {
-      await DeletePullThroughRegistriesAsync();
+      return 1;
     }
 
     Console.WriteLine();
     return 0;
   }
 
-  async Task DeletePullThroughRegistriesAsync()
+  async Task<int> DeletePullThroughRegistriesAsync(CancellationToken token)
   {
-    await _containerEngineProvisioner.DeleteRegistryAsync("proxy-docker.io");
-    await _containerEngineProvisioner.DeleteRegistryAsync("proxy-registry.k8s.io");
-    await _containerEngineProvisioner.DeleteRegistryAsync("proxy-gcr.io");
-    await _containerEngineProvisioner.DeleteRegistryAsync("proxy-ghcr.io");
-    await _containerEngineProvisioner.DeleteRegistryAsync("proxy-quay.io");
-    await _containerEngineProvisioner.DeleteRegistryAsync("proxy-mcr.microsoft.com");
+    return await _containerEngineProvisioner.DeleteRegistryAsync("proxy-docker.io", token) != 0 ||
+      await _containerEngineProvisioner.DeleteRegistryAsync("proxy-registry.k8s.io", token) != 0 ||
+      await _containerEngineProvisioner.DeleteRegistryAsync("proxy-gcr.io", token) != 0 ||
+      await _containerEngineProvisioner.DeleteRegistryAsync("proxy-ghcr.io", token) != 0 ||
+      await _containerEngineProvisioner.DeleteRegistryAsync("proxy-quay.io", token) != 0 ||
+      await _containerEngineProvisioner.DeleteRegistryAsync("proxy-mcr.microsoft.com", token) != 0
+      ? 1
+      : 0;
   }
 }

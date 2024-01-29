@@ -16,7 +16,7 @@ sealed class DockerTestUtils()
   }
   internal async Task<bool> ContainerExistsAsync(string name)
   {
-    string? container = await _dockerProvisioner.GetContainerIdAsync(name);
-    return !string.IsNullOrEmpty(container);
+    var (ExitCode, Container) = await _dockerProvisioner.GetContainerIdAsync(name, new CancellationToken());
+    return ExitCode == 0 && !string.IsNullOrEmpty(Container);
   }
 }
