@@ -22,22 +22,7 @@ class KSailLintCommandHandler()
       await TarFile.ExtractToDirectoryAsync(memoryStream, directoryInfo.FullName, true, token);
     }
 
-    if (await ValidateYamlAsync(manifestsPath) == 1)
-    {
-      return 1;
-    }
-    if (string.IsNullOrEmpty(clusterName))
-    {
-      foreach (string clusterPath in Directory.GetDirectories($"{manifestsPath}/clusters"))
-      {
-        string name = clusterPath.Replace($"{manifestsPath}/clusters/", "", StringComparison.Ordinal);
-        if (await ValidateKustomizationsAsync(name, manifestsPath, token) != 0)
-        {
-          return 1;
-        }
-      }
-    }
-    else if (await ValidateKustomizationsAsync(clusterName, manifestsPath, token) != 0)
+    if (await ValidateYamlAsync(manifestsPath) != 0 || await ValidateKustomizationsAsync(clusterName, manifestsPath, token) != 0)
     {
       return 1;
     }

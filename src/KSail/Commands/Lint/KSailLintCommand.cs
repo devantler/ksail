@@ -7,7 +7,7 @@ namespace KSail.Commands.Lint;
 
 sealed class KSailLintCommand : Command
 {
-  readonly ClusterNameArgument _clusterNameArgument = new();
+  readonly ClusterNameArgument _clusterNameArgument = new() { Arity = ArgumentArity.ExactlyOne };
   readonly ManifestsOption _manifestsOption = new() { IsRequired = true };
   internal KSailLintCommand() : base(
    "lint", "Lint manifest files"
