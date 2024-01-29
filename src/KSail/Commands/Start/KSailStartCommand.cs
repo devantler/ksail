@@ -12,6 +12,12 @@ sealed class KSailStartCommand : Command
   {
     AddArgument(_clusterNameArgument);
 
-    this.SetHandler(KSailStartCommandHandler.HandleAsync, _clusterNameArgument);
+    this.SetHandler(async (context) =>
+    {
+      string clusterName = context.ParseResult.GetValueForArgument(_clusterNameArgument);
+
+      var token = context.GetCancellationToken();
+      _ = await KSailStartCommandHandler.HandleAsync(clusterName, token);
+    });
   }
 }

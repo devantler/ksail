@@ -22,19 +22,30 @@ class KSailUpCommandHandler(
   readonly IKubernetesDistributionProvisioner _kubernetesDistributionProvisioner = kubernetesDistributionProvisioner;
   readonly IContainerOrchestratorProvisioner _containerOrchestratorProvisioner = containerOrchestratorProvisioner;
   readonly IGitOpsProvisioner _gitOpsProvisioner = gitOpsProvisioner;
-  internal async Task HandleAsync(string clusterName, string configPath, string manifestsPath, string kustomizationsPath, int timeout, bool noSOPS)
+  internal async Task<int> HandleAsync(string clusterName, string configPath, string manifestsPath, string kustomizationsPath, int timeout, bool noSOPS, CancellationToken token)
   {
     kustomizationsPath = string.IsNullOrEmpty(kustomizationsPath) ? $"clusters/{clusterName}/flux-system" : kustomizationsPath;
 
     await _containerEngineProvisioner.CheckReadyAsync();
 
-    if (await _kubernetesDistributionProvisioner.ExistsAsync(clusterName))
+    var (ExitCode, Result) = await _kubernetesDistributionProvisioner.ExistsAsync(clusterName, token);
+    if (ExitCode != 0)
+    {
+      return 1;
+    }
+    if (Result)
     {
       var downHandler = new KSailDownCommandHandler(_containerEngineProvisioner, _kubernetesDistributionProvisioner);
-      await downHandler.HandleAsync(clusterName);
+      if (await downHandler.HandleAsync(clusterName, token) != 0)
+      {
+        return 1;
+      }
     }
 
-    await KSailLintCommandHandler.HandleAsync(clusterName, manifestsPath);
+    if (await KSailLintCommandHandler.HandleAsync(clusterName, manifestsPath, token) != 0)
+    {
+      return 1;
+    }
 
     Console.WriteLine("🧮 Creating pull-through registries...");
     await _containerEngineProvisioner.CreateRegistryAsync("proxy-docker.io", 5001, new Uri("https://registry-1.docker.io"));
@@ -49,9 +60,15 @@ class KSailUpCommandHandler(
     await _containerEngineProvisioner.CreateRegistryAsync("manifests", 5050);
     Console.WriteLine("");
 
-    await new KSailUpdateCommandHandler(_kubernetesDistributionProvisioner, _gitOpsProvisioner).HandleAsync(clusterName, manifestsPath, true, true);
+    if (await new KSailUpdateCommandHandler(_kubernetesDistributionProvisioner, _gitOpsProvisioner).HandleAsync(clusterName, manifestsPath, true, true, token) != 0)
+    {
+      return 1;
+    }
 
-    await _kubernetesDistributionProvisioner.ProvisionAsync(clusterName, configPath);
+    if (await _kubernetesDistributionProvisioner.ProvisionAsync(clusterName, configPath, token) != 0)
+    {
+      return 1;
+    }
     var kubernetesDistributionType = await _kubernetesDistributionProvisioner.GetKubernetesDistributionTypeAsync();
     string context = $"{kubernetesDistributionType.ToString()?.ToLower(CultureInfo.InvariantCulture)}-{clusterName}";
     await _containerOrchestratorProvisioner.CreateNamespaceAsync(context, "flux-system");
@@ -64,7 +81,12 @@ class KSailUpCommandHandler(
       Console.WriteLine("");
     }
     var kubernetesDistribution = await _kubernetesDistributionProvisioner.GetKubernetesDistributionTypeAsync();
-    await _gitOpsProvisioner.InstallAsync($"{kubernetesDistribution.ToString()?.ToLower(CultureInfo.InvariantCulture)}-{clusterName}", $"oci://host.k3d.internal:5050/{clusterName}", kustomizationsPath);
-    await new KSailCheckCommandHandler().HandleAsync(context, timeout);
+    string k8sContext = $"{kubernetesDistribution.ToString()?.ToLower(CultureInfo.InvariantCulture)}-{clusterName}";
+    string ociUrl = $"oci://host.k3d.internal:5050/{clusterName}";
+    return await _gitOpsProvisioner.InstallAsync(k8sContext, ociUrl, kustomizationsPath, token) switch
+    {
+      0 => await new KSailCheckCommandHandler().HandleAsync(context, timeout, token) != 0 ? 1 : 0,
+      _ => 1,
+    };
   }
 }

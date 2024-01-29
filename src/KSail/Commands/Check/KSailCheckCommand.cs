@@ -3,7 +3,6 @@ using System.Globalization;
 using KSail.Arguments;
 using KSail.Commands.Check.Handlers;
 using KSail.Commands.Check.Options;
-using KSail.Enums;
 using KSail.Options;
 using KSail.Provisioners.KubernetesDistribution;
 
@@ -11,7 +10,6 @@ namespace KSail.Commands.Check;
 
 sealed class KSailCheckCommand : Command
 {
-  readonly KubernetesDistributionProvisionerBinder _kubernetesDistributionProvisionerBinder = new(KubernetesDistributionType.K3d);
   readonly ClusterNameArgument _clusterNameArgument = new() { Arity = ArgumentArity.ExactlyOne };
   readonly KubeconfigOption _kubeconfigOption = new() { IsRequired = true };
   readonly TimeoutOption _timeoutOption = new();
@@ -29,12 +27,20 @@ sealed class KSailCheckCommand : Command
         result.ErrorMessage = $"Kubeconfig file '{kubeconfig}' does not exist";
       }
     });
-    this.SetHandler(async (kubernetesDistributionProvisioner, clusterName, kubeconfig, timeout) =>
+    this.SetHandler(async (context) =>
     {
+      string clusterName = context.ParseResult.GetValueForArgument(_clusterNameArgument);
+      string kubeconfig = context.ParseResult.GetValueForOption(_kubeconfigOption) ??
+        throw new InvalidOperationException("Kubeconfig not set");
+      int timeout = context.ParseResult.GetValueForOption(_timeoutOption);
+
+      var kubernetesDistributionProvisioner = new K3dProvisioner();
       var kubernetesDistributionType = await kubernetesDistributionProvisioner.GetKubernetesDistributionTypeAsync();
-      string context = $"{kubernetesDistributionType.ToString()?.ToLower(CultureInfo.InvariantCulture)}-{clusterName}";
+      string k8sContext = $"{kubernetesDistributionType.ToString()?.ToLower(CultureInfo.InvariantCulture)}-{clusterName}";
+
+      var token = context.GetCancellationToken();
       var handler = new KSailCheckCommandHandler();
-      await handler.HandleAsync(context, timeout, kubeconfig);
-    }, _kubernetesDistributionProvisionerBinder, _clusterNameArgument, _kubeconfigOption, _timeoutOption);
+      _ = await handler.HandleAsync(k8sContext, timeout, token, kubeconfig);
+    });
   }
 }

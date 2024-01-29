@@ -2,7 +2,6 @@ using System.CommandLine;
 using KSail.Arguments;
 using KSail.Commands.Update.Handlers;
 using KSail.Commands.Update.Options;
-using KSail.Enums;
 using KSail.Options;
 using KSail.Provisioners.GitOps;
 using KSail.Provisioners.KubernetesDistribution;
@@ -11,8 +10,6 @@ namespace KSail.Commands.Update;
 
 sealed class KSailUpdateCommand : Command
 {
-  readonly KubernetesDistributionProvisionerBinder _kubernetesDistributionProvisionerBinder = new(KubernetesDistributionType.K3d);
-  readonly GitOpsProvisionerBinder _gitOpsProvisionerBinder = new(GitOpsType.Flux);
   readonly ClusterNameArgument _clusterNameArgument = new() { Arity = ArgumentArity.ExactlyOne };
   readonly ManifestsOption _manifestsOption = new() { IsRequired = true };
   readonly NoLintOption _noLintOption = new();
@@ -26,10 +23,20 @@ sealed class KSailUpdateCommand : Command
     AddOption(_manifestsOption);
     AddOption(_noLintOption);
     AddOption(_noReconcileOption);
-    this.SetHandler(async (kubernetesDistributionProvisioner, gitOpsProvisioner, clusterName, manifests, noLint, noReconcile) =>
+    this.SetHandler(async (context) =>
     {
+      var kubernetesDistributionProvisioner = new K3dProvisioner();
+      var gitOpsProvisioner = new FluxProvisioner();
+
+      string clusterName = context.ParseResult.GetValueForArgument(_clusterNameArgument);
+      string manifests = context.ParseResult.GetValueForOption(_manifestsOption) ??
+        throw new InvalidOperationException("🚨 Manifests path is 'null'");
+      bool noLint = context.ParseResult.GetValueForOption(_noLintOption);
+      bool noReconcile = context.ParseResult.GetValueForOption(_noReconcileOption);
+
+      var token = context.GetCancellationToken();
       var handler = new KSailUpdateCommandHandler(kubernetesDistributionProvisioner, gitOpsProvisioner);
-      await handler.HandleAsync(clusterName, manifests, noLint, noReconcile);
-    }, _kubernetesDistributionProvisionerBinder, _gitOpsProvisionerBinder, _clusterNameArgument, _manifestsOption, _noLintOption, _noReconcileOption);
+      _ = await handler.HandleAsync(clusterName, manifests, noLint, noReconcile, token);
+    });
   }
 }

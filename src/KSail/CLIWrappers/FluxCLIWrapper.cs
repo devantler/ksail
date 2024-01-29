@@ -22,19 +22,21 @@ class FluxCLIWrapper()
     }
   }
 
-  internal static async Task CheckPrerequisitesAsync(string context)
+  internal static async Task<int> CheckPrerequisitesAsync(string context, CancellationToken token)
   {
     var cmd = Flux.WithArguments($"check --pre --context {context}");
-    _ = await CLIRunner.RunAsync(cmd);
+    var (ExitCode, _) = await CLIRunner.RunAsync(cmd, token);
+    return ExitCode;
   }
 
-  internal static async Task InstallAsync(string context)
+  internal static async Task<int> InstallAsync(string context, CancellationToken token)
   {
     var cmd = Flux.WithArguments($"install --context {context}");
-    _ = await CLIRunner.RunAsync(cmd);
+    var (ExitCode, _) = await CLIRunner.RunAsync(cmd, token);
+    return ExitCode;
   }
 
-  internal static async Task CreateSourceOCIAsync(string context, string sourceUrl)
+  internal static async Task<int> CreateSourceOCIAsync(string context, string sourceUrl, CancellationToken token)
   {
     var cmd = Flux.WithArguments(
       [
@@ -48,9 +50,10 @@ class FluxCLIWrapper()
         $"--context={context}"
       ]
     );
-    _ = await CLIRunner.RunAsync(cmd);
+    var (ExitCode, _) = await CLIRunner.RunAsync(cmd, token);
+    return ExitCode;
   }
-  internal static async Task CreateKustomizationAsync(string context, string fluxKustomizationPath)
+  internal static async Task<int> CreateKustomizationAsync(string context, string fluxKustomizationPath, CancellationToken token)
   {
     var cmd = Flux.WithArguments(
       [
@@ -62,15 +65,17 @@ class FluxCLIWrapper()
         $"--context={context}"
       ]
     );
-    _ = await CLIRunner.RunAsync(cmd);
+    var (ExitCode, _) = await CLIRunner.RunAsync(cmd, token);
+    return ExitCode;
   }
-  internal static async Task UninstallAsync(string context)
+  internal static async Task<int> UninstallAsync(string context, CancellationToken token)
   {
     var cmd = Flux.WithArguments($"uninstall --context {context}");
-    _ = await CLIRunner.RunAsync(cmd);
+    var (ExitCode, _) = await CLIRunner.RunAsync(cmd, token);
+    return ExitCode;
   }
 
-  internal static async Task PushManifestsAsync(string ociUrl, string manifestsPath)
+  internal static async Task<int> PushManifestsAsync(string ociUrl, string manifestsPath, CancellationToken token)
   {
     long currentTimeEpoch = DateTime.Now.ToEpochTime();
     var pushCmd = Flux.WithArguments(
@@ -91,13 +96,25 @@ class FluxCLIWrapper()
         "--tag=latest"
       ]
     );
-    _ = await CLIRunner.RunAsync(pushCmd);
-    _ = await CLIRunner.RunAsync(tagCmd);
+    var (ExitCode, _) = await CLIRunner.RunAsync(pushCmd, token);
+    if (ExitCode != 0)
+    {
+      Console.WriteLine($"✕ Failed to push manifests to {ociUrl}...");
+      return 1;
+    }
+    (ExitCode, _) = await CLIRunner.RunAsync(tagCmd, token);
+    if (ExitCode != 0)
+    {
+      Console.WriteLine("✕ Failed to tag manifests with 'latest' tag...");
+      return 1;
+    }
+    return 0;
   }
 
-  internal static async Task ReconcileAsync(string context)
+  internal static async Task<int> ReconcileAsync(string context, CancellationToken token)
   {
     var cmd = Flux.WithArguments($"reconcile source oci flux-system --context {context}");
-    _ = await CLIRunner.RunAsync(cmd);
+    var (ExitCode, _) = await CLIRunner.RunAsync(cmd, token);
+    return ExitCode;
   }
 }

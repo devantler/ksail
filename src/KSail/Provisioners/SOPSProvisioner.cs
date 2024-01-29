@@ -7,16 +7,16 @@ sealed class SOPSProvisioner() : IDisposable
 {
   readonly KubernetesProvisioner _kubernetesProvisioner = new();
 
-  internal static async Task CreateKeysAsync()
+  internal static async Task<int> CreateKeysAsync(CancellationToken token)
   {
     if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.ksail/ksail_sops.agekey"))
     {
       Console.WriteLine("✔ Using existing SOPS key");
-      return;
+      return 0;
     }
 
     Console.WriteLine("► Generating new SOPS key...");
-    await AgeCLIWrapper.GenerateKeyAsync();
+    return await AgeCLIWrapper.GenerateKeyAsync(token);
   }
 
   public async Task ProvisionAsync(string context)

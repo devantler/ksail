@@ -14,6 +14,13 @@ sealed class KSailInitCommand : Command
     AddArgument(_clusterNameArgument);
     AddOption(_manifestsOption);
 
-    this.SetHandler(KSailInitCommandHandler.HandleAsync, _clusterNameArgument, _manifestsOption);
+    this.SetHandler(async (context) =>
+    {
+      string clusterName = context.ParseResult.GetValueForArgument(_clusterNameArgument);
+      string manifests = context.ParseResult.GetValueForOption(_manifestsOption) ??
+        throw new InvalidOperationException("🚨 Manifests path is 'null'");
+      var token = context.GetCancellationToken();
+      _ = await KSailInitCommandHandler.HandleAsync(clusterName, manifests, token);
+    });
   }
 }

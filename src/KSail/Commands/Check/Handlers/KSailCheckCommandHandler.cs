@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using k8s;
 using k8s.Models;
-using KSail.Exceptions;
 using KSail.Extensions;
 
 namespace KSail.Commands.Check.Handlers;
@@ -12,7 +11,7 @@ class KSailCheckCommandHandler()
   readonly HashSet<string> _successFullKustomizations = [];
   readonly Stopwatch _stopwatch = Stopwatch.StartNew();
 
-  internal async Task HandleAsync(string context, int timeout, string? kubeconfig = null)
+  internal async Task<int> HandleAsync(string context, int timeout, CancellationToken token, string? kubeconfig = null)
   {
     Console.WriteLine("👀 Checking the status of the cluster...");
     var kubernetesClient = (kubeconfig is not null) switch
@@ -22,7 +21,7 @@ class KSailCheckCommandHandler()
     };
     var responseTask = kubernetesClient.ListKustomizationsWithHttpMessagesAsync();
 
-    await foreach (var (type, kustomization) in responseTask.WatchAsync<V1CustomResourceDefinition, object>())
+    await foreach (var (type, kustomization) in responseTask.WatchAsync<V1CustomResourceDefinition, object>(cancellationToken: token))
     {
       string? kustomizationName = kustomization?.Metadata.Name ??
         throw new InvalidOperationException("🚨 Kustomization name is null");
@@ -36,11 +35,12 @@ class KSailCheckCommandHandler()
         if (_successFullKustomizations.Count == _kustomizations.Count)
         {
           Console.WriteLine("✔ All kustomizations are ready!");
-          return;
+          return 0;
         }
         else if (_stopwatch.Elapsed.TotalSeconds >= timeout)
         {
-          throw new TimeoutException($"🚨 Kustomization '{kustomizationName}' did not become ready within the specified time limit of {timeout} seconds.");
+          Console.WriteLine($"✕ Kustomization '{kustomizationName}' did not become ready within the specified time limit of {timeout} seconds.");
+          return 1;
         }
         else if (_successFullKustomizations.Contains(kustomizationName))
         {
@@ -55,8 +55,7 @@ class KSailCheckCommandHandler()
       {
         //TODO: Implement check command with condition[1].type == healthy. This should work for all kustomizations.
         case "Failed":
-          HandleFailedStatus(kustomization, kustomizationName);
-          break;
+          return HandleFailedStatus(kustomization, kustomizationName);
         case "Ready":
           HandleReadyStatus(kustomizationName);
           break;
@@ -71,6 +70,7 @@ class KSailCheckCommandHandler()
           break;
       }
     }
+    return 0;
   }
 
   void HandleReadyStatus(string kustomizationName)
@@ -80,10 +80,11 @@ class KSailCheckCommandHandler()
     _stopwatch.Restart();
   }
 
-  static void HandleFailedStatus(V1CustomResourceDefinition? kustomization, string kustomizationName)
+  static int HandleFailedStatus(V1CustomResourceDefinition? kustomization, string kustomizationName)
   {
     string? message = kustomization?.Status.Conditions.FirstOrDefault()?.Message;
-    throw new KSailException($"🚨 Kustomization '{kustomizationName}' failed with message: {message}");
+    Console.WriteLine($"✕ Kustomization '{kustomizationName}' failed with message: {message}");
+    return 1;
   }
 
   static Kubernetes CreateKubernetesClientFromClusterName(string context)
