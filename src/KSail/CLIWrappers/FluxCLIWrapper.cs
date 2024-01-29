@@ -68,12 +68,6 @@ class FluxCLIWrapper()
     var (ExitCode, _) = await CLIRunner.RunAsync(cmd, token);
     return ExitCode;
   }
-  internal static async Task<int> UninstallAsync(string context, CancellationToken token)
-  {
-    var cmd = Flux.WithArguments($"uninstall --context {context}");
-    var (ExitCode, _) = await CLIRunner.RunAsync(cmd, token);
-    return ExitCode;
-  }
 
   internal static async Task<int> PushManifestsAsync(string ociUrl, string manifestsPath, CancellationToken token)
   {

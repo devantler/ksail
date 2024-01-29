@@ -39,17 +39,7 @@ sealed class FluxProvisioner : IGitOpsProvisioner
     Console.WriteLine();
     return 0;
   }
-  public async Task<int> UninstallAsync(string context, CancellationToken token)
-  {
-    Console.WriteLine("🚮 Uninstalling Flux...");
-    if (await FluxCLIWrapper.UninstallAsync(context, token) != 0)
-    {
-      Console.WriteLine("✕ Failed to uninstall Flux");
-      return 1;
-    }
-    Console.WriteLine();
-    return 0;
-  }
+
   public async Task<int> ReconcileAsync(string context, CancellationToken token)
   {
     Console.WriteLine("🔄 Reconciling Flux...");
