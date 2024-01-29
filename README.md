@@ -26,7 +26,8 @@
 │       ├── CLIWrappers
 │       ├── Commands
 │       │   ├── Check
-│       │   │   └── Handlers
+│       │   │   ├── Handlers
+│       │   │   └── Options
 │       │   ├── Down
 │       │   │   ├── Handlers
 │       │   │   └── Options
@@ -46,22 +47,28 @@
 │       │   ├── Stop
 │       │   │   └── Handlers
 │       │   ├── Up
+│       │   │   ├── Binders
 │       │   │   ├── Handlers
 │       │   │   └── Options
 │       │   └── Update
 │       │       ├── Handlers
 │       │       └── Options
 │       ├── Enums
+│       ├── Exceptions
 │       ├── Extensions
-│       ├── Models
 │       ├── Options
 │       ├── Provisioners
+│       │   ├── ContainerEngine
+│       │   ├── ContainerOrchestrator
+│       │   ├── GitOps
+│       │   └── KubernetesDistribution
 │       └── assets
 │           ├── binaries
 │           └── k3d
 └── tests
     └── KSail.Tests.Integration
         ├── Commands
+        │   ├── Check
         │   ├── Down
         │   ├── List
         │   ├── Root
@@ -70,7 +77,7 @@
         │   └── Update
         └── TestUtils
 
-54 directories
+61 directories
 ```
 <!-- readme-tree end -->
 
