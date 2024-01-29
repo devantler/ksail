@@ -1,10 +1,11 @@
 using KSail.CLIWrappers;
+using KSail.Provisioners.ContainerOrchestrator;
 
 namespace KSail.Provisioners;
 
-sealed class SOPSProvisioner : IProvisioner, IDisposable
+sealed class SOPSProvisioner() : IDisposable
 {
-  readonly KubernetesProvisioner kubernetesProvisioner = new();
+  readonly KubernetesProvisioner _kubernetesProvisioner = new();
 
   internal static async Task CreateKeysAsync()
   {
@@ -18,7 +19,7 @@ sealed class SOPSProvisioner : IProvisioner, IDisposable
     await AgeCLIWrapper.GenerateKeyAsync();
   }
 
-  public async Task ProvisionAsync()
+  public async Task ProvisionAsync(string context)
   {
     string sopsKey = Environment.GetEnvironmentVariable("KSAIL_SOPS_KEY") ?? "";
     if (!string.IsNullOrEmpty(sopsKey))
@@ -28,11 +29,9 @@ sealed class SOPSProvisioner : IProvisioner, IDisposable
       await File.WriteAllTextAsync(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.ksail/ksail_sops.agekey", sopsKey);
     }
     if (!File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.ksail/ksail_sops.agekey"))
-    {
       throw new FileNotFoundException("🚨 SOPS key not found");
-    }
     string ageKey = await File.ReadAllTextAsync(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.ksail/ksail_sops.agekey");
-    await kubernetesProvisioner.CreateSecretAsync("sops-age", new Dictionary<string, string>
+    await _kubernetesProvisioner.CreateSecretAsync(context, "sops-age", new Dictionary<string, string>
     {
       ["ksail_sops.agekey"] = ageKey
     }, "flux-system");
@@ -62,7 +61,7 @@ sealed class SOPSProvisioner : IProvisioner, IDisposable
 
   public void Dispose()
   {
-    kubernetesProvisioner.Dispose();
+    _kubernetesProvisioner.Dispose();
     GC.SuppressFinalize(this);
   }
 }

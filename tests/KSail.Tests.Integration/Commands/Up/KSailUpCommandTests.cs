@@ -3,6 +3,7 @@ using System.CommandLine.IO;
 using KSail.Commands.Init;
 using KSail.Commands.SOPS;
 using KSail.Commands.Up;
+using KSail.Commands.Update;
 using KSail.Tests.Integration.TestUtils;
 
 namespace KSail.Tests.Integration.Commands.Up;
@@ -10,7 +11,6 @@ namespace KSail.Tests.Integration.Commands.Up;
 /// <summary>
 /// Tests for the <see cref="KSailUpCommand"/> class.
 /// </summary>
-[Collection("KSail.Tests.Integration")]
 public class KSailUpCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
@@ -37,7 +37,7 @@ public class KSailUpCommandTests : IAsyncLifetime
   }
 
   /// <summary>
-  /// Tests that the <c>ksail up [name]</c> command fails and prints help when no config exists.
+  /// Tests that the <c>ksail up [clusterName]</c> command fails and prints help when no config exists.
   /// </summary>
   [Fact]
   public async Task KSailUpNameAndNoConfig_FailsAndPrintsHelp()
@@ -76,35 +76,39 @@ public class KSailUpCommandTests : IAsyncLifetime
   }
 
   /// <summary>
-  /// Tests that the <c>ksail up [name]</c> command succeeds and creates a cluster.
+  /// Tests that the <c>ksail up [clusterName]</c> command succeeds and creates a cluster.
   /// </summary>
   [Fact]
-  public async Task KSailUpNameAndConfig_SucceedsAndCreatesCluster()
+  public async Task KSailUp_SucceedsAndCreatesCluster()
   {
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();
+    var ksailUpdateCommand = new KSailUpdateCommand();
 
     //Act
     int initExitCode = await ksailInitCommand.InvokeAsync("ksail");
     int upExitCode = await ksailUpCommand.InvokeAsync("ksail");
+    int updateExitCode = await ksailUpdateCommand.InvokeAsync("ksail");
 
     //Assert
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, upExitCode);
-    Assert.True(await DockerTestUtils.CheckRegistriesExistAsync());
+    Assert.Equal(0, updateExitCode);
+    Assert.True(await new DockerTestUtils().CheckRegistriesExistAsync());
   }
 
   /// <summary>
-  /// Tests that the <c>ksail up [name]</c> command with environment variables succeeds and creates a cluster.
+  /// Tests that the <c>ksail up [clusterName]</c> command with environment variables succeeds and creates a cluster.
   /// </summary>
   [Fact]
-  public async Task KSailUpNameAndConfigAndEnv_SucceedsAndCreatesCluster()
+  public async Task KSailUpEnv_SucceedsAndCreatesCluster()
   {
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();
     var ksailSOPSCommand = new KSailSOPSCommand();
+    var ksailUpdateCommand = new KSailUpdateCommand();
 
     //Act
     if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey")))
@@ -115,11 +119,13 @@ public class KSailUpCommandTests : IAsyncLifetime
     Environment.SetEnvironmentVariable("KSAIL_SOPS_KEY", key);
     int initExitCode = await ksailInitCommand.InvokeAsync("ksail");
     int upExitCode = await ksailUpCommand.InvokeAsync("ksail");
+    int updateExitCode = await ksailUpdateCommand.InvokeAsync("ksail");
     Environment.SetEnvironmentVariable("KSAIL_SOPS_KEY", null);
 
     //Assert
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, upExitCode);
-    Assert.True(await DockerTestUtils.CheckRegistriesExistAsync());
+    Assert.Equal(0, updateExitCode);
+    Assert.True(await new DockerTestUtils().CheckRegistriesExistAsync());
   }
 }

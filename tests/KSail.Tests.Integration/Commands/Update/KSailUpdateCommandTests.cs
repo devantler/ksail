@@ -1,23 +1,20 @@
 using System.CommandLine;
 using System.CommandLine.IO;
 using KSail.Commands.Init;
-using KSail.Commands.Up;
 using KSail.Commands.Update;
-using KSail.Provisioners;
-using KSail.Tests.Integration.TestUtils;
+using KSail.Provisioners.ContainerEngine;
 
 namespace KSail.Tests.Integration.Commands.Update;
 
 /// <summary>
 /// Tests for the <see cref="KSailUpdateCommand"/> class.
 /// </summary>
-[Collection("KSail.Tests.Integration")]
 public class KSailUpdateCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
   public Task DisposeAsync() => Task.CompletedTask;
   /// <inheritdoc/>
-  public Task InitializeAsync() => KSailTestUtils.CleanupAsync();
+  public Task InitializeAsync() => Task.CompletedTask;
 
   /// <summary>
   /// Tests that the <c>ksail update</c> command fails and prints help.
@@ -38,7 +35,7 @@ public class KSailUpdateCommandTests : IAsyncLifetime
   }
 
   /// <summary>
-  /// Tests that the <c>ksail update [name] --no-reconcile</c> command succeeds and pushes updates to OCI.
+  /// Tests that the <c>ksail update [clusterName] --no-reconcile</c> command succeeds and pushes updates to OCI.
   /// </summary>
   [Fact]
   public async Task KSailUpdateNameNoReconcile_SucceedsAndPushesUpdatesToOCI()
@@ -46,36 +43,15 @@ public class KSailUpdateCommandTests : IAsyncLifetime
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpdateCommand = new KSailUpdateCommand();
+    var dockerProvisioner = new DockerProvisioner();
 
     //Act
-    await DockerProvisioner.CreateRegistryAsync("manifests", 5050);
+    await dockerProvisioner.CreateRegistryAsync("manifests", 5050);
     int initExitCode = await ksailInitCommand.InvokeAsync("ksail");
     int updateExitCode = await ksailUpdateCommand.InvokeAsync("ksail --no-reconcile");
 
     //Assert
     Assert.Equal(0, initExitCode);
-    Assert.Equal(0, updateExitCode);
-  }
-
-  /// <summary>
-  /// Tests that the <c>ksail update [name]</c> command succeeds, pushes updates to OCI, and reconciles them.
-  /// </summary>
-  [Fact]
-  public async Task KSailUpdateName_SucceedsAndPushesUpdatesToOCIAndReconciles()
-  {
-    //Arrange
-    var ksailInitCommand = new KSailInitCommand();
-    var ksailUpCommand = new KSailUpCommand();
-    var ksailUpdateCommand = new KSailUpdateCommand();
-
-    //Act
-    int initExitCode = await ksailInitCommand.InvokeAsync("ksail");
-    int upExitCode = await ksailUpCommand.InvokeAsync("ksail");
-    int updateExitCode = await ksailUpdateCommand.InvokeAsync("ksail");
-
-    //Assert
-    Assert.Equal(0, initExitCode);
-    Assert.Equal(0, upExitCode);
     Assert.Equal(0, updateExitCode);
   }
 }

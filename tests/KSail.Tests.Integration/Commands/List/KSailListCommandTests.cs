@@ -10,7 +10,7 @@ namespace KSail.Tests.Integration.Commands.List;
 public class KSailListCommandTests
 {
   /// <summary>
-  /// Tests that the <c>ksail up [name]</c> command succeeds and creates a cluster.
+  /// Tests that the <c>ksail up [clusterName]</c> command succeeds and creates a cluster.
   /// </summary>
   [Fact]
   public async Task KSailList_SucceedsAndListsClusters()
