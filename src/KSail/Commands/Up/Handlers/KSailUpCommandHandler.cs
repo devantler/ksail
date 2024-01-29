@@ -51,27 +51,13 @@ class KSailUpCommandHandler(
     }
 
     Console.WriteLine("🧮 Creating pull-through registries...");
-    if (await _containerEngineProvisioner.CreateRegistryAsync("proxy-docker.io", 5001, token, new Uri("https://registry-1.docker.io")) != 0)
-    {
-      return 1;
-    }
-    if (await _containerEngineProvisioner.CreateRegistryAsync("proxy-registry.k8s.io", 5002, token, new Uri("https://registry.k8s.io")) != 0)
-    {
-      return 1;
-    }
-    if (await _containerEngineProvisioner.CreateRegistryAsync("proxy-gcr.io", 5003, token, new Uri("https://gcr.io")) != 0)
-    {
-      return 1;
-    }
-    if (await _containerEngineProvisioner.CreateRegistryAsync("proxy-ghcr.io", 5004, token, new Uri("https://ghcr.io")) != 0)
-    {
-      return 1;
-    }
-    if (await _containerEngineProvisioner.CreateRegistryAsync("proxy-quay.io", 5005, token, new Uri("https://quay.io")) != 0)
-    {
-      return 1;
-    }
-    if (await _containerEngineProvisioner.CreateRegistryAsync("proxy-mcr.microsoft.com", 5006, token, new Uri("https://mcr.microsoft.com")) != 0)
+    if (await _containerEngineProvisioner.CreateRegistryAsync("proxy-docker.io", 5001, token, new Uri("https://registry-1.docker.io")) != 0 ||
+      await _containerEngineProvisioner.CreateRegistryAsync("proxy-registry.k8s.io", 5002, token, new Uri("https://registry.k8s.io")) != 0 ||
+      await _containerEngineProvisioner.CreateRegistryAsync("proxy-gcr.io", 5003, token, new Uri("https://gcr.io")) != 0 ||
+      await _containerEngineProvisioner.CreateRegistryAsync("proxy-ghcr.io", 5004, token, new Uri("https://ghcr.io")) != 0 ||
+      await _containerEngineProvisioner.CreateRegistryAsync("proxy-quay.io", 5005, token, new Uri("https://quay.io")) != 0 ||
+      await _containerEngineProvisioner.CreateRegistryAsync("proxy-mcr.microsoft.com", 5006, token, new Uri("https://mcr.microsoft.com")) != 0
+    )
     {
       return 1;
     }
