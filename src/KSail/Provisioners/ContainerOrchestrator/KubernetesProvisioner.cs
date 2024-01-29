@@ -1,7 +1,6 @@
 using System.Text;
 using k8s;
 using k8s.Models;
-using KSail.Enums;
 
 namespace KSail.Provisioners.ContainerOrchestrator;
 
@@ -53,8 +52,6 @@ sealed class KubernetesProvisioner : IContainerOrchestratorProvisioner, IDisposa
     };
     _ = await _kubernetesClient.CreateNamespacedSecretAsync(sopsGpgSecret, "flux-system");
   }
-
-  public Task<ContainerOrchestratorType> GetContainerOrchestratorTypeAsync() => Task.FromResult(ContainerOrchestratorType.Kubernetes);
 
   public void Dispose()
   {

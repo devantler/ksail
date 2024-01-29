@@ -1,6 +1,5 @@
 using Docker.DotNet;
 using Docker.DotNet.Models;
-using KSail.Enums;
 
 namespace KSail.Provisioners.ContainerEngine;
 
@@ -112,8 +111,6 @@ sealed class DockerProvisioner : IContainerEngineProvisioner
     }
     return 0;
   }
-
-  public Task<ContainerEngineType> GetContainerEngineTypeAsync() => Task.FromResult(ContainerEngineType.Docker);
 
   public async Task<(int ExitCode, string? Result)> GetContainerIdAsync(string name, CancellationToken token)
   {
