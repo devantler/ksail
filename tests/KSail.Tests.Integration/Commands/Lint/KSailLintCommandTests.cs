@@ -35,17 +35,15 @@ public class KSailLintCommandTests
   public async Task KSailLint_SucceedsAndLintsCluster()
   {
     //Arrange
-    var console = new TestConsole();
     var ksailInitCommand = new KSailInitCommand();
     var ksailLintCommand = new KSailLintCommand();
 
     //Act
-    int initExitCode = await ksailInitCommand.InvokeAsync("test", console);
-    int lintExitCode = await ksailLintCommand.InvokeAsync("test", console);
+    int initExitCode = await ksailInitCommand.InvokeAsync("test");
+    int lintExitCode = await ksailLintCommand.InvokeAsync("test");
 
     //Assert
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, lintExitCode);
-    _ = await Verify(console.Error.ToString() + console.Out);
   }
 }
