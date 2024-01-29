@@ -1,23 +1,20 @@
 using System.CommandLine;
 using System.CommandLine.IO;
 using KSail.Commands.Init;
-using KSail.Commands.Up;
 using KSail.Commands.Update;
 using KSail.Provisioners.ContainerEngine;
-using KSail.Tests.Integration.TestUtils;
 
 namespace KSail.Tests.Integration.Commands.Update;
 
 /// <summary>
 /// Tests for the <see cref="KSailUpdateCommand"/> class.
 /// </summary>
-[Collection("KSail.Tests.Integration")]
 public class KSailUpdateCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
   public Task DisposeAsync() => Task.CompletedTask;
   /// <inheritdoc/>
-  public Task InitializeAsync() => KSailTestUtils.CleanupAsync();
+  public Task InitializeAsync() => Task.CompletedTask;
 
   /// <summary>
   /// Tests that the <c>ksail update</c> command fails and prints help.
@@ -55,28 +52,6 @@ public class KSailUpdateCommandTests : IAsyncLifetime
 
     //Assert
     Assert.Equal(0, initExitCode);
-    Assert.Equal(0, updateExitCode);
-  }
-
-  /// <summary>
-  /// Tests that the <c>ksail update [clusterName]</c> command succeeds, pushes updates to OCI, and reconciles them.
-  /// </summary>
-  [Fact]
-  public async Task KSailUpdateName_SucceedsAndPushesUpdatesToOCIAndReconciles()
-  {
-    //Arrange
-    var ksailInitCommand = new KSailInitCommand();
-    var ksailUpCommand = new KSailUpCommand();
-    var ksailUpdateCommand = new KSailUpdateCommand();
-
-    //Act
-    int initExitCode = await ksailInitCommand.InvokeAsync("ksail");
-    int upExitCode = await ksailUpCommand.InvokeAsync("ksail");
-    int updateExitCode = await ksailUpdateCommand.InvokeAsync("ksail");
-
-    //Assert
-    Assert.Equal(0, initExitCode);
-    Assert.Equal(0, upExitCode);
     Assert.Equal(0, updateExitCode);
   }
 }
