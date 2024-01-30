@@ -21,7 +21,14 @@ sealed class KSailLintCommand : Command
       string manifests = context.ParseResult.GetValueForOption(_manifestsOption) ??
         throw new InvalidOperationException("🚨 Manifests path is 'null'");
       var token = context.GetCancellationToken();
-      _ = await KSailLintCommandHandler.HandleAsync(clusterName, manifests, token);
+      try
+      {
+        _ = await KSailLintCommandHandler.HandleAsync(clusterName, manifests, token);
+      }
+      catch (OperationCanceledException)
+      {
+        context.ExitCode = 1;
+      }
     });
   }
 }

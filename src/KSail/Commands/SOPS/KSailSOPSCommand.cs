@@ -46,7 +46,14 @@ sealed class KSailSOPSCommand : Command
       string export = context.ParseResult.GetValueForOption(_exportOption) ?? "";
 
       var token = context.GetCancellationToken();
-      _ = await KSailSOPSCommandHandler.HandleAsync(generateKey, showPublicKey, showPrivateKey, encrypt, decrypt, import, export, token);
+      try
+      {
+        _ = await KSailSOPSCommandHandler.HandleAsync(generateKey, showPublicKey, showPrivateKey, encrypt, decrypt, import, export, token);
+      }
+      catch (OperationCanceledException)
+      {
+        context.ExitCode = 1;
+      }
     });
   }
 }

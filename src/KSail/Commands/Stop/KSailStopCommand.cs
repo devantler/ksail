@@ -17,7 +17,14 @@ sealed class KSailStopCommand : Command
       string clusterName = context.ParseResult.GetValueForArgument(_clusterNameArgument);
 
       var token = context.GetCancellationToken();
-      _ = await KSailStopCommandHandler.HandleAsync(clusterName, token);
+      try
+      {
+        _ = await KSailStopCommandHandler.HandleAsync(clusterName, token);
+      }
+      catch (OperationCanceledException)
+      {
+        context.ExitCode = 1;
+      }
     });
   }
 }

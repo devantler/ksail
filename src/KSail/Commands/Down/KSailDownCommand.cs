@@ -26,7 +26,14 @@ sealed class KSailDownCommand : Command
 
       var token = context.GetCancellationToken();
       var handler = new KSailDownCommandHandler(containerEngineProvisioner, kubernetesDistributionProvisioner);
-      _ = await handler.HandleAsync(nameArgument, token, deletePullThroughRegistriesOption);
+      try
+      {
+        _ = await handler.HandleAsync(nameArgument, token, deletePullThroughRegistriesOption);
+      }
+      catch (OperationCanceledException)
+      {
+        context.ExitCode = 1;
+      }
     });
   }
 }
