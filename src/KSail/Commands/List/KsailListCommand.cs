@@ -15,7 +15,8 @@ sealed class KSailListCommand : Command
       var handler = new KSailListCommandHandler(kubernetesDistributionProvisioner);
       try
       {
-        _ = await handler.HandleAsync(token);
+        var (ExitCode, _) = await handler.HandleAsync(token);
+        context.ExitCode = ExitCode;
       }
       catch (OperationCanceledException)
       {

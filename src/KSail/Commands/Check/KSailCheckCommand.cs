@@ -42,7 +42,7 @@ sealed class KSailCheckCommand : Command
       var handler = new KSailCheckCommandHandler();
       try
       {
-        _ = await handler.HandleAsync(k8sContext, timeout, token, kubeconfig);
+        context.ExitCode = await handler.HandleAsync(k8sContext, timeout, token, kubeconfig);
       }
       catch (OperationCanceledException)
       {

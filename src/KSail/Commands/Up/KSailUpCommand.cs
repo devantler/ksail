@@ -68,7 +68,7 @@ sealed class KSailUpCommand : Command
       var handler = new KSailUpCommandHandler(containerEngineProvisioner, kubernetesDistributionProvisioner, containerOrchestratorProvisioner, gitOpsProvisioner);
       try
       {
-        _ = await handler.HandleAsync(
+        context.ExitCode = await handler.HandleAsync(
           clusterName,
           config,
           manifests,

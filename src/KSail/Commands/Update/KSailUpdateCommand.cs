@@ -38,7 +38,7 @@ sealed class KSailUpdateCommand : Command
       var handler = new KSailUpdateCommandHandler(kubernetesDistributionProvisioner, gitOpsProvisioner);
       try
       {
-        _ = await handler.HandleAsync(clusterName, manifests, noLint, noReconcile, token);
+        context.ExitCode = await handler.HandleAsync(clusterName, manifests, noLint, noReconcile, token);
       }
       catch (OperationCanceledException)
       {

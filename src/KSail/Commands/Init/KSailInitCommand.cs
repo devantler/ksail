@@ -22,7 +22,7 @@ sealed class KSailInitCommand : Command
       var token = context.GetCancellationToken();
       try
       {
-        _ = await KSailInitCommandHandler.HandleAsync(clusterName, manifests, token);
+        context.ExitCode = await KSailInitCommandHandler.HandleAsync(clusterName, manifests, token);
       }
       catch (OperationCanceledException)
       {

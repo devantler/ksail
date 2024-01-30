@@ -48,7 +48,7 @@ sealed class KSailSOPSCommand : Command
       var token = context.GetCancellationToken();
       try
       {
-        _ = await KSailSOPSCommandHandler.HandleAsync(generateKey, showPublicKey, showPrivateKey, encrypt, decrypt, import, export, token);
+        context.ExitCode = await KSailSOPSCommandHandler.HandleAsync(generateKey, showPublicKey, showPrivateKey, encrypt, decrypt, import, export, token);
       }
       catch (OperationCanceledException)
       {

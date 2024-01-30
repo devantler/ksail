@@ -19,7 +19,7 @@ sealed class KSailStopCommand : Command
       var token = context.GetCancellationToken();
       try
       {
-        _ = await KSailStopCommandHandler.HandleAsync(clusterName, token);
+        context.ExitCode = await KSailStopCommandHandler.HandleAsync(clusterName, token);
       }
       catch (OperationCanceledException)
       {
