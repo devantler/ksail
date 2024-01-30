@@ -18,7 +18,7 @@ sealed class KSailUpCommand : Command
   readonly KustomizationsOption _kustomizationsOption = new();
   readonly TimeoutOption _timeoutOption = new();
   readonly NoSOPSOption _noSOPSOption = new();
-  internal KSailUpCommand() : base("up", "Provision a K8s cluster")
+  internal KSailUpCommand(CancellationToken token) : base("up", "Provision a K8s cluster")
   {
     AddArgument(_clusterNameArgument);
     AddOption(_configOption);
@@ -64,7 +64,6 @@ sealed class KSailUpCommand : Command
 
       config = $"{clusterName}-{config}";
 
-      var token = context.GetCancellationToken();
       var handler = new KSailUpCommandHandler(containerEngineProvisioner, kubernetesDistributionProvisioner, containerOrchestratorProvisioner, gitOpsProvisioner);
       _ = await handler.HandleAsync(
         clusterName,

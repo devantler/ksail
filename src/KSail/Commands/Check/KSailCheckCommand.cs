@@ -14,7 +14,7 @@ sealed class KSailCheckCommand : Command
   readonly KubeconfigOption _kubeconfigOption = new() { IsRequired = true };
   readonly TimeoutOption _timeoutOption = new();
 
-  internal KSailCheckCommand() : base("check", "Check the status of the cluster")
+  internal KSailCheckCommand(CancellationToken token) : base("check", "Check the status of the cluster")
   {
     AddArgument(_clusterNameArgument);
     AddOption(_kubeconfigOption);
@@ -38,9 +38,12 @@ sealed class KSailCheckCommand : Command
       var kubernetesDistributionType = await kubernetesDistributionProvisioner.GetKubernetesDistributionTypeAsync();
       string k8sContext = $"{kubernetesDistributionType.ToString()?.ToLower(CultureInfo.InvariantCulture)}-{clusterName}";
 
-      var token = context.GetCancellationToken();
       var handler = new KSailCheckCommandHandler();
-      _ = await handler.HandleAsync(k8sContext, timeout, token, kubeconfig);
+      int exitcode = await handler.HandleAsync(k8sContext, timeout, token, kubeconfig);
+      if (exitcode != 0)
+      {
+        throw new InvalidOperationException($"'ksail check' failed with exit code {exitcode}");
+      }
     });
   }
 }

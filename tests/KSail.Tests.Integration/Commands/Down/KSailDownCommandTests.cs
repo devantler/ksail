@@ -17,7 +17,8 @@ public class KSailDownCommandTests
   {
     //Arrange
     var console = new TestConsole();
-    var ksailDownCommand = new KSailDownCommand();
+    var token = default(CancellationToken);
+    var ksailDownCommand = new KSailDownCommand(token);
 
     //Act
     int exitCode = await ksailDownCommand.InvokeAsync("", console);

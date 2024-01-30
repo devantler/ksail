@@ -17,27 +17,28 @@ sealed class KSailRootCommand : RootCommand
 {
   internal KSailRootCommand(IConsole? console = null) : base("KSail is a CLI tool for provisioning GitOps enabled K8s clusters in Docker.")
   {
-    AddCommands();
-
-    this.SetHandler(async () =>
+    CancellationToken token = default;
+    this.SetHandler(async (context) =>
       {
+        token = context.GetCancellationToken();
         KSailRootCommandHandler.Handle(console);
         _ = await this.InvokeAsync("--help", console);
       }
     );
+    AddCommands(token);
   }
 
-  void AddCommands()
+  void AddCommands(CancellationToken token)
   {
-    AddCommand(new KSailInitCommand());
-    AddCommand(new KSailUpCommand());
-    AddCommand(new KSailStartCommand());
-    AddCommand(new KSailUpdateCommand());
-    AddCommand(new KSailStopCommand());
-    AddCommand(new KSailDownCommand());
-    AddCommand(new KSailListCommand());
-    AddCommand(new KSailLintCommand());
-    AddCommand(new KSailCheckCommand());
-    AddCommand(new KSailSOPSCommand());
+    AddCommand(new KSailInitCommand(token));
+    AddCommand(new KSailUpCommand(token));
+    AddCommand(new KSailStartCommand(token));
+    AddCommand(new KSailUpdateCommand(token));
+    AddCommand(new KSailStopCommand(token));
+    AddCommand(new KSailDownCommand(token));
+    AddCommand(new KSailListCommand(token));
+    AddCommand(new KSailLintCommand(token));
+    AddCommand(new KSailCheckCommand(token));
+    AddCommand(new KSailSOPSCommand(token));
   }
 }

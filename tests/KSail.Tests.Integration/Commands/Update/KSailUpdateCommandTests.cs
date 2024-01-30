@@ -24,7 +24,8 @@ public class KSailUpdateCommandTests : IAsyncLifetime
   {
     //Arrange
     var console = new TestConsole();
-    var ksailUpdateCommand = new KSailUpdateCommand();
+    var token = default(CancellationToken);
+    var ksailUpdateCommand = new KSailUpdateCommand(token);
 
     //Act
     int exitCode = await ksailUpdateCommand.InvokeAsync("", console);
@@ -41,8 +42,9 @@ public class KSailUpdateCommandTests : IAsyncLifetime
   public async Task KSailUpdateNameNoReconcile_SucceedsAndPushesUpdatesToOCI()
   {
     //Arrange
-    var ksailInitCommand = new KSailInitCommand();
-    var ksailUpdateCommand = new KSailUpdateCommand();
+    var token = default(CancellationToken);
+    var ksailInitCommand = new KSailInitCommand(token);
+    var ksailUpdateCommand = new KSailUpdateCommand(token);
     var dockerProvisioner = new DockerProvisioner();
 
     //Act

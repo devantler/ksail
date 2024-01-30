@@ -13,7 +13,7 @@ sealed class KSailSOPSCommand : Command
   readonly DecryptOption _decryptOption = new();
   readonly ImportOption _importOption = new();
   readonly ExportOption _exportOption = new();
-  internal KSailSOPSCommand() : base("sops", "Manage SOPS key")
+  internal KSailSOPSCommand(CancellationToken token) : base("sops", "Manage SOPS key")
   {
     AddOption(_generateKeyOption);
     AddOption(_showPublicKeyOption);
@@ -45,7 +45,6 @@ sealed class KSailSOPSCommand : Command
       string import = context.ParseResult.GetValueForOption(_importOption) ?? "";
       string export = context.ParseResult.GetValueForOption(_exportOption) ?? "";
 
-      var token = context.GetCancellationToken();
       _ = await KSailSOPSCommandHandler.HandleAsync(generateKey, showPublicKey, showPrivateKey, encrypt, decrypt, import, export, token);
     });
   }

@@ -19,7 +19,8 @@ public partial class KSailCheckCommandTests
   {
     //Arrange
     var console = new TestConsole();
-    var ksailCheckCommand = new KSailCheckCommand();
+    var token = default(CancellationToken);
+    var ksailCheckCommand = new KSailCheckCommand(token);
 
     //Act
     int exitCode = await ksailCheckCommand.InvokeAsync("", console);

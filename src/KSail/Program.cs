@@ -1,4 +1,5 @@
 ﻿using System.CommandLine;
+using System.CommandLine.Parsing;
 using System.Runtime.InteropServices;
 using KSail.Commands.Root;
 

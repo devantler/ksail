@@ -18,7 +18,8 @@ public class KSailLintCommandTests
   {
     //Arrange
     var console = new TestConsole();
-    var ksailCommand = new KSailLintCommand();
+    var token = default(CancellationToken);
+    var ksailCommand = new KSailLintCommand(token);
 
     //Act
     int exitCode = await ksailCommand.InvokeAsync("", console);
@@ -35,8 +36,9 @@ public class KSailLintCommandTests
   public async Task KSailLint_SucceedsAndLintsCluster()
   {
     //Arrange
-    var ksailInitCommand = new KSailInitCommand();
-    var ksailLintCommand = new KSailLintCommand();
+    var token = default(CancellationToken);
+    var ksailInitCommand = new KSailInitCommand(token);
+    var ksailLintCommand = new KSailLintCommand(token);
 
     //Act
     int initExitCode = await ksailInitCommand.InvokeAsync("test");

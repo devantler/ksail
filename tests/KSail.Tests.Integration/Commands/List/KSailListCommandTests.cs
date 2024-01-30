@@ -16,7 +16,8 @@ public class KSailListCommandTests
   public async Task KSailList_SucceedsAndListsClusters()
   {
     //Arrange
-    var ksailListCommand = new KSailListCommand();
+    var token = default(CancellationToken);
+    var ksailListCommand = new KSailListCommand(token);
 
     //Act
     int exitCode = await ksailListCommand.InvokeAsync("");

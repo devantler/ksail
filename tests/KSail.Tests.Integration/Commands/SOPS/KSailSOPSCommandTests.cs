@@ -18,7 +18,8 @@ public class KSailSOPSCommandTests
   {
     //Arrange
     var console = new TestConsole();
-    var ksailSOPSCommand = new KSailSOPSCommand();
+    var token = default(CancellationToken);
+    var ksailSOPSCommand = new KSailSOPSCommand(token);
 
     //Act
     int exitCode = await ksailSOPSCommand.InvokeAsync("", console);
@@ -35,7 +36,8 @@ public class KSailSOPSCommandTests
   public async Task KSailSOPSShowPublicKey_PrintsPublicKey()
   {
     //Arrange
-    var ksailSOPSCommand = new KSailSOPSCommand();
+    var token = default(CancellationToken);
+    var ksailSOPSCommand = new KSailSOPSCommand(token);
 
     //Act
     if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey")))
@@ -55,7 +57,8 @@ public class KSailSOPSCommandTests
   public async Task KSailSOPSShowPrivateKey_PrintsPrivateKey()
   {
     //Arrange
-    var ksailSOPSCommand = new KSailSOPSCommand();
+    var token = default(CancellationToken);
+    var ksailSOPSCommand = new KSailSOPSCommand(token);
 
     //Act
     if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey")))
@@ -75,7 +78,8 @@ public class KSailSOPSCommandTests
   public async Task KSailSOPSImportKey_ImportsKey()
   {
     //Arrange
-    var ksailSOPSCommand = new KSailSOPSCommand();
+    var token = default(CancellationToken);
+    var ksailSOPSCommand = new KSailSOPSCommand(token);
 
     //Act
     if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey")))
@@ -96,7 +100,8 @@ public class KSailSOPSCommandTests
   public async Task KSailSOPSImportKeyFromFile_ImportsKey()
   {
     //Arrange
-    var ksailSOPSCommand = new KSailSOPSCommand();
+    var token = default(CancellationToken);
+    var ksailSOPSCommand = new KSailSOPSCommand(token);
 
     //Act
     if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey")))
@@ -116,7 +121,8 @@ public class KSailSOPSCommandTests
   public async Task KSailSOPSExportKey_ExportsKey()
   {
     //Arrange
-    var ksailSOPSCommand = new KSailSOPSCommand();
+    var token = default(CancellationToken);
+    var ksailSOPSCommand = new KSailSOPSCommand(token);
 
     //Act
     if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey")))
@@ -142,8 +148,9 @@ public class KSailSOPSCommandTests
   public async Task KSailSOPSEncryptAndDecrypt_SuccessfullyEncryptsAndDecryptsFile()
   {
     // Arrange
-    var ksailInitCommand = new KSailInitCommand();
-    var ksailSOPSCommand = new KSailSOPSCommand();
+    var token = default(CancellationToken);
+    var ksailInitCommand = new KSailInitCommand(token);
+    var ksailSOPSCommand = new KSailSOPSCommand(token);
 
     // Act
     int initExitCode = await ksailInitCommand.InvokeAsync("ksail");

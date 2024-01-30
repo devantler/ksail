@@ -11,11 +11,10 @@ sealed class KSailDownCommand : Command
 {
   readonly ClusterNameArgument _clusterNameArgument = new() { Arity = ArgumentArity.ExactlyOne };
   readonly DeletePullThroughRegistriesOption _deletePullThroughRegistriesOption = new();
-  internal KSailDownCommand() : base("down", "Destroy a K8s cluster")
+  internal KSailDownCommand(CancellationToken token) : base("down", "Destroy a K8s cluster")
   {
     AddArgument(_clusterNameArgument);
     AddOption(_deletePullThroughRegistriesOption);
-
     this.SetHandler(async (context) =>
     {
       var containerEngineProvisioner = new DockerProvisioner();
@@ -24,7 +23,6 @@ sealed class KSailDownCommand : Command
       string nameArgument = context.ParseResult.GetValueForArgument(_clusterNameArgument);
       bool deletePullThroughRegistriesOption = context.ParseResult.GetValueForOption(_deletePullThroughRegistriesOption);
 
-      var token = context.GetCancellationToken();
       var handler = new KSailDownCommandHandler(containerEngineProvisioner, kubernetesDistributionProvisioner);
       _ = await handler.HandleAsync(nameArgument, token, deletePullThroughRegistriesOption);
     });

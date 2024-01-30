@@ -8,7 +8,7 @@ sealed class KSailStartCommand : Command
 {
   readonly ClusterNameArgument _clusterNameArgument = new();
 
-  internal KSailStartCommand() : base("start", "Start a K8s cluster")
+  internal KSailStartCommand(CancellationToken token) : base("start", "Start a K8s cluster")
   {
     AddArgument(_clusterNameArgument);
 
@@ -16,7 +16,6 @@ sealed class KSailStartCommand : Command
     {
       string clusterName = context.ParseResult.GetValueForArgument(_clusterNameArgument);
 
-      var token = context.GetCancellationToken();
       _ = await KSailStartCommandHandler.HandleAsync(clusterName, token);
     });
   }

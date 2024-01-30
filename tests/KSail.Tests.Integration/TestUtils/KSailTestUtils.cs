@@ -7,7 +7,8 @@ static class KSailTestUtils
 {
   internal static async Task CleanupAsync()
   {
-    var ksailDownCommand = new KSailDownCommand();
+    var token = default(CancellationToken);
+    var ksailDownCommand = new KSailDownCommand(token);
     _ = await ksailDownCommand.InvokeAsync("ksail --delete-pull-through-registries");
     if (Directory.Exists("k8s"))
     {

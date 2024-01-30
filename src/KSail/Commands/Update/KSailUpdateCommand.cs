@@ -14,7 +14,7 @@ sealed class KSailUpdateCommand : Command
   readonly ManifestsOption _manifestsOption = new() { IsRequired = true };
   readonly NoLintOption _noLintOption = new();
   readonly NoReconcileOption _noReconcileOption = new();
-  internal KSailUpdateCommand() : base(
+  internal KSailUpdateCommand(CancellationToken token) : base(
     "update",
     "Update manifests in an OCI registry"
   )
@@ -34,7 +34,6 @@ sealed class KSailUpdateCommand : Command
       bool noLint = context.ParseResult.GetValueForOption(_noLintOption);
       bool noReconcile = context.ParseResult.GetValueForOption(_noReconcileOption);
 
-      var token = context.GetCancellationToken();
       var handler = new KSailUpdateCommandHandler(kubernetesDistributionProvisioner, gitOpsProvisioner);
       _ = await handler.HandleAsync(clusterName, manifests, noLint, noReconcile, token);
     });

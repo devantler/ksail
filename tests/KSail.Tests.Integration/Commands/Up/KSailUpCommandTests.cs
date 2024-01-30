@@ -28,7 +28,8 @@ public class KSailUpCommandTests : IAsyncLifetime
   {
     //Arrange
     var console = new TestConsole();
-    var ksailUpCommand = new KSailUpCommand();
+    var token = default(CancellationToken);
+    var ksailUpCommand = new KSailUpCommand(token);
 
     //Act
     int exitCode = await ksailUpCommand.InvokeAsync("", console);
@@ -46,7 +47,8 @@ public class KSailUpCommandTests : IAsyncLifetime
   {
     //Arrange
     var console = new TestConsole();
-    var ksailUpCommand = new KSailUpCommand();
+    var token = default(CancellationToken);
+    var ksailUpCommand = new KSailUpCommand(token);
 
     //Act
     int exitCode = await ksailUpCommand.InvokeAsync("ksail", console);
@@ -64,8 +66,9 @@ public class KSailUpCommandTests : IAsyncLifetime
   {
     //Arrange
     var console = new TestConsole();
-    var ksailInitCommand = new KSailInitCommand();
-    var ksailUpCommand = new KSailUpCommand();
+    var token = default(CancellationToken);
+    var ksailInitCommand = new KSailInitCommand(token);
+    var ksailUpCommand = new KSailUpCommand(token);
 
     //Act
     int initExitCode = await ksailInitCommand.InvokeAsync("ksail", console);
@@ -84,11 +87,12 @@ public class KSailUpCommandTests : IAsyncLifetime
   public async Task KSailUp_SucceedsAndCreatesCluster()
   {
     //Arrange
-    var ksailInitCommand = new KSailInitCommand();
-    var ksailUpCommand = new KSailUpCommand();
-    var ksailStopCommand = new KSailStopCommand();
-    var ksailStartCommand = new KSailStartCommand();
-    var ksailUpdateCommand = new KSailUpdateCommand();
+    var token = default(CancellationToken);
+    var ksailInitCommand = new KSailInitCommand(token);
+    var ksailUpCommand = new KSailUpCommand(token);
+    var ksailStopCommand = new KSailStopCommand(token);
+    var ksailStartCommand = new KSailStartCommand(token);
+    var ksailUpdateCommand = new KSailUpdateCommand(token);
 
     //Act
     int initExitCode = await ksailInitCommand.InvokeAsync("ksail");
@@ -113,12 +117,13 @@ public class KSailUpCommandTests : IAsyncLifetime
   public async Task KSailUpEnv_SucceedsAndCreatesCluster()
   {
     //Arrange
-    var ksailInitCommand = new KSailInitCommand();
-    var ksailUpCommand = new KSailUpCommand();
-    var ksailSOPSCommand = new KSailSOPSCommand();
-    var ksailStopCommand = new KSailStopCommand();
-    var ksailStartCommand = new KSailStartCommand();
-    var ksailUpdateCommand = new KSailUpdateCommand();
+    var token = default(CancellationToken);
+    var ksailInitCommand = new KSailInitCommand(token);
+    var ksailUpCommand = new KSailUpCommand(token);
+    var ksailSOPSCommand = new KSailSOPSCommand(token);
+    var ksailStopCommand = new KSailStopCommand(token);
+    var ksailStartCommand = new KSailStartCommand(token);
+    var ksailUpdateCommand = new KSailUpdateCommand(token);
 
     //Act
     if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey")))
