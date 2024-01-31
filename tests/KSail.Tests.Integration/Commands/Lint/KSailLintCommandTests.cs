@@ -8,8 +8,13 @@ namespace KSail.Tests.Integration.Commands.Lint;
 /// <summary>
 /// Tests for the <see cref="KSailLintCommand"/> class.
 /// </summary>
-public class KSailLintCommandTests
+public class KSailLintCommandTests : IAsyncLifetime
 {
+  /// <inheritdoc/>
+  public Task DisposeAsync() => Task.CompletedTask;
+  /// <inheritdoc/>
+  public Task InitializeAsync() => Task.CompletedTask;
+
   /// <summary>
   /// Tests that the 'ksail lint' command fails and returns the help text.
   /// </summary>
@@ -39,8 +44,8 @@ public class KSailLintCommandTests
     var ksailLintCommand = new KSailLintCommand();
 
     //Act
-    int initExitCode = await ksailInitCommand.InvokeAsync("test");
-    int lintExitCode = await ksailLintCommand.InvokeAsync("test");
+    int initExitCode = await ksailInitCommand.InvokeAsync("ksail");
+    int lintExitCode = await ksailLintCommand.InvokeAsync("ksail");
 
     //Assert
     Assert.Equal(0, initExitCode);

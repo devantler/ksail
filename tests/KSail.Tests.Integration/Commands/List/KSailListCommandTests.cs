@@ -7,8 +7,13 @@ namespace KSail.Tests.Integration.Commands.List;
 /// <summary>
 /// Tests for the <see cref="KSailUpCommand"/> class.
 /// </summary>
-public class KSailListCommandTests
+public class KSailListCommandTests : IAsyncLifetime
 {
+  /// <inheritdoc/>
+  public Task DisposeAsync() => Task.CompletedTask;
+  /// <inheritdoc/>
+  public Task InitializeAsync() => Task.CompletedTask;
+
   /// <summary>
   /// Tests that the <c>ksail up [clusterName]</c> command succeeds and creates a cluster.
   /// </summary>

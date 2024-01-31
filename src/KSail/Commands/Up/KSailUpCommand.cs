@@ -66,15 +66,22 @@ sealed class KSailUpCommand : Command
 
       var token = context.GetCancellationToken();
       var handler = new KSailUpCommandHandler(containerEngineProvisioner, kubernetesDistributionProvisioner, containerOrchestratorProvisioner, gitOpsProvisioner);
-      _ = await handler.HandleAsync(
-        clusterName,
-        config,
-        manifests,
-        kustomizations,
-        timeout,
-        noSOPS,
-        token
-      );
+      try
+      {
+        context.ExitCode = await handler.HandleAsync(
+          clusterName,
+          config,
+          manifests,
+          kustomizations,
+          timeout,
+          noSOPS,
+          token
+        );
+      }
+      catch (OperationCanceledException)
+      {
+        context.ExitCode = 1;
+      }
     });
   }
 }

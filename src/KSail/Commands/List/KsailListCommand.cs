@@ -13,7 +13,15 @@ sealed class KSailListCommand : Command
       var kubernetesDistributionProvisioner = new K3dProvisioner();
       var token = context.GetCancellationToken();
       var handler = new KSailListCommandHandler(kubernetesDistributionProvisioner);
-      _ = await handler.HandleAsync(token);
+      try
+      {
+        var (ExitCode, _) = await handler.HandleAsync(token);
+        context.ExitCode = ExitCode;
+      }
+      catch (OperationCanceledException)
+      {
+        context.ExitCode = 1;
+      }
     });
   }
 }

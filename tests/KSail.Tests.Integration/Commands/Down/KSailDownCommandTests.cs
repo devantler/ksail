@@ -7,8 +7,13 @@ namespace KSail.Tests.Integration.Commands.Down;
 /// <summary>
 /// Tests for the <see cref="KSailDownCommand"/> class.
 /// </summary>
-public class KSailDownCommandTests
+public class KSailDownCommandTests : IAsyncLifetime
 {
+  /// <inheritdoc/>
+  public Task DisposeAsync() => Task.CompletedTask;
+  /// <inheritdoc/>
+  public Task InitializeAsync() => Task.CompletedTask;
+
   /// <summary>
   /// Tests that the <c>ksail down</c> command fails and prints help.
   /// </summary>

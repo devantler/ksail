@@ -36,7 +36,14 @@ sealed class KSailUpdateCommand : Command
 
       var token = context.GetCancellationToken();
       var handler = new KSailUpdateCommandHandler(kubernetesDistributionProvisioner, gitOpsProvisioner);
-      _ = await handler.HandleAsync(clusterName, manifests, noLint, noReconcile, token);
+      try
+      {
+        context.ExitCode = await handler.HandleAsync(clusterName, manifests, noLint, noReconcile, token);
+      }
+      catch (OperationCanceledException)
+      {
+        context.ExitCode = 1;
+      }
     });
   }
 }

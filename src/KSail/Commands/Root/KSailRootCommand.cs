@@ -19,10 +19,10 @@ sealed class KSailRootCommand : RootCommand
   {
     AddCommands();
 
-    this.SetHandler(async () =>
+    this.SetHandler(async (context) =>
       {
         KSailRootCommandHandler.Handle(console);
-        _ = await this.InvokeAsync("--help", console);
+        context.ExitCode = await this.InvokeAsync("--help", console);
       }
     );
   }

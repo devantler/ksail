@@ -8,8 +8,13 @@ namespace KSail.Tests.Integration.Commands.Check;
 /// <summary>
 /// Tests for the <see cref="KSailCheckCommand"/> class.
 /// </summary>
-public partial class KSailCheckCommandTests
+public partial class KSailCheckCommandTests : IAsyncLifetime
 {
+  /// <inheritdoc/>
+  public Task DisposeAsync() => Task.CompletedTask;
+  /// <inheritdoc/>
+  public Task InitializeAsync() => Task.CompletedTask;
+
   /// <summary>
   /// Tests that the <c>ksail check</c> command fails and prints help.
   /// </summary>

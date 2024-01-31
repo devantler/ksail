@@ -7,8 +7,12 @@ namespace KSail.Tests.Integration.Commands.Root;
 /// <summary>
 /// Tests for the <see cref="KSailRootCommand"/> class.
 /// </summary>
-public class KSailRootCommandTests
+public class KSailRootCommandTests : IAsyncLifetime
 {
+  /// <inheritdoc/>
+  public Task DisposeAsync() => Task.CompletedTask;
+  /// <inheritdoc/>
+  public Task InitializeAsync() => Task.CompletedTask;
   /// <summary>
   /// Tests that the 'ksail' command succeeds and returns the introduction and help text.
   /// </summary>

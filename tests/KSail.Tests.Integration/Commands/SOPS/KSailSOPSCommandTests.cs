@@ -8,8 +8,12 @@ namespace KSail.Tests.Integration.Commands.SOPS;
 /// <summary>
 /// Tests for the <see cref="KSailSOPSCommand"/> class.
 /// </summary>
-public class KSailSOPSCommandTests
+public class KSailSOPSCommandTests : IAsyncLifetime
 {
+  /// <inheritdoc/>
+  public Task DisposeAsync() => Task.CompletedTask;
+  /// <inheritdoc/>
+  public Task InitializeAsync() => Task.CompletedTask;
   /// <summary>
   /// Tests that the 'ksail sops' command fails and prints the help text.
   /// </summary>
