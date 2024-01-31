@@ -75,6 +75,7 @@ jobs:
           token: ${{ secrets.HOMEBREW_GITHUB_API_TOKEN }}
           formulae: |
             devantler/formulas/ksail
+            ksail
 
   publish-docker-image:
     name: Publish Docker image
