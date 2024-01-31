@@ -67,12 +67,12 @@ jobs:
             ksail-linux-amd64
             ksail-linux-arm64
             ksail.tar.gz
-      - name: 🍺 Brew bump core formulas
-        uses: Homebrew/actions/bump-packages@master
-        with:
-          token: ${{ secrets.HOMEBREW_GITHUB_API_TOKEN }}
-          formulae: |
-            ksail
+      #- name: 🍺 Brew bump core formulas
+      #  uses: Homebrew/actions/bump-packages@master
+      #  with:
+      #    token: ${{ secrets.HOMEBREW_GITHUB_API_TOKEN }}
+      #    formulae: |
+      #      ksail
       - name: 🍺 Brew tap devantler formulas
         run: brew tap devantler/formulas
       - name: 🍺 Brew bump devantler formulas
