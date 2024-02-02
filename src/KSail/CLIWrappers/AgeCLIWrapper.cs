@@ -39,56 +39,6 @@ class AgeCLIWrapper()
       Console.WriteLine(Result.Last());
       return 1;
     }
-    //TODO: Move the WriteKeysToDefaultKeysTxt method to a Helper class, and call it parent classes.
-    WriteKeysToDefaultKeysTxt();
     return 0;
-  }
-
-  static void WriteKeysToDefaultKeysTxt()
-  {
-    string ksailSopsAgeKey = $"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/ksail_sops.agekey";
-    if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-    {
-      string keysTxtFolder = $"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/Library/Application Support/sops/age";
-      string keysTxt = $"{keysTxtFolder}/keys.txt";
-      AppendOrReplaceKey(ksailSopsAgeKey, keysTxtFolder, keysTxt);
-    }
-    else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-    {
-      string keysTxtFolder = $"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/sops/age";
-      string keysTxt = $"{keysTxtFolder}/keys.txt";
-      AppendOrReplaceKey(ksailSopsAgeKey, keysTxtFolder, keysTxt);
-    }
-  }
-
-  //TODO: Move the AppendOrReplaceKey method to a Helper class along with the WriteKeysToDefaultKeysTxt method.
-  static void AppendOrReplaceKey(string ksailSopsAgeKey, string keysTxtFolder, string keysTxt)
-  {
-    if (!Directory.Exists(keysTxtFolder))
-    {
-      _ = Directory.CreateDirectory(keysTxtFolder);
-    }
-    if (!File.Exists(keysTxt))
-    {
-      string[] lines = File.ReadAllLines(ksailSopsAgeKey);
-      lines = lines.Prepend("# KSAIL_SOPS_KEY start").ToArray()
-        .Append("# KSAIL_SOPS_KEY end").ToArray();
-      File.WriteAllLines(keysTxt, lines);
-    }
-    else if (!File.ReadAllText(keysTxt).Contains("# KSAIL_SOPS_KEY start"))
-    {
-      string[] lines = File.ReadAllLines(keysTxt);
-      lines = [.. lines, "# KSAIL_SOPS_KEY start", File.ReadAllText(ksailSopsAgeKey), "# KSAIL_SOPS_KEY end"];
-      File.WriteAllLines(keysTxt, lines);
-    }
-    else
-    {
-      string[] lines = File.ReadAllLines(keysTxt);
-      int startIndex = lines.ToList().FindIndex(line => line.Contains("# KSAIL_SOPS_KEY start"));
-      int endIndex = lines.ToList().FindIndex(line => line.Contains("# KSAIL_SOPS_KEY end"));
-      lines = lines.Where((_, index) => index <= startIndex || index >= endIndex).ToArray();
-      lines = lines.Take(startIndex + 1).Concat(File.ReadAllLines(ksailSopsAgeKey)).Concat(lines.Skip(startIndex + 1)).ToArray();
-      File.WriteAllLines(keysTxt, lines);
-    }
   }
 }
