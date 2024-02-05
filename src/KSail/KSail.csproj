@@ -15,7 +15,7 @@
     <PackageReference Include="KubernetesClient" Version="13.0.11" />
     <PackageReference Include="Spectre.Console" Version="0.48.0" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
-    <PackageReference Include="YamlDotNet" Version="15.1.0" />
+    <PackageReference Include="YamlDotNet" Version="15.1.1" />
   </ItemGroup>
 
   <ItemGroup>
