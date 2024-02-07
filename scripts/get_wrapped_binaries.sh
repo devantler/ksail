@@ -29,24 +29,25 @@ download_and_update() {
     for arch in darwin.amd64 darwin.arm64 linux.amd64 linux.arm64; do
       # replace . in arch with -
       arch=${arch//./-}
+      arch_underscore=${arch//-/_}
       echo "Checking if $binary for $arch exists"
       local exists
-      exists=$(curl -s https://api.github.com/repos/"$repo"/releases/latest | grep browser_download_url | grep "$arch" | cut -d '"' -f 4)
+      exists=$(curl -s https://api.github.com/repos/"$repo"/releases/latest | grep browser_download_url | grep -E "(${arch}|${arch_underscore})" | cut -d '"' -f 4)
       if [ -z "$exists" ]; then
         echo "No $binary for $arch found"
         continue
       fi
       if [ "$is_tarball" = true ]; then
-        curl -s https://api.github.com/repos/"$repo"/releases/latest | grep browser_download_url | grep "$arch" | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/binaries/"${binary}"_"${arch}".tar.gz
+        curl -s https://api.github.com/repos/"$repo"/releases/latest | grep browser_download_url | grep -E "(${arch}|${arch_underscore})" | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/binaries/"${binary}"_"${arch}".tar.gz
         echo "Extracting new version of $binary"
         tar -xzf src/KSail/assets/binaries/"${binary}"_"${arch}".tar.gz -C src/KSail/assets/binaries/
         if [ "$subfolder" == "" ]; then
-          mv src/KSail/assets/binaries/"${binary}" src/KSail/assets/binaries/"${binary}"_"${arch}"
+          mv -f src/KSail/assets/binaries/"${binary}" src/KSail/assets/binaries/"${binary}"_"${arch}"
         fi
         echo "Removing tar.gz files"
         rm src/KSail/assets/binaries/"${binary}"_"${arch}".tar.gz
       else
-        curl -s https://api.github.com/repos/"$repo"/releases/latest | grep browser_download_url | grep "$arch" | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/binaries/"${binary}"_"${arch}"
+        curl -s https://api.github.com/repos/"$repo"/releases/latest | grep browser_download_url | grep -E "(${arch}|${arch_underscore})" | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/binaries/"${binary}"_"${arch}"
       fi
       if [ "$subfolder" != "" ]; then
         echo "Unpackaging new version of $binary"
@@ -54,7 +55,7 @@ download_and_update() {
           fileName=$(basename "$file")
           # if file is not LICENSE, rename to binary_arch
           if [ "$fileName" == "$binary" ]; then
-            mv "$file" src/KSail/assets/binaries/"${fileName}"_"${arch}"
+            mv -f "$file" src/KSail/assets/binaries/"${fileName}"_"${arch}"
           fi
         done
         rm -rf src/KSail/assets/binaries/"${subfolder}"
@@ -65,10 +66,14 @@ download_and_update() {
     echo "Update version in requirements.txt"
     if [ ! -f src/KSail/assets/binaries/requirements.txt ]; then
       echo "${binary}_version_${version_latest}" >src/KSail/assets/binaries/requirements.txt
-    elif grep -q "${binary}_version_${version_latest}" src/KSail/assets/binaries/requirements.txt; then
-      sed -i '' "s/${binary}_version_*/${binary}_version_${version_latest}/g" src/KSail/assets/binaries/requirements.txt
     else
-      echo "${binary}_version_${version_latest}" >>src/KSail/assets/binaries/requirements.txt
+      # Update the existing entry instead of adding a new one
+      # if macos
+      if [[ "$OSTYPE" == "darwin"* ]]; then
+        sed -i '' "s/^${binary}_version_.*/${binary}_version_${version_latest}/" src/KSail/assets/binaries/requirements.txt
+      else
+        sed -i "s/^${binary}_version_.*/${binary}_version_${version_latest}/" src/KSail/assets/binaries/requirements.txt
+      fi
     fi
   else
     echo "No new version of $binary found"
