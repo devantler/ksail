@@ -29,15 +29,16 @@ download_and_update() {
     for arch in darwin.amd64 darwin.arm64 linux.amd64 linux.arm64; do
       # replace . in arch with -
       arch=${arch//./-}
+      arch_underscore=${arch//-/_}
       echo "Checking if $binary for $arch exists"
       local exists
-      exists=$(curl -s https://api.github.com/repos/"$repo"/releases/latest | grep browser_download_url | grep "$arch" | cut -d '"' -f 4)
+      exists=$(curl -s https://api.github.com/repos/"$repo"/releases/latest | grep browser_download_url | grep -E "(${arch}|${arch_underscore})" | cut -d '"' -f 4)
       if [ -z "$exists" ]; then
         echo "No $binary for $arch found"
         continue
       fi
       if [ "$is_tarball" = true ]; then
-        curl -s https://api.github.com/repos/"$repo"/releases/latest | grep browser_download_url | grep "$arch" | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/binaries/"${binary}"_"${arch}".tar.gz
+        curl -s https://api.github.com/repos/"$repo"/releases/latest | grep browser_download_url | grep -E "(${arch}|${arch_underscore})" | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/binaries/"${binary}"_"${arch}".tar.gz
         echo "Extracting new version of $binary"
         tar -xzf src/KSail/assets/binaries/"${binary}"_"${arch}".tar.gz -C src/KSail/assets/binaries/
         if [ "$subfolder" == "" ]; then
@@ -46,7 +47,7 @@ download_and_update() {
         echo "Removing tar.gz files"
         rm src/KSail/assets/binaries/"${binary}"_"${arch}".tar.gz
       else
-        curl -s https://api.github.com/repos/"$repo"/releases/latest | grep browser_download_url | grep "$arch" | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/binaries/"${binary}"_"${arch}"
+        curl -s https://api.github.com/repos/"$repo"/releases/latest | grep browser_download_url | grep -E "(${arch}|${arch_underscore})" | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/binaries/"${binary}"_"${arch}"
       fi
       if [ "$subfolder" != "" ]; then
         echo "Unpackaging new version of $binary"
@@ -67,7 +68,12 @@ download_and_update() {
       echo "${binary}_version_${version_latest}" >src/KSail/assets/binaries/requirements.txt
     else
       # Update the existing entry instead of adding a new one
-      sed -i "s/^${binary}_version_.*/${binary}_version_${version_latest}/" src/KSail/assets/binaries/requirements.txt
+      # if macos
+      if [[ "$OSTYPE" == "darwin"* ]]; then
+        sed -i '' "s/^${binary}_version_.*/${binary}_version_${version_latest}/" src/KSail/assets/binaries/requirements.txt
+      else
+        sed -i "s/^${binary}_version_.*/${binary}_version_${version_latest}/" src/KSail/assets/binaries/requirements.txt
+      fi
     fi
   else
     echo "No new version of $binary found"
@@ -76,9 +82,9 @@ download_and_update() {
 
 set -e
 download_and_update "fluxcd/flux2" "flux" true
-download_and_update "k3d-io/k3d" "k3d" false
-download_and_update "yannh/kubeconform" "kubeconform" true
-download_and_update "kubernetes-sigs/kustomize" "kustomize" true
-download_and_update "FiloSottile/age" "age-keygen" true "age"
-download_and_update "getsops/sops" "sops" false
+# download_and_update "k3d-io/k3d" "k3d" false
+# download_and_update "yannh/kubeconform" "kubeconform" true
+# download_and_update "kubernetes-sigs/kustomize" "kustomize" true
+# download_and_update "FiloSottile/age" "age-keygen" true "age"
+# download_and_update "getsops/sops" "sops" false
 find src/KSail/assets/binaries -name "LICENSE" -type f -delete
