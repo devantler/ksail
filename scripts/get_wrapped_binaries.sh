@@ -36,14 +36,12 @@ download_and_update() {
         echo "No $binary for $arch found"
         continue
       fi
-      sed -i '' "s/^${binary}_version_.*/${binary}_version_${version_latest}/" src/KSail/assets/binaries/requirements.txt # Remove old binary if it exists
-      rm -f src/KSail/assets/binaries/"${binary}"_"${arch}"
       if [ "$is_tarball" = true ]; then
         curl -s https://api.github.com/repos/"$repo"/releases/latest | grep browser_download_url | grep "$arch" | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/binaries/"${binary}"_"${arch}".tar.gz
         echo "Extracting new version of $binary"
         tar -xzf src/KSail/assets/binaries/"${binary}"_"${arch}".tar.gz -C src/KSail/assets/binaries/
         if [ "$subfolder" == "" ]; then
-          mv src/KSail/assets/binaries/"${binary}" src/KSail/assets/binaries/"${binary}"_"${arch}"
+          mv -f src/KSail/assets/binaries/"${binary}" src/KSail/assets/binaries/"${binary}"_"${arch}"
         fi
         echo "Removing tar.gz files"
         rm src/KSail/assets/binaries/"${binary}"_"${arch}".tar.gz
@@ -56,7 +54,7 @@ download_and_update() {
           fileName=$(basename "$file")
           # if file is not LICENSE, rename to binary_arch
           if [ "$fileName" == "$binary" ]; then
-            mv "$file" src/KSail/assets/binaries/"${fileName}"_"${arch}"
+            mv -f "$file" src/KSail/assets/binaries/"${fileName}"_"${arch}"
           fi
         done
         rm -rf src/KSail/assets/binaries/"${subfolder}"
