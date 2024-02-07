@@ -36,6 +36,8 @@ download_and_update() {
         echo "No $binary for $arch found"
         continue
       fi
+      # Remove old binary if it exists
+      rm -f src/KSail/assets/binaries/"${binary}"_"${arch}"
       if [ "$is_tarball" = true ]; then
         curl -s https://api.github.com/repos/"$repo"/releases/latest | grep browser_download_url | grep "$arch" | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/binaries/"${binary}"_"${arch}".tar.gz
         echo "Extracting new version of $binary"
@@ -65,10 +67,9 @@ download_and_update() {
     echo "Update version in requirements.txt"
     if [ ! -f src/KSail/assets/binaries/requirements.txt ]; then
       echo "${binary}_version_${version_latest}" >src/KSail/assets/binaries/requirements.txt
-    elif grep -q "${binary}_version_${version_latest}" src/KSail/assets/binaries/requirements.txt; then
-      sed -i '' "s/${binary}_version_*/${binary}_version_${version_latest}/g" src/KSail/assets/binaries/requirements.txt
     else
-      echo "${binary}_version_${version_latest}" >>src/KSail/assets/binaries/requirements.txt
+      # Update the existing entry instead of adding a new one
+      sed -i '' "s/${binary}_version_*/${binary}_version_${version_latest}/g" src/KSail/assets/binaries/requirements.txt
     fi
   else
     echo "No new version of $binary found"
