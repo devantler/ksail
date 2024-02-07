@@ -41,7 +41,7 @@ download_and_update() {
         echo "Extracting new version of $binary"
         tar -xzf src/KSail/assets/binaries/"${binary}"_"${arch}".tar.gz -C src/KSail/assets/binaries/
         if [ "$subfolder" == "" ]; then
-          mv src/KSail/assets/binaries/"${binary}" src/KSail/assets/binaries/"${binary}"_"${arch}"
+          mv -f src/KSail/assets/binaries/"${binary}" src/KSail/assets/binaries/"${binary}"_"${arch}"
         fi
         echo "Removing tar.gz files"
         rm src/KSail/assets/binaries/"${binary}"_"${arch}".tar.gz
@@ -54,7 +54,7 @@ download_and_update() {
           fileName=$(basename "$file")
           # if file is not LICENSE, rename to binary_arch
           if [ "$fileName" == "$binary" ]; then
-            mv "$file" src/KSail/assets/binaries/"${fileName}"_"${arch}"
+            mv -f "$file" src/KSail/assets/binaries/"${fileName}"_"${arch}"
           fi
         done
         rm -rf src/KSail/assets/binaries/"${subfolder}"
@@ -65,10 +65,9 @@ download_and_update() {
     echo "Update version in requirements.txt"
     if [ ! -f src/KSail/assets/binaries/requirements.txt ]; then
       echo "${binary}_version_${version_latest}" >src/KSail/assets/binaries/requirements.txt
-    elif grep -q "${binary}_version_${version_latest}" src/KSail/assets/binaries/requirements.txt; then
-      sed -i '' "s/${binary}_version_*/${binary}_version_${version_latest}/g" src/KSail/assets/binaries/requirements.txt
     else
-      echo "${binary}_version_${version_latest}" >>src/KSail/assets/binaries/requirements.txt
+      # Update the existing entry instead of adding a new one
+      sed -i "s/^${binary}_version_.*/${binary}_version_${version_latest}/" src/KSail/assets/binaries/requirements.txt
     fi
   else
     echo "No new version of $binary found"
