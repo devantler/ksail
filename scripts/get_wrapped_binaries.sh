@@ -82,9 +82,9 @@ download_and_update() {
 
 set -e
 download_and_update "fluxcd/flux2" "flux" true
-# download_and_update "k3d-io/k3d" "k3d" false
-# download_and_update "yannh/kubeconform" "kubeconform" true
-# download_and_update "kubernetes-sigs/kustomize" "kustomize" true
-# download_and_update "FiloSottile/age" "age-keygen" true "age"
-# download_and_update "getsops/sops" "sops" false
+download_and_update "k3d-io/k3d" "k3d" false
+download_and_update "yannh/kubeconform" "kubeconform" true
+download_and_update "kubernetes-sigs/kustomize" "kustomize" true
+download_and_update "FiloSottile/age" "age-keygen" true "age"
+download_and_update "getsops/sops" "sops" false
 find src/KSail/assets/binaries -name "LICENSE" -type f -delete
