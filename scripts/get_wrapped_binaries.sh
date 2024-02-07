@@ -69,7 +69,7 @@ download_and_update() {
       echo "${binary}_version_${version_latest}" >src/KSail/assets/binaries/requirements.txt
     else
       # Update the existing entry instead of adding a new one
-      sed -i '' "s/^${binary}_version_.*/${binary}_version_${version_latest}/" src/KSail/assets/binaries/requirements.txt
+      sed -i "s/^${binary}_version_.*/${binary}_version_${version_latest}/" src/KSail/assets/binaries/requirements.txt
     fi
   else
     echo "No new version of $binary found"
