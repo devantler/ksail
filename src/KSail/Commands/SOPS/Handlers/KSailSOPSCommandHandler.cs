@@ -1,16 +1,17 @@
 using KSail.CLIWrappers;
-using KSail.Provisioners;
+using KSail.Provisioners.SecretManager;
 
 namespace KSail.Commands.SOPS.Handlers;
 
-class KSailSOPSCommandHandler()
+class KSailSOPSCommandHandler() : IDisposable
 {
-  internal static async Task<int> HandleAsync(bool generateKey, bool showPublicKey, bool showPrivateKey, string encrypt, string decrypt, string import, string export, CancellationToken token)
+  readonly LocalSOPSProvisioner _localSOPSProvisioner = new();
+  internal async Task<int> HandleAsync(string clusterName, bool generateKey, bool showPublicKey, bool showPrivateKey, string encrypt, string decrypt, string import, string export, CancellationToken token)
   {
     if (generateKey)
     {
       Console.WriteLine("🔐 Generating new SOPS key...");
-      if (await AgeCLIWrapper.GenerateKeyAsync(token) != 0)
+      if (await AgeCLIWrapper.GenerateKeyAsync(clusterName, true, token) != 0)
       {
         Console.WriteLine("✕ SOPS key generation failed");
         return 1;
@@ -39,11 +40,23 @@ class KSailSOPSCommandHandler()
     }
     else if (showPublicKey)
     {
-      Console.WriteLine(await SOPSProvisioner.GetPublicKeyAsync());
+      var (exitCode, publicKey) = await _localSOPSProvisioner.GetPublicKeyAsync(KeyType.Age, clusterName, token);
+      if (exitCode != 0)
+      {
+        Console.WriteLine("✕ Public SOPS key not found");
+        return 1;
+      }
+      Console.WriteLine(publicKey);
     }
     else if (showPrivateKey)
     {
-      Console.WriteLine(await SOPSProvisioner.GetPrivateKeyAsync());
+      var (exitCode, privateKey) = await _localSOPSProvisioner.GetPrivateKeyAsync(KeyType.Age, clusterName, token);
+      if (exitCode != 0)
+      {
+        Console.WriteLine("✕ Private SOPS key not found");
+        return 1;
+      }
+      Console.WriteLine(privateKey);
     }
     else if (!string.IsNullOrWhiteSpace(import))
     {
@@ -81,5 +94,11 @@ class KSailSOPSCommandHandler()
     }
     Console.WriteLine("");
     return 0;
+  }
+
+  public void Dispose()
+  {
+    _localSOPSProvisioner.Dispose();
+    GC.SuppressFinalize(this);
   }
 }

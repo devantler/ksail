@@ -1,11 +1,12 @@
 using System.Text;
-using KSail.Provisioners;
+using KSail.Provisioners.SecretManager;
 
 namespace KSail.Commands.Init.Handlers;
 
-static class KSailInitCommandHandler
+class KSailInitCommandHandler : IDisposable
 {
-  internal static async Task<int> HandleAsync(string clusterName, string manifests, CancellationToken token)
+  readonly LocalSOPSProvisioner _localSOPSProvisioner = new();
+  internal async Task<int> HandleAsync(string clusterName, string manifests, CancellationToken token)
   {
     Console.WriteLine($"📁 Initializing a new K8s GitOps project named '{clusterName}'...");
     string clusterDirectory = Path.Combine(manifests, "clusters", clusterName);
@@ -27,12 +28,18 @@ static class KSailInitCommandHandler
     {
       await CreateConfigAsync(clusterName);
     }
-    if (await SOPSProvisioner.CreateKeysAsync(token) != 0)
+    var (keyExistsExitCode, keyExists) = await _localSOPSProvisioner.KeyExistsAsync(KeyType.Age, clusterName, token);
+    if (keyExistsExitCode != 0)
     {
+      Console.WriteLine("✕ Unexpected error occurred while checking for an existing Age key for SOPS.");
+      return 1;
+    }
+    if (!keyExists && await _localSOPSProvisioner.CreateKeyAsync(KeyType.Age, clusterName, token) != 0)
+    {
+      Console.WriteLine("✕ Unexpected error occurred while creating a new Age key for SOPS.");
       return 1;
     }
 
-    await SOPSProvisioner.CreateSOPSConfigAsync($"{manifests}/../.sops.yaml");
     Console.WriteLine($"✔ Successfully initialized a new K8s GitOps project named '{clusterName}'.");
     Console.WriteLine();
     return 0;
@@ -245,5 +252,11 @@ static class KSailInitCommandHandler
     var configFile = File.Create(configPath) ?? throw new InvalidOperationException($"🚨 Could not create the config file at {configPath}.");
     await configFile.WriteAsync(Encoding.UTF8.GetBytes(configContent));
     await configFile.FlushAsync();
+  }
+
+  public void Dispose()
+  {
+    _localSOPSProvisioner.Dispose();
+    GC.SuppressFinalize(this);
   }
 }

@@ -1,4 +1,3 @@
-using System.Globalization;
 using KSail.Commands.Lint.Handlers;
 using KSail.Provisioners.GitOps;
 using KSail.Provisioners.KubernetesDistribution;
@@ -22,7 +21,7 @@ class KSailUpdateCommandHandler(IKubernetesDistributionProvisioner kubernetesDis
     if (!noReconcile)
     {
       var kubernetesDistributionType = await _kubernetesDistributionProvisioner.GetKubernetesDistributionTypeAsync();
-      string context = $"{kubernetesDistributionType.ToString()?.ToLower(CultureInfo.InvariantCulture)}-{clusterName}";
+      string context = $"{kubernetesDistributionType.ToString()?.ToLowerInvariant()}-{clusterName}";
       if (await _gitOpsProvisioner.ReconcileAsync(context, token) != 0)
       {
         return 1;

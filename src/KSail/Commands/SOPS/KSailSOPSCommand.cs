@@ -1,4 +1,5 @@
 using System.CommandLine;
+using KSail.Arguments;
 using KSail.Commands.SOPS.Handlers;
 using KSail.Commands.SOPS.Options;
 
@@ -6,6 +7,7 @@ namespace KSail.Commands.SOPS;
 
 sealed class KSailSOPSCommand : Command
 {
+  readonly ClusterNameArgument _clusterNameArgument = new();
   readonly GenerateKeyOption _generateKeyOption = new();
   readonly ShowPublicKeyOption _showPublicKeyOption = new();
   readonly ShowPrivateKeyOption _showPrivateKeyOption = new();
@@ -15,6 +17,7 @@ sealed class KSailSOPSCommand : Command
   readonly ExportOption _exportOption = new();
   internal KSailSOPSCommand() : base("sops", "Manage SOPS key")
   {
+    AddArgument(_clusterNameArgument);
     AddOption(_generateKeyOption);
     AddOption(_showPublicKeyOption);
     AddOption(_showPrivateKeyOption);
@@ -37,6 +40,7 @@ sealed class KSailSOPSCommand : Command
 
     this.SetHandler(async (context) =>
     {
+      string clusterName = context.ParseResult.GetValueForArgument(_clusterNameArgument);
       bool generateKey = context.ParseResult.GetValueForOption(_generateKeyOption);
       bool showPublicKey = context.ParseResult.GetValueForOption(_showPublicKeyOption);
       bool showPrivateKey = context.ParseResult.GetValueForOption(_showPrivateKeyOption);
@@ -48,7 +52,8 @@ sealed class KSailSOPSCommand : Command
       var token = context.GetCancellationToken();
       try
       {
-        context.ExitCode = await KSailSOPSCommandHandler.HandleAsync(generateKey, showPublicKey, showPrivateKey, encrypt, decrypt, import, export, token);
+        var handler = new KSailSOPSCommandHandler();
+        context.ExitCode = await handler.HandleAsync(clusterName, generateKey, showPublicKey, showPrivateKey, encrypt, decrypt, import, export, token);
       }
       catch (OperationCanceledException)
       {

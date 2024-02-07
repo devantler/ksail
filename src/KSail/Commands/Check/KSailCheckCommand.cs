@@ -1,5 +1,4 @@
 using System.CommandLine;
-using System.Globalization;
 using KSail.Arguments;
 using KSail.Commands.Check.Handlers;
 using KSail.Commands.Check.Options;
@@ -36,7 +35,7 @@ sealed class KSailCheckCommand : Command
 
       var kubernetesDistributionProvisioner = new K3dProvisioner();
       var kubernetesDistributionType = await kubernetesDistributionProvisioner.GetKubernetesDistributionTypeAsync();
-      string k8sContext = $"{kubernetesDistributionType.ToString()?.ToLower(CultureInfo.InvariantCulture)}-{clusterName}";
+      string k8sContext = $"{kubernetesDistributionType.ToString()?.ToLowerInvariant()}-{clusterName}";
 
       var token = context.GetCancellationToken();
       var handler = new KSailCheckCommandHandler();
