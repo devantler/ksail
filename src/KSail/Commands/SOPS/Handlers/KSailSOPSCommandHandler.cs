@@ -19,9 +19,9 @@ class KSailSOPSCommandHandler() : IDisposable
       case (false, false, false, true, "", "", "", ""):
         return await HandleShowPrivateKey(clusterName, token);
       case (false, false, false, false, not null, "", "", ""):
-        return await HandleEncrypt(encrypt, token);
+        return await HandleEncrypt(encrypt, clusterName, token);
       case (false, false, false, false, "", not null, "", ""):
-        return await HandleDecrypt(decrypt, token);
+        return await HandleDecrypt(decrypt, clusterName, token);
       case (false, false, false, false, "", "", not null, ""):
         return await HandleImport(clusterName, import, token);
       case (false, false, false, false, "", "", "", not null):
@@ -70,10 +70,12 @@ class KSailSOPSCommandHandler() : IDisposable
     return 0;
   }
 
-  static async Task<int> HandleDecrypt(string decrypt, CancellationToken token)
+  static async Task<int> HandleDecrypt(string decrypt, string clusterName, CancellationToken token)
   {
+    clusterName = clusterName.ToLowerInvariant();
     Console.WriteLine($"🔐 Decrypting '{decrypt}'");
-    if (await SOPSCLIWrapper.DecryptAsync(decrypt, token) != 0)
+    string masterKeyPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", $"{clusterName}.agekey");
+    if (await SOPSCLIWrapper.DecryptAsync(decrypt, masterKeyPath, token) != 0)
     {
       Console.WriteLine("✕ SOPS decryption failed");
       return 1;
@@ -82,10 +84,12 @@ class KSailSOPSCommandHandler() : IDisposable
     return 0;
   }
 
-  static async Task<int> HandleEncrypt(string encrypt, CancellationToken token)
+  static async Task<int> HandleEncrypt(string encrypt, string clusterName, CancellationToken token)
   {
+    clusterName = clusterName.ToLowerInvariant();
     Console.WriteLine($"🔐 Encrypting '{encrypt}'");
-    if (await SOPSCLIWrapper.EncryptAsync(encrypt, token) != 0)
+    string masterKeyPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", $"{clusterName}.agekey");
+    if (await SOPSCLIWrapper.EncryptAsync(encrypt, masterKeyPath, token) != 0)
     {
       Console.WriteLine("✕ SOPS encryption failed");
       return 1;

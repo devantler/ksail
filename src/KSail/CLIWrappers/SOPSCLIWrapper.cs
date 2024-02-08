@@ -21,26 +21,30 @@ class SOPSCLIWrapper()
     }
   }
 
-  internal static async Task<int> DecryptAsync(string decrypt, CancellationToken token)
+  internal static async Task<int> DecryptAsync(string decrypt, string masterKeyPath, CancellationToken token)
   {
     if (!File.Exists(decrypt))
     {
       Console.WriteLine($"✕ File '{decrypt}' does not exist");
       return 1;
     }
+    Environment.SetEnvironmentVariable("SOPS_AGE_KEY_FILE", masterKeyPath);
     var cmd = SOPS.WithArguments($"-d -i {decrypt}");
     var (ExitCode, _) = await CLIRunner.RunAsync(cmd, token, silent: true);
+    Environment.SetEnvironmentVariable("SOPS_AGE_KEY_FILE", null);
     return ExitCode;
   }
-  internal static async Task<int> EncryptAsync(string encrypt, CancellationToken token)
+  internal static async Task<int> EncryptAsync(string encrypt, string masterKeyPath, CancellationToken token)
   {
     if (!File.Exists(encrypt))
     {
       Console.WriteLine($"✕ File '{encrypt}' does not exist");
       return 1;
     }
+    Environment.SetEnvironmentVariable("SOPS_AGE_KEY_FILE", masterKeyPath);
     var cmd = SOPS.WithArguments($"-e -i {encrypt}");
     var (ExitCode, _) = await CLIRunner.RunAsync(cmd, token, silent: true);
+    Environment.SetEnvironmentVariable("SOPS_AGE_KEY_FILE", null);
     return ExitCode;
   }
 }
