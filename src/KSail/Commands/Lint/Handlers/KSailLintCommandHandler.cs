@@ -11,9 +11,9 @@ class KSailLintCommandHandler()
   static readonly HttpClient httpClient = new();
   internal static async Task<int> HandleAsync(string clusterName, string manifestsPath, CancellationToken token)
   {
-    Console.WriteLine("🧹 Linting manifest files...");
+    Console.WriteLine("🧹 Linting manifest files");
 
-    Console.WriteLine("► Downloading Flux OpenAPI schemas...");
+    Console.WriteLine("► Downloading Flux OpenAPI schemas");
     const string url = "https://github.com/fluxcd/flux2/releases/latest/download/crd-schemas.tar.gz";
     var directoryInfo = Directory.CreateDirectory("/tmp/flux-crd-schemas/master-standalone-strict");
     await using (var file = await httpClient.GetStreamAsync(url, token).ConfigureAwait(false))
@@ -32,7 +32,7 @@ class KSailLintCommandHandler()
 
   static Task<int> ValidateYamlAsync(string manifestsPath)
   {
-    Console.WriteLine("► Validating YAML files with YAMLDotNet...");
+    Console.WriteLine("► Validating YAML files with YAMLDotNet");
     try
     {
       foreach (string manifest in Directory.GetFiles(manifestsPath, "*.yaml", SearchOption.AllDirectories))
@@ -51,14 +51,14 @@ class KSailLintCommandHandler()
         }
         catch (Exception)
         {
-          Console.WriteLine($"✕ Validation failed for {manifest}...");
+          Console.WriteLine($"✕ Validation failed for {manifest}");
           return Task.FromResult(1);
         }
       }
     }
     catch (Exception e)
     {
-      Console.WriteLine($"✕ An error occurred while validating YAML files: {e.Message}...");
+      Console.WriteLine($"✕ An error occurred while validating YAML files: {e.Message}");
       return Task.FromResult(1);
     }
     return Task.FromResult(0);
@@ -76,22 +76,22 @@ class KSailLintCommandHandler()
     string clusterPath = $"{manifestsPath}/clusters/{clusterName}";
     if (!Directory.Exists(clusterPath))
     {
-      Console.WriteLine($"✕ Cluster '{clusterName}' not found in path '{clusterPath}'...");
+      Console.WriteLine($"✕ Cluster '{clusterName}' not found in path '{clusterPath}'");
       return 1;
     }
-    Console.WriteLine($"► Validating cluster '{clusterName}' with Kubeconform...");
+    Console.WriteLine($"► Validating cluster '{clusterName}' with Kubeconform");
     foreach (string manifest in Directory.GetFiles(clusterPath, "*.yaml", SearchOption.AllDirectories))
     {
       if (await KubeconformCLIWrapper.RunAsync(kubeconformFlags, kubeconformConfig, manifest, token) != 0)
       {
-        Console.WriteLine($"✕ Validation failed for '{manifest}'...");
+        Console.WriteLine($"✕ Validation failed for '{manifest}'");
         return 1;
       }
     }
 
     string[] kustomizeFlags = ["--load-restrictor=LoadRestrictionsNone"];
     const string kustomization = "kustomization.yaml";
-    Console.WriteLine("► Validating kustomizations with Kustomize and Kubeconform...");
+    Console.WriteLine("► Validating kustomizations with Kustomize and Kubeconform");
     foreach (string manifest in Directory.GetFiles(manifestsPath, kustomization, SearchOption.AllDirectories))
     {
       string kustomizationPath = manifest.Replace(kustomization, "", StringComparison.Ordinal);
@@ -101,7 +101,7 @@ class KSailLintCommandHandler()
       var (ExitCode, _) = await CLIRunner.RunAsync(cmd, token);
       if (ExitCode != 0)
       {
-        Console.WriteLine($"✕ Validation failed for '{kustomizationPath}'...");
+        Console.WriteLine($"✕ Validation failed for '{kustomizationPath}'");
         return 1;
       }
     }

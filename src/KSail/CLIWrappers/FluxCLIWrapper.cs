@@ -93,13 +93,13 @@ class FluxCLIWrapper()
     var (ExitCode, _) = await CLIRunner.RunAsync(pushCmd, token);
     if (ExitCode != 0)
     {
-      Console.WriteLine($"✕ Failed to push manifests to {ociUrl}...");
+      Console.WriteLine($"✕ Failed to push manifests to {ociUrl}");
       return 1;
     }
     (ExitCode, _) = await CLIRunner.RunAsync(tagCmd, token);
     if (ExitCode != 0)
     {
-      Console.WriteLine("✕ Failed to tag manifests with 'latest' tag...");
+      Console.WriteLine("✕ Failed to tag manifests with 'latest' tag");
       return 1;
     }
     return 0;

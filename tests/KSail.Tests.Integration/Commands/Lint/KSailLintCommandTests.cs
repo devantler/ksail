@@ -8,6 +8,7 @@ namespace KSail.Tests.Integration.Commands.Lint;
 /// <summary>
 /// Tests for the <see cref="KSailLintCommand"/> class.
 /// </summary>
+[Collection("KSail.Tests.Integration")]
 public class KSailLintCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>

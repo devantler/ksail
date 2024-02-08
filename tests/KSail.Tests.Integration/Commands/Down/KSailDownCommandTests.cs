@@ -7,6 +7,7 @@ namespace KSail.Tests.Integration.Commands.Down;
 /// <summary>
 /// Tests for the <see cref="KSailDownCommand"/> class.
 /// </summary>
+[Collection("KSail.Tests.Integration")]
 public class KSailDownCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>

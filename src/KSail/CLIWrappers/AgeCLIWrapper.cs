@@ -21,74 +21,39 @@ class AgeCLIWrapper()
     }
   }
 
-  internal static async Task<int> GenerateKeyAsync(CancellationToken token)
+  internal static async Task<int> GenerateKeyAsync(string keyName, bool shouldOverwrite, CancellationToken token)
   {
-    if (!Directory.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail"))
+    keyName = keyName.ToLowerInvariant();
+    if (File.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/age/{keyName}.agekey"))
     {
-      _ = Directory.CreateDirectory($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail");
+      if (!shouldOverwrite)
+      {
+        Console.WriteLine($"✕ Key '{keyName}' already exists. Use --overwrite to replace it.");
+        return 1;
+      }
+      File.Delete($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/age/{keyName}.agekey");
     }
-    if (File.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/ksail_sops.agekey"))
-    {
-      File.Delete($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/ksail_sops.agekey");
-    }
-    var cmd = AgeKeygen.WithArguments($"-o {Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/ksail_sops.agekey");
+    _ = Directory.CreateDirectory($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/age");
+    var cmd = AgeKeygen.WithArguments($"-o {Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/age/{keyName}.agekey");
     var (ExitCode, Result) = await CLIRunner.RunAsync(cmd, token, silent: true);
     if (ExitCode != 0)
     {
       Console.WriteLine($"✕ Failed to generate key with error: {Result.Last()}");
-      Console.WriteLine(Result.Last());
       return 1;
     }
-    //TODO: Move the WriteKeysToDefaultKeysTxt method to a Helper class, and call it parent classes.
-    WriteKeysToDefaultKeysTxt();
     return 0;
   }
 
-  static void WriteKeysToDefaultKeysTxt()
+  internal static async Task<int> ShowKeyAsync(string clusterName, CancellationToken token)
   {
-    string ksailSopsAgeKey = $"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/ksail_sops.agekey";
-    if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+    clusterName = clusterName.ToLowerInvariant();
+    if (!File.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/age/{clusterName}.agekey"))
     {
-      string keysTxtFolder = $"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/Library/Application Support/sops/age";
-      string keysTxt = $"{keysTxtFolder}/keys.txt";
-      AppendOrReplaceKey(ksailSopsAgeKey, keysTxtFolder, keysTxt);
+      Console.WriteLine($"✕ Key '{clusterName}' not found");
+      return 1;
     }
-    else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-    {
-      string keysTxtFolder = $"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/sops/age";
-      string keysTxt = $"{keysTxtFolder}/keys.txt";
-      AppendOrReplaceKey(ksailSopsAgeKey, keysTxtFolder, keysTxt);
-    }
-  }
-
-  //TODO: Move the AppendOrReplaceKey method to a Helper class along with the WriteKeysToDefaultKeysTxt method.
-  static void AppendOrReplaceKey(string ksailSopsAgeKey, string keysTxtFolder, string keysTxt)
-  {
-    if (!Directory.Exists(keysTxtFolder))
-    {
-      _ = Directory.CreateDirectory(keysTxtFolder);
-    }
-    if (!File.Exists(keysTxt))
-    {
-      string[] lines = File.ReadAllLines(ksailSopsAgeKey);
-      lines = lines.Prepend("# KSAIL_SOPS_KEY start").ToArray()
-        .Append("# KSAIL_SOPS_KEY end").ToArray();
-      File.WriteAllLines(keysTxt, lines);
-    }
-    else if (!File.ReadAllText(keysTxt).Contains("# KSAIL_SOPS_KEY start"))
-    {
-      string[] lines = File.ReadAllLines(keysTxt);
-      lines = [.. lines, "# KSAIL_SOPS_KEY start", File.ReadAllText(ksailSopsAgeKey), "# KSAIL_SOPS_KEY end"];
-      File.WriteAllLines(keysTxt, lines);
-    }
-    else
-    {
-      string[] lines = File.ReadAllLines(keysTxt);
-      int startIndex = lines.ToList().FindIndex(line => line.Contains("# KSAIL_SOPS_KEY start"));
-      int endIndex = lines.ToList().FindIndex(line => line.Contains("# KSAIL_SOPS_KEY end"));
-      lines = lines.Where((_, index) => index <= startIndex || index >= endIndex).ToArray();
-      lines = lines.Take(startIndex + 1).Concat(File.ReadAllLines(ksailSopsAgeKey)).Concat(lines.Skip(startIndex + 1)).ToArray();
-      File.WriteAllLines(keysTxt, lines);
-    }
+    string key = await File.ReadAllTextAsync($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/age/{clusterName}.agekey", token);
+    Console.WriteLine(key);
+    return 0;
   }
 }

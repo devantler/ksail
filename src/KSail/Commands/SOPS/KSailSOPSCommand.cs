@@ -1,4 +1,6 @@
 using System.CommandLine;
+using System.CommandLine.Parsing;
+using KSail.Arguments;
 using KSail.Commands.SOPS.Handlers;
 using KSail.Commands.SOPS.Options;
 
@@ -6,7 +8,9 @@ namespace KSail.Commands.SOPS;
 
 sealed class KSailSOPSCommand : Command
 {
+  readonly ClusterNameArgument _clusterNameArgument = new();
   readonly GenerateKeyOption _generateKeyOption = new();
+  readonly ShowKeyOption _showKeyOption = new();
   readonly ShowPublicKeyOption _showPublicKeyOption = new();
   readonly ShowPrivateKeyOption _showPrivateKeyOption = new();
   readonly EncryptOption _encryptOption = new();
@@ -15,7 +19,9 @@ sealed class KSailSOPSCommand : Command
   readonly ExportOption _exportOption = new();
   internal KSailSOPSCommand() : base("sops", "Manage SOPS key")
   {
+    AddArgument(_clusterNameArgument);
     AddOption(_generateKeyOption);
+    AddOption(_showKeyOption);
     AddOption(_showPublicKeyOption);
     AddOption(_showPrivateKeyOption);
     AddOption(_encryptOption);
@@ -25,11 +31,11 @@ sealed class KSailSOPSCommand : Command
 
     AddValidator(result =>
     {
-      if (result.Children.Count == 0)
+      if (!result.Children.OfType<OptionResult>().Any())
       {
         result.ErrorMessage = "No option specified";
       }
-      else if (result.Children.Count > 1)
+      else if (result.Children.OfType<OptionResult>().Count() > 1)
       {
         result.ErrorMessage = "More than one option specified";
       }
@@ -37,7 +43,9 @@ sealed class KSailSOPSCommand : Command
 
     this.SetHandler(async (context) =>
     {
+      string clusterName = context.ParseResult.GetValueForArgument(_clusterNameArgument);
       bool generateKey = context.ParseResult.GetValueForOption(_generateKeyOption);
+      bool showKey = context.ParseResult.GetValueForOption(_showKeyOption);
       bool showPublicKey = context.ParseResult.GetValueForOption(_showPublicKeyOption);
       bool showPrivateKey = context.ParseResult.GetValueForOption(_showPrivateKeyOption);
       string encrypt = context.ParseResult.GetValueForOption(_encryptOption) ?? "";
@@ -48,7 +56,8 @@ sealed class KSailSOPSCommand : Command
       var token = context.GetCancellationToken();
       try
       {
-        context.ExitCode = await KSailSOPSCommandHandler.HandleAsync(generateKey, showPublicKey, showPrivateKey, encrypt, decrypt, import, export, token);
+        var handler = new KSailSOPSCommandHandler();
+        context.ExitCode = await handler.HandleAsync(clusterName, generateKey, showKey, showPublicKey, showPrivateKey, encrypt, decrypt, import, export, token);
       }
       catch (OperationCanceledException)
       {
