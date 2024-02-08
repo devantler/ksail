@@ -14,7 +14,7 @@ sealed class KubernetesProvisioner : IContainerOrchestratorProvisioner, IDisposa
     var kubeConfig = KubernetesClientConfiguration.LoadKubeConfig();
     var config = KubernetesClientConfiguration.BuildConfigFromConfigObject(kubeConfig, context);
     _kubernetesClient = new Kubernetes(config);
-    Console.WriteLine($"🌐 Creating '{name}' namespace...");
+    Console.WriteLine($"🌐 Creating '{name}' namespace");
     var fluxSystemNamespace = new V1Namespace
     {
       ApiVersion = "v1",
@@ -25,7 +25,7 @@ sealed class KubernetesProvisioner : IContainerOrchestratorProvisioner, IDisposa
       }
     };
     _ = await _kubernetesClient.CreateNamespaceAsync(fluxSystemNamespace);
-    Console.WriteLine("✔ Namespace created...");
+    Console.WriteLine("✔ Namespace created");
     Console.WriteLine();
   }
 

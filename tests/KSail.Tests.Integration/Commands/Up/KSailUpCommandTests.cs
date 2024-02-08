@@ -13,6 +13,7 @@ namespace KSail.Tests.Integration.Commands.Up;
 /// <summary>
 /// Tests for the <see cref="KSailUpCommand"/> class.
 /// </summary>
+[Collection("KSail.Tests.Integration")]
 public class KSailUpCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
@@ -121,11 +122,11 @@ public class KSailUpCommandTests : IAsyncLifetime
     var ksailUpdateCommand = new KSailUpdateCommand();
 
     //Act
-    if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey")))
+    if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", "ksail.agekey")))
     {
       _ = await ksailSOPSCommand.InvokeAsync("--generate-key");
     }
-    string key = await File.ReadAllTextAsync(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey"));
+    string key = await File.ReadAllTextAsync(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", "ksail.agekey"));
     Environment.SetEnvironmentVariable("KSAIL_SOPS_KEY", key);
     int initExitCode = await ksailInitCommand.InvokeAsync("ksail");
     int upExitCode = await ksailUpCommand.InvokeAsync("ksail");

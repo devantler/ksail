@@ -11,7 +11,7 @@ sealed class DockerProvisioner : IContainerEngineProvisioner
 
   public async Task<int> CheckReadyAsync(CancellationToken token)
   {
-    Console.WriteLine("🐳 Checking Docker is running...");
+    Console.WriteLine("🐳 Checking Docker is running");
     try
     {
       await _dockerClient.System.PingAsync(token);
@@ -21,7 +21,7 @@ sealed class DockerProvisioner : IContainerEngineProvisioner
       Console.WriteLine("✕ Could not connect to Docker. Is Docker running?");
       return 1;
     }
-    Console.WriteLine("✔ Docker is running...");
+    Console.WriteLine("✔ Docker is running");
     Console.WriteLine();
     return 0;
   }
@@ -30,11 +30,11 @@ sealed class DockerProvisioner : IContainerEngineProvisioner
   {
     if (proxyUrl != null)
     {
-      Console.WriteLine($"► Creating pull-through registry '{name}' on port '{port}' for '{proxyUrl}'...");
+      Console.WriteLine($"► Creating pull-through registry '{name}' on port '{port}' for '{proxyUrl}'");
     }
     else
     {
-      Console.WriteLine($"► Creating registry '{name}' on port '{port}'...");
+      Console.WriteLine($"► Creating registry '{name}' on port '{port}'");
     }
     var (ExitCode, RegistryExists) = await GetContainerIdAsync(name, token);
     if (ExitCode != 0)
@@ -44,7 +44,7 @@ sealed class DockerProvisioner : IContainerEngineProvisioner
 
     if (RegistryExists != null)
     {
-      Console.WriteLine($"✔ Registry '{name}' already exists. Skipping...");
+      Console.WriteLine($"✔ Registry '{name}' already exists. Skipping");
       return 0;
     }
     CreateContainerResponse registry;
@@ -87,7 +87,7 @@ sealed class DockerProvisioner : IContainerEngineProvisioner
     }
     catch (DockerApiException)
     {
-      Console.WriteLine($"✕ Could not create registry '{name}'...");
+      Console.WriteLine($"✕ Could not create registry '{name}'");
       return 1;
     }
     return 0;
@@ -102,7 +102,7 @@ sealed class DockerProvisioner : IContainerEngineProvisioner
 
     if (string.IsNullOrEmpty(ContainerId))
     {
-      Console.WriteLine($"✕ Could not find registry '{name}'. Skipping...");
+      Console.WriteLine($"✕ Could not find registry '{name}'. Skipping");
     }
     else
     {

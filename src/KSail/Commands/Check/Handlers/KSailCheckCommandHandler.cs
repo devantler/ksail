@@ -13,7 +13,7 @@ class KSailCheckCommandHandler()
 
   internal async Task<int> HandleAsync(string context, int timeout, CancellationToken token, string? kubeconfig = null)
   {
-    Console.WriteLine("👀 Checking the status of the cluster...");
+    Console.WriteLine("👀 Checking the status of the cluster");
     var kubernetesClient = (kubeconfig is not null) switch
     {
       true => new Kubernetes(KubernetesClientConfiguration.BuildConfigFromConfigFile(kubeconfig)),
@@ -60,7 +60,7 @@ class KSailCheckCommandHandler()
           HandleReadyStatus(kustomizationName);
           break;
         default:
-          Console.WriteLine($"◎ Waiting for kustomization '{kustomizationName}' to be ready...");
+          Console.WriteLine($"◎ Waiting for kustomization '{kustomizationName}' to be ready");
           Console.WriteLine($"  Current status: {statusConditionType}");
           foreach (var condition in kustomization?.Status.Conditions ?? Enumerable.Empty<V1CustomResourceDefinitionCondition>())
           {
@@ -75,7 +75,7 @@ class KSailCheckCommandHandler()
 
   void HandleReadyStatus(string kustomizationName)
   {
-    Console.WriteLine($"✔ Kustomization '{kustomizationName}' is ready! Resetting timer...");
+    Console.WriteLine($"✔ Kustomization '{kustomizationName}' is ready! Resetting timer");
     _ = _successFullKustomizations.Add(kustomizationName);
     _stopwatch.Restart();
   }
