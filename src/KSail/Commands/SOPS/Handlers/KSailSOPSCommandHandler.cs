@@ -34,7 +34,7 @@ class KSailSOPSCommandHandler() : IDisposable
 
   static async Task<int> HandleGenerateKey(string clusterName, CancellationToken token)
   {
-    Console.WriteLine("🔐 Generating new SOPS key...");
+    Console.WriteLine("🔐 Generating new SOPS key");
     if (await AgeCLIWrapper.GenerateKeyAsync(clusterName, true, token) != 0)
     {
       Console.WriteLine("✕ SOPS key generation failed");
@@ -72,7 +72,7 @@ class KSailSOPSCommandHandler() : IDisposable
 
   static async Task<int> HandleDecrypt(string decrypt, CancellationToken token)
   {
-    Console.WriteLine($"🔐 Decrypting '{decrypt}'...");
+    Console.WriteLine($"🔐 Decrypting '{decrypt}'");
     if (await SOPSCLIWrapper.DecryptAsync(decrypt, token) != 0)
     {
       Console.WriteLine("✕ SOPS decryption failed");
@@ -84,7 +84,7 @@ class KSailSOPSCommandHandler() : IDisposable
 
   static async Task<int> HandleEncrypt(string encrypt, CancellationToken token)
   {
-    Console.WriteLine($"🔐 Encrypting '{encrypt}'...");
+    Console.WriteLine($"🔐 Encrypting '{encrypt}'");
     if (await SOPSCLIWrapper.EncryptAsync(encrypt, token) != 0)
     {
       Console.WriteLine("✕ SOPS encryption failed");
@@ -100,12 +100,12 @@ class KSailSOPSCommandHandler() : IDisposable
     string? contents;
     if (File.Exists(import))
     {
-      Console.WriteLine($"🔐 Importing SOPS key from '{import}'...");
+      Console.WriteLine($"🔐 Importing SOPS key from '{import}'");
       contents = await File.ReadAllTextAsync(import, token);
     }
     else
     {
-      Console.WriteLine("🔐 Importing SOPS key from stdin...");
+      Console.WriteLine("🔐 Importing SOPS key from stdin");
       contents = import;
     }
     await File.WriteAllTextAsync(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey"), contents, token);
@@ -116,7 +116,7 @@ class KSailSOPSCommandHandler() : IDisposable
   static async Task<int> HandleExport(string clusterName, string export, CancellationToken token)
   {
     clusterName = clusterName.ToLowerInvariant();
-    Console.WriteLine($"🔐 Exporting SOPS key to '{export}'...");
+    Console.WriteLine($"🔐 Exporting SOPS key to '{export}'");
     if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", $"{clusterName}.agekey")))
     {
       Console.WriteLine("✕ SOPS key not found");

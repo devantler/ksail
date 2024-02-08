@@ -49,7 +49,7 @@ class KSailUpCommandHandler(
       return 1;
     }
 
-    Console.WriteLine("🧮 Creating pull-through registries...");
+    Console.WriteLine("🧮 Creating pull-through registries");
     if (await _containerEngineProvisioner.CreateRegistryAsync("proxy-docker.io", 5001, token, new Uri("https://registry-1.docker.io")) != 0 ||
       await _containerEngineProvisioner.CreateRegistryAsync("proxy-registry.k8s.io", 5002, token, new Uri("https://registry.k8s.io")) != 0 ||
       await _containerEngineProvisioner.CreateRegistryAsync("proxy-gcr.io", 5003, token, new Uri("https://gcr.io")) != 0 ||
@@ -62,7 +62,7 @@ class KSailUpCommandHandler(
     }
     Console.WriteLine();
 
-    Console.WriteLine("🧮 Creating OCI registry...");
+    Console.WriteLine("🧮 Creating OCI registry");
     if (await _containerEngineProvisioner.CreateRegistryAsync("manifests", 5050, token) != 0)
     {
       return 1;
@@ -84,7 +84,7 @@ class KSailUpCommandHandler(
 
     if (!noSOPS)
     {
-      Console.WriteLine("🔐 Adding SOPS key...");
+      Console.WriteLine("🔐 Adding SOPS key");
       var sopsProvisioner = new LocalSOPSProvisioner();
       if (await sopsProvisioner.ProvisionAsync(KeyType.Age, clusterName, context, token) != 0)
       {

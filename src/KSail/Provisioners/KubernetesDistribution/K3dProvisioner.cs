@@ -8,7 +8,7 @@ sealed class K3dProvisioner() : IKubernetesDistributionProvisioner
   public Task<KubernetesDistributionType> GetKubernetesDistributionTypeAsync() => Task.FromResult(KubernetesDistributionType.K3d);
   public async Task<int> ProvisionAsync(string clusterName, string configPath, CancellationToken token)
   {
-    Console.WriteLine($"🚀 Provisioning K3d cluster '{clusterName}'...");
+    Console.WriteLine($"🚀 Provisioning K3d cluster '{clusterName}'");
     if (await K3dCLIWrapper.CreateClusterAsync(clusterName, configPath, token) != 0)
     {
       Console.WriteLine($"✕ Failed to provision K3d cluster '{clusterName}'");
@@ -20,7 +20,7 @@ sealed class K3dProvisioner() : IKubernetesDistributionProvisioner
 
   public Task<int> DeprovisionAsync(string clusterName, CancellationToken token)
   {
-    Console.WriteLine($"🔥 Destroying K3d cluster '{clusterName}'...");
+    Console.WriteLine($"🔥 Destroying K3d cluster '{clusterName}'");
     return K3dCLIWrapper.DeleteClusterAsync(clusterName, token);
   }
 

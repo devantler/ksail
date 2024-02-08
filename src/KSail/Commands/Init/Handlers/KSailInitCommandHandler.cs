@@ -8,7 +8,7 @@ class KSailInitCommandHandler : IDisposable
   readonly LocalSOPSProvisioner _localSOPSProvisioner = new();
   internal async Task<int> HandleAsync(string clusterName, string manifests, CancellationToken token)
   {
-    Console.WriteLine($"📁 Initializing a new K8s GitOps project named '{clusterName}'...");
+    Console.WriteLine($"📁 Initializing a new K8s GitOps project named '{clusterName}'");
     string clusterDirectory = Path.Combine(manifests, "clusters", clusterName);
     if (Directory.Exists(clusterDirectory))
     {
@@ -47,7 +47,7 @@ class KSailInitCommandHandler : IDisposable
 
   static string CreateFluxSystemDirectory(string clusterDirectory)
   {
-    Console.WriteLine($"✚ Creating flux-system directory '{clusterDirectory}/flux-system'...");
+    Console.WriteLine($"✚ Creating flux-system directory '{clusterDirectory}/flux-system'");
     string fluxDirectory = Path.Combine(clusterDirectory, "flux-system");
     _ = Directory.CreateDirectory(fluxDirectory) ?? throw new InvalidOperationException($"🚨 Could not create the flux directory at {fluxDirectory}.");
     return fluxDirectory;
@@ -56,14 +56,14 @@ class KSailInitCommandHandler : IDisposable
   static string CreateClusterDirectory(string clusterName, string manifests)
   {
     string clusterDirectory = Path.Combine(manifests, "clusters", clusterName);
-    Console.WriteLine($"✚ Creating cluster directory '{clusterDirectory}'...");
+    Console.WriteLine($"✚ Creating cluster directory '{clusterDirectory}'");
     _ = Directory.CreateDirectory(clusterDirectory) ?? throw new InvalidOperationException($"🚨 Could not create the cluster directory at {clusterDirectory}.");
     return clusterDirectory;
   }
 
   static async Task CreateFluxKustomizationsAsync(string clusterName, string clusterDirectory)
   {
-    Console.WriteLine($"✚ Creating flux infrastructure kustomization '{clusterDirectory}/flux-system/infrastructure.yaml'...");
+    Console.WriteLine($"✚ Creating flux infrastructure kustomization '{clusterDirectory}/flux-system/infrastructure.yaml'");
     string fluxDirectory = CreateFluxSystemDirectory(clusterDirectory);
     string infrastructureYamlPath = Path.Combine(fluxDirectory, "infrastructure.yaml");
     string infrastructureYamlContent = $"""
@@ -124,7 +124,7 @@ class KSailInitCommandHandler : IDisposable
     await infrastructureYamlFile.WriteAsync(Encoding.UTF8.GetBytes(infrastructureYamlContent));
     await infrastructureYamlFile.FlushAsync();
 
-    Console.WriteLine($"✚ Creating flux variables kustomization '{clusterDirectory}/flux-system/variables.yaml'...");
+    Console.WriteLine($"✚ Creating flux variables kustomization '{clusterDirectory}/flux-system/variables.yaml'");
     string variablesYamlContent = $"""
       apiVersion: kustomize.toolkit.fluxcd.io/v1
       kind: Kustomization
@@ -152,7 +152,7 @@ class KSailInitCommandHandler : IDisposable
 
   static async Task CreateKustomizationsAsync(string clusterDirectory)
   {
-    Console.WriteLine($"✚ Creating infrastructure-services kustomization '{clusterDirectory}/infrastructure/services/kustomization.yaml'...");
+    Console.WriteLine($"✚ Creating infrastructure-services kustomization '{clusterDirectory}/infrastructure/services/kustomization.yaml'");
     string infrastructureServicesDirectory = Path.Combine(clusterDirectory, "infrastructure/services");
     _ = Directory.CreateDirectory(infrastructureServicesDirectory) ?? throw new InvalidOperationException($"🚨 Could not create the infrastructure directory at {infrastructureServicesDirectory}.");
     const string infrastructureKustomizationContent = """
@@ -167,7 +167,7 @@ class KSailInitCommandHandler : IDisposable
     await infrastructureServicesKustomizationFile.WriteAsync(Encoding.UTF8.GetBytes(infrastructureKustomizationContent));
     await infrastructureServicesKustomizationFile.FlushAsync();
 
-    Console.WriteLine($"✚ Creating infrastructure-configs kustomization '{clusterDirectory}/infrastructure/configs/kustomization.yaml'...");
+    Console.WriteLine($"✚ Creating infrastructure-configs kustomization '{clusterDirectory}/infrastructure/configs/kustomization.yaml'");
     string infrastructureConfigsDirectory = Path.Combine(clusterDirectory, "infrastructure/configs");
     _ = Directory.CreateDirectory(infrastructureConfigsDirectory) ?? throw new InvalidOperationException($"🚨 Could not create the infrastructure directory at {infrastructureConfigsDirectory}.");
     const string infrastructureConfigsKustomizationContent = """
@@ -182,7 +182,7 @@ class KSailInitCommandHandler : IDisposable
     await infrastructureConfigsKustomizationFile.WriteAsync(Encoding.UTF8.GetBytes(infrastructureConfigsKustomizationContent));
     await infrastructureConfigsKustomizationFile.FlushAsync();
 
-    Console.WriteLine($"✚ Creating variables kustomization '{clusterDirectory}/variables/kustomization.yaml'...");
+    Console.WriteLine($"✚ Creating variables kustomization '{clusterDirectory}/variables/kustomization.yaml'");
     string variablesDirectory = Path.Combine(clusterDirectory, "variables");
     _ = Directory.CreateDirectory(variablesDirectory) ?? throw new InvalidOperationException($"🚨 Could not create the variables directory at {variablesDirectory}.");
     const string variablesKustomizationContent = """
@@ -198,7 +198,7 @@ class KSailInitCommandHandler : IDisposable
     await variablesKustomizationFile.WriteAsync(Encoding.UTF8.GetBytes(variablesKustomizationContent));
     await variablesKustomizationFile.FlushAsync();
 
-    Console.WriteLine($"✚ Creating variables file '{clusterDirectory}/variables/variables.yaml'...");
+    Console.WriteLine($"✚ Creating variables file '{clusterDirectory}/variables/variables.yaml'");
     const string variablesYamlContent = """
       apiVersion: v1
       kind: ConfigMap
@@ -214,7 +214,7 @@ class KSailInitCommandHandler : IDisposable
     await variablesYamlFile.WriteAsync(Encoding.UTF8.GetBytes(variablesYamlContent));
     await variablesYamlFile.FlushAsync();
 
-    Console.WriteLine($"✚ Creating variables-sensitive file '{clusterDirectory}/variables/variables-sensitive.sops.yaml'...");
+    Console.WriteLine($"✚ Creating variables-sensitive file '{clusterDirectory}/variables/variables-sensitive.sops.yaml'");
     const string variablesSensitiveYamlContent = """
       # You need to encrypt this file with SOPS manually.
       # ksail sops --encrypt variables-sensitive.sops.yaml
@@ -232,7 +232,7 @@ class KSailInitCommandHandler : IDisposable
 
   static async Task CreateConfigAsync(string clusterName)
   {
-    Console.WriteLine($"✚ Creating config file './{clusterName}-k3d-config.yaml'...");
+    Console.WriteLine($"✚ Creating config file './{clusterName}-k3d-config.yaml'");
     string configPath = Path.Combine(Directory.GetCurrentDirectory(), $"{clusterName}-k3d-config.yaml");
     string configContent = $"""
       apiVersion: k3d.io/v1alpha5

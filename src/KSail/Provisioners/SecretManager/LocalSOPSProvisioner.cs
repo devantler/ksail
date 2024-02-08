@@ -12,7 +12,7 @@ sealed class LocalSOPSProvisioner() : ISecretManagerProvisioner, IDisposable
     switch (keyType)
     {
       case KeyType.Age:
-        Console.WriteLine("► Provisioning Age key for SOPS...");
+        Console.WriteLine("► Provisioning Age key for SOPS");
         var (exitCode, result) = await GetPrivateKeyAsync(KeyType.Age, keyName, token);
         if (exitCode != 0)
         {
@@ -33,7 +33,7 @@ sealed class LocalSOPSProvisioner() : ISecretManagerProvisioner, IDisposable
     switch (keyType)
     {
       case KeyType.Age:
-        Console.WriteLine("► Generating new Age key for SOPS...");
+        Console.WriteLine("► Generating new Age key for SOPS");
         return AgeCLIWrapper.GenerateKeyAsync(keyName, true, token);
       default:
         throw new NotSupportedException($"🚨 Unsupported key type '{keyType}'");
@@ -79,7 +79,7 @@ sealed class LocalSOPSProvisioner() : ISecretManagerProvisioner, IDisposable
     switch (keyType)
     {
       case KeyType.Age:
-        Console.WriteLine("► Deleting Age key for SOPS...");
+        Console.WriteLine("► Deleting Age key for SOPS");
         if (File.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/age/{keyName}.agekey"))
         {
           File.Delete($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/age/{keyName}.agekey");

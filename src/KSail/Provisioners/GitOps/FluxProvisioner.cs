@@ -6,7 +6,7 @@ sealed class FluxProvisioner : IGitOpsProvisioner
 {
   public async Task<int> InstallAsync(string context, string sourceUrl, string path, CancellationToken token)
   {
-    Console.WriteLine("🔼 Checking Flux prerequisites are satisfied...");
+    Console.WriteLine("🔼 Checking Flux prerequisites are satisfied");
     if (await FluxCLIWrapper.CheckPrerequisitesAsync(context, token) != 0)
     {
       Console.WriteLine("✕ Flux prerequisites are not satisfied");
@@ -14,7 +14,7 @@ sealed class FluxProvisioner : IGitOpsProvisioner
     }
     Console.WriteLine();
 
-    Console.WriteLine("🔼 Installing Flux...");
+    Console.WriteLine("🔼 Installing Flux");
     if (await FluxCLIWrapper.InstallAsync(context, token) != 0)
     {
       Console.WriteLine("✕ Failed to install Flux");
@@ -22,7 +22,7 @@ sealed class FluxProvisioner : IGitOpsProvisioner
     }
     Console.WriteLine();
 
-    Console.WriteLine("🔼 Creating Flux OCI source...");
+    Console.WriteLine("🔼 Creating Flux OCI source");
     if (await FluxCLIWrapper.CreateSourceOCIAsync(context, sourceUrl, token) != 0)
     {
       Console.WriteLine("✕ Failed to create Flux OCI source");
@@ -30,7 +30,7 @@ sealed class FluxProvisioner : IGitOpsProvisioner
     }
     Console.WriteLine();
 
-    Console.WriteLine("🔼 Creating Flux kustomization...");
+    Console.WriteLine("🔼 Creating Flux kustomization");
     if (await FluxCLIWrapper.CreateKustomizationAsync(context, path, token) != 0)
     {
       Console.WriteLine("✕ Failed to create Flux kustomization");
@@ -42,7 +42,7 @@ sealed class FluxProvisioner : IGitOpsProvisioner
 
   public async Task<int> ReconcileAsync(string context, CancellationToken token)
   {
-    Console.WriteLine("🔄 Reconciling Flux...");
+    Console.WriteLine("🔄 Reconciling Flux");
     if (await FluxCLIWrapper.ReconcileAsync(context, token) != 0)
     {
       Console.WriteLine("✕ Failed to reconcile Flux");
@@ -53,7 +53,7 @@ sealed class FluxProvisioner : IGitOpsProvisioner
   }
   public async Task<int> PushManifestsAsync(string ociUrl, string manifestsPath, CancellationToken token)
   {
-    Console.WriteLine("📥 Pushing manifests...");
+    Console.WriteLine("📥 Pushing manifests");
     if (await FluxCLIWrapper.PushManifestsAsync(ociUrl, manifestsPath, token) != 0)
     {
       return 1;
