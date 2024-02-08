@@ -38,6 +38,7 @@ class KSailUpCommandHandler(
     if (Result)
     {
       var downHandler = new KSailDownCommandHandler(_containerEngineProvisioner, _kubernetesDistributionProvisioner);
+      Console.WriteLine($"🔥 Destroying cluster '{clusterName}'");
       if (await downHandler.HandleAsync(clusterName, token) != 0)
       {
         return 1;
@@ -74,6 +75,7 @@ class KSailUpCommandHandler(
       return 1;
     }
 
+    Console.WriteLine($"🚀 Provisioning cluster '{clusterName}'");
     if (await _kubernetesDistributionProvisioner.ProvisionAsync(clusterName, configPath, token) != 0)
     {
       return 1;
