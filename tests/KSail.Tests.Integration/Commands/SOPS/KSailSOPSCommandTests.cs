@@ -33,7 +33,27 @@ public class KSailSOPSCommandTests : IAsyncLifetime
   }
 
   /// <summary>
-  /// Tests that the 'ksail sops --show-public-key' command prints the public key.
+  /// Tests that the 'ksail sops ksail-sops --show-key' command prints the full key.
+  /// </summary>
+  [Fact]
+  public async Task KSailSOPSShowKey_PrintsFullKey()
+  {
+    //Arrange
+    var ksailSOPSCommand = new KSailSOPSCommand();
+
+    //Act
+    if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", "ksail-sops.agekey")))
+    {
+      _ = await ksailSOPSCommand.InvokeAsync("ksail-sops --generate-key");
+    }
+    int exitCode = await ksailSOPSCommand.InvokeAsync("ksail-sops --show-key");
+
+    //Assert
+    Assert.Equal(0, exitCode);
+  }
+
+  /// <summary>
+  /// Tests that the 'ksail sops ksail-sops --show-public-key' command prints the public key.
   /// </summary>
   [Fact]
   public async Task KSailSOPSShowPublicKey_PrintsPublicKey()
@@ -42,18 +62,18 @@ public class KSailSOPSCommandTests : IAsyncLifetime
     var ksailSOPSCommand = new KSailSOPSCommand();
 
     //Act
-    if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey")))
+    if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", "ksail-sops.agekey")))
     {
-      _ = await ksailSOPSCommand.InvokeAsync("--generate-key");
+      _ = await ksailSOPSCommand.InvokeAsync("ksail-sops --generate-key");
     }
-    int exitCode = await ksailSOPSCommand.InvokeAsync("--show-public-key");
+    int exitCode = await ksailSOPSCommand.InvokeAsync("ksail-sops --show-public-key");
 
     //Assert
     Assert.Equal(0, exitCode);
   }
 
   /// <summary>
-  /// Tests that the 'ksail sops --show-private-key' command prints the private key.
+  /// Tests that the 'ksail sops ksail-sops --show-private-key' command prints the private key.
   /// </summary>
   [Fact]
   public async Task KSailSOPSShowPrivateKey_PrintsPrivateKey()
@@ -62,18 +82,18 @@ public class KSailSOPSCommandTests : IAsyncLifetime
     var ksailSOPSCommand = new KSailSOPSCommand();
 
     //Act
-    if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey")))
+    if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", "ksail-sops.agekey")))
     {
-      _ = await ksailSOPSCommand.InvokeAsync("--generate-key");
+      _ = await ksailSOPSCommand.InvokeAsync("ksail-sops --generate-key");
     }
-    int exitCode = await ksailSOPSCommand.InvokeAsync("--show-private-key");
+    int exitCode = await ksailSOPSCommand.InvokeAsync("ksail-sops --show-private-key");
 
     //Assert
     Assert.Equal(0, exitCode);
   }
 
   /// <summary>
-  /// Tests that the 'ksail sops --import [key]' command imports the key.
+  /// Tests that the 'ksail sops ksail-sops --import [key]' command imports the key.
   /// </summary>
   [Fact]
   public async Task KSailSOPSImportKey_ImportsKey()
@@ -82,19 +102,19 @@ public class KSailSOPSCommandTests : IAsyncLifetime
     var ksailSOPSCommand = new KSailSOPSCommand();
 
     //Act
-    if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey")))
+    if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", "ksail-sops.agekey")))
     {
-      _ = await ksailSOPSCommand.InvokeAsync("--generate-key");
+      _ = await ksailSOPSCommand.InvokeAsync("ksail-sops --generate-key");
     }
-    string key = await File.ReadAllTextAsync(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey"));
-    int exitCode = await ksailSOPSCommand.InvokeAsync($"--import \"{key}\"");
+    string key = await File.ReadAllTextAsync(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", "ksail-sops.agekey"));
+    int exitCode = await ksailSOPSCommand.InvokeAsync($"ksail-sops --import \"{key}\"");
 
     //Assert
     Assert.Equal(0, exitCode);
   }
 
   /// <summary>
-  /// Tests that the 'ksail sops --import [keyPath]' command imports the key.
+  /// Tests that the 'ksail sops ksail-sops --import [keyPath]' command imports the key.
   /// </summary>
   [Fact]
   public async Task KSailSOPSImportKeyFromFile_ImportsKey()
@@ -103,18 +123,18 @@ public class KSailSOPSCommandTests : IAsyncLifetime
     var ksailSOPSCommand = new KSailSOPSCommand();
 
     //Act
-    if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey")))
+    if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", "ksail-sops.agekey")))
     {
-      _ = await ksailSOPSCommand.InvokeAsync("--generate-key");
+      _ = await ksailSOPSCommand.InvokeAsync("ksail-sops --generate-key");
     }
-    int exitCode = await ksailSOPSCommand.InvokeAsync($"--import {Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey")}");
+    int exitCode = await ksailSOPSCommand.InvokeAsync($"ksail-sops --import {Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", "ksail-sops.agekey")}");
 
     //Assert
     Assert.Equal(0, exitCode);
   }
 
   /// <summary>
-  /// Tests that the 'ksail sops --export [path]' command exports the key to the specified path.
+  /// Tests that the 'ksail sops ksail-sops --export [path]' command exports the key to the specified path.
   /// </summary>
   [Fact]
   public async Task KSailSOPSExportKey_ExportsKey()
@@ -123,24 +143,24 @@ public class KSailSOPSCommandTests : IAsyncLifetime
     var ksailSOPSCommand = new KSailSOPSCommand();
 
     //Act
-    if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "ksail_sops.agekey")))
+    if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", "ksail-sops.agekey")))
     {
-      _ = await ksailSOPSCommand.InvokeAsync("--generate-key");
+      _ = await ksailSOPSCommand.InvokeAsync("ksail-sops --generate-key");
     }
-    int exitCode = await ksailSOPSCommand.InvokeAsync("--export ./");
+    int exitCode = await ksailSOPSCommand.InvokeAsync("ksail-sops --export ./");
 
     //Assert
     Assert.Equal(0, exitCode);
-    Assert.True(File.Exists("./ksail_sops.agekey"));
-    string key = await File.ReadAllTextAsync("./ksail_sops.agekey");
+    Assert.True(File.Exists("./ksail-sops.agekey"));
+    string key = await File.ReadAllTextAsync("./ksail-sops.agekey");
     Assert.NotEmpty(key);
 
     //Cleanup
-    File.Delete("./ksail_sops.agekey");
+    File.Delete("./ksail-sops.agekey");
   }
 
   /// <summary>
-  /// Tests that the 'ksail sops --encrypt [path]' and 'ksail sops --decrypt [path]' commands successfully encrypts and decrypts a file.
+  /// Tests that the 'ksail sops ksail-sops --encrypt [path]' and 'ksail sops ksail-sops --decrypt [path]' commands successfully encrypts and decrypts a file.
   /// </summary>
   [Fact]
   public async Task KSailSOPSEncryptAndDecrypt_SuccessfullyEncryptsAndDecryptsFile()
@@ -150,9 +170,9 @@ public class KSailSOPSCommandTests : IAsyncLifetime
     var ksailSOPSCommand = new KSailSOPSCommand();
 
     // Act
-    int initExitCode = await ksailInitCommand.InvokeAsync("ksail");
-    int encryptExitCode = await ksailSOPSCommand.InvokeAsync("--encrypt k8s/clusters/ksail/variables/variables-sensitive.sops.yaml");
-    int decryptExitCode = await ksailSOPSCommand.InvokeAsync("--decrypt k8s/clusters/ksail/variables/variables-sensitive.sops.yaml");
+    int initExitCode = await ksailInitCommand.InvokeAsync("ksail-sops");
+    int encryptExitCode = await ksailSOPSCommand.InvokeAsync("ksail-sops --encrypt k8s/clusters/ksail-sops/variables/variables-sensitive.sops.yaml");
+    int decryptExitCode = await ksailSOPSCommand.InvokeAsync("ksail-sops --decrypt k8s/clusters/ksail-sops/variables/variables-sensitive.sops.yaml");
 
     // Assert
     Assert.Equal(0, initExitCode);

@@ -34,7 +34,7 @@ public class KSailLintCommandTests : IAsyncLifetime
   }
 
   /// <summary>
-  /// Tests that the 'ksail lint [clusterName]' command succeeds.
+  /// Tests that the 'ksail lint ksail-lint' command succeeds.
   /// </summary>
   [Fact]
   public async Task KSailLint_SucceedsAndLintsCluster()
@@ -44,8 +44,8 @@ public class KSailLintCommandTests : IAsyncLifetime
     var ksailLintCommand = new KSailLintCommand();
 
     //Act
-    int initExitCode = await ksailInitCommand.InvokeAsync("ksail");
-    int lintExitCode = await ksailLintCommand.InvokeAsync("ksail");
+    int initExitCode = await ksailInitCommand.InvokeAsync("ksail-lint");
+    int lintExitCode = await ksailLintCommand.InvokeAsync("ksail-lint");
 
     //Assert
     Assert.Equal(0, initExitCode);
