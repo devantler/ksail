@@ -43,4 +43,17 @@ class AgeCLIWrapper()
     }
     return 0;
   }
+
+  internal static async Task<int> ShowKeyAsync(string clusterName, CancellationToken token)
+  {
+    clusterName = clusterName.ToLowerInvariant();
+    if (!File.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/age/{clusterName}.agekey"))
+    {
+      Console.WriteLine($"✕ Key '{clusterName}' not found");
+      return 1;
+    }
+    string key = await File.ReadAllTextAsync($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/age/{clusterName}.agekey", token);
+    Console.WriteLine(key);
+    return 0;
+  }
 }
