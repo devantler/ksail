@@ -13,7 +13,6 @@ namespace KSail.Tests.Integration.Commands.Up;
 /// <summary>
 /// Tests for the <see cref="KSailUpCommand"/> class.
 /// </summary>
-[Collection("KSail.Tests.Integration")]
 public class KSailUpCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
@@ -50,7 +49,7 @@ public class KSailUpCommandTests : IAsyncLifetime
     var ksailUpCommand = new KSailUpCommand();
 
     //Act
-    int exitCode = await ksailUpCommand.InvokeAsync("ksail", console);
+    int exitCode = await ksailUpCommand.InvokeAsync("ksail-up", console);
 
     //Assert
     Assert.Equal(1, exitCode);
@@ -69,7 +68,7 @@ public class KSailUpCommandTests : IAsyncLifetime
     var ksailUpCommand = new KSailUpCommand();
 
     //Act
-    int initExitCode = await ksailInitCommand.InvokeAsync("ksail", console);
+    int initExitCode = await ksailInitCommand.InvokeAsync("ksail-up", console);
     int upExitCode = await ksailUpCommand.InvokeAsync("", console);
 
     //Assert
@@ -92,11 +91,11 @@ public class KSailUpCommandTests : IAsyncLifetime
     var ksailUpdateCommand = new KSailUpdateCommand();
 
     //Act
-    int initExitCode = await ksailInitCommand.InvokeAsync("ksail");
-    int upExitCode = await ksailUpCommand.InvokeAsync("ksail");
-    int stopExitCode = await ksailStopCommand.InvokeAsync("ksail");
-    int startExitCode = await ksailStartCommand.InvokeAsync("ksail");
-    int updateExitCode = await ksailUpdateCommand.InvokeAsync("ksail");
+    int initExitCode = await ksailInitCommand.InvokeAsync("ksail-up");
+    int upExitCode = await ksailUpCommand.InvokeAsync("ksail-up");
+    int stopExitCode = await ksailStopCommand.InvokeAsync("ksail-up");
+    int startExitCode = await ksailStartCommand.InvokeAsync("ksail-up");
+    int updateExitCode = await ksailUpdateCommand.InvokeAsync("ksail-up");
 
     //Assert
     Assert.Equal(0, initExitCode);
@@ -124,15 +123,15 @@ public class KSailUpCommandTests : IAsyncLifetime
     //Act
     if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", "ksail.agekey")))
     {
-      _ = await ksailSOPSCommand.InvokeAsync("--generate-key");
+      _ = await ksailSOPSCommand.InvokeAsync("ksail-up --generate-key");
     }
     string key = await File.ReadAllTextAsync(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", "ksail.agekey"));
     Environment.SetEnvironmentVariable("KSAIL_SOPS_KEY", key);
-    int initExitCode = await ksailInitCommand.InvokeAsync("ksail");
-    int upExitCode = await ksailUpCommand.InvokeAsync("ksail");
-    int stopExitCode = await ksailStopCommand.InvokeAsync("ksail");
-    int startExitCode = await ksailStartCommand.InvokeAsync("ksail");
-    int updateExitCode = await ksailUpdateCommand.InvokeAsync("ksail");
+    int initExitCode = await ksailInitCommand.InvokeAsync("ksail-up");
+    int upExitCode = await ksailUpCommand.InvokeAsync("ksail-up");
+    int stopExitCode = await ksailStopCommand.InvokeAsync("ksail-up");
+    int startExitCode = await ksailStartCommand.InvokeAsync("ksail-up");
+    int updateExitCode = await ksailUpdateCommand.InvokeAsync("ksail-up");
     Environment.SetEnvironmentVariable("KSAIL_SOPS_KEY", null);
 
     //Assert

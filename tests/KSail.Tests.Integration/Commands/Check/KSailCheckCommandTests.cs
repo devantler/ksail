@@ -8,7 +8,6 @@ namespace KSail.Tests.Integration.Commands.Check;
 /// <summary>
 /// Tests for the <see cref="KSailCheckCommand"/> class.
 /// </summary>
-[Collection("KSail.Tests.Integration")]
 public partial class KSailCheckCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>

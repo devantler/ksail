@@ -8,7 +8,6 @@ namespace KSail.Tests.Integration.Commands.Lint;
 /// <summary>
 /// Tests for the <see cref="KSailLintCommand"/> class.
 /// </summary>
-[Collection("KSail.Tests.Integration")]
 public class KSailLintCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
@@ -45,8 +44,8 @@ public class KSailLintCommandTests : IAsyncLifetime
     var ksailLintCommand = new KSailLintCommand();
 
     //Act
-    int initExitCode = await ksailInitCommand.InvokeAsync("ksail");
-    int lintExitCode = await ksailLintCommand.InvokeAsync("ksail");
+    int initExitCode = await ksailInitCommand.InvokeAsync("ksail-lint");
+    int lintExitCode = await ksailLintCommand.InvokeAsync("ksail-lint");
 
     //Assert
     Assert.Equal(0, initExitCode);

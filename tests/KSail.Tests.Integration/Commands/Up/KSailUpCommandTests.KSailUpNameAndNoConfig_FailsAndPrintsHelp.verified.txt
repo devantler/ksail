@@ -1,4 +1,4 @@
-﻿Config file 'ksail-k3d-config.yaml' does not exist
+﻿Manifests directory './k8s' does not exist
 
 Description:
   Provision a K8s cluster
