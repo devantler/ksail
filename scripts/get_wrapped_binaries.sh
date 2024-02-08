@@ -4,79 +4,45 @@ download_and_update() {
   binary=$2
   is_tarball=$3
   subfolder=$4
+  architectures=("darwin.amd64" "darwin.arm64" "linux.amd64" "linux.arm64")
 
-  # Login to GitHub to increase rate limit
+  echo "Fetching latest release information for $repo"
+  latest_release=$(curl -s https://api.github.com/repos/"$repo"/releases/latest)
+  version_latest=$(echo "$latest_release" | grep tag_name | cut -d '"' -f 4 | cut -d '/' -f 2)
+  version_current=$(grep -s "${binary}_version_" src/KSail/assets/binaries/requirements.txt | cut -d '_' -f 3 || echo "0.0.0")
 
-  version_latest=$(curl -s https://api.github.com/repos/"$repo"/releases/latest | grep tag_name | cut -d '"' -f 4)
-  if [ -z "$version_latest" ]; then
-    echo "No version of $binary found, this is usually due to a rate limit on the GitHub API"
-    return
-  else
-    # Check that version is semver vx.x.x or x.x.x
-    if ! [[ "$version_latest" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] && ! [[ "$version_latest" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-      version_latest=$(echo "$version_latest" | cut -d '/' -f 2)
-    fi
-  fi
-  if [ -f src/KSail/assets/binaries/requirements.txt ]; then
-    version_current=$(grep "${binary}_version_" src/KSail/assets/binaries/requirements.txt | cut -d '_' -f 3)
-  else
-    version_current="0.0.0"
-  fi
+  echo "Latest version: $version_latest"
+  echo "Current version: $version_current"
+
   if [ "$version_latest" != "$version_current" ]; then
-    echo "New version of $binary found: $version_latest"
-    echo "Current version of $binary: $version_current"
-    echo "Downloading new version of $binary"
-    for arch in darwin.amd64 darwin.arm64 linux.amd64 linux.arm64; do
-      # replace . in arch with -
+    echo "Updating $binary to version $version_latest"
+    for arch in "${architectures[@]}"; do
       arch=${arch//./-}
       arch_underscore=${arch//-/_}
-      echo "Checking if $binary for $arch exists"
-      local exists
-      exists=$(curl -s https://api.github.com/repos/"$repo"/releases/latest | grep browser_download_url | grep -E "(${arch}|${arch_underscore})" | cut -d '"' -f 4)
-      if [ -z "$exists" ]; then
-        echo "No $binary for $arch found"
-        continue
-      fi
-      if [ "$is_tarball" = true ]; then
-        curl -s https://api.github.com/repos/"$repo"/releases/latest | grep browser_download_url | grep -E "(${arch}|${arch_underscore})" | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/binaries/"${binary}"_"${arch}".tar.gz
-        echo "Extracting new version of $binary"
-        tar -xzf src/KSail/assets/binaries/"${binary}"_"${arch}".tar.gz -C src/KSail/assets/binaries/
-        if [ "$subfolder" == "" ]; then
-          mv -f src/KSail/assets/binaries/"${binary}" src/KSail/assets/binaries/"${binary}"_"${arch}"
+      exists=$(echo "$latest_release" | grep browser_download_url | grep -E "(${arch}|${arch_underscore})" | cut -d '"' -f 4)
+      if [ -n "$exists" ]; then
+        echo "Downloading $binary for architecture $arch"
+        curl -sL -o src/KSail/assets/binaries/"${binary}"_"${arch}""$([ "$is_tarball" = true ] && echo ".tar.gz")" "$exists"
+        if [ "$is_tarball" = true ]; then
+          echo "Extracting tarball"
+          tar -xzf src/KSail/assets/binaries/"${binary}"_"${arch}".tar.gz -C src/KSail/assets/binaries/
+          rm src/KSail/assets/binaries/"${binary}"_"${arch}".tar.gz
         fi
-        echo "Removing tar.gz files"
-        rm src/KSail/assets/binaries/"${binary}"_"${arch}".tar.gz
-      else
-        curl -s https://api.github.com/repos/"$repo"/releases/latest | grep browser_download_url | grep -E "(${arch}|${arch_underscore})" | cut -d '"' -f 4 | xargs curl -sL -o src/KSail/assets/binaries/"${binary}"_"${arch}"
+        if [ -n "$subfolder" ]; then
+          echo "Moving binary from subfolder $subfolder"
+          mv -f src/KSail/assets/binaries/"${subfolder}"/"$binary" src/KSail/assets/binaries/"${binary}"_"${arch}"
+          rm -rf src/KSail/assets/binaries/"${subfolder}"
+        else
+          mv -f src/KSail/assets/binaries/"$binary" src/KSail/assets/binaries/"${binary}"_"${arch}"
+        fi
+        chmod +x src/KSail/assets/binaries/"${binary}"_"${arch}"
       fi
-      if [ "$subfolder" != "" ]; then
-        echo "Unpackaging new version of $binary"
-        for file in src/KSail/assets/binaries/"${subfolder}"/*; do
-          fileName=$(basename "$file")
-          # if file is not LICENSE, rename to binary_arch
-          if [ "$fileName" == "$binary" ]; then
-            mv -f "$file" src/KSail/assets/binaries/"${fileName}"_"${arch}"
-          fi
-        done
-        rm -rf src/KSail/assets/binaries/"${subfolder}"
-      fi
-      echo "Making new version of $binary executable"
-      find src/KSail/assets/binaries -name "${binary}*_${arch}" -type f -exec chmod +x {} \;
     done
-    echo "Update version in requirements.txt"
-    if [ ! -f src/KSail/assets/binaries/requirements.txt ]; then
-      echo "${binary}_version_${version_latest}" >src/KSail/assets/binaries/requirements.txt
-    else
-      # Update the existing entry instead of adding a new one
-      # if macos
-      if [[ "$OSTYPE" == "darwin"* ]]; then
-        sed -i '' "s/^${binary}_version_.*/${binary}_version_${version_latest}/" src/KSail/assets/binaries/requirements.txt
-      else
-        sed -i "s/^${binary}_version_.*/${binary}_version_${version_latest}/" src/KSail/assets/binaries/requirements.txt
-      fi
-    fi
+    echo "Updating version in requirements.txt"
+    sed -i'' -e "s/^${binary}_version_.*/${binary}_version_${version_latest}/" src/KSail/assets/binaries/requirements.txt
   else
-    echo "No new version of $binary found"
+    echo "$binary is already up to date"
+    echo ""
   fi
 }
 
@@ -87,4 +53,5 @@ download_and_update "yannh/kubeconform" "kubeconform" true
 download_and_update "kubernetes-sigs/kustomize" "kustomize" true
 download_and_update "FiloSottile/age" "age-keygen" true "age"
 download_and_update "getsops/sops" "sops" false
+echo "Removing LICENSE files"
 find src/KSail/assets/binaries -name "LICENSE" -type f -delete
