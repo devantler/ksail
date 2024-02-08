@@ -59,7 +59,8 @@
 │       │   ├── ContainerEngine
 │       │   ├── ContainerOrchestrator
 │       │   ├── GitOps
-│       │   └── KubernetesDistribution
+│       │   ├── KubernetesDistribution
+│       │   └── SecretManager
 │       └── assets
 │           ├── binaries
 │           └── k3d
@@ -76,7 +77,7 @@
         │   └── Update
         └── TestUtils
 
-60 directories
+61 directories
 ```
 <!-- readme-tree end -->
 
