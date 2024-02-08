@@ -37,14 +37,14 @@ class KSailCheckCommandHandler()
           Console.WriteLine("✔ All kustomizations are ready!");
           return 0;
         }
+        else if (_successFullKustomizations.Contains(kustomizationName))
+        {
+          continue;
+        }
         else if (_stopwatch.Elapsed.TotalSeconds >= timeout)
         {
           Console.WriteLine($"✕ Kustomization '{kustomizationName}' did not become ready within the specified time limit of {timeout} seconds.");
           return 1;
-        }
-        else if (_successFullKustomizations.Contains(kustomizationName))
-        {
-          continue;
         }
       }
       if (statusConditionStatus.Equals("false", StringComparison.OrdinalIgnoreCase))
