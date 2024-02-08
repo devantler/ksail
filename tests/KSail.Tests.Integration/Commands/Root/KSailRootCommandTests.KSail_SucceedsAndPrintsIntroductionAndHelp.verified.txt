@@ -26,5 +26,5 @@ Commands:
   list                  List running clusters
   lint <clusterName>    Lint manifest files
   check <clusterName>   Check the status of the cluster
-  sops                  Manage SOPS key
+  sops <clusterName>    Manage SOPS key
 
