@@ -29,13 +29,11 @@ sealed class LocalSOPSProvisioner() : ISecretManagerProvisioner, IDisposable
 
   public Task<int> CreateKeyAsync(KeyType keyType, string keyName, CancellationToken token)
   {
-    switch (keyType)
+    return keyType switch
     {
-      case KeyType.Age:
-        return AgeCLIWrapper.GenerateKeyAsync(keyName, true, token);
-      default:
-        throw new NotSupportedException($"🚨 Unsupported key type '{keyType}'");
-    }
+      KeyType.Age => AgeCLIWrapper.GenerateKeyAsync(keyName, true, token),
+      _ => throw new NotSupportedException($"🚨 Unsupported key type '{keyType}'"),
+    };
   }
 
   public async Task<(int exitCode, string result)> GetPublicKeyAsync(KeyType keyType, string keyName, CancellationToken token)
