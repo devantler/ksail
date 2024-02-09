@@ -78,6 +78,7 @@ class KSailUpCommandHandler(
     Console.WriteLine($"🚀 Provisioning cluster '{clusterName}'");
     if (await _kubernetesDistributionProvisioner.ProvisionAsync(clusterName, configPath, token) != 0)
     {
+      Console.WriteLine($"✕ Failed to provision cluster '{clusterName}'");
       return 1;
     }
     var kubernetesDistributionType = await _kubernetesDistributionProvisioner.GetKubernetesDistributionTypeAsync();
@@ -88,6 +89,7 @@ class KSailUpCommandHandler(
     {
       Console.WriteLine("🔐 Adding SOPS key");
       var sopsProvisioner = new LocalSOPSProvisioner();
+      Console.WriteLine("► Provisioning key for SOPS");
       if (await sopsProvisioner.ProvisionAsync(KeyType.Age, clusterName, context, token) != 0)
       {
         Console.WriteLine("✕ SOPS key provisioning failed");
@@ -98,10 +100,16 @@ class KSailUpCommandHandler(
     var kubernetesDistribution = await _kubernetesDistributionProvisioner.GetKubernetesDistributionTypeAsync();
     string k8sContext = $"{kubernetesDistribution.ToString()?.ToLowerInvariant()}-{clusterName}";
     string ociUrl = $"oci://host.k3d.internal:5050/{clusterName}";
-    return await _gitOpsProvisioner.InstallAsync(k8sContext, ociUrl, kustomizationsPath, token) switch
+
+    Console.WriteLine("🔼 Installing Flux");
+    if (await _gitOpsProvisioner.InstallAsync(k8sContext, ociUrl, kustomizationsPath, token) != 0)
     {
-      0 => await new KSailCheckCommandHandler().HandleAsync(context, timeout, token) != 0 ? 1 : 0,
-      _ => 1,
-    };
+      Console.WriteLine("✕ Failed to install Flux");
+      return 1;
+    }
+    Console.WriteLine("");
+
+    Console.WriteLine("🔄 Checking Flux reconciles successfully");
+    return await new KSailCheckCommandHandler().HandleAsync(context, timeout, token) != 0 ? 1 : 0;
   }
 }

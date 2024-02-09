@@ -34,6 +34,7 @@ class KSailInitCommandHandler : IDisposable
       Console.WriteLine("✕ Unexpected error occurred while checking for an existing Age key for SOPS.");
       return 1;
     }
+    Console.WriteLine("► Generating new key for SOPS");
     if (!keyExists && await _localSOPSProvisioner.CreateKeyAsync(KeyType.Age, clusterName, token) != 0)
     {
       Console.WriteLine("✕ Unexpected error occurred while creating a new Age key for SOPS.");

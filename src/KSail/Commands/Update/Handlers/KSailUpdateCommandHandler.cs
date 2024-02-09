@@ -14,6 +14,7 @@ class KSailUpdateCommandHandler(IKubernetesDistributionProvisioner kubernetesDis
     {
       return 1;
     }
+    Console.WriteLine("📥 Pushing manifests");
     if (await _gitOpsProvisioner.PushManifestsAsync($"oci://localhost:5050/{clusterName}", manifestsPath, token) != 0)
     {
       return 1;
@@ -22,8 +23,10 @@ class KSailUpdateCommandHandler(IKubernetesDistributionProvisioner kubernetesDis
     {
       var kubernetesDistributionType = await _kubernetesDistributionProvisioner.GetKubernetesDistributionTypeAsync();
       string context = $"{kubernetesDistributionType.ToString()?.ToLowerInvariant()}-{clusterName}";
+      Console.WriteLine("🔄 Reconciling Flux");
       if (await _gitOpsProvisioner.ReconcileAsync(context, token) != 0)
       {
+        Console.WriteLine("✕ Failed to reconcile Flux");
         return 1;
       }
     }
