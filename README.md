@@ -231,7 +231,7 @@ jobs:
       - name: 🛥️🐳 Install KSail
         run: brew install devantler/formulas/ksail
       - name: 🛥️🐳🚀 KSail Up
-        run:
+        run: |
           ksail sops <name-of-cluster> --import "${{ secrets.KSAIL_SOPS_AGE_KEY }}"
           ksail up <name-of-cluster>
 ```
