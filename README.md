@@ -231,9 +231,9 @@ jobs:
       - name: 🛥️🐳 Install KSail
         run: brew install devantler/formulas/ksail
       - name: 🛥️🐳🚀 KSail Up
-        run: ksail up <name-of-cluster>
-        env:
-          KSAIL_SOPS_KEY: ${{ secrets.KSAIL_SOPS_KEY }}
+        run:
+          ksail sops --import "${{ secrets.KSAIL_SOPS_AGE_KEY }}"
+          ksail up <name-of-cluster>
 ```
 
 ### How do I use KSail with Cloud Providers?
