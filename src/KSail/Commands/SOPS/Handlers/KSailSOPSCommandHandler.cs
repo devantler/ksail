@@ -112,6 +112,10 @@ class KSailSOPSCommandHandler() : IDisposable
       Console.WriteLine("🔐 Importing SOPS key from stdin");
       contents = import;
     }
+    if (!Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", $"{clusterName}.agekey")))
+    {
+      _ = Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age"));
+    }
     await File.WriteAllTextAsync(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", $"{clusterName}.agekey"), contents, token);
     Console.WriteLine($"✔ SOPS key imported to '{Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", $"{clusterName}.agekey")}'");
     return 0;
