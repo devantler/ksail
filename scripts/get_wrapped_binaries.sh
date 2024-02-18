@@ -9,8 +9,10 @@ download_and_update() {
   echo "Fetching latest release information for $repo"
   latest_release=$(curl -s https://api.github.com/repos/"$repo"/releases/latest)
   version_latest=$(echo "$latest_release" | grep tag_name | cut -d '"' -f 4 | cut -d '/' -f 2)
-  version_current=$(grep -s "${binary}_version_" src/KSail/assets/binaries/requirements.txt | cut -d '_' -f 3) || echo "0.0.0"
-
+  version_current=$(grep -s "${binary}_version_" src/KSail/assets/binaries/requirements.txt | cut -d '_' -f 3)
+  if [ -z "$version_current" ]; then
+    version_current="v0.0.0"
+  fi
   echo "Latest version: $version_latest"
   echo "Current version: $version_current"
 
@@ -39,7 +41,7 @@ download_and_update() {
       fi
     done
     echo "Updating version in requirements.txt"
-    if [ "$version_current" = "0.0.0" ]; then
+    if [ "$version_current" = "v0.0.0" ]; then
       echo "${binary}_version_${version_latest}" >>src/KSail/assets/binaries/requirements.txt
     else
       sed -i'' -e "s/^${binary}_version_.*/${binary}_version_${version_latest}/" src/KSail/assets/binaries/requirements.txt
