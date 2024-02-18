@@ -32,7 +32,7 @@ download_and_update() {
           echo "Moving binary from subfolder $subfolder"
           mv -f src/KSail/assets/binaries/"${subfolder}"/"$binary" src/KSail/assets/binaries/"${binary}"_"${arch}"
           rm -rf src/KSail/assets/binaries/"${subfolder}"
-        else
+        elif [ ! -e src/KSail/assets/binaries/"${binary}"_"${arch}" ]; then
           mv -f src/KSail/assets/binaries/"$binary" src/KSail/assets/binaries/"${binary}"_"${arch}"
         fi
         chmod +x src/KSail/assets/binaries/"${binary}"_"${arch}"
