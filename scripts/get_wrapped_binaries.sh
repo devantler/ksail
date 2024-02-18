@@ -19,7 +19,7 @@ download_and_update() {
     for arch in "${architectures[@]}"; do
       arch=${arch//./-}
       arch_underscore=${arch//-/_}
-      exists=$(echo "$latest_release" | grep browser_download_url | grep -E "(${arch}|${arch_underscore})" | cut -d '"' -f 4)
+      exists=$(echo "$latest_release" | grep browser_download_url | grep -E "(${arch}|${arch_underscore})\"" | cut -d '"' -f 4)
       if [ -n "$exists" ]; then
         echo "Downloading $binary for architecture $arch"
         curl -sL -o src/KSail/assets/binaries/"${binary}"_"${arch}""$([ "$is_tarball" = true ] && echo ".tar.gz")" "$exists"
