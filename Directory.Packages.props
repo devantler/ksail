@@ -11,7 +11,7 @@
     <AnalysisLevel>latest-Recommended</AnalysisLevel>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="roslynator.analyzers" Version="4.10.0">
+    <PackageReference Include="roslynator.analyzers" Version="4.11.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
