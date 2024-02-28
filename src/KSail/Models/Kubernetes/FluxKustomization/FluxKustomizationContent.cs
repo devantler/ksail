@@ -8,7 +8,7 @@ class FluxKustomizationContent
   public List<string> DependsOn { get; set; } = [];
   public FluxKustomizationSourceRef SourceRef { get; set; } = new FluxKustomizationSourceRef
   {
-    Kind = "GitRepository",
+    Kind = "OCIRepository",
     Name = "flux-system"
   };
   public required string Path { get; set; }

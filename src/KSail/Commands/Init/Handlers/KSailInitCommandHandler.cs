@@ -19,10 +19,14 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
         new()
             {
               Name = "variables",
-              Path = $"clusters/{clusterName}/variables"
+              Path = $"clusters/{clusterName}/variables",
+              PostBuild = new()
+              {
+                SubstituteFrom = []
+              }
             }
     ]);
-    await GenerateKustomizationFileAsync(Path.Combine(clusterDirectory, "variables/kustomization.yaml"), ["variables.yaml", "variables-sensitive.sops.yaml"]);
+    await GenerateKustomizationFileAsync(Path.Combine(clusterDirectory, "variables/kustomization.yaml"), ["variables.yaml", "variables-sensitive.sops.yaml"], "flux-system");
     await GenerateConfigMapFileAsync(Path.Combine(clusterDirectory, "variables/variables.yaml"));
     await GenerateSecretFileAsync(Path.Combine(clusterDirectory, "variables/variables-sensitive.sops.yaml"));
 
@@ -160,7 +164,6 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
       kind: ConfigMap
       metadata:
         name: variables
-        namespace: flux-system
       data:
         cluster_domain: test
         cluster_issuer_name: selfsigned-cluster-issuer
