@@ -5,101 +5,30 @@ using KSail.Provisioners.SecretManager;
 
 namespace KSail.Commands.Init.Handlers;
 
-class KSailInitCommandHandler : IDisposable
+class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : IDisposable
 {
   readonly LocalSOPSProvisioner _localSOPSProvisioner = new();
-  internal async Task<int> HandleAsync(string clusterName, string manifests, CancellationToken token)
+
+  internal async Task<int> HandleAsync(CancellationToken token)
   {
-    string clusterDirectory = Path.Combine(manifests, "clusters", clusterName);
+    string fluxSystemDirectory = Path.Combine(manifestsDirectory, "clusters", clusterName, "flux-system");
+    await GenerateFluxKustomizationFilesAsync(fluxSystemDirectory, clusterName);
+    await GenerateKustomizationFileAsync("variables/kustomization.yaml", ["variables.yaml", "variables-sensitive.sops.yaml"]);
+    await GenerateKustomizationFileAsync("infrastructure/services/kustomization.yaml", []);
+    await GenerateKustomizationFileAsync("infrastructure/configs/kustomization.yaml", []);
+    await GenerateKustomizationFileAsync("apps/kustomization.yaml", []);
+    await GenerateConfigMapFileAsync("variables/variables.yaml");
+    await GenerateSecretFileAsync("variables/variables-sensitive.sops.yaml");
+    await GenerateK3dConfigFileAsync($"{clusterName}-k3d-config.yaml");
+    //TODO: await GenerateKSailConfigFileAsync($"{clusterName}-ksail-config.yaml");
+    //TODO: await GenerateSOPSConfigFileAsync(".sops.yaml");
 
-    string variablesFluxKustomizationPath = Path.Combine(clusterDirectory, "flux-system", "variables.yaml");
+    //TODO: Move this method to a generator. Provisioning should not generate files.
+    return await ProvisionSOPSKey(clusterName, token);
+  }
 
-    if (!File.Exists(variablesFluxKustomizationPath))
-    {
-      var variablesFluxKustomization = new FluxKustomization
-      {
-        Content = [
-          new FluxKustomizationContent {
-            Name = "variables",
-            Path = $"./clusters/{clusterName}/variables"
-          }
-        ]
-      };
-      await Generator.GenerateAsync(
-        variablesFluxKustomizationPath,
-        $"{AppDomain.CurrentDomain.BaseDirectory}/assets/templates/kubernetes/kustomize.toolkit.fluxcd.io_v1_Kustomization.sbn",
-        variablesFluxKustomization
-      );
-    }
-    else
-    {
-      Console.WriteLine($"✕ A variables.yaml file already exists at '{variablesFluxKustomizationPath}'. Skipping variables creation.");
-    }
-
-    string infrastructureFluxKustomizationPath = Path.Combine(clusterDirectory, "flux-system", "infrastructure.yaml");
-    if (!File.Exists(infrastructureFluxKustomizationPath))
-    {
-      var infrastructureFluxKustomization = new FluxKustomization
-      {
-        Content = [
-          new FluxKustomizationContent {
-            Name = "infrastructure-services",
-            Path = "./infrastructure/services",
-            DependsOn = ["variables"]
-          },
-          new FluxKustomizationContent {
-            Name = "infrastructure-configs",
-            Path = "./infrastructure/configs",
-            DependsOn = ["infrastructure-services"]
-          }
-        ]
-      };
-      await Generator.GenerateAsync(
-        infrastructureFluxKustomizationPath,
-        $"{AppDomain.CurrentDomain.BaseDirectory}/assets/templates/kubernetes/kustomize.toolkit.fluxcd.io_v1_Kustomization.sbn",
-        infrastructureFluxKustomization
-      );
-    }
-    else
-    {
-      Console.WriteLine($"✕ An infrastructure.yaml file already exists at '{infrastructureFluxKustomizationPath}'. Skipping infrastructure creation.");
-    }
-
-    string appsFluxKustomizationPath = Path.Combine(clusterDirectory, "flux-system", "apps.yaml");
-    if (!File.Exists(appsFluxKustomizationPath))
-    {
-      var appsFluxKustomization = new FluxKustomization
-      {
-        Content = [
-          new FluxKustomizationContent {
-            Name = "apps",
-            Path = $"./clusters/{clusterName}/apps",
-            DependsOn = ["infrastructure-configs"]
-          }
-        ]
-      };
-      await Generator.GenerateAsync(
-        appsFluxKustomizationPath,
-        $"{AppDomain.CurrentDomain.BaseDirectory}/assets/templates/kubernetes/kustomize.toolkit.fluxcd.io_v1_Kustomization.sbn",
-        appsFluxKustomization
-      );
-    }
-    else
-    {
-      Console.WriteLine($"✕ An apps.yaml file already exists at '{appsFluxKustomizationPath}'. Skipping apps creation.");
-    }
-
-    // TODO: Migrate this code to the generator
-    await CreateKustomizationsAsync(clusterDirectory);
-
-    if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), $"{clusterName}-k3d-config.yaml")))
-    {
-      Console.WriteLine($"✕ A k3d-config.yaml file already exists at '{Directory.GetCurrentDirectory()}/{clusterName}-k3d-config.yaml'. Skipping config creation.");
-    }
-    else
-    {
-      await CreateConfigAsync(clusterName);
-    }
+  async Task<int> ProvisionSOPSKey(string clusterName, CancellationToken token)
+  {
     var (keyExistsExitCode, keyExists) = await _localSOPSProvisioner.KeyExistsAsync(KeyType.Age, clusterName, token);
     if (keyExistsExitCode != 0)
     {
@@ -112,61 +41,122 @@ class KSailInitCommandHandler : IDisposable
       Console.WriteLine("✕ Unexpected error occurred while creating a new Age key for SOPS.");
       return 1;
     }
-
-    Console.WriteLine($"✔ Successfully initialized a new K8s GitOps project named '{clusterName}'.");
-    Console.WriteLine();
     return 0;
   }
 
-  static async Task CreateKustomizationsAsync(string clusterDirectory)
+  async Task GenerateK3dConfigFileAsync(string filePath)
   {
-    Console.WriteLine($"✚ Creating infrastructure-services kustomization '{clusterDirectory}/infrastructure/services/kustomization.yaml'");
-    string infrastructureServicesDirectory = Path.Combine(clusterDirectory, "infrastructure/services");
-    _ = Directory.CreateDirectory(infrastructureServicesDirectory) ?? throw new InvalidOperationException($"🚨 Could not create the infrastructure directory at {infrastructureServicesDirectory}.");
-    const string infrastructureKustomizationContent = """
-      apiVersion: kustomize.config.k8s.io/v1beta1
-      kind: Kustomization
-      resources:
-        - https://github.com/devantler/oci-registry//k8s/cert-manager?ref=v0.0.3
-        - https://github.com/devantler/oci-registry//k8s/traefik?ref=v0.0.3
-      """;
-    string infrastructureServicesKustomizationPath = Path.Combine(infrastructureServicesDirectory, "kustomization.yaml");
-    var infrastructureServicesKustomizationFile = File.Create(infrastructureServicesKustomizationPath) ?? throw new InvalidOperationException($"🚨 Could not create the infrastructure kustomization.yaml file at {infrastructureServicesKustomizationPath}.");
-    await infrastructureServicesKustomizationFile.WriteAsync(Encoding.UTF8.GetBytes(infrastructureKustomizationContent));
-    await infrastructureServicesKustomizationFile.FlushAsync();
+    if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), filePath)))
+    {
+      Console.WriteLine($"✕ A k3d-config.yaml file already exists at '{Directory.GetCurrentDirectory()}/{filePath}'. Skipping config creation.");
+    }
+    else
+    {
+      await CreateConfigAsync(clusterName);
+    }
+  }
 
-    Console.WriteLine($"✚ Creating infrastructure-configs kustomization '{clusterDirectory}/infrastructure/configs/kustomization.yaml'");
-    string infrastructureConfigsDirectory = Path.Combine(clusterDirectory, "infrastructure/configs");
-    _ = Directory.CreateDirectory(infrastructureConfigsDirectory) ?? throw new InvalidOperationException($"🚨 Could not create the infrastructure directory at {infrastructureConfigsDirectory}.");
-    const string infrastructureConfigsKustomizationContent = """
-      apiVersion: kustomize.config.k8s.io/v1beta1
-      kind: Kustomization
-      resources:
-        - https://raw.githubusercontent.com/devantler/oci-registry/v0.0.2/k8s/cert-manager/certificates/cluster-issuer-certificate.yaml
-        - https://raw.githubusercontent.com/devantler/oci-registry/v0.0.2/k8s/cert-manager/cluster-issuers/selfsigned-cluster-issuer.yaml
-      """;
-    string infrastructureConfigsKustomizationPath = Path.Combine(infrastructureConfigsDirectory, "kustomization.yaml");
-    var infrastructureConfigsKustomizationFile = File.Create(infrastructureConfigsKustomizationPath) ?? throw new InvalidOperationException($"🚨 Could not create the infrastructure kustomization.yaml file at {infrastructureConfigsKustomizationPath}.");
-    await infrastructureConfigsKustomizationFile.WriteAsync(Encoding.UTF8.GetBytes(infrastructureConfigsKustomizationContent));
-    await infrastructureConfigsKustomizationFile.FlushAsync();
+  static async Task GenerateFluxKustomizationFilesAsync(string fluxSystemDirectory, string clusterName)
+  {
+    await GenerateFluxKustomizationFileAsync(Path.Combine(fluxSystemDirectory, "variables.yaml"),
+        [
+            new()
+            {
+              Name = "variables",
+              Path = $"clusters/{clusterName}/variables"
+            }
+        ]);
 
-    Console.WriteLine($"✚ Creating variables kustomization '{clusterDirectory}/variables/kustomization.yaml'");
-    string variablesDirectory = Path.Combine(clusterDirectory, "variables");
-    _ = Directory.CreateDirectory(variablesDirectory) ?? throw new InvalidOperationException($"🚨 Could not create the variables directory at {variablesDirectory}.");
-    const string variablesKustomizationContent = """
-      apiVersion: kustomize.config.k8s.io/v1beta1
-      kind: Kustomization
-      namespace: flux-system
-      resources:
-        - variables.yaml
-        - variables-sensitive.sops.yaml
-      """;
-    string variablesKustomizationPath = Path.Combine(variablesDirectory, "kustomization.yaml");
-    var variablesKustomizationFile = File.Create(variablesKustomizationPath) ?? throw new InvalidOperationException($"🚨 Could not create the variables kustomization.yaml file at {variablesKustomizationPath}.");
-    await variablesKustomizationFile.WriteAsync(Encoding.UTF8.GetBytes(variablesKustomizationContent));
-    await variablesKustomizationFile.FlushAsync();
+    await GenerateFluxKustomizationFileAsync(Path.Combine(fluxSystemDirectory, "infrastructure.yaml"),
+    [
+        new FluxKustomizationContent
+        {
+            Name = "infrastructure-services",
+            Path = "infrastructure/services",
+            DependsOn = ["variables"]
+        },
+        new FluxKustomizationContent
+        {
+            Name = "infrastructure-configs",
+            Path = "infrastructure/configs",
+            DependsOn = ["infrastructure-services"]
+        }
+    ]);
 
-    Console.WriteLine($"✚ Creating variables file '{clusterDirectory}/variables/variables.yaml'");
+    await GenerateFluxKustomizationFileAsync(Path.Combine(fluxSystemDirectory, "apps.yaml"),
+    [
+        new() {
+            Name = "apps",
+            Path = $"clusters/{clusterName}/apps",
+            DependsOn = ["infrastructure-configs"]
+        }
+    ]);
+  }
+
+  static async Task GenerateFluxKustomizationFileAsync(string filePath, List<FluxKustomizationContent> contents)
+  {
+    Console.WriteLine($"✚ Generating flux kustomization file '{filePath}'");
+    if (!File.Exists(filePath))
+    {
+      var fluxKustomization = new FluxKustomization
+      {
+        Content = contents
+      };
+      await Generator.GenerateAsync(
+          filePath,
+          $"{AppDomain.CurrentDomain.BaseDirectory}/assets/templates/kubernetes/flux-kustomization.sbn",
+          fluxKustomization
+      );
+    }
+    else
+    {
+      string fileName = Path.GetFileName(filePath);
+      Console.WriteLine($"✕ A {fileName} file already exists at '{filePath}'. Skipping creation.");
+    }
+  }
+
+  static async Task GenerateKustomizationFileAsync(string filePath, List<string> resources, string @namespace = "")
+  {
+    Console.WriteLine($"✚ Generating kustomization file '{filePath}'");
+    if (!File.Exists(filePath))
+    {
+      await Generator.GenerateAsync(
+        filePath,
+        $"{AppDomain.CurrentDomain.BaseDirectory}/assets/templates/kubernetes/kustomization.sbn",
+        new Kustomization
+        {
+          Namespace = @namespace,
+          Resources = resources
+        }
+      );
+    }
+    else
+    {
+      string fileName = Path.GetFileName(filePath);
+      Console.WriteLine($"✕ A {fileName} file already exists at '{filePath}'. Skipping creation.");
+    }
+  }
+
+  static async Task GenerateSecretFileAsync(string filePath)
+  {
+    Console.WriteLine($"✚ Creating variables-sensitive file '{filePath}'");
+    const string variablesSensitiveYamlContent = """
+      # You need to encrypt this file with SOPS manually.
+      # ksail sops --encrypt variables-sensitive.sops.yaml
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: variables-sensitive
+      stringData: {}
+      """;
+    var variablesSensitiveYamlFile = File.Create(filePath) ?? throw new InvalidOperationException($"🚨 Could not create the variables-sensitive.sops.yaml file at '{filePath}'.");
+    await variablesSensitiveYamlFile.WriteAsync(Encoding.UTF8.GetBytes(variablesSensitiveYamlContent));
+    await variablesSensitiveYamlFile.FlushAsync();
+  }
+
+  static async Task GenerateConfigMapFileAsync(string filePath)
+  {
+    Console.WriteLine($"✚ Creating variables file '{filePath}'");
     const string variablesYamlContent = """
       apiVersion: v1
       kind: ConfigMap
@@ -177,25 +167,9 @@ class KSailInitCommandHandler : IDisposable
         cluster_domain: test
         cluster_issuer_name: selfsigned-cluster-issuer
       """;
-    string variablesYamlPath = Path.Combine(variablesDirectory, "variables.yaml");
-    var variablesYamlFile = File.Create(variablesYamlPath) ?? throw new InvalidOperationException($"🚨 Could not create the variables.yaml file at {variablesYamlPath}.");
+    var variablesYamlFile = File.Create(filePath) ?? throw new InvalidOperationException($"🚨 Could not create the variables.yaml file at {filePath}.");
     await variablesYamlFile.WriteAsync(Encoding.UTF8.GetBytes(variablesYamlContent));
     await variablesYamlFile.FlushAsync();
-
-    Console.WriteLine($"✚ Creating variables-sensitive file '{clusterDirectory}/variables/variables-sensitive.sops.yaml'");
-    const string variablesSensitiveYamlContent = """
-      # You need to encrypt this file with SOPS manually.
-      # ksail sops --encrypt variables-sensitive.sops.yaml
-      apiVersion: v1
-      kind: Secret
-      metadata:
-        name: variables-sensitive
-      stringData: {}
-      """;
-    string variablesSensitiveYamlPath = Path.Combine(variablesDirectory, "variables-sensitive.sops.yaml");
-    var variablesSensitiveYamlFile = File.Create(variablesSensitiveYamlPath) ?? throw new InvalidOperationException($"🚨 Could not create the variables-sensitive.sops.yaml file at {variablesSensitiveYamlPath}.");
-    await variablesSensitiveYamlFile.WriteAsync(Encoding.UTF8.GetBytes(variablesSensitiveYamlContent));
-    await variablesSensitiveYamlFile.FlushAsync();
   }
 
   static async Task CreateConfigAsync(string clusterName)

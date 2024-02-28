@@ -22,8 +22,8 @@ sealed class KSailInitCommand : Command
       var token = context.GetCancellationToken();
       try
       {
-        var handler = new KSailInitCommandHandler();
-        context.ExitCode = await handler.HandleAsync(clusterName, manifests, token);
+        var handler = new KSailInitCommandHandler(clusterName, manifests);
+        context.ExitCode = await handler.HandleAsync(token);
       }
       catch (OperationCanceledException)
       {
