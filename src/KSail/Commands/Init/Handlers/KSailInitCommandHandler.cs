@@ -26,33 +26,17 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
               }
             }
     ]);
-    await GenerateFluxKustomizationAsync(Path.Combine(fluxSystemDirectory, "infrastructure.yaml"),
-[
-        new FluxKustomizationContent
-        {
-            Name = "infrastructure-services",
-            Path = "infrastructure/services",
-            DependsOn = ["variables"]
-        },
-        new FluxKustomizationContent
-        {
-            Name = "infrastructure-configs",
-            Path = "infrastructure/configs",
-            DependsOn = ["infrastructure-services"]
-        }
-    ]);
     await GenerateFluxKustomizationAsync(Path.Combine(fluxSystemDirectory, "apps.yaml"),
-[
+    [
         new() {
             Name = "apps",
             Path = $"clusters/{clusterName}/apps",
-            DependsOn = ["infrastructure-configs"]
+            DependsOn = ["variables"]
         }
     ]);
     await GenerateKustomizationAsync(Path.Combine(clusterDirectory, "variables/kustomization.yaml"), ["variables.yaml", "variables-sensitive.sops.yaml"], "flux-system");
-    await GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "infrastructure/services/kustomization.yaml"), []);
-    await GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "infrastructure/configs/kustomization.yaml"), []);
-    await GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "apps/kustomization.yaml"), []);
+    await GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "apps/kustomization.yaml"), ["podinfo"]);
+    await GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "apps/podinfo/kustomization.yaml"), ["github.com/stefanprodan/podinfo//kustomize"]);
 
     await GenerateConfigMapAsync(Path.Combine(clusterDirectory, "variables/variables.yaml"));
     await GenerateSecretAsync(Path.Combine(clusterDirectory, "variables/variables-sensitive.sops.yaml"));
