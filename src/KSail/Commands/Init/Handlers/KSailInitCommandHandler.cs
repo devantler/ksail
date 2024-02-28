@@ -27,7 +27,7 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
             }
     ]);
     await GenerateFluxKustomizationAsync(Path.Combine(fluxSystemDirectory, "infrastructure.yaml"),
-[
+    [
         new FluxKustomizationContent
         {
             Name = "infrastructure-services",
@@ -42,7 +42,7 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
         }
     ]);
     await GenerateFluxKustomizationAsync(Path.Combine(fluxSystemDirectory, "apps.yaml"),
-[
+    [
         new() {
             Name = "apps",
             Path = "apps",
