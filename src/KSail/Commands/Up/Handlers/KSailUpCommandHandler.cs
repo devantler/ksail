@@ -25,10 +25,12 @@ class KSailUpCommandHandler(
   {
     kustomizationsPath = string.IsNullOrEmpty(kustomizationsPath) ? $"clusters/{clusterName}/flux-system" : kustomizationsPath;
 
+    Console.WriteLine("🐳 Checking Docker is running");
     if (await _containerEngineProvisioner.CheckReadyAsync(token) != 0)
     {
       return 1;
     }
+    Console.WriteLine("✔ Docker is running");
 
     var (ExitCode, Result) = await _kubernetesDistributionProvisioner.ExistsAsync(clusterName, token);
     if (ExitCode != 0)
