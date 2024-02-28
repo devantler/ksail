@@ -1,4 +1,6 @@
 using System.Text;
+using KSail.Generators;
+using KSail.Generators.Kubernetes.Models.FluxKustomization;
 using KSail.Provisioners.SecretManager;
 
 namespace KSail.Commands.Init.Handlers;
@@ -8,18 +10,60 @@ class KSailInitCommandHandler : IDisposable
   readonly LocalSOPSProvisioner _localSOPSProvisioner = new();
   internal async Task<int> HandleAsync(string clusterName, string manifests, CancellationToken token)
   {
-    Console.WriteLine($"📁 Initializing a new K8s GitOps project named '{clusterName}'");
     string clusterDirectory = Path.Combine(manifests, "clusters", clusterName);
-    if (Directory.Exists(clusterDirectory))
+
+    var variablesFluxKustomization = new FluxKustomization
     {
-      Console.WriteLine($"✕ A cluster named '{clusterName}' already exists at '{clusterDirectory}/{clusterName}'. Skipping cluster creation.");
-    }
-    else
+      Content = [
+        new FluxKustomizationContent {
+          Name = "variables",
+          Path = $"./clusters/{clusterName}/variables",
+        }
+      ]
+    };
+    await Generator.GenerateAsync(
+      Path.Combine(clusterDirectory, "flux-system", "variables.yaml"),
+      $"{AppDomain.CurrentDomain.BaseDirectory}/templates/flux/kustomization.sbn",
+      variablesFluxKustomization
+    );
+
+    var infrastructureFluxKustomization = new FluxKustomization
     {
-      clusterDirectory = CreateClusterDirectory(clusterName, manifests);
-      await CreateFluxKustomizationsAsync(clusterName, clusterDirectory);
-      await CreateKustomizationsAsync(clusterDirectory);
-    }
+      Content = [
+        new FluxKustomizationContent {
+          Name = "infrastructure-services",
+          Path = "./infrastructure/services",
+        },
+        new FluxKustomizationContent {
+          Name = "infrastructure-configs",
+          Path = "./infrastructure/configs",
+        }
+      ]
+    };
+    await Generator.GenerateAsync(
+      Path.Combine(clusterDirectory, "flux-system", "infrastructure.yaml"),
+      $"{AppDomain.CurrentDomain.BaseDirectory}/templates/flux/kustomization.sbn",
+      infrastructureFluxKustomization
+    );
+
+    var appsFluxKustomization = new FluxKustomization
+    {
+      Content = [
+        new FluxKustomizationContent {
+          Name = "apps",
+          Path = $"./clusters/{clusterName}/apps",
+        }
+      ]
+    };
+    await Generator.GenerateAsync(
+      Path.Combine(clusterDirectory, "flux-system", "apps.yaml"),
+      $"{AppDomain.CurrentDomain.BaseDirectory}/templates/flux/kustomization.sbn",
+      appsFluxKustomization
+    );
+
+    // TODO: Migrate this code to the generator
+    await CreateKustomizationsAsync(clusterDirectory);
+
     if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), $"{clusterName}-k3d-config.yaml")))
     {
       Console.WriteLine($"✕ A k3d-config.yaml file already exists at '{Directory.GetCurrentDirectory()}/{clusterName}-k3d-config.yaml'. Skipping config creation.");
@@ -44,111 +88,6 @@ class KSailInitCommandHandler : IDisposable
     Console.WriteLine($"✔ Successfully initialized a new K8s GitOps project named '{clusterName}'.");
     Console.WriteLine();
     return 0;
-  }
-
-  static string CreateFluxSystemDirectory(string clusterDirectory)
-  {
-    Console.WriteLine($"✚ Creating flux-system directory '{clusterDirectory}/flux-system'");
-    string fluxDirectory = Path.Combine(clusterDirectory, "flux-system");
-    _ = Directory.CreateDirectory(fluxDirectory) ?? throw new InvalidOperationException($"🚨 Could not create the flux directory at {fluxDirectory}.");
-    return fluxDirectory;
-  }
-
-  static string CreateClusterDirectory(string clusterName, string manifests)
-  {
-    string clusterDirectory = Path.Combine(manifests, "clusters", clusterName);
-    Console.WriteLine($"✚ Creating cluster directory '{clusterDirectory}'");
-    _ = Directory.CreateDirectory(clusterDirectory) ?? throw new InvalidOperationException($"🚨 Could not create the cluster directory at {clusterDirectory}.");
-    return clusterDirectory;
-  }
-
-  static async Task CreateFluxKustomizationsAsync(string clusterName, string clusterDirectory)
-  {
-    Console.WriteLine($"✚ Creating flux infrastructure kustomization '{clusterDirectory}/flux-system/infrastructure.yaml'");
-    string fluxDirectory = CreateFluxSystemDirectory(clusterDirectory);
-    string infrastructureYamlPath = Path.Combine(fluxDirectory, "infrastructure.yaml");
-    string infrastructureYamlContent = $"""
-      apiVersion: kustomize.toolkit.fluxcd.io/v1
-      kind: Kustomization
-      metadata:
-        name: infrastructure-services
-        namespace: flux-system
-      spec:
-        interval: 1m
-        dependsOn:
-          - name: variables
-        sourceRef:
-          kind: OCIRepository
-          name: flux-system
-        path: ./clusters/{clusterName}/infrastructure/services
-        prune: true
-        wait: true
-        decryption:
-          provider: sops
-          secretRef:
-            name: sops-age
-        postBuild:
-          substituteFrom:
-            - kind: ConfigMap
-              name: variables
-            - kind: Secret
-              name: variables-sensitive
-      ---
-      apiVersion: kustomize.toolkit.fluxcd.io/v1
-      kind: Kustomization
-      metadata:
-        name: infrastructure-configs
-        namespace: flux-system
-      spec:
-        interval: 1m
-        dependsOn:
-          - name: variables
-          - name: infrastructure-services
-        sourceRef:
-          kind: OCIRepository
-          name: flux-system
-        path: ./clusters/{clusterName}/infrastructure/configs
-        prune: true
-        wait: true
-        decryption:
-          provider: sops
-          secretRef:
-            name: sops-age
-        postBuild:
-          substituteFrom:
-            - kind: ConfigMap
-              name: variables
-            - kind: Secret
-              name: variables-sensitive
-      """;
-    var infrastructureYamlFile = File.Create(infrastructureYamlPath) ?? throw new InvalidOperationException($"🚨 Could not create the infrastructure.yaml file at {infrastructureYamlPath}.");
-    await infrastructureYamlFile.WriteAsync(Encoding.UTF8.GetBytes(infrastructureYamlContent));
-    await infrastructureYamlFile.FlushAsync();
-
-    Console.WriteLine($"✚ Creating flux variables kustomization '{clusterDirectory}/flux-system/variables.yaml'");
-    string variablesYamlContent = $"""
-      apiVersion: kustomize.toolkit.fluxcd.io/v1
-      kind: Kustomization
-      metadata:
-        name: variables
-        namespace: flux-system
-      spec:
-        interval: 1m
-        sourceRef:
-          kind: OCIRepository
-          name: flux-system
-        path: ./clusters/{clusterName}/variables
-        prune: true
-        wait: true
-        decryption:
-          provider: sops
-          secretRef:
-            name: sops-age
-    """;
-    string variablesYamlPath = Path.Combine(fluxDirectory, "variables.yaml");
-    var variablesYamlFile = File.Create(variablesYamlPath) ?? throw new InvalidOperationException($"🚨 Could not create the variables.yaml file at {variablesYamlPath}.");
-    await variablesYamlFile.WriteAsync(Encoding.UTF8.GetBytes(variablesYamlContent));
-    await variablesYamlFile.FlushAsync();
   }
 
   static async Task CreateKustomizationsAsync(string clusterDirectory)

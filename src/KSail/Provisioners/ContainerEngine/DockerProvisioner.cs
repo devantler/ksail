@@ -62,21 +62,21 @@ sealed class DockerProvisioner : IContainerEngineProvisioner
         {
           PortBindings = new Dictionary<string, IList<PortBinding>>
           {
-            ["5000/tcp"] = new List<PortBinding>
-          {
+            ["5000/tcp"] =
+          [
             new() {
               HostPort = $"{port}"
             }
-          }
+          ]
           },
           RestartPolicy = new RestartPolicy
           {
             Name = RestartPolicyKind.Always
           },
-          Binds = new List<string>
-        {
+          Binds =
+        [
           $"{name}:/var/lib/registry"
-        }
+        ]
         },
         Env = proxyUrl != null ? new List<string>
       {

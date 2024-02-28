@@ -1,0 +1,30 @@
+{{ for c in content }}
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: {{ c.name }}
+  namespace: {{ c.namespace }}
+spec:
+  interval: {{ c.interval }}
+  dependsOn: {{ if c.dependsOn == empty }} [] {{ end }}
+  {{ for dep in c.dependsOn }}
+    - name: {{ dep.name }}
+  {{ end }}
+  sourceRef:
+    kind: {{ c.sourceRef.kind }}
+    name: {{ c.sourceRef.name }}
+  path: {{ c.path }}
+  prune: {{ c.prune }}
+  wait: {{ c.wait }}
+  decryption:
+    provider: {{ c.decryption.provider }}
+    secretRef:
+      name: {{ c.decryption.secretRef.name }}
+  postBuild:
+    substituteFrom: {{ if c.postBuild.substituteFrom == empty }} [] {{ end }}
+    {{ for sub in c.postBuild.substituteFrom }}
+      - kind: {{ sub.kind }}
+        name: {{ sub.name }}
+    {{ end }}
+{{ if for.last }}{{ else }}---{{ end }}
+{{ end }}

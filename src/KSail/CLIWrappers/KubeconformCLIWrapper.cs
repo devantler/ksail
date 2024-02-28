@@ -23,7 +23,7 @@ class KubeconformCLIWrapper()
 
   internal static async Task<int> RunAsync(string[] kubeconformFlags, string[] kubeconformConfig, string manifest, CancellationToken token)
   {
-    var cmd = Kubeconform.WithArguments(kubeconformFlags.Concat(kubeconformConfig).Concat(new[] { manifest }).ToArray());
+    var cmd = Kubeconform.WithArguments(kubeconformFlags.Concat(kubeconformConfig).Concat([manifest]).ToArray());
     var (ExitCode, _) = await CLIRunner.RunAsync(cmd, token, silent: true);
     return ExitCode;
   }
