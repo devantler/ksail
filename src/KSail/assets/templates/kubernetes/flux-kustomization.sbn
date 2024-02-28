@@ -17,7 +17,7 @@ spec:
   prune: {{ c.prune }}
   wait: {{ c.wait }}
   decryption:
-    provider: {{ c.decryption.provider }}
+    provider: {{ c.decryption.provider | string.downcase }}
     secretRef:
       name: {{ c.decryption.secret_ref.name }}
   postBuild:

@@ -11,14 +11,49 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
 
   internal async Task<int> HandleAsync(CancellationToken token)
   {
-    string fluxSystemDirectory = Path.Combine(manifestsDirectory, "clusters", clusterName, "flux-system");
-    await GenerateFluxKustomizationFilesAsync(fluxSystemDirectory, clusterName);
-    await GenerateKustomizationFileAsync("variables/kustomization.yaml", ["variables.yaml", "variables-sensitive.sops.yaml"]);
-    await GenerateKustomizationFileAsync("infrastructure/services/kustomization.yaml", []);
-    await GenerateKustomizationFileAsync("infrastructure/configs/kustomization.yaml", []);
-    await GenerateKustomizationFileAsync("apps/kustomization.yaml", []);
-    await GenerateConfigMapFileAsync("variables/variables.yaml");
-    await GenerateSecretFileAsync("variables/variables-sensitive.sops.yaml");
+    string clusterDirectory = Path.Combine(manifestsDirectory, "clusters", clusterName);
+    string fluxSystemDirectory = Path.Combine(clusterDirectory, "flux-system");
+
+    await GenerateFluxKustomizationFileAsync(Path.Combine(fluxSystemDirectory, "variables.yaml"),
+    [
+        new()
+            {
+              Name = "variables",
+              Path = $"clusters/{clusterName}/variables"
+            }
+    ]);
+    await GenerateKustomizationFileAsync(Path.Combine(clusterDirectory, "variables/kustomization.yaml"), ["variables.yaml", "variables-sensitive.sops.yaml"]);
+    await GenerateConfigMapFileAsync(Path.Combine(clusterDirectory, "variables/variables.yaml"));
+    await GenerateSecretFileAsync(Path.Combine(clusterDirectory, "variables/variables-sensitive.sops.yaml"));
+
+    await GenerateFluxKustomizationFileAsync(Path.Combine(fluxSystemDirectory, "infrastructure.yaml"),
+    [
+        new FluxKustomizationContent
+        {
+            Name = "infrastructure-services",
+            Path = "infrastructure/services",
+            DependsOn = ["variables"]
+        },
+        new FluxKustomizationContent
+        {
+            Name = "infrastructure-configs",
+            Path = "infrastructure/configs",
+            DependsOn = ["infrastructure-services"]
+        }
+    ]);
+    await GenerateKustomizationFileAsync(Path.Combine(manifestsDirectory, "infrastructure/services/kustomization.yaml"), []);
+    await GenerateKustomizationFileAsync(Path.Combine(manifestsDirectory, "infrastructure/configs/kustomization.yaml"), []);
+
+    await GenerateFluxKustomizationFileAsync(Path.Combine(fluxSystemDirectory, "apps.yaml"),
+    [
+        new() {
+            Name = "apps",
+            Path = $"clusters/{clusterName}/apps",
+            DependsOn = ["infrastructure-configs"]
+        }
+    ]);
+    await GenerateKustomizationFileAsync(Path.Combine(manifestsDirectory, "apps/kustomization.yaml"), []);
+
     await GenerateK3dConfigFileAsync($"{clusterName}-k3d-config.yaml");
     //TODO: await GenerateKSailConfigFileAsync($"{clusterName}-ksail-config.yaml");
     //TODO: await GenerateSOPSConfigFileAsync(".sops.yaml");
@@ -54,43 +89,6 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
     {
       await CreateConfigAsync(clusterName);
     }
-  }
-
-  static async Task GenerateFluxKustomizationFilesAsync(string fluxSystemDirectory, string clusterName)
-  {
-    await GenerateFluxKustomizationFileAsync(Path.Combine(fluxSystemDirectory, "variables.yaml"),
-        [
-            new()
-            {
-              Name = "variables",
-              Path = $"clusters/{clusterName}/variables"
-            }
-        ]);
-
-    await GenerateFluxKustomizationFileAsync(Path.Combine(fluxSystemDirectory, "infrastructure.yaml"),
-    [
-        new FluxKustomizationContent
-        {
-            Name = "infrastructure-services",
-            Path = "infrastructure/services",
-            DependsOn = ["variables"]
-        },
-        new FluxKustomizationContent
-        {
-            Name = "infrastructure-configs",
-            Path = "infrastructure/configs",
-            DependsOn = ["infrastructure-services"]
-        }
-    ]);
-
-    await GenerateFluxKustomizationFileAsync(Path.Combine(fluxSystemDirectory, "apps.yaml"),
-    [
-        new() {
-            Name = "apps",
-            Path = $"clusters/{clusterName}/apps",
-            DependsOn = ["infrastructure-configs"]
-        }
-    ]);
   }
 
   static async Task GenerateFluxKustomizationFileAsync(string filePath, List<FluxKustomizationContent> contents)
