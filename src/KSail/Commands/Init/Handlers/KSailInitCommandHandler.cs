@@ -1,5 +1,6 @@
 using System.Text;
 using KSail.Generators;
+using KSail.Models.K3d;
 using KSail.Models.Kubernetes.FluxKustomization;
 using KSail.Provisioners.SecretManager;
 
@@ -52,13 +53,13 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
     await GenerateKustomizationAsync(Path.Combine(clusterDirectory, "variables/kustomization.yaml"), ["variables.yaml", "variables-sensitive.sops.yaml"], "flux-system");
     await GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "infrastructure/services/kustomization.yaml"),
     [
-      "github.com/devantler/oci-registry//k8s/cert-manager",
-      "github.com/devantler/oci-registry//k8s/traefik"
+      "https://github.com/devantler/oci-registry//k8s/cert-manager",
+      "https://github.com/devantler/oci-registry//k8s/traefik"
     ]);
     await GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "infrastructure/configs/kustomization.yaml"),
     [
-      "raw.githubusercontent.com/devantler/oci-registry/main/k8s/cert-manager/certificates/cluster-issuer-certificate.yaml",
-      "raw.githubusercontent.com/devantler/oci-registry/main/k8s/cert-manager/cluster-issuers/selfsigned-cluster-issuer.yaml"
+      "https://raw.githubusercontent.com/devantler/oci-registry/main/k8s/cert-manager/certificates/cluster-issuer-certificate.yaml",
+      "https://raw.githubusercontent.com/devantler/oci-registry/main/k8s/cert-manager/cluster-issuers/selfsigned-cluster-issuer.yaml"
     ]);
     await GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "apps/kustomization.yaml"),
     [
@@ -69,6 +70,7 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
     await GenerateSecretAsync(Path.Combine(clusterDirectory, "variables/variables-sensitive.sops.yaml"));
 
     await GenerateK3dConfigAsync($"{clusterName}-k3d-config.yaml");
+
     //TODO: await GenerateKSailConfigFileAsync($"{clusterName}-ksail-config.yaml");
     //TODO: await GenerateSOPSConfigFileAsync(".sops.yaml");
 
@@ -97,7 +99,16 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
   {
     if (!File.Exists(Path.Combine(Directory.GetCurrentDirectory(), filePath)))
     {
-      await CreateConfigAsync(clusterName);
+      Console.WriteLine($"✚ Generating K3d Config '{filePath}'");
+      await Generator.GenerateAsync(
+        $"{clusterName}-k3d-config.yaml",
+        $"{AppDomain.CurrentDomain.BaseDirectory}/assets/templates/k3d/k3d-config.sbn",
+        new K3dConfig { Name = clusterName }
+      );
+    }
+    else
+    {
+      Console.WriteLine($"✓ K3d Config '{filePath}' already exists");
     }
   }
 
