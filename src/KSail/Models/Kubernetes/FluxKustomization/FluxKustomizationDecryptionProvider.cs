@@ -2,5 +2,5 @@ namespace KSail.Models.Kubernetes.FluxKustomization;
 
 enum FluxKustomizationDecryptionProvider
 {
-    SOPS = 0,
+  SOPS = 0,
 }

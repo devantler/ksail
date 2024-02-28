@@ -1,4 +1,5 @@
 using KSail.Generators.Models;
+using KSail.Models.Kubernetes.FluxKustomization;
 
 namespace KSail.Generators;
 
