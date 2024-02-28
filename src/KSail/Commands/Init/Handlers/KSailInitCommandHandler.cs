@@ -27,7 +27,7 @@ class KSailInitCommandHandler : IDisposable
       };
       await Generator.GenerateAsync(
         variablesFluxKustomizationPath,
-        $"{AppDomain.CurrentDomain.BaseDirectory}/assets/templates/flux/kustomization.sbn",
+        $"{AppDomain.CurrentDomain.BaseDirectory}/assets/templates/kubernetes/kustomize.toolkit.fluxcd.io_v1_Kustomization.sbn",
         variablesFluxKustomization
       );
     }
@@ -56,7 +56,7 @@ class KSailInitCommandHandler : IDisposable
       };
       await Generator.GenerateAsync(
         infrastructureFluxKustomizationPath,
-        $"{AppDomain.CurrentDomain.BaseDirectory}/assets/templates/flux/kustomization.sbn",
+        $"{AppDomain.CurrentDomain.BaseDirectory}/assets/templates/kubernetes/kustomize.toolkit.fluxcd.io_v1_Kustomization.sbn",
         infrastructureFluxKustomization
       );
     }
@@ -80,7 +80,7 @@ class KSailInitCommandHandler : IDisposable
       };
       await Generator.GenerateAsync(
         appsFluxKustomizationPath,
-        $"{AppDomain.CurrentDomain.BaseDirectory}/assets/templates/flux/kustomization.sbn",
+        $"{AppDomain.CurrentDomain.BaseDirectory}/assets/templates/kubernetes/kustomize.toolkit.fluxcd.io_v1_Kustomization.sbn",
         appsFluxKustomization
       );
     }
