@@ -20,9 +20,9 @@ class KSailInitCommandHandler : IDisposable
       {
         Content = [
           new FluxKustomizationContent {
-          Name = "variables",
-          Path = $"./clusters/{clusterName}/variables",
-        }
+            Name = "variables",
+            Path = $"./clusters/{clusterName}/variables"
+          }
         ]
       };
       await Generator.GenerateAsync(
@@ -43,13 +43,15 @@ class KSailInitCommandHandler : IDisposable
       {
         Content = [
           new FluxKustomizationContent {
-          Name = "infrastructure-services",
-          Path = "./infrastructure/services",
-        },
+            Name = "infrastructure-services",
+            Path = "./infrastructure/services",
+            DependsOn = ["variables"]
+          },
           new FluxKustomizationContent {
-          Name = "infrastructure-configs",
-          Path = "./infrastructure/configs",
-        }
+            Name = "infrastructure-configs",
+            Path = "./infrastructure/configs",
+            DependsOn = ["infrastructure-services"]
+          }
         ]
       };
       await Generator.GenerateAsync(
@@ -70,9 +72,10 @@ class KSailInitCommandHandler : IDisposable
       {
         Content = [
           new FluxKustomizationContent {
-          Name = "apps",
-          Path = $"./clusters/{clusterName}/apps",
-        }
+            Name = "apps",
+            Path = $"./clusters/{clusterName}/apps",
+            DependsOn = ["infrastructure-configs"]
+          }
         ]
       };
       await Generator.GenerateAsync(
