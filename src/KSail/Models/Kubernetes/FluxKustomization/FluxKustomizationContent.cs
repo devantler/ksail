@@ -2,19 +2,19 @@ namespace KSail.Models.Kubernetes.FluxKustomization;
 
 class FluxKustomizationContent
 {
-  internal required string Name { get; set; }
-  internal string Namespace { get; set; } = "flux-system";
-  internal string Interval { get; set; } = "1m";
-  internal List<string> DependsOn { get; set; } = [];
-  internal FluxKustomizationSourceRef SourceRef { get; set; } = new FluxKustomizationSourceRef
+  public required string Name { get; set; }
+  public string Namespace { get; set; } = "flux-system";
+  public string Interval { get; set; } = "1m";
+  public List<string> DependsOn { get; set; } = [];
+  public FluxKustomizationSourceRef SourceRef { get; set; } = new FluxKustomizationSourceRef
   {
     Kind = "GitRepository",
     Name = "flux-system"
   };
-  internal required string Path { get; set; }
-  internal bool Prune { get; set; } = true;
-  internal bool Wait { get; set; } = true;
-  internal FluxKustomizationDecryption Decryption { get; set; } = new FluxKustomizationDecryption
+  public required string Path { get; set; }
+  public bool Prune { get; set; } = true;
+  public bool Wait { get; set; } = true;
+  public FluxKustomizationDecryption Decryption { get; set; } = new FluxKustomizationDecryption
   {
     Provider = FluxKustomizationDecryptionProvider.SOPS,
     SecretRef = new FluxKustomizationDecryptionSecretRef
@@ -22,7 +22,7 @@ class FluxKustomizationContent
       Name = "sops-age"
     }
   };
-  internal FluxKustomizationPostBuild PostBuild { get; set; } = new FluxKustomizationPostBuild
+  public FluxKustomizationPostBuild PostBuild { get; set; } = new FluxKustomizationPostBuild
   {
     SubstituteFrom =
     [
