@@ -12,54 +12,79 @@ class KSailInitCommandHandler : IDisposable
   {
     string clusterDirectory = Path.Combine(manifests, "clusters", clusterName);
 
-    var variablesFluxKustomization = new FluxKustomization
+    string variablesFluxKustomizationPath = Path.Combine(clusterDirectory, "flux-system", "variables.yaml");
+
+    if (!File.Exists(variablesFluxKustomizationPath))
     {
-      Content = [
-        new FluxKustomizationContent {
+      var variablesFluxKustomization = new FluxKustomization
+      {
+        Content = [
+          new FluxKustomizationContent {
           Name = "variables",
           Path = $"./clusters/{clusterName}/variables",
         }
-      ]
-    };
-    await Generator.GenerateAsync(
-      Path.Combine(clusterDirectory, "flux-system", "variables.yaml"),
-      $"{AppDomain.CurrentDomain.BaseDirectory}/templates/flux/kustomization.sbn",
-      variablesFluxKustomization
-    );
-
-    var infrastructureFluxKustomization = new FluxKustomization
+        ]
+      };
+      await Generator.GenerateAsync(
+        variablesFluxKustomizationPath,
+        $"{AppDomain.CurrentDomain.BaseDirectory}/assets/templates/flux/kustomization.sbn",
+        variablesFluxKustomization
+      );
+    }
+    else
     {
-      Content = [
-        new FluxKustomizationContent {
+      Console.WriteLine($"✕ A variables.yaml file already exists at '{variablesFluxKustomizationPath}'. Skipping variables creation.");
+    }
+
+    string infrastructureFluxKustomizationPath = Path.Combine(clusterDirectory, "flux-system", "infrastructure.yaml");
+    if (!File.Exists(infrastructureFluxKustomizationPath))
+    {
+      var infrastructureFluxKustomization = new FluxKustomization
+      {
+        Content = [
+          new FluxKustomizationContent {
           Name = "infrastructure-services",
           Path = "./infrastructure/services",
         },
-        new FluxKustomizationContent {
+          new FluxKustomizationContent {
           Name = "infrastructure-configs",
           Path = "./infrastructure/configs",
         }
-      ]
-    };
-    await Generator.GenerateAsync(
-      Path.Combine(clusterDirectory, "flux-system", "infrastructure.yaml"),
-      $"{AppDomain.CurrentDomain.BaseDirectory}/templates/flux/kustomization.sbn",
-      infrastructureFluxKustomization
-    );
-
-    var appsFluxKustomization = new FluxKustomization
+        ]
+      };
+      await Generator.GenerateAsync(
+        infrastructureFluxKustomizationPath,
+        $"{AppDomain.CurrentDomain.BaseDirectory}/assets/templates/flux/kustomization.sbn",
+        infrastructureFluxKustomization
+      );
+    }
+    else
     {
-      Content = [
-        new FluxKustomizationContent {
+      Console.WriteLine($"✕ An infrastructure.yaml file already exists at '{infrastructureFluxKustomizationPath}'. Skipping infrastructure creation.");
+    }
+
+    string appsFluxKustomizationPath = Path.Combine(clusterDirectory, "flux-system", "apps.yaml");
+    if (!File.Exists(appsFluxKustomizationPath))
+    {
+      var appsFluxKustomization = new FluxKustomization
+      {
+        Content = [
+          new FluxKustomizationContent {
           Name = "apps",
           Path = $"./clusters/{clusterName}/apps",
         }
-      ]
-    };
-    await Generator.GenerateAsync(
-      Path.Combine(clusterDirectory, "flux-system", "apps.yaml"),
-      $"{AppDomain.CurrentDomain.BaseDirectory}/templates/flux/kustomization.sbn",
-      appsFluxKustomization
-    );
+        ]
+      };
+      await Generator.GenerateAsync(
+        appsFluxKustomizationPath,
+        $"{AppDomain.CurrentDomain.BaseDirectory}/assets/templates/flux/kustomization.sbn",
+        appsFluxKustomization
+      );
+    }
+    else
+    {
+      Console.WriteLine($"✕ An apps.yaml file already exists at '{appsFluxKustomizationPath}'. Skipping apps creation.");
+    }
 
     // TODO: Migrate this code to the generator
     await CreateKustomizationsAsync(clusterDirectory);
@@ -188,6 +213,27 @@ class KSailInitCommandHandler : IDisposable
             - arg: "--disable=traefik"
               nodeFilters:
                 - server:*
+      registries:
+        config: |
+          mirrors:
+            "docker.io":
+              endpoint:
+                - http://host.k3d.internal:5001
+            "registry.k8s.io":
+              endpoint:
+                - http://host.k3d.internal:5002
+            "gcr.io":
+              endpoint:
+                - http://host.k3d.internal:5003
+            "ghcr.io":
+              endpoint:
+                - http://host.k3d.internal:5004
+            "quay.io":
+              endpoint:
+                - http://host.k3d.internal:5005
+            "mcr.microsoft.com":
+              endpoint:
+                - http://host.k3d.internal:5006
       """;
     var configFile = File.Create(configPath) ?? throw new InvalidOperationException($"🚨 Could not create the config file at {configPath}.");
     await configFile.WriteAsync(Encoding.UTF8.GetBytes(configContent));
