@@ -14,6 +14,7 @@ static class Generator
     }
 
     string renderedFile = await TemplateEngine.RenderAsync(templatePath, model);
+    Console.WriteLine(renderedFile);
     var fileStream = new FileStream(outputPath, FileMode.CreateNew, FileAccess.Write);
     await fileStream.WriteAsync(Encoding.UTF8.GetBytes(renderedFile));
     await fileStream.FlushAsync();
