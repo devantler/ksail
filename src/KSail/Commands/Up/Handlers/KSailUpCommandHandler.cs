@@ -81,9 +81,13 @@ class KSailUpCommandHandler(
       Console.WriteLine($"✕ Failed to provision cluster '{clusterName}'");
       return 1;
     }
+    Console.WriteLine("");
+
+    Console.WriteLine($"🌐 Creating 'flux-system' namespace");
     var kubernetesDistributionType = await _kubernetesDistributionProvisioner.GetKubernetesDistributionTypeAsync();
     string context = $"{kubernetesDistributionType.ToString()?.ToLowerInvariant()}-{clusterName}";
     await _containerOrchestratorProvisioner.CreateNamespaceAsync(context, "flux-system");
+    Console.WriteLine("");
 
     if (!noSOPS)
     {
