@@ -1,4 +1,4 @@
-namespace KSail.Generators.Kubernetes.Models.FluxKustomization;
+namespace KSail.Models.Kubernetes.FluxKustomization;
 
 class FluxKustomizationContent
 {
@@ -34,6 +34,6 @@ class FluxKustomizationContent
         Kind = "Secret",
         Name = "variables-sensitive"
       }
-    ]
+      ]
   };
 }

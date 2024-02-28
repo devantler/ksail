@@ -1,4 +1,4 @@
-namespace KSail.Generators.Kubernetes.Models.FluxKustomization;
+namespace KSail.Models.Kubernetes.FluxKustomization;
 
 class FluxKustomizationDecryption
 {

@@ -1,6 +1,6 @@
 using KSail.Generators.Models;
 
-namespace KSail.Generators.Kubernetes.Models.FluxKustomization;
+namespace KSail.Models.Kubernetes.FluxKustomization;
 
 class FluxKustomization : IModel
 {
