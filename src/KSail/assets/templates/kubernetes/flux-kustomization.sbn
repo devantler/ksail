@@ -1,4 +1,4 @@
-{{ for c in content }}
+{{~ for c in content }}
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -27,4 +27,4 @@ spec:
         name: {{ sub.name }}
     {{~ end ~}}
 {{~ if for.last }}{{ else }}---{{ end ~}}
-{{ end }}
+{{ end ~}}
