@@ -83,7 +83,7 @@ class KSailUpCommandHandler(
     }
     Console.WriteLine("");
 
-    Console.WriteLine($"🌐 Creating 'flux-system' namespace");
+    Console.WriteLine("🌐 Creating 'flux-system' namespace");
     var kubernetesDistributionType = await _kubernetesDistributionProvisioner.GetKubernetesDistributionTypeAsync();
     string context = $"{kubernetesDistributionType.ToString()?.ToLowerInvariant()}-{clusterName}";
     await _containerOrchestratorProvisioner.CreateNamespaceAsync(context, "flux-system");
