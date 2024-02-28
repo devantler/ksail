@@ -26,17 +26,44 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
               }
             }
     ]);
+    await GenerateFluxKustomizationAsync(Path.Combine(fluxSystemDirectory, "infrastructure.yaml"),
+[
+        new FluxKustomizationContent
+        {
+            Name = "infrastructure-services",
+            Path = "infrastructure/services",
+            DependsOn = ["variables"]
+        },
+        new FluxKustomizationContent
+        {
+            Name = "infrastructure-configs",
+            Path = "infrastructure/configs",
+            DependsOn = ["infrastructure-services"]
+        }
+    ]);
     await GenerateFluxKustomizationAsync(Path.Combine(fluxSystemDirectory, "apps.yaml"),
-    [
+[
         new() {
             Name = "apps",
-            Path = $"clusters/{clusterName}/apps",
-            DependsOn = ["variables"]
+            Path = "apps",
+            DependsOn = ["infrastructure-configs"]
         }
     ]);
     await GenerateKustomizationAsync(Path.Combine(clusterDirectory, "variables/kustomization.yaml"), ["variables.yaml", "variables-sensitive.sops.yaml"], "flux-system");
-    await GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "apps/kustomization.yaml"), ["podinfo"]);
-    await GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "apps/podinfo/kustomization.yaml"), ["github.com/stefanprodan/podinfo//kustomize"]);
+    await GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "infrastructure/services/kustomization.yaml"),
+    [
+      "github.com/devantler/oci-registry//k8s/cert-manager",
+      "github.com/devantler/oci-registry//k8s/traefik"
+    ]);
+    await GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "infrastructure/configs/kustomization.yaml"),
+    [
+      "raw.githubusercontent.com/devantler/oci-registry/main/k8s/cert-manager/certificates/cluster-issuer-certificate.yaml",
+      "raw.githubusercontent.com/devantler/oci-registry/main/k8s/cert-manager/cluster-issuers/selfsigned-cluster-issuer.yaml"
+    ]);
+    await GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "apps/kustomization.yaml"),
+    [
+      "github.com/stefanprodan/podinfo//kustomize"
+    ]);
 
     await GenerateConfigMapAsync(Path.Combine(clusterDirectory, "variables/variables.yaml"));
     await GenerateSecretAsync(Path.Combine(clusterDirectory, "variables/variables-sensitive.sops.yaml"));
