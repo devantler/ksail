@@ -26,5 +26,7 @@ spec:
       - kind: {{ sub.kind }}
         name: {{ sub.name }}
     {{~ end ~}}
-{{~ if for.last }}{{ else }}---{{ end ~}}
+{{~ if !for.last ~}}
+---
+{{~ end ~}}
 {{~ end ~}}
