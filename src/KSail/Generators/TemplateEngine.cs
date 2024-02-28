@@ -3,7 +3,7 @@ using KSail.Models.Kubernetes.FluxKustomization;
 
 namespace KSail.Generators;
 
-static class Template
+static class TemplateEngine
 {
   internal static async Task<string> RenderAsync(string templatePath, IModel model)
   {

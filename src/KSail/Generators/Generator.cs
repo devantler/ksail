@@ -13,8 +13,9 @@ static class Generator
       _ = Directory.CreateDirectory(directoryName);
     }
 
+    string renderedFile = await TemplateEngine.RenderAsync(templatePath, model);
     var fileStream = new FileStream(outputPath, FileMode.CreateNew, FileAccess.Write);
-    await fileStream.WriteAsync(Encoding.UTF8.GetBytes(await Template.RenderAsync(templatePath, model)));
+    await fileStream.WriteAsync(Encoding.UTF8.GetBytes(renderedFile));
     await fileStream.FlushAsync();
     fileStream.Close();
   }
