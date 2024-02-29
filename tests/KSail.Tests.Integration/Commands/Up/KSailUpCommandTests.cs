@@ -1,7 +1,6 @@
 using System.CommandLine;
 using System.CommandLine.IO;
 using KSail.Commands.Init;
-using KSail.Commands.SOPS;
 using KSail.Commands.Start;
 using KSail.Commands.Stop;
 using KSail.Commands.Up;
