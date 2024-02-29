@@ -23,6 +23,7 @@ public partial class KSailCheckCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailCheck_FailsAndPrintsHelp()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailCheck_FailsAndPrintsHelp)}");
     //Arrange
     var console = new TestConsole();
     var ksailCheckCommand = new KSailCheckCommand();
@@ -36,6 +37,7 @@ public partial class KSailCheckCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(1, exitCode);
     _ = await Verify(console.Error + output).AutoVerify();
+    Console.WriteLine("");
   }
 
   [GeneratedRegex("/.*\\/.*\\/.kube/config")]

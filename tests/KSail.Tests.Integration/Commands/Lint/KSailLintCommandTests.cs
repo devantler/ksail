@@ -22,6 +22,7 @@ public class KSailLintCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailLint_SucceedsAndPrintsIntroductionAndHelp()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailLint_SucceedsAndPrintsIntroductionAndHelp)}");
     //Arrange
     var console = new TestConsole();
     var ksailCommand = new KSailLintCommand();
@@ -32,6 +33,7 @@ public class KSailLintCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(1, exitCode);
     _ = await Verify(console.Error.ToString() + console.Out);
+    Console.WriteLine("");
   }
 
   /// <summary>
@@ -40,6 +42,7 @@ public class KSailLintCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailLint_SucceedsAndLintsCluster()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailLint_SucceedsAndLintsCluster)}");
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailLintCommand = new KSailLintCommand();
@@ -51,5 +54,6 @@ public class KSailLintCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, lintExitCode);
+    Console.WriteLine("");
   }
 }

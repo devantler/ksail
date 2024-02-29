@@ -26,6 +26,7 @@ public class KSailUpCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailUpNoNameAndNoConfig_FailsAndPrintsHelp()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailUpNoNameAndNoConfig_FailsAndPrintsHelp)}");
     //Arrange
     var console = new TestConsole();
     var ksailUpCommand = new KSailUpCommand();
@@ -36,6 +37,7 @@ public class KSailUpCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(1, exitCode);
     _ = await Verify(console.Error.ToString() + console.Out);
+    Console.WriteLine("");
   }
 
   /// <summary>
@@ -44,6 +46,7 @@ public class KSailUpCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailUpNameAndNoConfig_FailsAndPrintsHelp()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailUpNameAndNoConfig_FailsAndPrintsHelp)}");
     //Arrange
     var console = new TestConsole();
     var ksailUpCommand = new KSailUpCommand();
@@ -54,6 +57,7 @@ public class KSailUpCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(1, exitCode);
     _ = await Verify(console.Error.ToString() + console.Out);
+    Console.WriteLine("");
   }
 
   /// <summary>
@@ -62,6 +66,7 @@ public class KSailUpCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailUpNoNameAndConfig_FailsAndPrintsHelp()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailUpNoNameAndConfig_FailsAndPrintsHelp)}");
     //Arrange
     var console = new TestConsole();
     var ksailInitCommand = new KSailInitCommand();
@@ -75,6 +80,7 @@ public class KSailUpCommandTests : IAsyncLifetime
     Assert.Equal(0, initExitCode);
     Assert.Equal(1, upExitCode);
     _ = await Verify(console.Error.ToString() + console.Out);
+    Console.WriteLine("");
   }
 
   /// <summary>
@@ -83,6 +89,7 @@ public class KSailUpCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailUp_SucceedsAndCreatesCluster()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailUp_SucceedsAndCreatesCluster)}");
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();
@@ -104,5 +111,6 @@ public class KSailUpCommandTests : IAsyncLifetime
     Assert.Equal(0, startExitCode);
     Assert.Equal(0, updateExitCode);
     Assert.True(await new DockerTestUtils().CheckRegistriesExistAsync());
+    Console.WriteLine("");
   }
 }

@@ -23,6 +23,7 @@ public class KSailUpdateCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailUpdate_FailsAndPrintsHelp()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailUpdate_FailsAndPrintsHelp)}");
     //Arrange
     var console = new TestConsole();
     var ksailUpdateCommand = new KSailUpdateCommand();
@@ -33,6 +34,7 @@ public class KSailUpdateCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(1, exitCode);
     _ = await Verify(console.Error.ToString() + console.Out);
+    Console.WriteLine("");
   }
 
   /// <summary>
@@ -41,6 +43,7 @@ public class KSailUpdateCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailUpdateNameNoReconcile_SucceedsAndPushesUpdatesToOCI()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailUpdateNameNoReconcile_SucceedsAndPushesUpdatesToOCI)}");
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpdateCommand = new KSailUpdateCommand();
@@ -55,5 +58,6 @@ public class KSailUpdateCommandTests : IAsyncLifetime
     Assert.Equal(0, dockerProvisionerExitCode);
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, updateExitCode);
+    Console.WriteLine("");
   }
 }
