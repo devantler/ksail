@@ -64,7 +64,7 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
     ]);
     await GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "apps/kustomization.yaml"),
     [
-      "github.com/stefanprodan/podinfo//kustomize"
+      "https://github.com/stefanprodan/podinfo//kustomize"
     ]);
 
     await GenerateConfigMapAsync(Path.Combine(clusterDirectory, "variables/variables.yaml"));
