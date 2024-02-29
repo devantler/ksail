@@ -1,5 +1,3 @@
-using KSail.Generators.Models;
-
 namespace KSail.Generators;
 
 static class TemplateEngine

@@ -1,5 +1,3 @@
-using KSail.Generators.Models;
-
 namespace KSail.Models.K3d;
 
 class SOPSConfig

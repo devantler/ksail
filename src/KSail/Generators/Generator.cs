@@ -1,5 +1,4 @@
 using System.Text;
-using KSail.Generators.Models;
 
 namespace KSail.Generators;
 

@@ -1,5 +1,3 @@
-using KSail.Generators.Models;
-
 namespace KSail.Models.Kubernetes;
 
 class Kustomization
