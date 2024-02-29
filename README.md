@@ -101,7 +101,11 @@ Supported OSes:
 
 > [!NOTE]
 > On MacOS (darwin) you need to "Allow the default Docker socket to be used (requires password)" in Docker Desktop settings.
+> <details><summary>Show me how</summary>
+>
 > ![Enable Docker Socket in Docker Desktop](images/enable-docker-socket-in-docker-desktop.png)
+>
+> </details>
 
 - darwin-amd64 🍎✅
 - darwin-arm64 🍎✅
@@ -110,17 +114,15 @@ Supported OSes:
 - windows-amd64 🪟❌
 - windows-arm64 🪟❌
 
-Tools:
+Required Tools:
 
-- [Docker](https://www.docker.com) (required)
+- [Docker](https://www.docker.com)
 
-### Recommendations
-
-Tools:
+Recommended Tools:
 
 - [K9s](https://k9scli.io) (for debugging)
 - [VScode Extension - Run on Save(pucelle.run-on-save)](https://github.com/pucelle/vscode-run-on-save) (run `ksail update` on save, to enable "live updates")
-- [VSCode Extension - GitOps Tools for Flux](https://marketplace.visualstudio.com/items?itemName=Weaveworks.vscode-gitops-tools) (UI to watch and debug reconciliations)
+- [VSCode Extension - GitOps Tools for Flux](https://marketplace.visualstudio.com/items?itemName=Weaveworks.vscode-gitops-tools) (UI to watch and debug Flux reconciliations)
 
 ### Installation
 
