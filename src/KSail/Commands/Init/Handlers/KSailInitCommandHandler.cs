@@ -13,6 +13,7 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
 
   internal async Task<int> HandleAsync(CancellationToken token)
   {
+    Console.WriteLine($"📁 Initializing new cluster '{clusterName}'");
     string clusterDirectory = Path.Combine(manifestsDirectory, "clusters", clusterName);
     string fluxSystemDirectory = Path.Combine(clusterDirectory, "flux-system");
 
@@ -99,6 +100,7 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
       publicKeys.Add(publicKey.result);
     }
     await GenerateSOPSConfigAsync("./.sops.yaml", publicKeys);
+    Console.WriteLine("");
     return 0;
   }
 
