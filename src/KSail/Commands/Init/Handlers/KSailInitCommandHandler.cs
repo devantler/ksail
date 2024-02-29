@@ -73,10 +73,40 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
     await GenerateK3dConfigAsync($"./{clusterName}-k3d-config.yaml");
 
     //TODO: await GenerateKSailConfigFileAsync($"{clusterName}-ksail-config.yaml");
-    //TODO: await GenerateSOPSConfigFileAsync(".sops.yaml");
 
     //TODO: Move this method to a generator. Provisioning should not generate files.
-    return await ProvisionSOPSKey(clusterName, token);
+    if (await ProvisionSOPSKey(clusterName, token) != 0)
+    {
+      return 1;
+    }
+    //Scan and return a list of all directory names in the k8s/clusters directory
+    var clusters = Directory.GetDirectories(Path.Combine(manifestsDirectory, "clusters")).Select(Path.GetFileName).ToList();
+    var publicKeys = new List<string>();
+    foreach (string? cluster in clusters)
+    {
+      if (string.IsNullOrEmpty(cluster))
+      {
+        continue;
+      }
+      var publicKey = await _localSOPSProvisioner.GetPublicKeyAsync(KeyType.Age, cluster, token);
+      publicKeys.Add(publicKey.result);
+    }
+    await GenerateSOPSConfigAsync("./.sops.yaml", publicKeys);
+    return 0;
+  }
+
+  static Task GenerateSOPSConfigAsync(string filePath, List<string> publicKeys)
+  {
+    Console.WriteLine($"✚ Generating SOPS Config '{filePath}'");
+    return Generator.GenerateAsync(
+      filePath,
+      $"{AppDomain.CurrentDomain.BaseDirectory}/assets/templates/sops/sops-config.sbn",
+      new SOPSConfig
+      {
+        PublicKeys = publicKeys
+      },
+      FileMode.Create
+    );
   }
 
   async Task<int> ProvisionSOPSKey(string clusterName, CancellationToken token)

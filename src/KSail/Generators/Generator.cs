@@ -5,7 +5,7 @@ namespace KSail.Generators;
 
 static class Generator
 {
-  internal static async Task GenerateAsync(string outputPath, string templatePath, IModel model)
+  internal static async Task GenerateAsync(string outputPath, string templatePath, IModel model, FileMode fileMode = FileMode.CreateNew)
   {
     string directoryName = Path.GetDirectoryName(outputPath) ?? throw new ArgumentNullException(nameof(outputPath));
     if (!Directory.Exists(directoryName))
@@ -13,7 +13,7 @@ static class Generator
       _ = Directory.CreateDirectory(directoryName);
     }
 
-    var fileStream = new FileStream(outputPath, FileMode.CreateNew, FileAccess.Write);
+    var fileStream = new FileStream(outputPath, fileMode, FileAccess.Write);
     await fileStream.WriteAsync(Encoding.UTF8.GetBytes(await TemplateEngine.RenderAsync(templatePath, model)));
     await fileStream.FlushAsync();
     fileStream.Close();
