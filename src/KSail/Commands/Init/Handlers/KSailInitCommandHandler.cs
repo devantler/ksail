@@ -64,8 +64,15 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
     ]);
     await GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "apps/kustomization.yaml"),
     [
+      "podinfo"
+    ]);
+    await GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "apps/podinfo/kustomization.yaml"),
+    [
+      "namespace.yaml",
       "https://github.com/stefanprodan/podinfo//kustomize"
-    ], "apps");
+    ]);
+
+    await GenerateNamespaceAsync(Path.Combine(manifestsDirectory, "apps/podinfo/namespace.yaml"), "podinfo");
 
     await GenerateConfigMapAsync(Path.Combine(clusterDirectory, "variables/variables.yaml"));
     await GenerateSecretAsync(Path.Combine(clusterDirectory, "variables/variables-sensitive.sops.yaml"));
@@ -93,6 +100,26 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
     }
     await GenerateSOPSConfigAsync("./.sops.yaml", publicKeys);
     return 0;
+  }
+
+  static async Task GenerateNamespaceAsync(string filePath, string name)
+  {
+    if (!File.Exists(filePath))
+    {
+      Console.WriteLine($"✚ Generating Namespace '{filePath}'");
+      await Generator.GenerateAsync(
+        filePath,
+        $"{AppDomain.CurrentDomain.BaseDirectory}/assets/templates/kubernetes/namespace.sbn",
+        new Namespace
+        {
+          Name = name
+        }
+      );
+    }
+    else
+    {
+      Console.WriteLine($"✓ Namespace '{filePath}' already exists");
+    }
   }
 
   static Task GenerateSOPSConfigAsync(string filePath, List<string> publicKeys)
