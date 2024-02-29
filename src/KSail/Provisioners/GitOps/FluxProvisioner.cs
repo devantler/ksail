@@ -14,22 +14,8 @@ sealed class FluxProvisioner : IGitOpsProvisioner
       : 0;
   }
 
-  public async Task<int> ReconcileAsync(string context, CancellationToken token)
-  {
-    if (await FluxCLIWrapper.ReconcileAsync(context, token) != 0)
-    {
-      return 1;
-    }
-    Console.WriteLine();
-    return 0;
-  }
-  public async Task<int> PushManifestsAsync(string ociUrl, string manifestsPath, CancellationToken token)
-  {
-    if (await FluxCLIWrapper.PushManifestsAsync(ociUrl, manifestsPath, token) != 0)
-    {
-      return 1;
-    }
-    Console.WriteLine();
-    return 0;
-  }
+  public async Task<int> ReconcileAsync(string context, CancellationToken token) =>
+    await FluxCLIWrapper.ReconcileAsync(context, token) != 0 ? 1 : 0;
+  public async Task<int> PushManifestsAsync(string ociUrl, string manifestsPath, CancellationToken token) =>
+    await FluxCLIWrapper.PushManifestsAsync(ociUrl, manifestsPath, token) != 0 ? 1 : 0;
 }

@@ -1,7 +1,7 @@
-flux_version_v2.2.3
-k3d_version_v5.6.0
-kubeconform_version_v0.6.4
-kustomize_version_v5.3.0
-age-keygen_version_v1.1.1
-sops_version_v3.8.1
-kind_version_v0.22.0
+flux_v2.2.3
+k3d_v5.6.0
+kubeconform_v0.6.4
+kustomize_v5.3.0
+age-keygen_v1.1.1
+sops_v3.8.1
+kind_v0.22.0
