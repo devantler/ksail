@@ -1,6 +1,7 @@
 using System.Text;
 using KSail.Generators;
 using KSail.Models.K3d;
+using KSail.Models.Kubernetes;
 using KSail.Models.Kubernetes.FluxKustomization;
 using KSail.Provisioners.SecretManager;
 
@@ -69,7 +70,7 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
     await GenerateConfigMapAsync(Path.Combine(clusterDirectory, "variables/variables.yaml"));
     await GenerateSecretAsync(Path.Combine(clusterDirectory, "variables/variables-sensitive.sops.yaml"));
 
-    await GenerateK3dConfigAsync($"{clusterName}-k3d-config.yaml");
+    await GenerateK3dConfigAsync($"./{clusterName}-k3d-config.yaml");
 
     //TODO: await GenerateKSailConfigFileAsync($"{clusterName}-ksail-config.yaml");
     //TODO: await GenerateSOPSConfigFileAsync(".sops.yaml");
@@ -93,23 +94,6 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
       return 1;
     }
     return 0;
-  }
-
-  async Task GenerateK3dConfigAsync(string filePath)
-  {
-    if (!File.Exists(Path.Combine(Directory.GetCurrentDirectory(), filePath)))
-    {
-      Console.WriteLine($"✚ Generating K3d Config '{filePath}'");
-      await Generator.GenerateAsync(
-        $"{clusterName}-k3d-config.yaml",
-        $"{AppDomain.CurrentDomain.BaseDirectory}/assets/templates/k3d/k3d-config.sbn",
-        new K3dConfig { Name = clusterName }
-      );
-    }
-    else
-    {
-      Console.WriteLine($"✓ K3d Config '{filePath}' already exists");
-    }
   }
 
   static async Task GenerateFluxKustomizationAsync(string filePath, List<FluxKustomizationContent> contents)
@@ -188,49 +172,21 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
     await variablesYamlFile.FlushAsync();
   }
 
-  static async Task CreateConfigAsync(string clusterName)
+  async Task GenerateK3dConfigAsync(string filePath)
   {
-    Console.WriteLine($"✚ Generating K3d Config './{clusterName}-k3d-config.yaml'");
-    string configPath = Path.Combine(Directory.GetCurrentDirectory(), $"{clusterName}-k3d-config.yaml");
-    string configContent = $"""
-      apiVersion: k3d.io/v1alpha5
-      kind: Simple
-      metadata:
-        name: {clusterName}
-      volumes:
-        - volume: k3d-{clusterName}-storage:/var/lib/rancher/k3s/storage
-      network: k3d-{clusterName}
-      options:
-        k3s:
-          extraArgs:
-            - arg: "--disable=traefik"
-              nodeFilters:
-                - server:*
-      registries:
-        config: |
-          mirrors:
-            "docker.io":
-              endpoint:
-                - http://host.k3d.internal:5001
-            "registry.k8s.io":
-              endpoint:
-                - http://host.k3d.internal:5002
-            "gcr.io":
-              endpoint:
-                - http://host.k3d.internal:5003
-            "ghcr.io":
-              endpoint:
-                - http://host.k3d.internal:5004
-            "quay.io":
-              endpoint:
-                - http://host.k3d.internal:5005
-            "mcr.microsoft.com":
-              endpoint:
-                - http://host.k3d.internal:5006
-      """;
-    var configFile = File.Create(configPath) ?? throw new InvalidOperationException($"🚨 Could not create the config file at {configPath}.");
-    await configFile.WriteAsync(Encoding.UTF8.GetBytes(configContent));
-    await configFile.FlushAsync();
+    if (!File.Exists(filePath))
+    {
+      Console.WriteLine($"✚ Generating K3d Config '{filePath}'");
+      await Generator.GenerateAsync(
+        filePath,
+        $"{AppDomain.CurrentDomain.BaseDirectory}/assets/templates/k3d/k3d-config.sbn",
+        new K3dConfig { Name = clusterName }
+      );
+    }
+    else
+    {
+      Console.WriteLine($"✓ K3d Config '{filePath}' already exists");
+    }
   }
 
   public void Dispose()
