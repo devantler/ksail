@@ -2,7 +2,7 @@ using KSail.Generators.Models;
 
 namespace KSail.Models.K3d;
 
-class SOPSConfig : IModel
+class SOPSConfig
 {
   public required List<string> PublicKeys { get; set; }
 }
