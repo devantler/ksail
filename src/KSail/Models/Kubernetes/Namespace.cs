@@ -2,7 +2,7 @@ using KSail.Generators.Models;
 
 namespace KSail.Models.Kubernetes;
 
-class Namespace : IModel
+class Namespace
 {
   public required string Name { get; set; }
 }
