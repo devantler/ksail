@@ -13,6 +13,7 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
 
   internal async Task<int> HandleAsync(CancellationToken token)
   {
+    Console.WriteLine($"📁 Initializing new cluster '{clusterName}'");
     string clusterDirectory = Path.Combine(manifestsDirectory, "clusters", clusterName);
     string fluxSystemDirectory = Path.Combine(clusterDirectory, "flux-system");
 
@@ -99,6 +100,7 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
       publicKeys.Add(publicKey.result);
     }
     await GenerateSOPSConfigAsync("./.sops.yaml", publicKeys);
+    Console.WriteLine("");
     return 0;
   }
 
@@ -197,6 +199,11 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
 
   static async Task GenerateSecretAsync(string filePath)
   {
+    if (File.Exists(filePath))
+    {
+      Console.WriteLine($"✓ Secret '{filePath}' already exists");
+      return;
+    }
     Console.WriteLine($"✚ Generating Secret '{filePath}'");
     const string variablesSensitiveYamlContent = """
       # You need to encrypt this file with SOPS manually.
@@ -214,6 +221,11 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
 
   static async Task GenerateConfigMapAsync(string filePath)
   {
+    if (File.Exists(filePath))
+    {
+      Console.WriteLine($"✓ ConfigMap '{filePath}' already exists");
+      return;
+    }
     Console.WriteLine($"✚ Generating ConfigMap '{filePath}'");
     const string variablesYamlContent = """
       apiVersion: v1

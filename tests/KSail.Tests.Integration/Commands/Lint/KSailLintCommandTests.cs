@@ -22,6 +22,7 @@ public class KSailLintCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailLint_SucceedsAndPrintsIntroductionAndHelp()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailLint_SucceedsAndPrintsIntroductionAndHelp)}");
     //Arrange
     var console = new TestConsole();
     var ksailCommand = new KSailLintCommand();
@@ -40,6 +41,7 @@ public class KSailLintCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailLint_SucceedsAndLintsCluster()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailLint_SucceedsAndLintsCluster)}");
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailLintCommand = new KSailLintCommand();

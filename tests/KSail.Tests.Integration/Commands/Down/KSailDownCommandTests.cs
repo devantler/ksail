@@ -21,6 +21,7 @@ public class KSailDownCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailDown_FailsAndPrintsHelp()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailDown_FailsAndPrintsHelp)}");
     //Arrange
     var console = new TestConsole();
     var ksailDownCommand = new KSailDownCommand();

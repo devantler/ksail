@@ -7,6 +7,7 @@ namespace KSail.Tests.Integration.Commands.Root;
 /// <summary>
 /// Tests for the <see cref="KSailRootCommand"/> class.
 /// </summary>
+[Collection("KSail.Tests.Integration")]
 public class KSailRootCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
@@ -19,6 +20,7 @@ public class KSailRootCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSail_SucceedsAndPrintsIntroductionAndHelp()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSail_SucceedsAndPrintsIntroductionAndHelp)}");
     //Arrange
     var console = new TestConsole();
     var ksailCommand = new KSailRootCommand(console);
@@ -37,6 +39,7 @@ public class KSailRootCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailHelp_SucceedsAndPrintsHelp()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailHelp_SucceedsAndPrintsHelp)}");
     //Arrange
     var console = new TestConsole();
     var ksailCommand = new KSailRootCommand(console);

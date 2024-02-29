@@ -21,6 +21,7 @@ public class KSailListCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailList_SucceedsAndListsClusters()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailList_SucceedsAndListsClusters)}");
     //Arrange
     var ksailListCommand = new KSailListCommand();
 

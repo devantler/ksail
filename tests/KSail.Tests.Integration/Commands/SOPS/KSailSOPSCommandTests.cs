@@ -21,6 +21,7 @@ public class KSailSOPSCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailSOPS_FailsAndPrintsHelp()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailSOPS_FailsAndPrintsHelp)}");
     //Arrange
     var console = new TestConsole();
     var ksailSOPSCommand = new KSailSOPSCommand();
@@ -39,6 +40,7 @@ public class KSailSOPSCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailSOPSShowKey_PrintsFullKey()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailSOPSShowKey_PrintsFullKey)}");
     //Arrange
     var ksailSOPSCommand = new KSailSOPSCommand();
 
@@ -59,6 +61,7 @@ public class KSailSOPSCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailSOPSShowPublicKey_PrintsPublicKey()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailSOPSShowPublicKey_PrintsPublicKey)}");
     //Arrange
     var ksailSOPSCommand = new KSailSOPSCommand();
 
@@ -79,6 +82,7 @@ public class KSailSOPSCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailSOPSShowPrivateKey_PrintsPrivateKey()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailSOPSShowPrivateKey_PrintsPrivateKey)}");
     //Arrange
     var ksailSOPSCommand = new KSailSOPSCommand();
 
@@ -99,6 +103,7 @@ public class KSailSOPSCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailSOPSImportKey_ImportsKey()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailSOPSImportKey_ImportsKey)}");
     //Arrange
     var ksailSOPSCommand = new KSailSOPSCommand();
 
@@ -120,6 +125,7 @@ public class KSailSOPSCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailSOPSImportKeyFromFile_ImportsKey()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailSOPSImportKeyFromFile_ImportsKey)}");
     //Arrange
     var ksailSOPSCommand = new KSailSOPSCommand();
 
@@ -140,6 +146,7 @@ public class KSailSOPSCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailSOPSExportKey_ExportsKey()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailSOPSExportKey_ExportsKey)}");
     //Arrange
     var ksailSOPSCommand = new KSailSOPSCommand();
 
@@ -166,6 +173,7 @@ public class KSailSOPSCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailSOPSEncryptAndDecrypt_SuccessfullyEncryptsAndDecryptsFile()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailSOPSEncryptAndDecrypt_SuccessfullyEncryptsAndDecryptsFile)}");
     // Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailSOPSCommand = new KSailSOPSCommand();

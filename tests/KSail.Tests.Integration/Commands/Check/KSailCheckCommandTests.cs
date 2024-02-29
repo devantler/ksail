@@ -23,6 +23,7 @@ public partial class KSailCheckCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailCheck_FailsAndPrintsHelp()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailCheck_FailsAndPrintsHelp)}");
     //Arrange
     var console = new TestConsole();
     var ksailCheckCommand = new KSailCheckCommand();

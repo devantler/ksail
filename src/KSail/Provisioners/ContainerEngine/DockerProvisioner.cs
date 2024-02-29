@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Docker.DotNet;
 using Docker.DotNet.Models;
 
@@ -11,18 +12,20 @@ sealed class DockerProvisioner : IContainerEngineProvisioner
 
   public async Task<int> CheckReadyAsync(CancellationToken token)
   {
-    Console.WriteLine("🐳 Checking Docker is running");
     try
     {
       await _dockerClient.System.PingAsync(token);
     }
-    catch (Exception)
+    catch (Exception e)
     {
-      Console.WriteLine("✕ Could not connect to Docker. Is Docker running?");
-      return 1;
+      Console.WriteLine($"✕ Could not connect to the default Docker Socket: {e.Message}");
+      if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+      {
+        Console.WriteLine("  Have you enabled the option 'Allow the default Docker socket to be used' in Docker Desktop?");
+        Console.WriteLine("  You can find this option in the Docker Desktop GUI under 'Preferences > Advanced'");
+        return 1;
+      }
     }
-    Console.WriteLine("✔ Docker is running");
-    Console.WriteLine();
     return 0;
   }
 
@@ -74,9 +77,9 @@ sealed class DockerProvisioner : IContainerEngineProvisioner
             Name = RestartPolicyKind.Always
           },
           Binds =
-        [
-          $"{name}:/var/lib/registry"
-        ]
+          [
+            $"{name}:/var/lib/registry"
+          ]
         },
         Env = proxyUrl != null ? new List<string>
       {

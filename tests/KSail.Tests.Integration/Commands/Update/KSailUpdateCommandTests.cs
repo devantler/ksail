@@ -23,6 +23,7 @@ public class KSailUpdateCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailUpdate_FailsAndPrintsHelp()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailUpdate_FailsAndPrintsHelp)}");
     //Arrange
     var console = new TestConsole();
     var ksailUpdateCommand = new KSailUpdateCommand();
@@ -41,6 +42,7 @@ public class KSailUpdateCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailUpdateNameNoReconcile_SucceedsAndPushesUpdatesToOCI()
   {
+    Console.WriteLine($"🧪 Running test: {nameof(KSailUpdateNameNoReconcile_SucceedsAndPushesUpdatesToOCI)}");
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpdateCommand = new KSailUpdateCommand();
