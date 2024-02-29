@@ -13,17 +13,18 @@
     <PackageReference Include="CliWrap" Version="3.6.6" />
     <PackageReference Include="Docker.DotNet" Version="3.125.15" />
     <PackageReference Include="KubernetesClient" Version="13.0.11" />
+    <PackageReference Include="Scriban" Version="5.9.1" />
     <PackageReference Include="Spectre.Console" Version="0.48.0" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
     <PackageReference Include="YamlDotNet" Version="15.1.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="assets/k3d/registry-config.yaml" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="assets/binaries/*darwin*amd64" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' == 'osx-x64'" />
     <Content Include="assets/binaries/*darwin*arm64" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' == 'osx-arm64'" />
     <Content Include="assets/binaries/*linux*amd64" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' == 'linux-x64'" />
     <Content Include="assets/binaries/*linux*arm64" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' == 'linux-arm64'" />
+    <Content Include="assets/templates/**" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

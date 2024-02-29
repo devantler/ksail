@@ -14,7 +14,6 @@ sealed class KubernetesProvisioner : IContainerOrchestratorProvisioner, IDisposa
     var kubeConfig = KubernetesClientConfiguration.LoadKubeConfig();
     var config = KubernetesClientConfiguration.BuildConfigFromConfigObject(kubeConfig, context);
     _kubernetesClient = new Kubernetes(config);
-    Console.WriteLine($"🌐 Creating '{name}' namespace");
     var fluxSystemNamespace = new V1Namespace
     {
       ApiVersion = "v1",

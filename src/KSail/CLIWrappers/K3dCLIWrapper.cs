@@ -29,8 +29,7 @@ class K3dCLIWrapper()
           "cluster",
           "create",
           $"{clusterName}",
-          $"--config={configPath}",
-          $"--registry-config={AppContext.BaseDirectory}assets/k3d/registry-config.yaml"
+          $"--config={configPath}"
         ]
       );
     var (ExitCode, _) = await CLIRunner.RunAsync(cmd, token);

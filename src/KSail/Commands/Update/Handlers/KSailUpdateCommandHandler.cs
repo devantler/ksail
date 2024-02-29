@@ -23,6 +23,7 @@ class KSailUpdateCommandHandler(IKubernetesDistributionProvisioner kubernetesDis
     {
       var kubernetesDistributionType = await _kubernetesDistributionProvisioner.GetKubernetesDistributionTypeAsync();
       string context = $"{kubernetesDistributionType.ToString()?.ToLowerInvariant()}-{clusterName}";
+      Console.WriteLine("");
       Console.WriteLine("🔄 Reconciling Flux");
       if (await _gitOpsProvisioner.ReconcileAsync(context, token) != 0)
       {
