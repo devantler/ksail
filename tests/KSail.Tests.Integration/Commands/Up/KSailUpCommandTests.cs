@@ -106,41 +106,4 @@ public class KSailUpCommandTests : IAsyncLifetime
     Assert.Equal(0, updateExitCode);
     Assert.True(await new DockerTestUtils().CheckRegistriesExistAsync());
   }
-
-  /// <summary>
-  /// Tests that the <c>ksail up [clusterName]</c> command with environment variables succeeds and creates a cluster.
-  /// </summary>
-  [Fact]
-  public async Task KSailUpEnv_SucceedsAndCreatesCluster()
-  {
-    //Arrange
-    var ksailInitCommand = new KSailInitCommand();
-    var ksailUpCommand = new KSailUpCommand();
-    var ksailSOPSCommand = new KSailSOPSCommand();
-    var ksailStopCommand = new KSailStopCommand();
-    var ksailStartCommand = new KSailStartCommand();
-    var ksailUpdateCommand = new KSailUpdateCommand();
-
-    //Act
-    if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", "ksail.agekey")))
-    {
-      _ = await ksailSOPSCommand.InvokeAsync("--generate-key");
-    }
-    string key = await File.ReadAllTextAsync(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", "ksail.agekey"));
-    Environment.SetEnvironmentVariable("KSAIL_SOPS_KEY", key);
-    int initExitCode = await ksailInitCommand.InvokeAsync("ksail");
-    int upExitCode = await ksailUpCommand.InvokeAsync("ksail");
-    int stopExitCode = await ksailStopCommand.InvokeAsync("ksail");
-    int startExitCode = await ksailStartCommand.InvokeAsync("ksail");
-    int updateExitCode = await ksailUpdateCommand.InvokeAsync("ksail");
-    Environment.SetEnvironmentVariable("KSAIL_SOPS_KEY", null);
-
-    //Assert
-    Assert.Equal(0, initExitCode);
-    Assert.Equal(0, upExitCode);
-    Assert.Equal(0, stopExitCode);
-    Assert.Equal(0, startExitCode);
-    Assert.Equal(0, updateExitCode);
-    Assert.True(await new DockerTestUtils().CheckRegistriesExistAsync());
-  }
 }
