@@ -70,7 +70,7 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
     [
       "namespace.yaml",
       "https://github.com/stefanprodan/podinfo//kustomize"
-    ]);
+    ], "podinfo");
 
     await GenerateNamespaceAsync(Path.Combine(manifestsDirectory, "apps/podinfo/namespace.yaml"), "podinfo");
 
