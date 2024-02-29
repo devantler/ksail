@@ -34,7 +34,6 @@ public class KSailUpdateCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(1, exitCode);
     _ = await Verify(console.Error.ToString() + console.Out);
-    Console.WriteLine("");
   }
 
   /// <summary>
@@ -58,6 +57,5 @@ public class KSailUpdateCommandTests : IAsyncLifetime
     Assert.Equal(0, dockerProvisionerExitCode);
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, updateExitCode);
-    Console.WriteLine("");
   }
 }

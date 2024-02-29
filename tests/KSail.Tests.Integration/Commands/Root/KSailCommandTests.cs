@@ -31,7 +31,6 @@ public class KSailRootCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(0, exitCode);
     _ = await Verify(console.Error.ToString() + console.Out);
-    Console.WriteLine("");
   }
 
   /// <summary>
@@ -51,6 +50,5 @@ public class KSailRootCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(0, exitCode);
     _ = await Verify(console.Error.ToString() + console.Out);
-    Console.WriteLine("");
   }
 }

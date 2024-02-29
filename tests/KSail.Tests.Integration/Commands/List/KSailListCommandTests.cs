@@ -30,6 +30,5 @@ public class KSailListCommandTests : IAsyncLifetime
 
     //Assert
     Assert.Equal(0, exitCode);
-    Console.WriteLine("");
   }
 }

@@ -32,7 +32,6 @@ public class KSailSOPSCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(1, exitCode);
     _ = await Verify(console.Error.ToString() + console.Out);
-    Console.WriteLine("");
   }
 
   /// <summary>
@@ -54,7 +53,6 @@ public class KSailSOPSCommandTests : IAsyncLifetime
 
     //Assert
     Assert.Equal(0, exitCode);
-    Console.WriteLine("");
   }
 
   /// <summary>
@@ -76,7 +74,6 @@ public class KSailSOPSCommandTests : IAsyncLifetime
 
     //Assert
     Assert.Equal(0, exitCode);
-    Console.WriteLine("");
   }
 
   /// <summary>
@@ -98,7 +95,6 @@ public class KSailSOPSCommandTests : IAsyncLifetime
 
     //Assert
     Assert.Equal(0, exitCode);
-    Console.WriteLine("");
   }
 
   /// <summary>
@@ -121,7 +117,6 @@ public class KSailSOPSCommandTests : IAsyncLifetime
 
     //Assert
     Assert.Equal(0, exitCode);
-    Console.WriteLine("");
   }
 
   /// <summary>
@@ -143,7 +138,6 @@ public class KSailSOPSCommandTests : IAsyncLifetime
 
     //Assert
     Assert.Equal(0, exitCode);
-    Console.WriteLine("");
   }
 
   /// <summary>
@@ -171,7 +165,6 @@ public class KSailSOPSCommandTests : IAsyncLifetime
 
     //Cleanup
     File.Delete("./ksail.agekey");
-    Console.WriteLine("");
   }
 
   /// <summary>
@@ -194,6 +187,5 @@ public class KSailSOPSCommandTests : IAsyncLifetime
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, encryptExitCode);
     Assert.Equal(0, decryptExitCode);
-    Console.WriteLine("");
   }
 }

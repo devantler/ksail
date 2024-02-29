@@ -37,7 +37,6 @@ public partial class KSailCheckCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(1, exitCode);
     _ = await Verify(console.Error + output).AutoVerify();
-    Console.WriteLine("");
   }
 
   [GeneratedRegex("/.*\\/.*\\/.kube/config")]

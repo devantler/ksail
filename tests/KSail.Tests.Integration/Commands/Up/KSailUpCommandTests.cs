@@ -37,7 +37,6 @@ public class KSailUpCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(1, exitCode);
     _ = await Verify(console.Error.ToString() + console.Out);
-    Console.WriteLine("");
   }
 
   /// <summary>
@@ -57,7 +56,6 @@ public class KSailUpCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(1, exitCode);
     _ = await Verify(console.Error.ToString() + console.Out);
-    Console.WriteLine("");
   }
 
   /// <summary>
@@ -80,7 +78,6 @@ public class KSailUpCommandTests : IAsyncLifetime
     Assert.Equal(0, initExitCode);
     Assert.Equal(1, upExitCode);
     _ = await Verify(console.Error.ToString() + console.Out);
-    Console.WriteLine("");
   }
 
   /// <summary>
@@ -111,6 +108,5 @@ public class KSailUpCommandTests : IAsyncLifetime
     Assert.Equal(0, startExitCode);
     Assert.Equal(0, updateExitCode);
     Assert.True(await new DockerTestUtils().CheckRegistriesExistAsync());
-    Console.WriteLine("");
   }
 }

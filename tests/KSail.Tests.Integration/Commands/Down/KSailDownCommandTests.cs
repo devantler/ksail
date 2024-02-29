@@ -32,6 +32,5 @@ public class KSailDownCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(1, exitCode);
     _ = await Verify(console.Error.ToString() + console.Out);
-    Console.WriteLine("");
   }
 }

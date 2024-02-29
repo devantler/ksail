@@ -33,7 +33,6 @@ public class KSailLintCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(1, exitCode);
     _ = await Verify(console.Error.ToString() + console.Out);
-    Console.WriteLine("");
   }
 
   /// <summary>
@@ -54,6 +53,5 @@ public class KSailLintCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, lintExitCode);
-    Console.WriteLine("");
   }
 }
