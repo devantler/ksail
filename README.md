@@ -102,7 +102,7 @@ Supported OSes:
 
 > [!NOTE]
 > On MacOS (darwin) you need to "Allow the default Docker socket to be used (requires password)" in Docker Desktop settings.
-> <details><summary>Show me how</summary>
+> <details><summary>Show me how!</summary>
 >
 > ![Enable Docker Socket in Docker Desktop](images/enable-docker-socket-in-docker-desktop.png)
 >
