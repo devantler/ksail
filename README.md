@@ -54,6 +54,13 @@
 │       │       └── Options
 │       ├── Enums
 │       ├── Extensions
+│       ├── Generators
+│       ├── Models
+│       │   ├── K3d
+│       │   ├── KSail
+│       │   ├── Kubernetes
+│       │   │   └── FluxKustomization
+│       │   └── SOPS
 │       ├── Options
 │       ├── Provisioners
 │       │   ├── ContainerEngine
@@ -63,7 +70,10 @@
 │       │   └── SecretManager
 │       └── assets
 │           ├── binaries
-│           └── k3d
+│           └── templates
+│               ├── k3d
+│               ├── kubernetes
+│               └── sops
 └── tests
     └── KSail.Tests.Integration
         ├── Commands
@@ -77,7 +87,7 @@
         │   └── Update
         └── TestUtils
 
-61 directories
+71 directories
 ```
 <!-- readme-tree end -->
 
