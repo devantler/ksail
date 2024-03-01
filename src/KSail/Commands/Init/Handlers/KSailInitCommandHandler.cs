@@ -18,7 +18,7 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
     {
       return 1;
     }
-    await InitCluster(clusterName, manifestsDirectory, token);
+    await GenerateInitFiles(clusterName, manifestsDirectory, token);
     Console.WriteLine("");
     return 0;
   }
@@ -40,7 +40,7 @@ class KSailInitCommandHandler(string clusterName, string manifestsDirectory) : I
     return 0;
   }
 
-  async Task InitCluster(string clusterName, string manifestsDirectory, CancellationToken token)
+  async Task GenerateInitFiles(string clusterName, string manifestsDirectory, CancellationToken token)
   {
     string clusterDirectory = Path.Combine(manifestsDirectory, "clusters", clusterName);
     string fluxSystemDirectory = Path.Combine(clusterDirectory, "flux-system");
