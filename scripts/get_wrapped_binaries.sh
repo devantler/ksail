@@ -9,7 +9,7 @@ download_and_update() {
   echo "Fetching latest release information for $repo"
   latest_release=$(curl -s https://api.github.com/repos/"$repo"/releases/latest)
   version_latest=$(echo "$latest_release" | grep tag_name | cut -d '"' -f 4 | cut -d '/' -f 2)
-  version_current=$(grep -s "${binary}_" src/KSail/assets/binaries/requirements.txt | cut -d '_' -f 3)
+  version_current=$(grep -s "${binary}" src/KSail/assets/binaries/requirements.txt | cut -d '_' -f 2)
   if [ -z "$version_current" ]; then
     version_current="v0.0.0"
   fi
