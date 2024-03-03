@@ -6,6 +6,7 @@ namespace KSail.Commands.Init.Generators;
 class K3dGenerator
 {
   readonly Generator _generator = new(new TemplateEngine.TemplateEngine());
+
   internal async Task GenerateK3dConfigAsync(string filePath, string clusterName)
   {
     if (!File.Exists(filePath))
