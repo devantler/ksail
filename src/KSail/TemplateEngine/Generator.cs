@@ -21,7 +21,7 @@ class Generator(ITemplateEngine templateEngine) : IGenerator
       _ = Directory.CreateDirectory(directoryName);
 
     var fileStream = new FileStream(outputPath, fileMode, FileAccess.Write);
-    await fileStream.WriteAsync(Encoding.UTF8.GetBytes(await _templateEngine.RenderAsync(templatePath, model)));
+    await fileStream.WriteAsync(Encoding.UTF8.GetBytes(await _templateEngine.RenderAsync(new FileInfo(templatePath), model)));
     await fileStream.FlushAsync();
     fileStream.Close();
   }

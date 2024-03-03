@@ -14,7 +14,7 @@ class K3dGenerator
       Console.WriteLine($"✚ Generating K3d Config '{filePath}'");
       await _generator.GenerateAsync(
         filePath,
-        $"{AppDomain.CurrentDomain.BaseDirectory}/assets/templates/k3d/k3d-config.sbn",
+        $"{AppDomain.CurrentDomain.BaseDirectory}assets/templates/k3d/k3d-config.sbn",
         new K3dConfig { Name = clusterName }
       );
     }
