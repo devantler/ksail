@@ -92,12 +92,12 @@ class InitFilesGenerator : IDisposable
     await _kubernetesGenerator.GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "infrastructure/services/kustomization.yaml"),
         [
           "https://github.com/devantler/oci-registry//k8s/cert-manager",
-    "https://github.com/devantler/oci-registry//k8s/traefik"
+          "https://github.com/devantler/oci-registry//k8s/traefik"
         ]);
     await _kubernetesGenerator.GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "infrastructure/configs/kustomization.yaml"),
     [
       "https://raw.githubusercontent.com/devantler/oci-registry/main/k8s/cert-manager/certificates/cluster-issuer-certificate.yaml",
-    "https://raw.githubusercontent.com/devantler/oci-registry/main/k8s/cert-manager/cluster-issuers/selfsigned-cluster-issuer.yaml"
+      "https://raw.githubusercontent.com/devantler/oci-registry/main/k8s/cert-manager/cluster-issuers/selfsigned-cluster-issuer.yaml"
     ]);
   }
 
@@ -110,7 +110,7 @@ class InitFilesGenerator : IDisposable
     await _kubernetesGenerator.GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "apps/podinfo/kustomization.yaml"),
     [
       "namespace.yaml",
-    "https://github.com/stefanprodan/podinfo//kustomize"
+      "https://github.com/stefanprodan/podinfo//kustomize"
     ], "podinfo");
     await _kubernetesGenerator.GenerateNamespaceAsync(Path.Combine(manifestsDirectory, "apps/podinfo/namespace.yaml"), "podinfo");
   }
