@@ -4,7 +4,7 @@ download_and_update() {
   binary=$2
   is_tarball=$3
   subfolder=$4
-  architectures=("darwin.amd64" "darwin.arm64" "linux.amd64" "linux.arm64")
+  architectures=("darwin.amd64" "darwin.arm64" "linux.amd64" "linux.arm64" "windows.amd64")
 
   echo "Fetching latest release information for $repo"
   latest_release=$(curl -s https://api.github.com/repos/"$repo"/releases/latest)
