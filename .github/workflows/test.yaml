@@ -13,7 +13,10 @@ concurrency:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
     if: github.event.pull_request.draft == false
     steps:
       - name: 📑 Checkout
