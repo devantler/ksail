@@ -1,5 +1,4 @@
 using KSail.Commands.Init.Generators;
-using KSail.Models.Kubernetes.FluxKustomization;
 using KSail.Provisioners.SecretManager;
 
 namespace KSail.Commands.Init.Handlers;
