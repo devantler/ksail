@@ -18,7 +18,6 @@
 ├── .github
 │   └── workflows
 ├── .vscode
-├── autocomplete
 ├── images
 ├── scripts
 ├── src
@@ -33,6 +32,7 @@
 │       │   │   ├── Handlers
 │       │   │   └── Options
 │       │   ├── Init
+│       │   │   ├── Generators
 │       │   │   └── Handlers
 │       │   ├── Lint
 │       │   │   └── Handlers
@@ -55,7 +55,6 @@
 │       │       └── Options
 │       ├── Enums
 │       ├── Extensions
-│       ├── Generators
 │       ├── Models
 │       │   ├── K3d
 │       │   ├── KSail
@@ -69,6 +68,7 @@
 │       │   ├── GitOps
 │       │   ├── KubernetesDistribution
 │       │   └── SecretManager
+│       ├── TemplateEngine
 │       └── assets
 │           ├── binaries
 │           └── templates
