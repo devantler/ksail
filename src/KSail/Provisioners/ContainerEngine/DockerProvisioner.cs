@@ -6,7 +6,19 @@ namespace KSail.Provisioners.ContainerEngine;
 
 sealed class DockerProvisioner : IContainerEngineProvisioner
 {
-  readonly DockerClient _dockerClient = new DockerClientConfiguration().CreateClient();
+  readonly DockerClient _dockerClient;
+
+  DockerProvisioner()
+  {
+    string? dockerHost = Environment.GetEnvironmentVariable("DOCKER_HOST");
+    if (!string.IsNullOrEmpty(dockerHost))
+    {
+      var uri = new Uri(dockerHost);
+      _dockerClient = new DockerClientConfiguration(uri).CreateClient();
+      return;
+    }
+    _dockerClient = new DockerClientConfiguration().CreateClient();
+  }
 
   public async Task<int> CheckReadyAsync(CancellationToken token)
   {
@@ -21,8 +33,8 @@ sealed class DockerProvisioner : IContainerEngineProvisioner
       {
         Console.WriteLine("  Have you enabled the option 'Allow the default Docker socket to be used' in Docker Desktop?");
         Console.WriteLine("  You can find this option in the Docker Desktop GUI under 'Preferences > Advanced'");
-        return 1;
       }
+      return 1;
     }
     return 0;
   }
