@@ -6,9 +6,7 @@ namespace KSail.Provisioners.ContainerEngine;
 
 sealed class DockerProvisioner : IContainerEngineProvisioner
 {
-  readonly DockerClient _dockerClient = new DockerClientConfiguration(
-    new Uri("unix:///var/run/docker.sock")
-  ).CreateClient();
+  readonly DockerClient _dockerClient = new DockerClientConfiguration().CreateClient();
 
   public async Task<int> CheckReadyAsync(CancellationToken token)
   {
