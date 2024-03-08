@@ -8,7 +8,7 @@ sealed class DockerProvisioner : IContainerEngineProvisioner
 {
   readonly DockerClient _dockerClient;
 
-  DockerProvisioner()
+  internal DockerProvisioner()
   {
     string? dockerHost = Environment.GetEnvironmentVariable("DOCKER_HOST");
     if (!string.IsNullOrEmpty(dockerHost))
