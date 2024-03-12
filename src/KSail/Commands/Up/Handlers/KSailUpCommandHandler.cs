@@ -21,7 +21,7 @@ class KSailUpCommandHandler(
   readonly IKubernetesDistributionProvisioner _kubernetesDistributionProvisioner = kubernetesDistributionProvisioner;
   readonly IContainerOrchestratorProvisioner _containerOrchestratorProvisioner = containerOrchestratorProvisioner;
   readonly IGitOpsProvisioner _gitOpsProvisioner = gitOpsProvisioner;
-  internal async Task<int> HandleAsync(string clusterName, string configPath, string manifestsPath, string kustomizationsPath, int timeout, bool noSOPS, CancellationToken token)
+  internal async Task<int> HandleAsync(string clusterName, string configPath, string manifestsPath, string kustomizationsPath, bool noSOPS, CancellationToken token)
   {
     kustomizationsPath = string.IsNullOrEmpty(kustomizationsPath) ? $"clusters/{clusterName}/flux-system" : kustomizationsPath;
 
@@ -116,6 +116,6 @@ class KSailUpCommandHandler(
     Console.WriteLine("");
 
     Console.WriteLine("🔄 Checking Flux reconciles successfully");
-    return await new KSailCheckCommandHandler().HandleAsync(context, timeout, token) != 0 ? 1 : 0;
+    return await new KSailCheckCommandHandler().HandleAsync(context, token) != 0 ? 1 : 0;
   }
 }

@@ -11,7 +11,7 @@ class KSailCheckCommandHandler()
   readonly HashSet<string> _successFullKustomizations = [];
   readonly Stopwatch _stopwatch = Stopwatch.StartNew();
 
-  internal async Task<int> HandleAsync(string context, int timeout, CancellationToken token, string? kubeconfig = null)
+  internal async Task<int> HandleAsync(string context, CancellationToken token, string? kubeconfig = null)
   {
     Console.WriteLine("👀 Checking the status of the cluster");
     var kubernetesClient = (kubeconfig is not null) switch
@@ -41,11 +41,6 @@ class KSailCheckCommandHandler()
         {
           continue;
         }
-        else if (_stopwatch.Elapsed.TotalSeconds >= timeout)
-        {
-          Console.WriteLine($"✕ Kustomization '{kustomizationName}' did not become ready within the specified time limit of {timeout} seconds.");
-          return 1;
-        }
       }
       if (statusConditionStatus.Equals("false", StringComparison.OrdinalIgnoreCase))
       {
@@ -60,13 +55,14 @@ class KSailCheckCommandHandler()
           HandleReadyStatus(kustomizationName);
           break;
         default:
-          Console.WriteLine($"◎ Waiting for kustomization '{kustomizationName}' to be ready");
+          Console.WriteLine($"◎ Waiting for kustomization '{kustomizationName}' to be ready ({_stopwatch.Elapsed.TotalSeconds:0})");
           Console.WriteLine($"  Current status: {statusConditionType}");
-          foreach (var condition in kustomization?.Status.Conditions ?? Enumerable.Empty<V1CustomResourceDefinitionCondition>())
+
+          bool isFailed = kustomization?.Status.Conditions.Any(condition => condition.Status.Equals("False", StringComparison.Ordinal)) ?? false;
+          if (isFailed)
           {
-            Console.WriteLine($"  {condition.Message}");
+            return HandleFailedStatus(kustomization, kustomizationName);
           }
-          Console.WriteLine($"  Elapsed time: {_stopwatch.Elapsed.TotalSeconds:0}s out of {timeout}s");
           break;
       }
     }
@@ -75,7 +71,7 @@ class KSailCheckCommandHandler()
 
   void HandleReadyStatus(string kustomizationName)
   {
-    Console.WriteLine($"✔ Kustomization '{kustomizationName}' is ready! Resetting timer");
+    Console.WriteLine($"✔ Kustomization '{kustomizationName}' is ready!");
     _ = _successFullKustomizations.Add(kustomizationName);
     _stopwatch.Restart();
   }
