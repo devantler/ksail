@@ -35,7 +35,9 @@ class KSailCheckCommandHandler()
         if (_successFullKustomizations.Count == _kustomizations.Count)
         {
           var totalTimeElapsed = _stopwatchTotal.Elapsed;
-          Console.WriteLine($"✔ All kustomizations are ready! Elapsed time: {totalTimeElapsed.ToString(@"m\:ss", CultureInfo.InvariantCulture)}");
+          int minutes = totalTimeElapsed.Minutes;
+          int seconds = totalTimeElapsed.Seconds;
+          Console.WriteLine($"✔ All kustomizations are ready! Elapsed time: {minutes}m and {seconds}s");
           return 0;
         }
         else if (_successFullKustomizations.Contains(kustomizationName))
@@ -51,24 +53,35 @@ class KSailCheckCommandHandler()
           HandleReadyStatus(kustomizationName);
           break;
         default:
-          Console.WriteLine($"◎ Waiting for kustomization '{kustomizationName}' to be ready");
-          Console.WriteLine($"  Current status: {statusConditionType}");
-          var timeElapsed = _stopwatch.Elapsed;
-          Console.WriteLine($"  Elapsed time: {timeElapsed.ToString(@"m\:ss", CultureInfo.InvariantCulture)}");
-
-          bool isFailed = kustomization?.Status.Conditions.Any(condition =>
-            condition.Status.Equals("False", StringComparison.Ordinal) &&
-            !condition.Reason.Equals("HealthCheckFailed", StringComparison.Ordinal)
-          ) ?? false;
-
-          if (isFailed)
+          if (HandleFailedStatusConditions(kustomization, kustomizationName) != 0)
           {
-            return HandleFailedStatus(kustomization, kustomizationName);
+            return 1;
           }
+          HandleOtherStatus(kustomizationName, statusConditionType);
           break;
       }
     }
     return 0;
+  }
+
+  static int HandleFailedStatusConditions(V1CustomResourceDefinition? kustomization, string kustomizationName)
+  {
+    bool isFailed = kustomization?.Status.Conditions.Any(condition =>
+      condition.Status.Equals("False", StringComparison.Ordinal) &&
+      !condition.Reason.Equals("HealthCheckFailed", StringComparison.Ordinal)
+    ) ?? false;
+
+    return isFailed ? HandleFailedStatus(kustomization, kustomizationName) : 0;
+  }
+
+  void HandleOtherStatus(string kustomizationName, string statusConditionType)
+  {
+    Console.WriteLine($"◎ Waiting for kustomization '{kustomizationName}' to be ready");
+    Console.WriteLine($"  Current status: {statusConditionType}");
+    var timeElapsed = _stopwatch.Elapsed;
+    int minutes = timeElapsed.Minutes;
+    int seconds = timeElapsed.Seconds;
+    Console.WriteLine($"  Elapsed time: {minutes}m and {seconds}s");
   }
 
   void HandleReadyStatus(string kustomizationName)
