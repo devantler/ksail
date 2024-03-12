@@ -37,7 +37,7 @@ class KSailCheckCommandHandler()
           var totalTimeElapsed = _stopwatchTotal.Elapsed;
           int minutes = totalTimeElapsed.Minutes;
           int seconds = totalTimeElapsed.Seconds;
-          Console.WriteLine($"✔ All kustomizations are ready! Elapsed time: {minutes}m {seconds}s");
+          Console.WriteLine($"✔ All kustomizations are ready! ({minutes}m {seconds}s)");
           return 0;
         }
         else if (_successFullKustomizations.Contains(kustomizationName))
@@ -76,12 +76,11 @@ class KSailCheckCommandHandler()
 
   void HandleOtherStatus(string kustomizationName, string statusConditionType)
   {
-    Console.WriteLine($"◎ Waiting for kustomization '{kustomizationName}' to be ready");
-    Console.WriteLine($"  Current status: {statusConditionType}");
     var timeElapsed = _stopwatch.Elapsed;
     int minutes = timeElapsed.Minutes;
     int seconds = timeElapsed.Seconds;
-    Console.WriteLine($"  Elapsed time: {minutes}m {seconds}s");
+    Console.WriteLine($"◎ Waiting for kustomization '{kustomizationName}' to be ready ({minutes}m {seconds}s)");
+    Console.WriteLine($"  Current status: {statusConditionType}");
   }
 
   void HandleReadyStatus(string kustomizationName)
