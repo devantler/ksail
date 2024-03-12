@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Globalization;
 using k8s;
 using k8s.Models;
 using KSail.Extensions;
@@ -9,7 +8,7 @@ namespace KSail.Commands.Check.Handlers;
 class KSailCheckCommandHandler()
 {
   readonly HashSet<string> _kustomizations = [];
-  readonly HashSet<string> _successFullKustomizations = [];
+  readonly HashSet<string> _successfulKustomizations = [];
   readonly Stopwatch _stopwatch = Stopwatch.StartNew();
   readonly Stopwatch _stopwatchTotal = Stopwatch.StartNew();
 
@@ -27,14 +26,9 @@ class KSailCheckCommandHandler()
     {
       string? kustomizationName = kustomization?.Metadata.Name ??
         throw new InvalidOperationException("🚨 Kustomization name is null");
-      string? statusConditionStatus = kustomization?.Status.Conditions.FirstOrDefault()?.Status ??
-        throw new InvalidOperationException("🚨 Kustomization status is null");
-      string? statusConditionType = kustomization?.Status.Conditions.FirstOrDefault()?.Type ??
-        throw new InvalidOperationException("🚨 Kustomization status is null");
-
       if (!_kustomizations.Add(kustomizationName))
       {
-        if (_successFullKustomizations.Count == _kustomizations.Count)
+        if (_successfulKustomizations.Count == _kustomizations.Count)
         {
           var totalTimeElapsed = _stopwatchTotal.Elapsed;
           int minutes = totalTimeElapsed.Minutes;
@@ -42,16 +36,20 @@ class KSailCheckCommandHandler()
           Console.WriteLine($"✔ All kustomizations are ready! ({minutes}m {seconds}s)");
           return 0;
         }
-        else if (_successFullKustomizations.Contains(kustomizationName))
+        else if (_successfulKustomizations.Contains(kustomizationName))
         {
           continue;
         }
       }
+      var statusConditionStatuses = kustomization?.Status.Conditions.Select(condition => condition.Status) ??
+        throw new InvalidOperationException("🚨 Kustomization status is null");
+      string? statusConditionType = kustomization?.Status.Conditions.FirstOrDefault()?.Type ??
+        throw new InvalidOperationException("🚨 Kustomization status is null");
       switch (statusConditionType)
       {
         case "Failed":
           return HandleFailedStatus(kustomization, kustomizationName);
-        case "Ready" when statusConditionStatus.Equals("True", StringComparison.Ordinal):
+        case "Ready" when statusConditionStatuses.All(status => status.Equals("True", StringComparison.Ordinal)):
           HandleReadyStatus(kustomizationName);
           break;
         default:
@@ -88,7 +86,7 @@ class KSailCheckCommandHandler()
   void HandleReadyStatus(string kustomizationName)
   {
     Console.WriteLine($"✔ Kustomization '{kustomizationName}' is ready!");
-    _ = _successFullKustomizations.Add(kustomizationName);
+    _ = _successfulKustomizations.Add(kustomizationName);
     _stopwatch.Restart();
   }
 
