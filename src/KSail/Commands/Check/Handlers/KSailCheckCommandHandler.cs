@@ -27,6 +27,8 @@ class KSailCheckCommandHandler()
     {
       string? kustomizationName = kustomization?.Metadata.Name ??
         throw new InvalidOperationException("🚨 Kustomization name is null");
+      string? statusConditionStatus = kustomization?.Status.Conditions.FirstOrDefault()?.Status ??
+        throw new InvalidOperationException("🚨 Kustomization status is null");
       string? statusConditionType = kustomization?.Status.Conditions.FirstOrDefault()?.Type ??
         throw new InvalidOperationException("🚨 Kustomization status is null");
 
@@ -49,7 +51,7 @@ class KSailCheckCommandHandler()
       {
         case "Failed":
           return HandleFailedStatus(kustomization, kustomizationName);
-        case "Ready":
+        case "Ready" when statusConditionStatus.Equals("True", StringComparison.Ordinal):
           HandleReadyStatus(kustomizationName);
           break;
         default:
