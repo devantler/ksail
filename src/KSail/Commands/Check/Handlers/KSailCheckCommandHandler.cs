@@ -94,7 +94,7 @@ class KSailCheckCommandHandler()
     int minutes = timeElapsed.Minutes;
     int seconds = timeElapsed.Seconds;
     Console.WriteLine($"◎ Waiting for kustomization '{kustomizationName}' to be ready ({minutes}m {seconds}s)");
-    Console.WriteLine($"  Current status: {statusConditionType}");
+    Console.WriteLine($"► {statusConditionType}");
   }
 
   void HandleReadyStatus(string kustomizationName)
