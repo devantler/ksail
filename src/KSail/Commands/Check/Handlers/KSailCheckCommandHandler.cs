@@ -14,7 +14,6 @@ class KSailCheckCommandHandler()
 
   internal async Task<int> HandleAsync(string context, CancellationToken token, string? kubeconfig = null)
   {
-    Console.WriteLine("👀 Checking the status of the cluster");
     var kubernetesClient = (kubeconfig is not null) switch
     {
       true => new Kubernetes(KubernetesClientConfiguration.BuildConfigFromConfigFile(kubeconfig)),
