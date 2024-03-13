@@ -30,26 +30,28 @@ class KSailCheckCommandHandler()
       {
         if (_successfulKustomizations.Count == _kustomizations.Count)
         {
-          var totalTimeElapsed = _stopwatchTotal.Elapsed;
-          int minutes = totalTimeElapsed.Minutes;
-          int seconds = totalTimeElapsed.Seconds;
-          Console.WriteLine($"✔ All kustomizations are ready! ({minutes}m {seconds}s)");
-          return 0;
+          return HandleSuccesfulKustomizations();
         }
         else if (_successfulKustomizations.Contains(kustomizationName))
         {
           continue;
         }
       }
-      var statusConditionStatuses = kustomization?.Status.Conditions.Select(condition => condition.Status) ??
-        throw new InvalidOperationException("🚨 Kustomization status is null");
+      var statusConditions = kustomization?.Status.Conditions ??
+        throw new InvalidOperationException("🚨 Kustomization status conditions are null");
+      var statusConditionStatuses = statusConditions.Select(condition => condition.Status);
       string? statusConditionType = kustomization?.Status.Conditions.FirstOrDefault()?.Type ??
         throw new InvalidOperationException("🚨 Kustomization status is null");
+
+      if (HasDependencies(statusConditions))
+      {
+        continue;
+      }
       switch (statusConditionType)
       {
         case "Failed":
           return HandleFailedStatus(kustomization, kustomizationName);
-        case "Ready" when statusConditionStatuses.All(status => status.Equals("True", StringComparison.Ordinal)):
+        case "Ready":
           HandleReadyStatus(kustomizationName);
           break;
         default:
@@ -61,6 +63,18 @@ class KSailCheckCommandHandler()
           break;
       }
     }
+    return 0;
+  }
+
+  static bool HasDependencies(IList<V1CustomResourceDefinitionCondition> statusConditions) =>
+    statusConditions.FirstOrDefault()?.Reason.Equals("DependencyNotReady", StringComparison.Ordinal) ?? false;
+
+  int HandleSuccesfulKustomizations()
+  {
+    var totalTimeElapsed = _stopwatchTotal.Elapsed;
+    int minutes = totalTimeElapsed.Minutes;
+    int seconds = totalTimeElapsed.Seconds;
+    Console.WriteLine($"✔ All kustomizations are ready! ({minutes}m {seconds}s)");
     return 0;
   }
 
