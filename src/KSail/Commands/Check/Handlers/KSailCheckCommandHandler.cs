@@ -38,14 +38,12 @@ class KSailCheckCommandHandler()
       }
       var statusConditions = kustomization?.Status.Conditions ??
         throw new InvalidOperationException("🚨 Kustomization status conditions are null");
-      var statusConditionStatuses = statusConditions.Select(condition => condition.Status);
-      string? statusConditionType = statusConditions.FirstOrDefault()?.Type ??
-        throw new InvalidOperationException("🚨 Kustomization status is null");
-
       if (HasDependencies(statusConditions))
       {
         continue;
       }
+      string? statusConditionType = statusConditions.FirstOrDefault()?.Type ??
+        throw new InvalidOperationException("🚨 Kustomization status is null");
       switch (statusConditionType)
       {
         case "Failed":
