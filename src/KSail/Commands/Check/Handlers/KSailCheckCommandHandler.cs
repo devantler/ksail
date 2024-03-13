@@ -40,7 +40,7 @@ class KSailCheckCommandHandler()
       var statusConditions = kustomization?.Status.Conditions ??
         throw new InvalidOperationException("🚨 Kustomization status conditions are null");
       var statusConditionStatuses = statusConditions.Select(condition => condition.Status);
-      string? statusConditionType = kustomization?.Status.Conditions.FirstOrDefault()?.Type ??
+      string? statusConditionType = statusConditions.FirstOrDefault()?.Type ??
         throw new InvalidOperationException("🚨 Kustomization status is null");
 
       if (HasDependencies(statusConditions))
@@ -59,7 +59,7 @@ class KSailCheckCommandHandler()
           {
             return 1;
           }
-          HandleOtherStatus(kustomizationName, statusConditionType);
+          HandleOtherStatus(kustomizationName);
           break;
       }
     }
@@ -88,13 +88,12 @@ class KSailCheckCommandHandler()
     return isFailed ? HandleFailedStatus(kustomization, kustomizationName) : 0;
   }
 
-  void HandleOtherStatus(string kustomizationName, string statusConditionType)
+  void HandleOtherStatus(string kustomizationName)
   {
     var timeElapsed = _stopwatch.Elapsed;
     int minutes = timeElapsed.Minutes;
     int seconds = timeElapsed.Seconds;
     Console.WriteLine($"◎ Waiting for kustomization '{kustomizationName}' to be ready ({minutes}m {seconds}s)");
-    Console.WriteLine($"► {statusConditionType}");
   }
 
   void HandleReadyStatus(string kustomizationName)
