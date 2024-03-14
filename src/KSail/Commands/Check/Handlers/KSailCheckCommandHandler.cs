@@ -50,6 +50,7 @@ class KSailCheckCommandHandler()
           case "Failed" when IsCritical(statusCondition):
             return HandleFailedStatus(statusCondition, kustomizationName);
           case "Ready":
+          case "Healthy":
             break;
           default:
             isReady = false;
