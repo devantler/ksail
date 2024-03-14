@@ -42,26 +42,27 @@ class KSailCheckCommandHandler()
       {
         continue;
       }
-      string? statusConditionType = statusConditions.FirstOrDefault()?.Type ??
-        throw new InvalidOperationException("🚨 Kustomization status is null");
-      switch (statusConditionType)
+      foreach (var statusCondition in statusConditions)
       {
-        case "Failed":
-          return HandleFailedStatus(kustomization, kustomizationName);
-        case "Ready":
-          HandleReadyStatus(kustomizationName);
-          break;
-        default:
-          if (HandleFailedStatusConditions(kustomization, kustomizationName) != 0)
-          {
-            return 1;
-          }
-          HandleOtherStatus(kustomizationName);
-          break;
+        switch (statusCondition.Type)
+        {
+          case "Failed" when IsCritical(statusCondition):
+            return HandleFailedStatus(statusCondition, kustomizationName);
+          case "Ready":
+            HandleReadyStatus(kustomizationName);
+            break;
+          default:
+            HandleOtherStatus(kustomizationName);
+            break;
+        }
       }
     }
     return 0;
   }
+
+  static bool IsCritical(V1CustomResourceDefinitionCondition statusCondition) =>
+    statusCondition.Status.Equals("False", StringComparison.Ordinal) &&
+    !statusCondition.Reason.Equals("HealthCheckFailed", StringComparison.Ordinal);
 
   static bool HasDependencies(IList<V1CustomResourceDefinitionCondition> statusConditions) =>
     statusConditions.FirstOrDefault()?.Reason.Equals("DependencyNotReady", StringComparison.Ordinal) ?? false;
@@ -73,16 +74,6 @@ class KSailCheckCommandHandler()
     int seconds = totalTimeElapsed.Seconds;
     Console.WriteLine($"✔ All kustomizations are ready! ({minutes}m {seconds}s)");
     return 0;
-  }
-
-  static int HandleFailedStatusConditions(V1CustomResourceDefinition? kustomization, string kustomizationName)
-  {
-    bool isFailed = kustomization?.Status.Conditions.Any(condition =>
-      condition.Status.Equals("False", StringComparison.Ordinal) &&
-      !condition.Reason.Equals("HealthCheckFailed", StringComparison.Ordinal)
-    ) ?? false;
-
-    return isFailed ? HandleFailedStatus(kustomization, kustomizationName) : 0;
   }
 
   void HandleOtherStatus(string kustomizationName)
@@ -100,9 +91,9 @@ class KSailCheckCommandHandler()
     _stopwatch.Restart();
   }
 
-  static int HandleFailedStatus(V1CustomResourceDefinition? kustomization, string kustomizationName)
+  static int HandleFailedStatus(V1CustomResourceDefinitionCondition statusCondition, string kustomizationName)
   {
-    string? message = kustomization?.Status.Conditions.FirstOrDefault()?.Message;
+    string? message = statusCondition.Message;
     Console.WriteLine($"✕ Kustomization '{kustomizationName}' failed with message: {message}");
     return 1;
   }
