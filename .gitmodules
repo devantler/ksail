@@ -1,4 +1,0 @@
-[submodule "autocomplete"]
-	path = autocomplete
-	url = https://github.com/devantler/autocomplete
-	branch = master

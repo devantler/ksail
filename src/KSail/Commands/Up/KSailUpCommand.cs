@@ -16,7 +16,6 @@ sealed class KSailUpCommand : Command
   readonly ConfigOption _configOption = new() { IsRequired = true };
   readonly ManifestsOption _manifestsOption = new();
   readonly KustomizationsOption _kustomizationsOption = new();
-  readonly TimeoutOption _timeoutOption = new();
   readonly NoSOPSOption _noSOPSOption = new();
   internal KSailUpCommand() : base("up", "Provision a K8s cluster")
   {
@@ -24,7 +23,6 @@ sealed class KSailUpCommand : Command
     AddOption(_configOption);
     AddOption(_manifestsOption);
     AddOption(_kustomizationsOption);
-    AddOption(_timeoutOption);
     AddOption(_noSOPSOption);
 
     AddValidator(result =>
@@ -59,7 +57,6 @@ sealed class KSailUpCommand : Command
         throw new InvalidOperationException($"Required option '{_manifestsOption.Name}' missing for command: 'up'.");
       string? kustomizations = context.ParseResult.GetValueForOption(_kustomizationsOption) ??
         $"clusters/{clusterName}/flux-system";
-      int timeout = context.ParseResult.GetValueForOption(_timeoutOption);
       bool noSOPS = context.ParseResult.GetValueForOption(_noSOPSOption);
 
       config = $"{clusterName}-{config}";
@@ -73,7 +70,6 @@ sealed class KSailUpCommand : Command
           config,
           manifests,
           kustomizations,
-          timeout,
           noSOPS,
           token
         );
