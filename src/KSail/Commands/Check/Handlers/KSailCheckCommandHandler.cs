@@ -53,13 +53,16 @@ class KSailCheckCommandHandler()
             break;
           default:
             isReady = false;
-            HandleOtherStatus(kustomizationName);
             break;
         }
       }
       if (isReady)
       {
         HandleReadyStatus(kustomizationName);
+      }
+      else
+      {
+        HandleOtherStatus(kustomizationName);
       }
     }
     return 0;
