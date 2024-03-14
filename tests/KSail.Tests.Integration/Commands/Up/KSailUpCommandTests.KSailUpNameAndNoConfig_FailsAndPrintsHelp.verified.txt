@@ -13,7 +13,7 @@ Options:
   -c, --config <config> (REQUIRED)       Path to the cluster configuration file [default: k3d-config.yaml]
   -m, --manifests <manifests>            Path to the manifests directory [default: ./k8s]
   -k, --kustomizations <kustomizations>  Path to the flux kustomization directory [default: ./k8s/clusters/<clusterName>/flux-system]
-  -t, --timeout <timeout>                The timeout in seconds to wait for each kustomization to become ready. Defaults to 300 seconds. [default: 300]
+  -t, --timeout <timeout>                The timeout in seconds to wait for each kustomization to become ready. Defaults to 600 seconds. [default: 600]
   -ns, --no-sops                         Disable SOPS [default: False]
   --version                              Show version information
   -?, -h, --help                         Show help and usage information

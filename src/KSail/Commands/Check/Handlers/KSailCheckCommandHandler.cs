@@ -8,12 +8,12 @@ namespace KSail.Commands.Check.Handlers;
 class KSailCheckCommandHandler()
 {
   readonly HashSet<string> _kustomizations = [];
-  readonly HashSet<string> _successFullKustomizations = [];
+  readonly HashSet<string> _successfulKustomizations = [];
   readonly Stopwatch _stopwatch = Stopwatch.StartNew();
+  readonly Stopwatch _stopwatchTotal = Stopwatch.StartNew();
 
   internal async Task<int> HandleAsync(string context, int timeout, CancellationToken token, string? kubeconfig = null)
   {
-    Console.WriteLine("👀 Checking the status of the cluster");
     var kubernetesClient = (kubeconfig is not null) switch
     {
       true => new Kubernetes(KubernetesClientConfiguration.BuildConfigFromConfigFile(kubeconfig)),
@@ -21,23 +21,17 @@ class KSailCheckCommandHandler()
     };
     var responseTask = kubernetesClient.ListKustomizationsWithHttpMessagesAsync();
 
-    await foreach (var (type, kustomization) in responseTask.WatchAsync<V1CustomResourceDefinition, object>(cancellationToken: token))
+    await foreach (var (_, kustomization) in responseTask.WatchAsync<V1CustomResourceDefinition, object>(cancellationToken: token))
     {
       string? kustomizationName = kustomization?.Metadata.Name ??
         throw new InvalidOperationException("🚨 Kustomization name is null");
-      string? statusConditionStatus = kustomization?.Status.Conditions.FirstOrDefault()?.Status ??
-        throw new InvalidOperationException("🚨 Kustomization status is null");
-      string? statusConditionType = kustomization?.Status.Conditions.FirstOrDefault()?.Type ??
-        throw new InvalidOperationException("🚨 Kustomization status is null");
-
       if (!_kustomizations.Add(kustomizationName))
       {
-        if (_successFullKustomizations.Count == _kustomizations.Count)
+        if (_successfulKustomizations.Count == _kustomizations.Count)
         {
-          Console.WriteLine("✔ All kustomizations are ready!");
-          return 0;
+          return HandleSuccesfulKustomizations();
         }
-        else if (_successFullKustomizations.Contains(kustomizationName))
+        else if (_successfulKustomizations.Contains(kustomizationName))
         {
           continue;
         }
@@ -47,42 +41,73 @@ class KSailCheckCommandHandler()
           return 1;
         }
       }
-      if (statusConditionStatus.Equals("false", StringComparison.OrdinalIgnoreCase))
+      var statusConditions = kustomization?.Status.Conditions ??
+        throw new InvalidOperationException("🚨 Kustomization status conditions are null");
+      if (HasDependencies(statusConditions))
       {
         continue;
       }
-      switch (statusConditionType)
+      bool isReady = true;
+      foreach (var statusCondition in statusConditions)
       {
-        //TODO: Implement check command with condition[1].type == healthy. This should work for all kustomizations.
-        case "Failed":
-          return HandleFailedStatus(kustomization, kustomizationName);
-        case "Ready":
-          HandleReadyStatus(kustomizationName);
-          break;
-        default:
-          Console.WriteLine($"◎ Waiting for kustomization '{kustomizationName}' to be ready");
-          Console.WriteLine($"  Current status: {statusConditionType}");
-          foreach (var condition in kustomization?.Status.Conditions ?? Enumerable.Empty<V1CustomResourceDefinitionCondition>())
-          {
-            Console.WriteLine($"  {condition.Message}");
-          }
-          Console.WriteLine($"  Elapsed time: {_stopwatch.Elapsed.TotalSeconds:0}s out of {timeout}s");
-          break;
+        switch (statusCondition.Type)
+        {
+          case "Failed" when IsCritical(statusCondition):
+            return HandleFailedStatus(statusCondition, kustomizationName);
+          case "Ready":
+          case "Healthy":
+            break;
+          default:
+            isReady = false;
+            break;
+        }
+      }
+      if (isReady)
+      {
+        HandleReadyStatus(kustomizationName);
+      }
+      else
+      {
+        HandleOtherStatus(kustomizationName);
       }
     }
     return 0;
   }
 
+  static bool IsCritical(V1CustomResourceDefinitionCondition statusCondition) =>
+    statusCondition.Status.Equals("False", StringComparison.Ordinal) &&
+    !statusCondition.Reason.Equals("HealthCheckFailed", StringComparison.Ordinal);
+
+  static bool HasDependencies(IList<V1CustomResourceDefinitionCondition> statusConditions) =>
+    statusConditions.FirstOrDefault()?.Reason.Equals("DependencyNotReady", StringComparison.Ordinal) ?? false;
+
+  int HandleSuccesfulKustomizations()
+  {
+    var totalTimeElapsed = _stopwatchTotal.Elapsed;
+    int minutes = totalTimeElapsed.Minutes;
+    int seconds = totalTimeElapsed.Seconds;
+    Console.WriteLine($"✔ All kustomizations are ready! ({minutes}m {seconds}s)");
+    return 0;
+  }
+
+  void HandleOtherStatus(string kustomizationName)
+  {
+    var timeElapsed = _stopwatch.Elapsed;
+    int minutes = timeElapsed.Minutes;
+    int seconds = timeElapsed.Seconds;
+    Console.WriteLine($"◎ Waiting for kustomization '{kustomizationName}' to become ready ({minutes}m {seconds}s)");
+  }
+
   void HandleReadyStatus(string kustomizationName)
   {
-    Console.WriteLine($"✔ Kustomization '{kustomizationName}' is ready! Resetting timer");
-    _ = _successFullKustomizations.Add(kustomizationName);
+    Console.WriteLine($"✔ Kustomization '{kustomizationName}' is ready!");
+    _ = _successfulKustomizations.Add(kustomizationName);
     _stopwatch.Restart();
   }
 
-  static int HandleFailedStatus(V1CustomResourceDefinition? kustomization, string kustomizationName)
+  static int HandleFailedStatus(V1CustomResourceDefinitionCondition statusCondition, string kustomizationName)
   {
-    string? message = kustomization?.Status.Conditions.FirstOrDefault()?.Message;
+    string? message = statusCondition.Message;
     Console.WriteLine($"✕ Kustomization '{kustomizationName}' failed with message: {message}");
     return 1;
   }
