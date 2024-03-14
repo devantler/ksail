@@ -42,6 +42,7 @@ class KSailCheckCommandHandler()
       {
         continue;
       }
+      bool isReady = true;
       foreach (var statusCondition in statusConditions)
       {
         switch (statusCondition.Type)
@@ -49,12 +50,16 @@ class KSailCheckCommandHandler()
           case "Failed" when IsCritical(statusCondition):
             return HandleFailedStatus(statusCondition, kustomizationName);
           case "Ready":
-            HandleReadyStatus(kustomizationName);
             break;
           default:
+            isReady = false;
             HandleOtherStatus(kustomizationName);
             break;
         }
+      }
+      if (isReady)
+      {
+        HandleReadyStatus(kustomizationName);
       }
     }
     return 0;
