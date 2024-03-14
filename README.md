@@ -108,19 +108,19 @@
 Supported OSes:
 
 > [!NOTE]
-> On MacOS (darwin) you need to "Allow the default Docker socket to be used (requires password)" in Docker Desktop settings.
+> On MacOS (darwin) and Windows you need to "Allow the default Docker socket to be used (requires password)" in Docker Desktop settings.
 > <details><summary>Show me how!</summary>
 >
 > ![Enable Docker Socket in Docker Desktop](images/enable-docker-socket-in-docker-desktop.png)
 >
 > </details>
 
-- darwin-amd64 🍎✅
-- darwin-arm64 🍎✅
-- linux-amd64 🐧✅
-- linux-arm64 🐧✅
-- windows-amd64 🪟❌
-- windows-arm64 🪟❌
+-  darwin-amd64 ✅
+-  darwin-arm64 ✅
+- 🐧 linux-amd64 ✅
+- 🐧 linux-arm64 ✅
+- ⊞ windows-amd64 ✅
+- ⊞ windows-arm64 ❌
 
 Required Tools:
 
