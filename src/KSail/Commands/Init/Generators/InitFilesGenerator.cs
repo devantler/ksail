@@ -5,6 +5,7 @@ namespace KSail.Commands.Init.Generators;
 class InitFilesGenerator : IDisposable
 {
   readonly KubernetesGenerator _kubernetesGenerator = new();
+  readonly KSailGenerator _ksailGenerator = new();
   readonly K3dGenerator _k3dGenerator = new();
   readonly SOPSGenerator _sopsGenerator = new();
 
@@ -17,6 +18,7 @@ class InitFilesGenerator : IDisposable
     await GenerateInfrastructure(manifestsDirectory);
     await GenerateApps(manifestsDirectory);
 
+    await _ksailGenerator.GenerateKSailConfigAsync($"./ksail.yaml", clusterName);
     await _k3dGenerator.GenerateK3dConfigAsync($"./{clusterName}-k3d-config.yaml", clusterName);
     //TODO: await GenerateKSailConfigFileAsync($"{clusterName}-ksail-config.yaml");
     await _sopsGenerator.GenerateSOPSConfigAsync(manifestsDirectory, token);
