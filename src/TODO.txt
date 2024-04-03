@@ -1,0 +1,4 @@
+1. Make all src/Devantler.* into own csharp projects
+2. Fix all reported problems
+3. Add Unit Test projects for all src.Devantler.* projects
+6. Add Unit Tests to ensure each project has satisfying coverage.
