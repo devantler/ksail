@@ -11,10 +11,10 @@ static class KustomizeCLIWrapper
     {
       string binary = (Environment.OSVersion.Platform, RuntimeInformation.ProcessArchitecture, RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) switch
       {
-        (PlatformID.Unix, Architecture.X64, true) => "kustomize_darwin-amd64",
-        (PlatformID.Unix, Architecture.Arm64, true) => "kustomize_darwin-arm64",
-        (PlatformID.Unix, Architecture.X64, false) => "kustomize_linux-amd64",
-        (PlatformID.Unix, Architecture.Arm64, false) => "kustomize_linux-arm64",
+        (PlatformID.Unix, Architecture.X64, true) => "kustomize_darwin_amd64",
+        (PlatformID.Unix, Architecture.Arm64, true) => "kustomize_darwin_arm64",
+        (PlatformID.Unix, Architecture.X64, false) => "kustomize_linux_amd64",
+        (PlatformID.Unix, Architecture.Arm64, false) => "kustomize_linux_arm64",
         _ => throw new PlatformNotSupportedException($"🚨 Unsupported platform: {Environment.OSVersion.Platform} {RuntimeInformation.ProcessArchitecture}"),
       };
       return Cli.Wrap($"{AppContext.BaseDirectory}assets/binaries/{binary}");
