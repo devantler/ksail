@@ -11,6 +11,7 @@ Arguments:
 
 Options:
   -k, --kubeconfig <kubeconfig> (REQUIRED)  Path to kubeconfig file [default: /Users/nikolaiemildamm/.kube/config]
+  -t, --timeout <timeout>                   The timeout in seconds to wait for each kustomization to become ready. Defaults to 600 seconds. [default: 600]
   --version                                 Show version information
   -?, -h, --help                            Show help and usage information
 

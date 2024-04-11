@@ -25,6 +25,8 @@ class KSailCheckCommandHandler()
     {
       string? kustomizationName = kustomization?.Metadata.Name ??
         throw new InvalidOperationException("🚨 Kustomization name is null");
+      var statusConditions = kustomization?.Status.Conditions ??
+        throw new InvalidOperationException("🚨 Kustomization status conditions are null");
       if (!_kustomizations.Add(kustomizationName))
       {
         if (_successfulKustomizations.Count == _kustomizations.Count)
@@ -35,33 +37,54 @@ class KSailCheckCommandHandler()
         {
           continue;
         }
+        else if (_stopwatch.Elapsed.TotalSeconds >= timeout)
+        {
+          Console.WriteLine($"✕ Kustomization '{kustomizationName}' did not become ready within the specified time limit of {timeout} seconds.");
+          foreach (var statusCondition in statusConditions)
+          {
+            string? message = statusCondition.Message;
+            Console.WriteLine(message);
+            Console.WriteLine();
+          }
+          return 1;
+        }
       }
-      var statusConditions = kustomization?.Status.Conditions ??
-        throw new InvalidOperationException("🚨 Kustomization status conditions are null");
+
       if (HasDependencies(statusConditions))
       {
         continue;
       }
-      string? statusConditionType = statusConditions.FirstOrDefault()?.Type ??
-        throw new InvalidOperationException("🚨 Kustomization status is null");
-      switch (statusConditionType)
+      bool isReady = true;
+      foreach (var statusCondition in statusConditions)
       {
-        case "Failed":
-          return HandleFailedStatus(kustomization, kustomizationName);
-        case "Ready":
-          HandleReadyStatus(kustomizationName);
-          break;
-        default:
-          if (HandleFailedStatusConditions(kustomization, kustomizationName) != 0)
-          {
-            return 1;
-          }
-          HandleOtherStatus(kustomizationName);
-          break;
+        switch (statusCondition.Type)
+        {
+          case "Stalled":
+          case "Failed" when IsCritical(statusCondition):
+            return HandleFailedStatus(statusCondition, kustomizationName);
+          case "Ready":
+          case "Healthy":
+            break;
+          default:
+            isReady = false;
+            break;
+        }
+      }
+      if (isReady)
+      {
+        HandleReadyStatus(kustomizationName);
+      }
+      else
+      {
+        HandleOtherStatus(kustomizationName);
       }
     }
     return 0;
   }
+
+  static bool IsCritical(V1CustomResourceDefinitionCondition statusCondition) =>
+    statusCondition.Status.Equals("False", StringComparison.Ordinal) &&
+    !statusCondition.Reason.Equals("HealthCheckFailed", StringComparison.Ordinal);
 
   static bool HasDependencies(IList<V1CustomResourceDefinitionCondition> statusConditions) =>
     statusConditions.FirstOrDefault()?.Reason.Equals("DependencyNotReady", StringComparison.Ordinal) ?? false;
@@ -73,16 +96,6 @@ class KSailCheckCommandHandler()
     int seconds = totalTimeElapsed.Seconds;
     Console.WriteLine($"✔ All kustomizations are ready! ({minutes}m {seconds}s)");
     return 0;
-  }
-
-  static int HandleFailedStatusConditions(V1CustomResourceDefinition? kustomization, string kustomizationName)
-  {
-    bool isFailed = kustomization?.Status.Conditions.Any(condition =>
-      condition.Status.Equals("False", StringComparison.Ordinal) &&
-      !condition.Reason.Equals("HealthCheckFailed", StringComparison.Ordinal)
-    ) ?? false;
-
-    return isFailed ? HandleFailedStatus(kustomization, kustomizationName) : 0;
   }
 
   void HandleOtherStatus(string kustomizationName)
@@ -100,9 +113,9 @@ class KSailCheckCommandHandler()
     _stopwatch.Restart();
   }
 
-  static int HandleFailedStatus(V1CustomResourceDefinition? kustomization, string kustomizationName)
+  static int HandleFailedStatus(V1CustomResourceDefinitionCondition statusCondition, string kustomizationName)
   {
-    string? message = kustomization?.Status.Conditions.FirstOrDefault()?.Message;
+    string? message = statusCondition.Message;
     Console.WriteLine($"✕ Kustomization '{kustomizationName}' failed with message: {message}");
     return 1;
   }

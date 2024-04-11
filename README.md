@@ -265,17 +265,21 @@ I am currently working on stabilizing the tool, and ensure that it works as expe
 
 Features in the pipeline:
 
-- **100% Test Coverage:** KSail is currently at ~80% test coverage, and I am working on getting it to 100%, to ensure that all intended use cases are thoroughly tested.
-- **Better Error Handling:** KSail currently has some issues with error handling, and I am working on improving this, so that it fails gracefully with informative error messages.
+- **Better Test Coverage:** KSail is currently at ~70% test coverage, and I am working on improving it, to ensure that all intended use cases are thoroughly tested.
+- **Windows Support:** Ideally, KSail should work on all platforms, but the current setup has a few hindrances that make it difficult to support Windows. I am contemplating how to best solve this, or if I should just drop Windows support altogether.
 - **Extra Args**: I intend to add support for passing extra arguments to the different commands, so users can choose to pass extra arguments to the underlying binaries if they so desire. If one command targets multiple binaries, e.g. `ksail up`, I intend to add support for passing extra arguments to the different binaries, e.g. `ksail up --flux-args="--some-arg" --k3d-args="--some-other-arg"`.
 - **Improved Init Command:** I intend to build a small template engine into KSail, so it is easier to extend and customize the generated files.
+- **KSail Gen:** With the template engine implemented I intend to add support for various generators that can generate anything from Kubernetes manifests to config files.
 - **Kind Support:** KSail will be able to create and manage GitOps-enabled Kubernetes clusters in Kind.
+- **KSail YAML config:** As KSail matures, I will support more container engines and Kubernetes distributions, so a way to set defaults will be required. As such I plan to add support for a YAML config file to specify KSail-related settings and defaults. KSail will support generating the file if it does not exist, or generate it with `ksail gen` when the template engine matures.
+- **ContainerD Support:** I acknowledge that Docker is not the only big container engine, and as such I want to enable support for using ContainerD as well.
 
 Features I'm considering:
 
-- **ArgoCD Support through Flamingo:** Working with YAML is a not necessarily the preffered approach for all, so I am contemplating including Flaming as a helm release provided by the `ksail init` command, so users can choose to create new releases from ArgoCDs proven UI.
-- **Windows Support:** Ideally, KSail should work on all platforms, but the current setup has a few hindrances that make it difficult to support Windows. I am contemplating how to best solve this, or if I should just drop Windows support altogether.
-- **Setting hosts:** Services made accessible through ingresses cannot be reached without setting their dns in the hosts file. I believe it would be nice if KSail was able to do this in a friendly way. EDIT: On second thought I do not believe this feature will be very flexible, so instead I am to document how this can be done manually, but as many might have different setups, or even local DNS servers, I do not believe this is a good fit for KSail.
+- **ArgoCD Support through Flamingo:** Working with YAML is not necessarily the preferred approach for all, so I am contemplating including Flamingo as a helm release provided by the `ksail init` command, so users can choose to create new releases from ArgoCDs proven UI.
+- **Talos in Docker support:** Talos Linux is awesome, and it runs well in Docker. I am contemplating adding it as another Kubernetes distribution, as I find myself using it more and more for non-dev workloads, and thus it would make sense to be able to test these workloads locally and in CI with KSail.
+- **Cilium CNI support:** I really believe Cilium is revolutionary as a Kubernetes CNI, so if the portability is good enough, I want to make sure KSail supports generating K3d and Kind configs that enables Cilium as a default CNI.
+- **Setting hosts:** Services made accessible through ingresses cannot be reached without setting their DNS in the hosts file. I believe it would be nice if KSail was able to do this in a friendly way. EDIT: On second thought I do not believe this feature will be very flexible, so instead I am to document how this can be done manually, but as many might have different setups or even local DNS servers, I do not believe this is a good fit for KSail.
 
 ## Contributing
 
