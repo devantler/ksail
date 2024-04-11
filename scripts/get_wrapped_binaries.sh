@@ -30,9 +30,11 @@ download_and_update() {
     fi
   done
   find src/KSail/assets/binaries -name "LICENSE" -type f -delete
+  echo $binary $version_latest >>src/KSail/assets/binaries/versions.txt
 }
 
 set -e
+rm src/KSail/assets/binaries/versions.txt
 download_and_update "FiloSottile/age" "age-keygen" true "age"
 download_and_update "fluxcd/flux2" "flux" true
 download_and_update "getsops/sops" "sops" false
