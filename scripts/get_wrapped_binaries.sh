@@ -31,7 +31,7 @@ download_and_update() {
     fi
   done
   find src/KSail/assets/binaries -name "LICENSE" -type f -delete
-  echo "$binary" "$version_latest" >>src/KSail/assets/binaries/versions.txt
+  echo "$binary $version_latest" >>src/KSail/assets/binaries/versions.txt
 }
 
 set -e
