@@ -9,10 +9,10 @@ download_and_update() {
   version_latest=$(echo "$latest_release" | grep tag_name | cut -d '"' -f 4 | cut -d '/' -f 2)
 
   for arch in "${architectures[@]}"; do
-    exists=$(echo "$latest_release" | grep browser_download_url | grep "$arch" | cut -d '"' -f 4)
-    if [ -n "$exists" ]; then
+    url=$(echo "$latest_release" | grep browser_download_url | grep "$arch" | grep -v sha256 | cut -d '"' -f 4)
+    if [ -n "$url" ]; then
       echo "Downloading $binary $version_latest for architecture $arch"
-      curl -s -L "$exists" -o src/KSail/assets/binaries/"${binary}"_"${arch}""$([ "$is_tarball" = true ] && echo ".tar.gz")"
+      curl -s -L "$url" -o src/KSail/assets/binaries/"${binary}"_"${arch}""$([ "$is_tarball" = true ] && echo ".tar.gz")"
       if [ "$is_tarball" = true ]; then
         echo "Extracting tarball"
         tar -xzf src/KSail/assets/binaries/"${binary}"_"${arch}".tar.gz -C src/KSail/assets/binaries/
