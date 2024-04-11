@@ -17,6 +17,7 @@ sealed class KSailCheckCommand : Command
   {
     AddArgument(_clusterNameArgument);
     AddOption(_kubeconfigOption);
+    AddOption(_timeoutOption);
     AddValidator(result =>
     {
       string? kubeconfig = result.GetValueForOption(_kubeconfigOption);
