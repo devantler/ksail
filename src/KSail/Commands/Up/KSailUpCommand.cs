@@ -59,6 +59,7 @@ sealed class KSailUpCommand : Command
         throw new InvalidOperationException($"Required option '{_manifestsOption.Name}' missing for command: 'up'.");
       string? kustomizations = context.ParseResult.GetValueForOption(_kustomizationsOption) ??
         $"clusters/{clusterName}/flux-system";
+      int timeout = context.ParseResult.GetValueForOption(_timeoutOption);
       bool noSOPS = context.ParseResult.GetValueForOption(_noSOPSOption);
 
       config = $"{clusterName}-{config}";
