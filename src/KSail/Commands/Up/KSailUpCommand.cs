@@ -73,6 +73,7 @@ sealed class KSailUpCommand : Command
           config,
           manifests,
           kustomizations,
+          timeout,
           noSOPS,
           token
         );
