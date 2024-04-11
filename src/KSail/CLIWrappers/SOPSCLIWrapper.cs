@@ -11,10 +11,10 @@ class SOPSCLIWrapper()
     {
       string binary = (Environment.OSVersion.Platform, RuntimeInformation.ProcessArchitecture, RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) switch
       {
-        (PlatformID.Unix, Architecture.X64, true) => "sops_darwin.amd64",
-        (PlatformID.Unix, Architecture.Arm64, true) => "sops_darwin.arm64",
-        (PlatformID.Unix, Architecture.X64, false) => "sops_linux.amd64",
-        (PlatformID.Unix, Architecture.Arm64, false) => "sops_linux.arm64",
+        (PlatformID.Unix, Architecture.X64, true) => "sops_darwin-amd64",
+        (PlatformID.Unix, Architecture.Arm64, true) => "sops_darwin-arm64",
+        (PlatformID.Unix, Architecture.X64, false) => "sops_linux-amd64",
+        (PlatformID.Unix, Architecture.Arm64, false) => "sops_linux-arm64",
         _ => throw new PlatformNotSupportedException($"🚨 Unsupported platform: {Environment.OSVersion.Platform} {RuntimeInformation.ProcessArchitecture}"),
       };
       return Cli.Wrap($"{AppContext.BaseDirectory}assets/binaries/{binary}");

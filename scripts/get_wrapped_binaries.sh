@@ -11,6 +11,7 @@ download_and_update() {
   for arch in "${architectures[@]}"; do
     url=$(echo "$latest_release" | grep browser_download_url | grep "$arch" | grep -v sha256 | grep -v .spdx.sbom.json | cut -d '"' -f 4)
     if [ -n "$url" ]; then
+      arch=${arch//./-}
       echo "Downloading $binary $version_latest for architecture $arch"
       curl -s -L "$url" -o src/KSail/assets/binaries/"${binary}"_"${arch}""$([ "$is_tarball" = true ] && echo ".tar.gz")"
       if [ "$is_tarball" = true ]; then
