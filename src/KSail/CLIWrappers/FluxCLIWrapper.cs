@@ -12,10 +12,10 @@ class FluxCLIWrapper()
     {
       string binary = (Environment.OSVersion.Platform, RuntimeInformation.ProcessArchitecture, RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) switch
       {
-        (PlatformID.Unix, Architecture.X64, true) => "flux_darwin_amd64",
-        (PlatformID.Unix, Architecture.Arm64, true) => "flux_darwin_arm64",
-        (PlatformID.Unix, Architecture.X64, false) => "flux_linux_amd64",
-        (PlatformID.Unix, Architecture.Arm64, false) => "flux_linux_arm64",
+        (PlatformID.Unix, Architecture.X64, true) => "flux_darwin-amd64",
+        (PlatformID.Unix, Architecture.Arm64, true) => "flux_darwin-arm64",
+        (PlatformID.Unix, Architecture.X64, false) => "flux_linux-amd64",
+        (PlatformID.Unix, Architecture.Arm64, false) => "flux_linux-arm64",
         _ => throw new PlatformNotSupportedException($"🚨 Unsupported platform: {Environment.OSVersion.Platform} {RuntimeInformation.ProcessArchitecture}"),
       };
       return Cli.Wrap($"{AppContext.BaseDirectory}assets/binaries/{binary}");
