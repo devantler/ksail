@@ -116,6 +116,6 @@ class KSailUpCommandHandler(
     Console.WriteLine("");
 
     Console.WriteLine("🔄 Checking Flux reconciles successfully");
-    return await new KSailCheckCommandHandler().HandleAsync(context, token) != 0 ? 1 : 0;
+    return await new KSailCheckCommandHandler().HandleAsync(context, timeout, token) != 0 ? 1 : 0;
   }
 }
