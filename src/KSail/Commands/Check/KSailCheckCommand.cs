@@ -11,6 +11,7 @@ sealed class KSailCheckCommand : Command
 {
   readonly ClusterNameArgument _clusterNameArgument = new() { Arity = ArgumentArity.ExactlyOne };
   readonly KubeconfigOption _kubeconfigOption = new() { IsRequired = true };
+  readonly TimeoutOption _timeoutOption = new();
 
   internal KSailCheckCommand() : base("check", "Check the status of the cluster")
   {
