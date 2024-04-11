@@ -31,6 +31,7 @@ sealed class KSailCheckCommand : Command
       string clusterName = context.ParseResult.GetValueForArgument(_clusterNameArgument);
       string kubeconfig = context.ParseResult.GetValueForOption(_kubeconfigOption) ??
         throw new InvalidOperationException("Kubeconfig not set");
+      int timeout = context.ParseResult.GetValueForOption(_timeoutOption);
 
       var kubernetesDistributionProvisioner = new K3dProvisioner();
       var kubernetesDistributionType = await kubernetesDistributionProvisioner.GetKubernetesDistributionTypeAsync();
