@@ -12,6 +12,7 @@ download_and_update() {
     url=$(echo "$latest_release" | grep browser_download_url | grep "$arch" | grep -v sha256 | grep -v .spdx.sbom.json | cut -d '"' -f 4)
     if [ -n "$url" ]; then
       arch=${arch//./-}
+      arch=${arch//_/-}
       echo "Downloading $binary $version_latest for architecture $arch"
       curl -s -L "$url" -o src/KSail/assets/binaries/"${binary}"_"${arch}""$([ "$is_tarball" = true ] && echo ".tar.gz")"
       if [ "$is_tarball" = true ]; then
@@ -30,7 +31,7 @@ download_and_update() {
     fi
   done
   find src/KSail/assets/binaries -name "LICENSE" -type f -delete
-  echo $binary $version_latest >>src/KSail/assets/binaries/versions.txt
+  echo "$binary" "$version_latest" >>src/KSail/assets/binaries/versions.txt
 }
 
 set -e
