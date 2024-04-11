@@ -24,6 +24,7 @@ sealed class KSailUpCommand : Command
     AddOption(_configOption);
     AddOption(_manifestsOption);
     AddOption(_kustomizationsOption);
+    AddOption(_timeoutOption);
     AddOption(_noSOPSOption);
 
     AddValidator(result =>
