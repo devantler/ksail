@@ -12,7 +12,7 @@ class KSailCheckCommandHandler()
   readonly Stopwatch _stopwatch = Stopwatch.StartNew();
   readonly Stopwatch _stopwatchTotal = Stopwatch.StartNew();
 
-  internal async Task<int> HandleAsync(string context, CancellationToken token, string? kubeconfig = null)
+  internal async Task<int> HandleAsync(string context, int timeout, CancellationToken token, string? kubeconfig = null)
   {
     var kubernetesClient = (kubeconfig is not null) switch
     {
