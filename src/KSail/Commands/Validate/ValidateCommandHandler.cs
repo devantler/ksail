@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Reflection.Metadata.Ecma335;
 using k8s;
 using k8s.Models;
 using KSail.Extensions;
@@ -25,6 +26,8 @@ class KSailCheckCommandHandler()
     {
       string? kustomizationName = kustomization?.Metadata.Name ??
         throw new InvalidOperationException("🚨 Kustomization name is null");
+      var statusConditions = kustomization?.Status.Conditions ??
+        throw new InvalidOperationException("🚨 Kustomization status conditions are null");
       if (!_kustomizations.Add(kustomizationName))
       {
         if (_successfulKustomizations.Count == _kustomizations.Count)
@@ -38,11 +41,16 @@ class KSailCheckCommandHandler()
         else if (_stopwatch.Elapsed.TotalSeconds >= timeout)
         {
           Console.WriteLine($"✕ Kustomization '{kustomizationName}' did not become ready within the specified time limit of {timeout} seconds.");
+          foreach (var statusCondition in statusConditions)
+          {
+            string? message = statusCondition.Message;
+            Console.WriteLine(message);
+            Console.WriteLine();
+          }
           return 1;
         }
       }
-      var statusConditions = kustomization?.Status.Conditions ??
-        throw new InvalidOperationException("🚨 Kustomization status conditions are null");
+
       if (HasDependencies(statusConditions))
       {
         continue;
