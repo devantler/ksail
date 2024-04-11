@@ -37,8 +37,12 @@ class KSailCheckCommandHandler()
         }
         else if (_stopwatch.Elapsed.TotalSeconds >= timeout)
         {
-          Console.WriteLine($"✕ Kustomization '{kustomizationName}' did not become ready within the specified time limit of {timeout} seconds.");
-          return 1;
+          return HandleFailedStatus(new V1CustomResourceDefinitionCondition
+          {
+            Message = $"Kustomization did not become ready within the specified time limit of {timeout} seconds.",
+            Reason = "Timeout",
+            Status = "False"
+          }, kustomizationName);
         }
       }
       var statusConditions = kustomization?.Status.Conditions ??
