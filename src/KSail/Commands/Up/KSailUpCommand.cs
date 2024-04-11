@@ -16,6 +16,7 @@ sealed class KSailUpCommand : Command
   readonly ConfigOption _configOption = new() { IsRequired = true };
   readonly ManifestsOption _manifestsOption = new();
   readonly KustomizationsOption _kustomizationsOption = new();
+  readonly TimeoutOption _timeoutOption = new();
   readonly NoSOPSOption _noSOPSOption = new();
   internal KSailUpCommand() : base("up", "Provision a K8s cluster")
   {
