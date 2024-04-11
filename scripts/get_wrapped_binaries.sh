@@ -4,12 +4,12 @@ download_and_update() {
   binary=$2
   is_tarball=$3
   subfolder=$4
-  architectures=("darwin-amd64" "darwin_amd64" "darwin-arm64" "darwin_arm64" "linux-amd64" "linux_amd64" "linux-arm64" "linux_arm64")
+  architectures=("darwin.amd64" "darwin-amd64" "darwin_amd64" "darwin.arm64" "darwin-arm64" "darwin_arm64" "linux.amd64" "linux-amd64" "linux_amd64" "linux.arm64" "linux-arm64" "linux_arm64")
   latest_release=$(curl -s https://api.github.com/repos/"$repo"/releases/latest)
   version_latest=$(echo "$latest_release" | grep tag_name | cut -d '"' -f 4 | cut -d '/' -f 2)
 
   for arch in "${architectures[@]}"; do
-    url=$(echo "$latest_release" | grep browser_download_url | grep "$arch" | grep -v sha256 | cut -d '"' -f 4)
+    url=$(echo "$latest_release" | grep browser_download_url | grep "$arch" | grep -v sha256 | grep -v .spdx.sbom.json | cut -d '"' -f 4)
     if [ -n "$url" ]; then
       echo "Downloading $binary $version_latest for architecture $arch"
       curl -s -L "$url" -o src/KSail/assets/binaries/"${binary}"_"${arch}""$([ "$is_tarball" = true ] && echo ".tar.gz")"
