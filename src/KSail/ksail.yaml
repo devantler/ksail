@@ -1,0 +1,22 @@
+apiVersion: ksail.io/v1alpha1
+kind: Config
+name: some-cluster
+containerOrchestrator: kubernetes
+containerEngine: docker
+kubernetes:
+  version: 1.21.0
+  distribution: k3d
+registries:
+  enabled: true
+gitops:
+  enabled: true
+  manifestsPath: ./k8s
+linting:
+  enabledForUp: true
+  enabledForUpdate: true
+validation:
+  enabledForUp: true
+  enabledForUpdate: true
+  timeout: 600
+sops:
+  enabled: true

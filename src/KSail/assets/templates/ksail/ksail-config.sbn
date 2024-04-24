@@ -1,0 +1,22 @@
+apiVersion: ksail.io/v1alpha1
+kind: Config
+name: {{ name }}
+containerOrchestrator: {{ container_orchestrator }}
+containerEngine: {{ container_engine }}
+kubernetes:
+  version: {{ kubernetes.version }}
+  distribution: {{ kubernetes.distribution }}
+registries:
+  enabled: {{ registries.enabled }}
+gitops:
+  enabled: {{ gitops.enabled }}
+  manifestsPath: {{ gitops.manifests_path }}
+linting:
+  enabledForUp: {{ linting.enabled_for_up }}
+  enabledForUpdate: {{ linting.enabled_for_update }}
+validation:
+  enabledForUp: {{ validation.enabled_for_up }}
+  enabledForUpdate: {{ validation.enabled_for_update }}
+  timeout: {{ validation.timeout }}
+sops:
+  enabled: {{ sops.enabled }}
