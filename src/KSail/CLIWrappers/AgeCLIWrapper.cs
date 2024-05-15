@@ -38,7 +38,7 @@ class AgeCLIWrapper()
     var (ExitCode, Result) = await CLIRunner.RunAsync(cmd, token, silent: true);
     if (ExitCode != 0)
     {
-      Console.WriteLine($"✕ Failed to generate key with error: {Result.Last()}");
+      Console.WriteLine($"✕ Failed to generate key with error: {Result[^1]}");
       return 1;
     }
     return 0;

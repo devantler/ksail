@@ -54,7 +54,7 @@ sealed class LocalSOPSProvisioner() : ISecretManagerProvisioner, IDisposable
     switch (keyType)
     {
       case KeyType.Age:
-        string privateKey = (await File.ReadAllLinesAsync($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/age/{keyName}.agekey", token)).Last();
+        string privateKey = (await File.ReadAllLinesAsync($"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.ksail/age/{keyName}.agekey", token))[^1];
         return (0, privateKey);
       default:
         throw new NotSupportedException($"🚨 Unsupported key type '{keyType}'");
