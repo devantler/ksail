@@ -11,14 +11,14 @@
     <AnalysisLevel>latest-Recommended</AnalysisLevel>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="roslynator.analyzers" Version="4.12.3">
+    <PackageVersion Include="roslynator.analyzers" Version="4.12.3">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="roslynator.formatting.analyzers" Version="4.12.3">
+    </PackageVersion>
+    <PackageVersion Include="roslynator.formatting.analyzers" Version="4.12.3">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="AsyncFixer" Version="1.6.0" />
+    </PackageVersion>
+    <PackageVersion Include="AsyncFixer" Version="1.6.0" />
   </ItemGroup>
 </Project>
