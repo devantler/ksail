@@ -20,13 +20,15 @@ class KSailCheckCommandHandler()
       false => CreateKubernetesClientFromClusterName(context)
     };
     var responseTask = kubernetesClient.ListKustomizationsWithHttpMessagesAsync();
-
     await foreach (var (_, kustomization) in responseTask.WatchAsync<V1CustomResourceDefinition, object>(cancellationToken: token))
     {
       string? kustomizationName = kustomization?.Metadata.Name ??
         throw new InvalidOperationException("🚨 Kustomization name is null");
-      var statusConditions = kustomization?.Status.Conditions ??
-        throw new InvalidOperationException("🚨 Kustomization status conditions are null");
+      var statusConditions = kustomization?.Status.Conditions;
+      if (statusConditions is null)
+      {
+        continue;
+      }
       if (!_kustomizations.Add(kustomizationName))
       {
         if (_successfulKustomizations.Count == _kustomizations.Count)
@@ -79,6 +81,7 @@ class KSailCheckCommandHandler()
         HandleOtherStatus(kustomizationName);
       }
     }
+
     return 0;
   }
 
