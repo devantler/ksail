@@ -8,6 +8,7 @@ class CLIRunner()
 {
   public static async Task<(int ExitCode, string Result)> RunAsync(Command command, CancellationToken cancellationToken, CommandResultValidation validation = CommandResultValidation.ZeroExitCode, bool silent = false)
   {
+    bool isFaulty = false;
     StringBuilder result = new();
     try
     {
@@ -30,7 +31,8 @@ class CLIRunner()
     }
     catch
     {
+      isFaulty = true;
     }
-    return (0, result.ToString());
+    return isFaulty ? (1, "") : (0, result.ToString());
   }
 }
