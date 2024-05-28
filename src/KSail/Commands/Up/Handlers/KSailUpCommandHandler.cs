@@ -31,6 +31,7 @@ class KSailUpCommandHandler(
       return 1;
     }
     Console.WriteLine("✔ Docker is running");
+    Console.WriteLine("");
 
     var (ExitCode, Result) = await _kubernetesDistributionProvisioner.ExistsAsync(clusterName, token);
     if (ExitCode != 0)

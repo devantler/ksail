@@ -25,7 +25,6 @@ sealed class KubernetesProvisioner : IContainerOrchestratorProvisioner, IDisposa
     };
     _ = await _kubernetesClient.CreateNamespaceAsync(fluxSystemNamespace);
     Console.WriteLine("✔ Namespace created");
-    Console.WriteLine();
   }
 
   public async Task CreateSecretAsync(string context, string name, Dictionary<string, string> data, string @namespace = "default")

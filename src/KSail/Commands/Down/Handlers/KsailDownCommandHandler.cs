@@ -10,6 +10,7 @@ class KSailDownCommandHandler(IContainerEngineProvisioner containerEngineProvisi
 
   internal async Task<int> HandleAsync(string clusterName, CancellationToken token, bool deletePullThroughRegistries = false)
   {
+    Console.WriteLine($"🔥 Destroying cluster '{clusterName}'");
     if (await _kubernetesDistributionProvisioner.DeprovisionAsync(clusterName, token) != 0)
     {
       return 1;
