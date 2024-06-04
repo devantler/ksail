@@ -27,6 +27,7 @@ class KSailCheckCommandHandler()
       var statusConditions = kustomization?.Status.Conditions;
       if (statusConditions is null)
       {
+        _ = _kustomizations.Remove(kustomizationName);
         continue;
       }
       if (!_kustomizations.Add(kustomizationName))
