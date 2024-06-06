@@ -21,7 +21,7 @@ class KSailUpCommandHandler(
   readonly IKubernetesDistributionProvisioner _kubernetesDistributionProvisioner = kubernetesDistributionProvisioner;
   readonly IContainerOrchestratorProvisioner _containerOrchestratorProvisioner = containerOrchestratorProvisioner;
   readonly IGitOpsProvisioner _gitOpsProvisioner = gitOpsProvisioner;
-  internal async Task<int> HandleAsync(string clusterName, string configPath, string manifestsPath, string kustomizationsPath, int timeout, bool noSOPS, CancellationToken token)
+  internal async Task<int> HandleAsync(string clusterName, string configPath, string manifestsPath, string kustomizationsPath, int timeout, bool noSOPS, bool skipLinting, CancellationToken token)
   {
     kustomizationsPath = string.IsNullOrEmpty(kustomizationsPath) ? $"clusters/{clusterName}/flux-system" : kustomizationsPath;
 
@@ -48,7 +48,7 @@ class KSailUpCommandHandler(
       }
     }
 
-    if (await KSailLintCommandHandler.HandleAsync(clusterName, manifestsPath, token) != 0)
+    if (!skipLinting && await KSailLintCommandHandler.HandleAsync(clusterName, manifestsPath, token) != 0)
     {
       return 1;
     }

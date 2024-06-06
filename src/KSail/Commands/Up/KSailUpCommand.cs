@@ -18,6 +18,7 @@ sealed class KSailUpCommand : Command
   readonly KustomizationsOption _kustomizationsOption = new();
   readonly TimeoutOption _timeoutOption = new();
   readonly NoSOPSOption _noSOPSOption = new();
+  readonly SkipLintingOption _skipLintingOption = new();
   internal KSailUpCommand() : base("up", "Provision a K8s cluster")
   {
     AddArgument(_clusterNameArgument);
@@ -26,6 +27,7 @@ sealed class KSailUpCommand : Command
     AddOption(_kustomizationsOption);
     AddOption(_timeoutOption);
     AddOption(_noSOPSOption);
+    AddOption(_skipLintingOption);
 
     AddValidator(result =>
     {
@@ -61,6 +63,7 @@ sealed class KSailUpCommand : Command
         $"clusters/{clusterName}/flux-system";
       int timeout = context.ParseResult.GetValueForOption(_timeoutOption);
       bool noSOPS = context.ParseResult.GetValueForOption(_noSOPSOption);
+      bool skipLintingOption = context.ParseResult.GetValueForOption(_skipLintingOption);
 
       config = $"{clusterName}-{config}";
 
@@ -75,6 +78,7 @@ sealed class KSailUpCommand : Command
           kustomizations,
           timeout,
           noSOPS,
+          skipLintingOption,
           token
         );
       }
