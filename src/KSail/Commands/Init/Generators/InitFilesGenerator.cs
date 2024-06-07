@@ -96,8 +96,8 @@ class InitFilesGenerator : IDisposable
         ]);
     await _kubernetesGenerator.GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "infrastructure/configs/kustomization.yaml"),
     [
-      "https://raw.githubusercontent.com/devantler/oci-artifacts/main/k8s/cert-manager/certificates/cluster-issuer-certificate.yaml",
-      "https://raw.githubusercontent.com/devantler/oci-artifacts/main/k8s/cert-manager/cluster-issuers/selfsigned-cluster-issuer.yaml"
+      "https://raw.githubusercontent.com/devantler/oci-artifacts/main/k8s/cert-manager/cluster-issuers/selfsigned/cluster-issuer-certificate.yaml",
+      "https://raw.githubusercontent.com/devantler/oci-artifacts/main/k8s/cert-manager/cluster-issuers/selfsigned/selfsigned-cluster-issuer.yaml"
     ]);
   }
 

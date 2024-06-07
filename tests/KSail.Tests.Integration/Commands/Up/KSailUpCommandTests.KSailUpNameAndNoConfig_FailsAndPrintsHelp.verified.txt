@@ -15,6 +15,7 @@ Options:
   -k, --kustomizations <kustomizations>  Path to the flux kustomization directory [default: ./k8s/clusters/<clusterName>/flux-system]
   -t, --timeout <timeout>                The timeout in seconds to wait for each kustomization to become ready. Defaults to 600 seconds. [default: 600]
   -ns, --no-sops                         Disable SOPS [default: False]
+  -sl, --skip-linting                    Skip linting of manifests [default: False]
   --version                              Show version information
   -?, -h, --help                         Show help and usage information
 
