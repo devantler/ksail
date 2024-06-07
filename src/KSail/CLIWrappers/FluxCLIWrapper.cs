@@ -62,7 +62,9 @@ class FluxCLIWrapper()
         "flux-system",
         "--source=OCIRepository/flux-system",
         $"--path={fluxKustomizationPath}",
-        $"--context={context}"
+        $"--context={context}",
+        "--prune=true",
+        "--wait=true"
       ]
     );
     var (ExitCode, _) = await CLIRunner.RunAsync(cmd, token);
