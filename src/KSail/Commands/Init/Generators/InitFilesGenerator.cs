@@ -13,7 +13,7 @@ class InitFilesGenerator : IDisposable
     string clusterDirectory = Path.Combine(manifestsDirectory, "clusters", clusterName);
     string fluxSystemDirectory = Path.Combine(clusterDirectory, "flux-system");
     await GenerateFluxKustomizations(clusterName, fluxSystemDirectory);
-    await GeneratePostBuildVariables(clusterDirectory);
+    await GeneratePostBuildVariables(clusterDirectory, clusterName);
     await GenerateInfrastructure(manifestsDirectory);
     await GenerateApps(manifestsDirectory);
 
@@ -51,15 +51,9 @@ class InitFilesGenerator : IDisposable
     [
         new FluxKustomizationContent
       {
-          Name = "infrastructure-services",
-          Path = "infrastructure/services",
+          Name = "infrastructure",
+          Path = "infrastructure",
           DependsOn = ["variables"]
-      },
-      new FluxKustomizationContent
-      {
-          Name = "infrastructure-configs",
-          Path = "infrastructure/configs",
-          DependsOn = ["infrastructure-services"]
       }
     ]);
   }
@@ -76,29 +70,62 @@ class InitFilesGenerator : IDisposable
     ]);
   }
 
-  async Task GeneratePostBuildVariables(string clusterDirectory)
+  async Task GeneratePostBuildVariables(string clusterDirectory, string clusterName)
   {
     await _kubernetesGenerator.GenerateKustomizationAsync(
       Path.Combine(clusterDirectory, "variables/kustomization.yaml"),
       ["variables.yaml", "variables-sensitive.sops.yaml"],
       "flux-system"
     );
-    await KubernetesGenerator.GenerateConfigMapAsync(Path.Combine(clusterDirectory, "variables/variables.yaml"));
+    await KubernetesGenerator.GenerateConfigMapAsync(Path.Combine(clusterDirectory, "variables/variables.yaml"), clusterName);
     await KubernetesGenerator.GenerateSecretAsync(Path.Combine(clusterDirectory, "variables/variables-sensitive.sops.yaml"));
   }
 
   async Task GenerateInfrastructure(string manifestsDirectory)
   {
-    await _kubernetesGenerator.GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "infrastructure/services/kustomization.yaml"),
-        [
-          "https://github.com/devantler/oci-artifacts//k8s/cert-manager",
-          "https://github.com/devantler/oci-artifacts//k8s/traefik"
-        ]);
-    await _kubernetesGenerator.GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "infrastructure/configs/kustomization.yaml"),
+    await _kubernetesGenerator.GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "infrastructure/kustomization.yaml"),
     [
-      "https://raw.githubusercontent.com/devantler/oci-artifacts/main/k8s/cert-manager/cluster-issuers/selfsigned/cluster-issuer-certificate.yaml",
-      "https://raw.githubusercontent.com/devantler/oci-artifacts/main/k8s/cert-manager/cluster-issuers/selfsigned/selfsigned-cluster-issuer.yaml"
+      "cert-manager",
+      "traefik"
     ]);
+    await _kubernetesGenerator.GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "infrastructure/cert-manager/kustomization.yaml"),
+    [
+      "namespace.yaml",
+      "cert-manager.yaml",
+      "selfsigned-cluster-issuer.yaml"
+    ]);
+    await _kubernetesGenerator.GenerateNamespaceAsync(Path.Combine(manifestsDirectory, "infrastructure/cert-manager/namespace.yaml"), "cert-manager");
+    await _kubernetesGenerator.GenerateFluxKustomizationAsync(Path.Combine(manifestsDirectory, "infrastructure/cert-manager/cert-manager.yaml"),
+    [
+      new FluxKustomizationContent
+      {
+        Name = "cert-manager",
+        Path = "cert-manager"
+      }
+    ]);
+    await _kubernetesGenerator.GenerateFluxKustomizationAsync(Path.Combine(manifestsDirectory, "infrastructure/cert-manager/selfsigned-cluster-issuer.yaml"),
+    [
+      new FluxKustomizationContent
+      {
+        Name = "selfsigned-cluster-issuer",
+        Path = "cert-manager/cluster-issuers/selfsigned"
+      }
+    ]);
+
+    await _kubernetesGenerator.GenerateKustomizationAsync(Path.Combine(manifestsDirectory, "infrastructure/traefik/kustomization.yaml"),
+    [
+      "namespace.yaml",
+      "traefik.yaml"
+    ]);
+    await _kubernetesGenerator.GenerateNamespaceAsync(Path.Combine(manifestsDirectory, "infrastructure/traefik/namespace.yaml"), "traefik");
+    await _kubernetesGenerator.GenerateFluxKustomizationAsync(Path.Combine(manifestsDirectory, "infrastructure/traefik/traefik.yaml"),
+      [
+        new FluxKustomizationContent
+        {
+          Name = "traefik",
+          Path = "traefik"
+        }
+      ]);
   }
 
   async Task GenerateApps(string manifestsDirectory)

@@ -93,7 +93,7 @@ class KubernetesGenerator
     await variablesSensitiveYamlFile.FlushAsync();
   }
 
-  internal static async Task GenerateConfigMapAsync(string filePath)
+  internal static async Task GenerateConfigMapAsync(string filePath, string clusterName)
   {
     if (File.Exists(filePath))
     {
@@ -101,13 +101,13 @@ class KubernetesGenerator
       return;
     }
     Console.WriteLine($"✚ Generating ConfigMap '{filePath}'");
-    const string variablesYamlContent = """
+    string variablesYamlContent = $"""
       apiVersion: v1
       kind: ConfigMap
       metadata:
         name: variables
       data:
-        cluster_domain: test
+        cluster_domain: {clusterName}.local
         cluster_issuer_name: selfsigned-cluster-issuer
       """;
     var variablesYamlFile = File.Create(filePath) ?? throw new InvalidOperationException($"🚨 Could not create the variables.yaml file at {filePath}.");
