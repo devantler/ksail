@@ -65,7 +65,7 @@ class InitFilesGenerator : IDisposable
         new() {
           Name = "apps",
           Path = "apps",
-          DependsOn = ["infrastructure-configs"]
+          DependsOn = ["infrastructure"]
       }
     ]);
   }
