@@ -13,15 +13,6 @@ class KSailLintCommandHandler()
   {
     Console.WriteLine("🧹 Linting manifest files");
 
-    Console.WriteLine("► Downloading Flux OpenAPI schemas");
-    const string url = "https://github.com/fluxcd/flux2/releases/latest/download/crd-schemas.tar.gz";
-    var directoryInfo = Directory.CreateDirectory("/tmp/flux-crd-schemas/master-standalone-strict");
-    await using (var file = await httpClient.GetStreamAsync(url, token).ConfigureAwait(false))
-    await using (var memoryStream = new MemoryStream())
-    {
-      await TarFile.ExtractToDirectoryAsync(memoryStream, directoryInfo.FullName, true, token);
-    }
-
     if (await ValidateYamlAsync(manifestsPath) != 0 || await ValidateKustomizationsAsync(clusterName, manifestsPath, token) != 0)
     {
       return 1;
@@ -71,7 +62,7 @@ class KSailLintCommandHandler()
   static async Task<int> ValidateKustomizationsAsync(string clusterName, string manifestsPath, CancellationToken token)
   {
     string[] kubeconformFlags = ["-skip=Secret"];
-    string[] kubeconformConfig = ["-strict", "-ignore-missing-schemas", "-schema-location", "default", "-schema-location", "/tmp/flux-crd-schemas", "-schema-location", "https://raw.githubusercontent.com/CustomResourceDefinition/catalog/main/schema/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json", "-verbose"];
+    string[] kubeconformConfig = ["-strict", "-ignore-missing-schemas", "-schema-location", "default", "-schema-location", "https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json", "-verbose"];
 
     string clusterPath = $"{manifestsPath}/clusters/{clusterName}";
     if (!Directory.Exists(clusterPath))
