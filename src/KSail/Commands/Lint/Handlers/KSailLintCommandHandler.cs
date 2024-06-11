@@ -71,7 +71,7 @@ class KSailLintCommandHandler()
   static async Task<int> ValidateKustomizationsAsync(string clusterName, string manifestsPath, CancellationToken token)
   {
     string[] kubeconformFlags = ["-skip=Secret"];
-    string[] kubeconformConfig = ["-strict", "-ignore-missing-schemas", "-schema-location", "default", "-schema-location", "/tmp/flux-crd-schemas", "-verbose"];
+    string[] kubeconformConfig = ["-strict", "-ignore-missing-schemas", "-schema-location", "default", "-schema-location", "/tmp/flux-crd-schemas", "-schema-location", "https://raw.githubusercontent.com/CustomResourceDefinition/catalog/main/schema/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json", "-verbose"];
 
     string clusterPath = $"{manifestsPath}/clusters/{clusterName}";
     if (!Directory.Exists(clusterPath))
