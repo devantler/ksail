@@ -7,7 +7,7 @@
 > [!NOTE]
 > This is an early release of KSail. I am actively working on the tool, so if you encounter any issues, please let me know 🙏🏻
 
-![image](https://github.com/devantler/ksail/assets/26203420/b6baf389-c5ca-4a7c-a0cc-8fa08bc50db3)
+![image](https://github.com/devantler/ksail/assets/26203420/1cf63d9b-b586-4561-aabd-b1428b5417aa)
 
 <details>
   <summary>Show/hide folder structure</summary>
@@ -118,12 +118,6 @@ Supported OSes:
 Required Tools:
 
 - [Docker](https://www.docker.com)
-
-Recommended Tools:
-
-- [K9s](https://k9scli.io) (for debugging)
-- [VScode Extension - Run on Save(pucelle.run-on-save)](https://github.com/pucelle/vscode-run-on-save) (run `ksail update` on save, to enable "live updates")
-- [VSCode Extension - GitOps Tools for Flux](https://marketplace.visualstudio.com/items?itemName=Weaveworks.vscode-gitops-tools) (UI to watch and debug Flux reconciliations)
 
 ### Installation
 
