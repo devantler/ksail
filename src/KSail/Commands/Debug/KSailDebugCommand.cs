@@ -9,7 +9,7 @@ sealed class KSailDebugCommand : Command
   readonly KubeconfigOption _kubeconfigOption = new() { IsRequired = true };
   readonly KubernetesContextOption _kubernetesContextOption = new();
 
-  internal KSailDebugCommand() : base("debug", "Debug the cluster")
+  internal KSailDebugCommand() : base("debug", "Debug the cluster (❤️ K9s)")
   {
     AddOption(_kubeconfigOption);
     AddOption(_kubernetesContextOption);
