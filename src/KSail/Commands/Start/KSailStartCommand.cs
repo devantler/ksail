@@ -8,7 +8,7 @@ sealed class KSailStartCommand : Command
 {
   readonly ClusterNameArgument _clusterNameArgument = new();
 
-  internal KSailStartCommand() : base("start", "Start a K8s cluster")
+  internal KSailStartCommand() : base("start", "Start a cluster")
   {
     AddArgument(_clusterNameArgument);
 

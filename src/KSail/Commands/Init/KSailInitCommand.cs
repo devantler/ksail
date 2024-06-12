@@ -9,7 +9,7 @@ sealed class KSailInitCommand : Command
 {
   readonly ClusterNameArgument _clusterNameArgument = new();
   readonly ManifestsOption _manifestsOption = new() { IsRequired = true };
-  public KSailInitCommand() : base("init", "Initialize a new K8s cluster")
+  public KSailInitCommand() : base("init", "Initialize a cluster")
   {
     AddArgument(_clusterNameArgument);
     AddOption(_manifestsOption);

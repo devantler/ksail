@@ -19,7 +19,7 @@ sealed class KSailUpCommand : Command
   readonly TimeoutOption _timeoutOption = new();
   readonly NoSOPSOption _noSOPSOption = new();
   readonly SkipLintingOption _skipLintingOption = new();
-  internal KSailUpCommand() : base("up", "Provision a K8s cluster")
+  internal KSailUpCommand() : base("up", "Provision a cluster")
   {
     AddArgument(_clusterNameArgument);
     AddOption(_configOption);

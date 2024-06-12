@@ -11,7 +11,7 @@ sealed class KSailDownCommand : Command
 {
   readonly ClusterNameArgument _clusterNameArgument = new() { Arity = ArgumentArity.ExactlyOne };
   readonly DeletePullThroughRegistriesOption _deletePullThroughRegistriesOption = new();
-  internal KSailDownCommand() : base("down", "Destroy a K8s cluster")
+  internal KSailDownCommand() : base("down", "Destroy a cluster")
   {
     AddArgument(_clusterNameArgument);
     AddOption(_deletePullThroughRegistriesOption);
