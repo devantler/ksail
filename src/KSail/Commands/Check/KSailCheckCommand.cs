@@ -1,7 +1,6 @@
 using System.CommandLine;
 using KSail.Arguments;
 using KSail.Commands.Check.Handlers;
-using KSail.Commands.Check.Options;
 using KSail.Options;
 using KSail.Provisioners.KubernetesDistribution;
 

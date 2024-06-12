@@ -11,10 +11,10 @@ class AgeCLIWrapper()
     {
       string binary = (Environment.OSVersion.Platform, RuntimeInformation.ProcessArchitecture, RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) switch
       {
-        (PlatformID.Unix, Architecture.X64, true) => "age-keygen_darwin-amd64",
-        (PlatformID.Unix, Architecture.Arm64, true) => "age-keygen_darwin-arm64",
-        (PlatformID.Unix, Architecture.X64, false) => "age-keygen_linux-amd64",
-        (PlatformID.Unix, Architecture.Arm64, false) => "age-keygen_linux-arm64",
+        (PlatformID.Unix, Architecture.X64, true) => "age-keygen-darwin-amd64",
+        (PlatformID.Unix, Architecture.Arm64, true) => "age-keygen-darwin-arm64",
+        (PlatformID.Unix, Architecture.X64, false) => "age-keygen-linux-amd64",
+        (PlatformID.Unix, Architecture.Arm64, false) => "age-keygen-linux-arm64",
         _ => throw new PlatformNotSupportedException($"🚨 Unsupported platform: {Environment.OSVersion.Platform} {RuntimeInformation.ProcessArchitecture}"),
       };
       return Cli.Wrap($"{AppContext.BaseDirectory}assets/binaries/{binary}");

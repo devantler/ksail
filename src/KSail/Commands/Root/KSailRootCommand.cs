@@ -1,5 +1,6 @@
 using System.CommandLine;
 using KSail.Commands.Check;
+using KSail.Commands.Debug;
 using KSail.Commands.Down;
 using KSail.Commands.Init;
 using KSail.Commands.Lint;
@@ -29,15 +30,16 @@ sealed class KSailRootCommand : RootCommand
 
   void AddCommands()
   {
-    AddCommand(new KSailInitCommand());
-    AddCommand(new KSailUpCommand());
-    AddCommand(new KSailStartCommand());
-    AddCommand(new KSailUpdateCommand());
-    AddCommand(new KSailStopCommand());
-    AddCommand(new KSailDownCommand());
-    AddCommand(new KSailListCommand());
-    AddCommand(new KSailLintCommand());
     AddCommand(new KSailCheckCommand());
+    AddCommand(new KSailDebugCommand());
+    AddCommand(new KSailDownCommand());
+    AddCommand(new KSailInitCommand());
+    AddCommand(new KSailLintCommand());
+    AddCommand(new KSailListCommand());
     AddCommand(new KSailSOPSCommand());
+    AddCommand(new KSailStartCommand());
+    AddCommand(new KSailStopCommand());
+    AddCommand(new KSailUpCommand());
+    AddCommand(new KSailUpdateCommand());
   }
 }
