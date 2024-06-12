@@ -1,4 +1,3 @@
-using System.Formats.Tar;
 using KSail.CLIWrappers;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
@@ -8,7 +7,6 @@ namespace KSail.Commands.Lint.Handlers;
 
 class KSailLintCommandHandler()
 {
-  static readonly HttpClient httpClient = new();
   internal static async Task<int> HandleAsync(string clusterName, string manifestsPath, CancellationToken token)
   {
     Console.WriteLine("🧹 Linting manifest files");
