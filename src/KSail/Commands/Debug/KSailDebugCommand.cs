@@ -6,13 +6,13 @@ namespace KSail.Commands.Debug;
 
 sealed class KSailDebugCommand : Command
 {
-  readonly KubernetesContextOption _kubernetesContextOption = new();
   readonly KubeconfigOption _kubeconfigOption = new() { IsRequired = true };
+  readonly KubernetesContextOption _kubernetesContextOption = new();
 
   internal KSailDebugCommand() : base("debug", "Debug the cluster")
   {
-    AddOption(_kubernetesContextOption);
     AddOption(_kubeconfigOption);
+    AddOption(_kubernetesContextOption);
     AddValidator(result =>
     {
       string? kubeconfig = result.GetValueForOption(_kubeconfigOption);
@@ -23,15 +23,15 @@ sealed class KSailDebugCommand : Command
     });
     this.SetHandler(async (context) =>
     {
-      string? kubernetesContext = context.ParseResult.GetValueForOption(_kubernetesContextOption);
       string kubeconfig = context.ParseResult.GetValueForOption(_kubeconfigOption) ??
         throw new InvalidOperationException("Kubeconfig not set");
+      string? kubernetesContext = context.ParseResult.GetValueForOption(_kubernetesContextOption);
 
       var token = context.GetCancellationToken();
       var handler = new KSailDebugCommandHandler();
       try
       {
-        context.ExitCode = await KSailDebugCommandHandler.HandleAsync(kubernetesContext, token);
+        context.ExitCode = await KSailDebugCommandHandler.HandleAsync(kubeconfig, kubernetesContext, token);
       }
       catch (OperationCanceledException)
       {

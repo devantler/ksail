@@ -1,21 +1,19 @@
 using System.CommandLine;
-using KSail.Arguments;
 using KSail.Commands.Check.Handlers;
 using KSail.Options;
-using KSail.Provisioners.KubernetesDistribution;
 
 namespace KSail.Commands.Check;
 
 sealed class KSailCheckCommand : Command
 {
-  readonly ClusterNameArgument _clusterNameArgument = new() { Arity = ArgumentArity.ExactlyOne };
   readonly KubeconfigOption _kubeconfigOption = new() { IsRequired = true };
+  readonly KubernetesContextOption _kubernetesContextOption = new();
   readonly TimeoutOption _timeoutOption = new();
 
   internal KSailCheckCommand() : base("check", "Check the status of the cluster")
   {
-    AddArgument(_clusterNameArgument);
     AddOption(_kubeconfigOption);
+    AddOption(_kubernetesContextOption);
     AddOption(_timeoutOption);
     AddValidator(result =>
     {
@@ -27,20 +25,16 @@ sealed class KSailCheckCommand : Command
     });
     this.SetHandler(async (context) =>
     {
-      string clusterName = context.ParseResult.GetValueForArgument(_clusterNameArgument);
       string kubeconfig = context.ParseResult.GetValueForOption(_kubeconfigOption) ??
         throw new InvalidOperationException("Kubeconfig not set");
+      string? kubernetesContext = context.ParseResult.GetValueForOption(_kubernetesContextOption);
       int timeout = context.ParseResult.GetValueForOption(_timeoutOption);
-
-      var kubernetesDistributionProvisioner = new K3dProvisioner();
-      var kubernetesDistributionType = await kubernetesDistributionProvisioner.GetKubernetesDistributionTypeAsync();
-      string k8sContext = $"{kubernetesDistributionType.ToString()?.ToLowerInvariant()}-{clusterName}";
 
       var token = context.GetCancellationToken();
       var handler = new KSailCheckCommandHandler();
       try
       {
-        context.ExitCode = await handler.HandleAsync(k8sContext, timeout, token, kubeconfig);
+        context.ExitCode = await handler.HandleAsync(kubernetesContext, timeout, token, kubeconfig);
       }
       catch (OperationCanceledException)
       {
