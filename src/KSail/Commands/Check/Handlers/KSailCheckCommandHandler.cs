@@ -78,7 +78,7 @@ class KSailCheckCommandHandler()
       {
         HandleReadyStatus(kustomizationName);
       }
-      else if (!waitingKustomizations.Contains(kustomizationName)) // Check if kustomization is already being waited for
+      else
       {
         HandleOtherStatus(kustomizationName);
       }
