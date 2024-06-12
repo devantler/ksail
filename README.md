@@ -94,13 +94,6 @@
 
 </details>
 
-<details>
-  <summary>Show/Hide codebase visualization</summary>
-
-![Visualization of the codebase](./diagram.svg)
-
-</details>
-
 ## Getting Started
 
 ### Prerequisites
