@@ -72,11 +72,6 @@ class InitFilesGenerator : IDisposable
 
   async Task GeneratePostBuildVariables(string clusterDirectory, string clusterName)
   {
-    await _kubernetesGenerator.GenerateKustomizationAsync(
-      Path.Combine(clusterDirectory, "variables/kustomization.yaml"),
-      ["variables.yaml", "variables-sensitive.sops.yaml"],
-      "flux-system"
-    );
     await KubernetesGenerator.GenerateConfigMapAsync(Path.Combine(clusterDirectory, "variables/variables.yaml"), clusterName);
     await KubernetesGenerator.GenerateSecretAsync(Path.Combine(clusterDirectory, "variables/variables-sensitive.sops.yaml"));
   }
@@ -108,7 +103,8 @@ class InitFilesGenerator : IDisposable
       new FluxKustomizationContent
       {
         Name = "selfsigned-cluster-issuer",
-        Path = "cert-manager/cluster-issuers/selfsigned"
+        Path = "cert-manager/cluster-issuers/selfsigned",
+        DependsOn = ["cert-manager"]
       }
     ]);
 

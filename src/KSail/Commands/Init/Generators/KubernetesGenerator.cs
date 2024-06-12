@@ -86,8 +86,14 @@ class KubernetesGenerator
       kind: Secret
       metadata:
         name: variables-sensitive
+        namespace: flux-system
       stringData: {}
       """;
+    var directoryPath = Path.GetDirectoryName(filePath);
+    if (!Directory.Exists(directoryPath))
+    {
+      Directory.CreateDirectory(directoryPath);
+    }
     var variablesSensitiveYamlFile = File.Create(filePath) ?? throw new InvalidOperationException($"🚨 Could not create '{filePath}'.");
     await variablesSensitiveYamlFile.WriteAsync(Encoding.UTF8.GetBytes(variablesSensitiveYamlContent));
     await variablesSensitiveYamlFile.FlushAsync();
@@ -106,12 +112,19 @@ class KubernetesGenerator
       kind: ConfigMap
       metadata:
         name: variables
+        namespace: flux-system
       data:
         cluster_domain: {clusterName}.local
         cluster_issuer_name: selfsigned-cluster-issuer
       """;
+    var directoryPath = Path.GetDirectoryName(filePath);
+    if (!Directory.Exists(directoryPath))
+    {
+      Directory.CreateDirectory(directoryPath);
+    }
     var variablesYamlFile = File.Create(filePath) ?? throw new InvalidOperationException($"🚨 Could not create the variables.yaml file at {filePath}.");
     await variablesYamlFile.WriteAsync(Encoding.UTF8.GetBytes(variablesYamlContent));
     await variablesYamlFile.FlushAsync();
   }
 }
+
