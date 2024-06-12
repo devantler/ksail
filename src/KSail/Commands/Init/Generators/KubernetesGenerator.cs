@@ -50,6 +50,23 @@ class KubernetesGenerator
     }
   }
 
+  internal async Task GenerateOCIRepositoryAsync(string filePath, OCIRepository ociRepository)
+  {
+    if (!File.Exists(filePath))
+    {
+      Console.WriteLine($"✚ Generating OCI Repository '{filePath}'");
+      await _generator.GenerateAsync(
+          filePath,
+          $"{AppDomain.CurrentDomain.BaseDirectory}/assets/templates/kubernetes/oci-repository.sbn",
+          ociRepository
+      );
+    }
+    else
+    {
+      Console.WriteLine($"✓ OCI Repository '{filePath}' already exists");
+    }
+  }
+
   internal async Task GenerateKustomizationAsync(string filePath, List<string> resources, string @namespace = "")
   {
     if (!File.Exists(filePath))
@@ -86,8 +103,14 @@ class KubernetesGenerator
       kind: Secret
       metadata:
         name: variables-sensitive
+        namespace: flux-system
       stringData: {}
       """;
+    string? directoryPath = Path.GetDirectoryName(filePath) ?? throw new InvalidOperationException($"🚨 Could not get the directory path of '{filePath}'.");
+    if (!Directory.Exists(directoryPath))
+    {
+      _ = Directory.CreateDirectory(directoryPath);
+    }
     var variablesSensitiveYamlFile = File.Create(filePath) ?? throw new InvalidOperationException($"🚨 Could not create '{filePath}'.");
     await variablesSensitiveYamlFile.WriteAsync(Encoding.UTF8.GetBytes(variablesSensitiveYamlContent));
     await variablesSensitiveYamlFile.FlushAsync();
@@ -106,10 +129,16 @@ class KubernetesGenerator
       kind: ConfigMap
       metadata:
         name: variables
+        namespace: flux-system
       data:
         cluster_domain: {clusterName}.local
         cluster_issuer_name: selfsigned-cluster-issuer
       """;
+    string? directoryPath = Path.GetDirectoryName(filePath) ?? throw new InvalidOperationException($"🚨 Could not get the directory path of '{filePath}'.");
+    if (!Directory.Exists(directoryPath))
+    {
+      _ = Directory.CreateDirectory(directoryPath);
+    }
     var variablesYamlFile = File.Create(filePath) ?? throw new InvalidOperationException($"🚨 Could not create the variables.yaml file at {filePath}.");
     await variablesYamlFile.WriteAsync(Encoding.UTF8.GetBytes(variablesYamlContent));
     await variablesYamlFile.FlushAsync();
