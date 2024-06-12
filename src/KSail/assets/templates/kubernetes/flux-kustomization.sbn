@@ -16,16 +16,20 @@ spec:
   path: {{ c.path }}
   prune: {{ c.prune }}
   wait: {{ c.wait }}
+  {{~ if c.decryption ~}}
   decryption:
     provider: {{ c.decryption.provider | string.downcase }}
     secretRef:
       name: {{ c.decryption.secret_ref.name }}
+  {{~ end ~}}
+  {{~ if c.post_build ~}}
   postBuild:
     substituteFrom: {{ if c.post_build.substitute_from == empty }}[]{{ end }}
     {{~ for sub in c.post_build.substitute_from ~}}
       - kind: {{ sub.kind }}
         name: {{ sub.name }}
     {{~ end ~}}
+  {{~ end ~}}
 {{~ if !for.last ~}}
 ---
 {{~ end ~}}

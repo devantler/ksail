@@ -4,7 +4,7 @@ class FluxKustomizationContent
 {
   public required string Name { get; set; }
   public string Namespace { get; set; } = "flux-system";
-  public string Interval { get; set; } = "1m";
+  public string Interval { get; set; } = "30s";
   public List<string> DependsOn { get; set; } = [];
   public FluxKustomizationSourceRef SourceRef { get; set; } = new FluxKustomizationSourceRef
   {
@@ -14,7 +14,7 @@ class FluxKustomizationContent
   public required string Path { get; set; }
   public bool Prune { get; set; } = true;
   public bool Wait { get; set; } = true;
-  public FluxKustomizationDecryption Decryption { get; set; } = new FluxKustomizationDecryption
+  public FluxKustomizationDecryption? Decryption { get; set; } = new FluxKustomizationDecryption
   {
     Provider = FluxKustomizationDecryptionProvider.SOPS,
     SecretRef = new FluxKustomizationDecryptionSecretRef
@@ -22,7 +22,7 @@ class FluxKustomizationContent
       Name = "sops-age"
     }
   };
-  public FluxKustomizationPostBuild PostBuild { get; set; } = new FluxKustomizationPostBuild
+  public FluxKustomizationPostBuild? PostBuild { get; set; } = new FluxKustomizationPostBuild
   {
     SubstituteFrom =
     [

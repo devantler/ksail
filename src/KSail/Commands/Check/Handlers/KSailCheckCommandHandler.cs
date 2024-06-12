@@ -11,6 +11,7 @@ class KSailCheckCommandHandler()
   readonly HashSet<string> _successfulKustomizations = [];
   readonly Stopwatch _stopwatch = Stopwatch.StartNew();
   readonly Stopwatch _stopwatchTotal = Stopwatch.StartNew();
+  string _lastPrintedMessage = "";
 
   internal async Task<int> HandleAsync(string context, int timeout, CancellationToken token, string? kubeconfig = null)
   {
@@ -107,7 +108,12 @@ class KSailCheckCommandHandler()
     var timeElapsed = _stopwatch.Elapsed;
     int minutes = timeElapsed.Minutes;
     int seconds = timeElapsed.Seconds;
-    Console.WriteLine($"◎ Waiting for kustomization '{kustomizationName}' to become ready ({minutes}m {seconds}s)");
+    string message = $"◎ Waiting for kustomization '{kustomizationName}' to become ready ({minutes}m {seconds}s)";
+    if (message != _lastPrintedMessage)
+    {
+      Console.WriteLine(message);
+      _lastPrintedMessage = message;
+    }
   }
 
   void HandleReadyStatus(string kustomizationName)
