@@ -4,7 +4,7 @@ class FluxKustomizationContent
 {
   public required string Name { get; set; }
   public string Namespace { get; set; } = "flux-system";
-  public string Interval { get; set; } = "1m";
+  public string Interval { get; set; } = "30s";
   public List<string> DependsOn { get; set; } = [];
   public FluxKustomizationSourceRef SourceRef { get; set; } = new FluxKustomizationSourceRef
   {
