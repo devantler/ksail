@@ -17,7 +17,7 @@ sealed class KSailSOPSCommand : Command
   readonly DecryptOption _decryptOption = new();
   readonly ImportOption _importOption = new();
   readonly ExportOption _exportOption = new();
-  internal KSailSOPSCommand() : base("sops", "Manage SOPS key")
+  internal KSailSOPSCommand() : base("sops", "Manage secrets with SOPS")
   {
     AddArgument(_clusterNameArgument);
     AddOption(_generateKeyOption);

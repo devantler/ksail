@@ -6,7 +6,7 @@ namespace KSail.Commands.List;
 
 sealed class KSailListCommand : Command
 {
-  internal KSailListCommand() : base("list", "List running clusters")
+  internal KSailListCommand() : base("list", "List active clusters")
   {
     this.SetHandler(async (context) =>
     {

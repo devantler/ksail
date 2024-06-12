@@ -10,7 +10,7 @@ sealed class KSailCheckCommand : Command
   readonly KubernetesContextOption _kubernetesContextOption = new();
   readonly TimeoutOption _timeoutOption = new();
 
-  internal KSailCheckCommand() : base("check", "Check the status of the cluster")
+  internal KSailCheckCommand() : base("check", "Check the status of a cluster")
   {
     AddOption(_kubeconfigOption);
     AddOption(_kubernetesContextOption);
