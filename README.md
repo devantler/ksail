@@ -119,12 +119,6 @@ Required Tools:
 
 - [Docker](https://www.docker.com)
 
-Recommended Tools:
-
-- [K9s](https://k9scli.io) (for debugging)
-- [VScode Extension - Run on Save(pucelle.run-on-save)](https://github.com/pucelle/vscode-run-on-save) (run `ksail update` on save, to enable "live updates")
-- [VSCode Extension - GitOps Tools for Flux](https://marketplace.visualstudio.com/items?itemName=Weaveworks.vscode-gitops-tools) (UI to watch and debug Flux reconciliations)
-
 ### Installation
 
 With Homebrew:
