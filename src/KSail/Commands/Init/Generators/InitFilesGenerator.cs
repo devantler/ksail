@@ -40,6 +40,8 @@ class InitFilesGenerator : IDisposable
           {
             Name = "repositories",
             Path = "manifests/repositories",
+            Decryption = null,
+            PostBuild = null
           }
     ]);
   }
@@ -52,6 +54,7 @@ class InitFilesGenerator : IDisposable
           {
             Name = "variables",
             Path = $"clusters/{clusterName}/variables",
+            PostBuild = null,
             DependsOn = ["repositories"]
           }
     ]);
@@ -121,7 +124,11 @@ class InitFilesGenerator : IDisposable
       new FluxKustomizationContent
       {
         Name = "cert-manager",
-        Path = "cert-manager"
+        Path = "cert-manager",
+        SourceRef = new(){
+          Kind = "OCIRepository",
+          Name = "oci-artifacts"
+        }
       }
     ]);
     await _kubernetesGenerator.GenerateFluxKustomizationAsync(Path.Combine(manifestsDirectory, "infrastructure/cert-manager/selfsigned-cluster-issuer.yaml"),
@@ -130,6 +137,10 @@ class InitFilesGenerator : IDisposable
       {
         Name = "selfsigned-cluster-issuer",
         Path = "cert-manager/cluster-issuers/selfsigned",
+        SourceRef = new(){
+          Kind = "OCIRepository",
+          Name = "oci-artifacts"
+        },
         DependsOn = ["cert-manager"]
       }
     ]);
@@ -145,7 +156,11 @@ class InitFilesGenerator : IDisposable
         new FluxKustomizationContent
         {
           Name = "traefik",
-          Path = "traefik"
+          Path = "traefik",
+          SourceRef = new(){
+            Kind = "OCIRepository",
+            Name = "oci-artifacts"
+          }
         }
       ]);
   }

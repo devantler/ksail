@@ -14,7 +14,7 @@ class FluxKustomizationContent
   public required string Path { get; set; }
   public bool Prune { get; set; } = true;
   public bool Wait { get; set; } = true;
-  public FluxKustomizationDecryption Decryption { get; set; } = new FluxKustomizationDecryption
+  public FluxKustomizationDecryption? Decryption { get; set; } = new FluxKustomizationDecryption
   {
     Provider = FluxKustomizationDecryptionProvider.SOPS,
     SecretRef = new FluxKustomizationDecryptionSecretRef
@@ -22,7 +22,7 @@ class FluxKustomizationContent
       Name = "sops-age"
     }
   };
-  public FluxKustomizationPostBuild PostBuild { get; set; } = new FluxKustomizationPostBuild
+  public FluxKustomizationPostBuild? PostBuild { get; set; } = new FluxKustomizationPostBuild
   {
     SubstituteFrom =
     [
