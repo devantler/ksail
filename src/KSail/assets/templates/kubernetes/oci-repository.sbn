@@ -1,0 +1,10 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: OCIRepository
+metadata:
+  name: {{ name }}
+  namespace: {{ namespace }}
+spec:
+  interval: {{ interval }}
+  url: {{ url }}
+  ref:
+    tag: {{ tag }}

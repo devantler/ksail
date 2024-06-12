@@ -8,25 +8,40 @@ class InitFilesGenerator : IDisposable
   readonly K3dGenerator _k3dGenerator = new();
   readonly SOPSGenerator _sopsGenerator = new();
 
-  internal async Task GenerateInitFiles(string clusterName, string manifestsDirectory, CancellationToken token)
+  internal async Task GenerateInitFiles(string clusterName, string rootDirectory, CancellationToken token)
   {
-    string clusterDirectory = Path.Combine(manifestsDirectory, "clusters", clusterName);
+    string clusterDirectory = Path.Combine(rootDirectory, "clusters", clusterName);
+    string manifestsDirectory = Path.Combine(rootDirectory, "manifests");
     string fluxSystemDirectory = Path.Combine(clusterDirectory, "flux-system");
     await GenerateFluxKustomizations(clusterName, fluxSystemDirectory);
+    await GenerateRepositories(manifestsDirectory);
     await GeneratePostBuildVariables(clusterDirectory, clusterName);
     await GenerateInfrastructure(manifestsDirectory);
     await GenerateApps(manifestsDirectory);
 
     await _k3dGenerator.GenerateK3dConfigAsync($"./{clusterName}-k3d-config.yaml", clusterName);
     //TODO: await GenerateKSailConfigFileAsync($"{clusterName}-ksail-config.yaml");
-    await _sopsGenerator.GenerateSOPSConfigAsync(manifestsDirectory, token);
+    await _sopsGenerator.GenerateSOPSConfigAsync(rootDirectory, token);
   }
 
   async Task GenerateFluxKustomizations(string clusterName, string fluxSystemDirectory)
   {
+    await GenerateRepositoriesFluxKustomization(fluxSystemDirectory);
     await GenerateVariablesFluxKustomization(clusterName, fluxSystemDirectory);
     await GenerateInfrastructureFluxKustomization(fluxSystemDirectory);
     await GenerateAppsFluxKustomization(fluxSystemDirectory);
+  }
+
+  Task GenerateRepositoriesFluxKustomization(string fluxSystemDirectory)
+  {
+    return _kubernetesGenerator.GenerateFluxKustomizationAsync(Path.Combine(fluxSystemDirectory, "repositories.yaml"),
+    [
+        new()
+          {
+            Name = "repositories",
+            Path = "manifests/repositories",
+          }
+    ]);
   }
 
   Task GenerateVariablesFluxKustomization(string clusterName, string fluxSystemDirectory)
@@ -37,10 +52,7 @@ class InitFilesGenerator : IDisposable
           {
             Name = "variables",
             Path = $"clusters/{clusterName}/variables",
-            PostBuild = new()
-            {
-              SubstituteFrom = []
-            }
+            DependsOn = ["repositories"]
           }
     ]);
   }
@@ -52,7 +64,7 @@ class InitFilesGenerator : IDisposable
         new FluxKustomizationContent
       {
           Name = "infrastructure",
-          Path = "infrastructure",
+          Path = "manifests/infrastructure",
           DependsOn = ["variables"]
       }
     ]);
@@ -64,13 +76,27 @@ class InitFilesGenerator : IDisposable
     [
         new() {
           Name = "apps",
-          Path = "apps",
+          Path = "manifests/apps",
           DependsOn = ["infrastructure"]
       }
     ]);
   }
 
-  async Task GeneratePostBuildVariables(string clusterDirectory, string clusterName)
+  Task GenerateRepositories(string manifestsDirectory)
+  {
+    return _kubernetesGenerator.GenerateOCIRepositoryAsync(Path.Combine(manifestsDirectory, "repositories/oci-artifacts.yaml"),
+      new()
+      {
+        Name = "oci-artifacts",
+        Namespace = "flux-system",
+        Interval = "1m",
+        Url = "oci://ghcr.io/devantler/oci-artifacts/manifests",
+        Tag = "latest"
+      }
+    );
+  }
+
+  static async Task GeneratePostBuildVariables(string clusterDirectory, string clusterName)
   {
     await KubernetesGenerator.GenerateConfigMapAsync(Path.Combine(clusterDirectory, "variables/variables.yaml"), clusterName);
     await KubernetesGenerator.GenerateSecretAsync(Path.Combine(clusterDirectory, "variables/variables-sensitive.sops.yaml"));
