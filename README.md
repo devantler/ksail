@@ -132,10 +132,6 @@ Manually:
 
 ### Usage
 
-KSail is built to run as either a local binary, or as a Docker container.
-
-Setting sail for your voyage and navigating beyond the shore with KSail is as straightforward as:
-
 ```sh
 ksail init <name-of-cluster>
 ```
