@@ -4,9 +4,6 @@
 [![Test](https://github.com/devantler/ksail/actions/workflows/test.yaml/badge.svg?branch=main)](https://github.com/devantler/ksail/actions/workflows/test.yaml)
 [![codecov](https://codecov.io/gh/devantler/ksail/graph/badge.svg?token=DNEO90PfNR)](https://codecov.io/gh/devantler/ksail)
 
-> [!NOTE]
-> This is an early release of KSail. I am actively working on the tool, so if you encounter any issues, please let me know 🙏🏻
-
 ![image](https://github.com/devantler/ksail/assets/26203420/2c4596bd-68e5-438f-9a8b-0626bb44f353)
 
 <details>
@@ -100,8 +97,6 @@
 
 ### Prerequisites
 
-#### Supported OSes
-
 > [!NOTE]
 > On MacOS (darwin) you need to "Allow the default Docker socket to be used (requires password)" in Docker Desktop settings.
 >
@@ -117,6 +112,8 @@
   - linux-amd64 🐧
   - linux-arm64 🐧
 - [Docker](https://www.docker.com)
+- Knowledge of [FluxCD](https://fluxcd.io)
+- Knowledge of [Kustomize](https://kubectl.docs.kubernetes.io/guides/introduction/kustomize/)
 
 ### Installation
 
