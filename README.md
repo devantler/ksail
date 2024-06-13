@@ -267,32 +267,26 @@ jobs:
           ksail up <name-of-cluster>
 ```
 
-### How do I use KSail with Cloud Providers?
-
-KSail is purposely designed to work with local Docker clusters. If you want to create clusters in the cloud, I recommend using an Infrastructure as Code (IaC) tool like [Terraform](https://github.com/hashicorp/terraform) or [Pulumi](https://github.com/pulumi/pulumi) to create your clusters and initialize Flux GitOps. You can still use KSail to generate the needed YAML and configuration files, but clusters in the cloud often require additional configuration and dependencies, so do not expect your Docker clusters to work in the cloud without some additional work.
-
 ### What is next for KSail?
-
-I am currently working on stabilizing the tool, and ensure that it works as expected, and if not that it fails gracefully with informative error messages. I am also working on adding more tests, and improving the test coverage. Once I am happy with the stability of the tool, I will start working on adding more features.
 
 Features in the pipeline:
 
-- **Better Test Coverage:** KSail is currently at ~70% test coverage, and I am working on improving it, to ensure that all intended use cases are thoroughly tested.
-- **Windows Support:** Ideally, KSail should work on all platforms, but the current setup has a few hindrances that make it difficult to support Windows. I am contemplating how to best solve this, or if I should just drop Windows support altogether.
-- **Extra Args**: I intend to add support for passing extra arguments to the different commands, so users can choose to pass extra arguments to the underlying binaries if they so desire. If one command targets multiple binaries, e.g. `ksail up`, I intend to add support for passing extra arguments to the different binaries, e.g. `ksail up --flux-args="--some-arg" --k3d-args="--some-other-arg"`.
-- **Improved Init Command:** I intend to build a small template engine into KSail, so it is easier to extend and customize the generated files.
 - **KSail Gen:** With the template engine implemented I intend to add support for various generators that can generate anything from Kubernetes manifests to config files.
 - **Kind Support:** KSail will be able to create and manage GitOps-enabled Kubernetes clusters in Kind.
+- **Talos in Docker Support:** KSail will be able to create and manage GitOps-enabled Kubernetes clusters in Docker with Talos Linux.
+- **Setting Hosts:** KSail will be able to set hosts for services made accessible through ingresses.
 - **KSail YAML config:** As KSail matures, I will support more container engines and Kubernetes distributions, so a way to set defaults will be required. As such I plan to add support for a YAML config file to specify KSail-related settings and defaults. KSail will support generating the file if it does not exist, or generate it with `ksail gen` when the template engine matures.
-- **ContainerD Support:** I acknowledge that Docker is not the only big container engine, and as such I want to enable support for using ContainerD as well.
 
 Features I'm considering:
 
-- **ArgoCD Support through Flamingo:** Working with YAML is not necessarily the preferred approach for all, so I am contemplating including Flamingo as a helm release provided by the `ksail init` command, so users can choose to create new releases from ArgoCDs proven UI.
-- **Talos in Docker support:** Talos Linux is awesome, and it runs well in Docker. I am contemplating adding it as another Kubernetes distribution, as I find myself using it more and more for non-dev workloads, and thus it would make sense to be able to test these workloads locally and in CI with KSail.
-- **Cilium CNI support:** I really believe Cilium is revolutionary as a Kubernetes CNI, so if the portability is good enough, I want to make sure KSail supports generating K3d and Kind configs that enables Cilium as a default CNI.
-- **Setting hosts:** Services made accessible through ingresses cannot be reached without setting their DNS in the hosts file. I believe it would be nice if KSail was able to do this in a friendly way. EDIT: On second thought I do not believe this feature will be very flexible, so instead I am to document how this can be done manually, but as many might have different setups or even local DNS servers, I do not believe this is a good fit for KSail.
+- **ArgoCD Support through Flamingo:** Working with YAML is not necessarily the preferred approach for all, so I am contemplating including Flamingo as a helm release provided by the `ksail init` command, so users can choose to create new releases from ArgoCDs proven UI. This might just be a matter of installing Flamingo, and configuring it to work with the structure KSail provides.
+- **VCluster Support:** I am considering adding support for VCluster, so users can create and manage VClusters in existing clusters.
 
-## Contributing
+## Related Projects
+
+- [OCI Artifacts](https://github.com/devantler/oci-artifacts) - Ready-to-deploy OCI artifacts for Flux GitOps-enabled clusters.
+- [Homelab](https://github.com/devantler/homelab) - My personal homelab setup, including an example of how I use KSail to manage my Homelab cluster.
+
+## Contributions
 
 Contributions to KSail are welcome! You can contribute by reporting bugs, requesting features, or submitting pull requests. When creating an issue or pull request, please provide as much detail as possible to help understand the problem or feature. Check out the [Contribution Guidelines](https://github.com/devantler/ksail/blob/main/CONTRIBUTING.md) for more info.
