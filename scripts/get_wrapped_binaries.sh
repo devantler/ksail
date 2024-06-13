@@ -17,6 +17,7 @@ download_and_move_binary() {
   elif [ "$isTar" = false ]; then
     curl -LJ "$url" -o "$target_dir/$target_name"
   fi
+  chmod +x "$target_dir/$target_name"
 }
 
 download_and_move_binary "https://getbin.io/derailed/k9s?os=darwin&arch=amd64" "k9s" "src/KSail/assets/binaries" "k9s-darwin-amd64" true
@@ -51,12 +52,16 @@ download_and_move_binary "https://getbin.io/kubernetes-sigs/kind?os=linux&arch=a
 
 curl -s "https://api.github.com/repos/kubernetes-sigs/kustomize/releases" | grep "browser_download.*darwin_amd64" | cut -d '"' -f 4 | sort -V | tail -n 1 | xargs curl -LJ | tar xvz -C src/KSail/assets/binaries kustomize
 mv src/KSail/assets/binaries/kustomize src/KSail/assets/binaries/kustomize-darwin-amd64
+chmod +x src/KSail/assets/binaries/kustomize-darwin-amd64
 curl -s "https://api.github.com/repos/kubernetes-sigs/kustomize/releases" | grep "browser_download.*darwin_arm64" | cut -d '"' -f 4 | sort -V | tail -n 1 | xargs curl -LJ | tar xvz -C src/KSail/assets/binaries kustomize
 mv src/KSail/assets/binaries/kustomize src/KSail/assets/binaries/kustomize-darwin-arm64
+chmod +x src/KSail/assets/binaries/kustomize-darwin-arm64
 curl -s "https://api.github.com/repos/kubernetes-sigs/kustomize/releases" | grep "browser_download.*linux_amd64" | cut -d '"' -f 4 | sort -V | tail -n 1 | xargs curl -LJ | tar xvz -C src/KSail/assets/binaries kustomize
 mv src/KSail/assets/binaries/kustomize src/KSail/assets/binaries/kustomize-linux-amd64
+chmod +x src/KSail/assets/binaries/kustomize-linux-amd64
 curl -s "https://api.github.com/repos/kubernetes-sigs/kustomize/releases" | grep "browser_download.*linux_arm64" | cut -d '"' -f 4 | sort -V | tail -n 1 | xargs curl -LJ | tar xvz -C src/KSail/assets/binaries kustomize
 mv src/KSail/assets/binaries/kustomize src/KSail/assets/binaries/kustomize-linux-arm64
+chmod +x src/KSail/assets/binaries/kustomize-linux-arm64
 
 download_and_move_binary "https://getbin.io/yannh/kubeconform?os=darwin&arch=amd64" "kubeconform" "src/KSail/assets/binaries" "kubeconform-darwin-amd64" true
 download_and_move_binary "https://getbin.io/yannh/kubeconform?os=darwin&arch=arm64" "kubeconform" "src/KSail/assets/binaries" "kubeconform-darwin-arm64" true

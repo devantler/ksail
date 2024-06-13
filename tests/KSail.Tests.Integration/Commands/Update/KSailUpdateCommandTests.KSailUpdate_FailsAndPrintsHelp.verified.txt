@@ -1,7 +1,7 @@
 ﻿Required argument missing for command: 'update'.
 
 Description:
-  Update manifests in an OCI registry
+  Update a cluster
 
 Usage:
   update <clusterName> [options]

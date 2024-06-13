@@ -1,7 +1,7 @@
 ﻿Config file 'ksail-k3d-config.yaml' does not exist
 
 Description:
-  Provision a K8s cluster
+  Provision a cluster
 
 Usage:
   up <clusterName> [options]
