@@ -1,7 +1,7 @@
 ﻿Required argument 'ClusterName' missing for command: 'up'.
 
 Description:
-  Provision a K8s cluster
+  Provision a cluster
 
 Usage:
   up <clusterName> [options]

@@ -8,7 +8,7 @@ sealed class KSailStopCommand : Command
 {
   readonly ClusterNameArgument _clusterNameArgument = new();
 
-  internal KSailStopCommand() : base("stop", "Stop a K8s cluster")
+  internal KSailStopCommand() : base("stop", "Stop a cluster")
   {
     AddArgument(_clusterNameArgument);
 

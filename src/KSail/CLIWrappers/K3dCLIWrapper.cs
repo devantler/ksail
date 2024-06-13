@@ -12,10 +12,10 @@ class K3dCLIWrapper()
     {
       string binary = (Environment.OSVersion.Platform, RuntimeInformation.ProcessArchitecture, RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) switch
       {
-        (PlatformID.Unix, Architecture.X64, true) => "k3d_darwin-amd64",
-        (PlatformID.Unix, Architecture.Arm64, true) => "k3d_darwin-arm64",
-        (PlatformID.Unix, Architecture.X64, false) => "k3d_linux-amd64",
-        (PlatformID.Unix, Architecture.Arm64, false) => "k3d_linux-arm64",
+        (PlatformID.Unix, Architecture.X64, true) => "k3d-darwin-amd64",
+        (PlatformID.Unix, Architecture.Arm64, true) => "k3d-darwin-arm64",
+        (PlatformID.Unix, Architecture.X64, false) => "k3d-linux-amd64",
+        (PlatformID.Unix, Architecture.Arm64, false) => "k3d-linux-arm64",
         _ => throw new PlatformNotSupportedException($"🚨 Unsupported platform: {Environment.OSVersion.Platform} {RuntimeInformation.ProcessArchitecture}"),
       };
       return Cli.Wrap($"{AppContext.BaseDirectory}assets/binaries/{binary}");
@@ -67,7 +67,7 @@ class K3dCLIWrapper()
   internal static async Task<(int ExitCode, string Result)> ListClustersAsync(CancellationToken token)
   {
     var cmd = K3d.WithArguments("cluster list");
-    var (ExitCode, Result) = await CLIRunner.RunAsync(cmd, token);
+    var (ExitCode, Result) = await CLIRunner.RunAsync(cmd, token, CommandResultValidation.ZeroExitCode);
     return (ExitCode, Result);
   }
 }

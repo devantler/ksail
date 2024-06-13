@@ -13,13 +13,11 @@ class KSailCheckCommandHandler()
   readonly Stopwatch _stopwatchTotal = Stopwatch.StartNew();
   string _lastPrintedMessage = "";
 
-  internal async Task<int> HandleAsync(string context, int timeout, CancellationToken token, string? kubeconfig = null)
+  internal async Task<int> HandleAsync(string? context, int timeout, CancellationToken token, string? kubeconfig = null)
   {
-    var kubernetesClient = (kubeconfig is not null) switch
-    {
-      true => new Kubernetes(KubernetesClientConfiguration.BuildConfigFromConfigFile(kubeconfig)),
-      false => CreateKubernetesClientFromClusterName(context)
-    };
+    var kubernetesClient = context is null ?
+      new Kubernetes(KubernetesClientConfiguration.BuildConfigFromConfigFile(kubeconfig)) :
+      new Kubernetes(KubernetesClientConfiguration.BuildConfigFromConfigFile(kubeconfig, context));
     var responseTask = kubernetesClient.ListKustomizationsWithHttpMessagesAsync();
     await foreach (var (_, kustomization) in responseTask.WatchAsync<V1CustomResourceDefinition, object>(cancellationToken: token))
     {
@@ -128,12 +126,5 @@ class KSailCheckCommandHandler()
     string? message = statusCondition.Message;
     Console.WriteLine($"✕ Kustomization '{kustomizationName}' failed with message: {message}");
     return 1;
-  }
-
-  static Kubernetes CreateKubernetesClientFromClusterName(string context)
-  {
-    var kubeConfig = KubernetesClientConfiguration.LoadKubeConfig();
-    var config = KubernetesClientConfiguration.BuildConfigFromConfigObject(kubeConfig, context);
-    return new Kubernetes(config);
   }
 }

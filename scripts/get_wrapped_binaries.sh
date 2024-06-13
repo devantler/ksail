@@ -1,45 +1,69 @@
 #!/bin/bash
-download_and_update() {
-  repo=$1
-  binary=$2
-  is_tarball=$3
-  subfolder=$4
-  architectures=("darwin.amd64" "darwin-amd64" "darwin_amd64" "darwin.arm64" "darwin-arm64" "darwin_arm64" "linux.amd64" "linux-amd64" "linux_amd64" "linux.arm64" "linux-arm64" "linux_arm64")
-  latest_release=$(curl -s https://api.github.com/repos/"$repo"/releases/latest)
-  version_latest=$(echo "$latest_release" | grep tag_name | cut -d '"' -f 4 | cut -d '/' -f 2)
+set -e
+#!/bin/bash
+set -e
 
-  for arch in "${architectures[@]}"; do
-    url=$(echo "$latest_release" | grep browser_download_url | grep "$arch" | grep -v sha256 | grep -v .spdx.sbom.json | cut -d '"' -f 4)
-    if [ -n "$url" ]; then
-      arch=${arch//./-}
-      arch=${arch//_/-}
-      echo "Downloading $binary $version_latest for architecture $arch"
-      curl -s -L "$url" -o src/KSail/assets/binaries/"${binary}"_"${arch}""$([ "$is_tarball" = true ] && echo ".tar.gz")"
-      if [ "$is_tarball" = true ]; then
-        echo "Extracting tarball"
-        tar -xzf src/KSail/assets/binaries/"${binary}"_"${arch}".tar.gz -C src/KSail/assets/binaries/
-        rm src/KSail/assets/binaries/"${binary}"_"${arch}".tar.gz
-      fi
-      if [ -n "$subfolder" ]; then
-        echo "Moving binary from subfolder $subfolder"
-        mv -f src/KSail/assets/binaries/"${subfolder}"/"$binary" src/KSail/assets/binaries/"${binary}"_"${arch}"
-        rm -rf src/KSail/assets/binaries/"${subfolder}"
-      elif [ -e src/KSail/assets/binaries/"$binary" ]; then
-        mv -f src/KSail/assets/binaries/"$binary" src/KSail/assets/binaries/"${binary}"_"${arch}"
-      fi
-      chmod +x src/KSail/assets/binaries/"${binary}"_"${arch}"
-    fi
-  done
-  find src/KSail/assets/binaries -name "LICENSE" -type f -delete
-  echo "$binary $version_latest" >>src/KSail/assets/binaries/versions.txt
+download_and_move_binary() {
+  local url=$1
+  local binary=$2
+  local target_dir=$3
+  local target_name=$4
+  local isTar=$5
+
+  # check if tar
+  if [ "$isTar" = true ]; then
+    curl -LJ "$url" | tar xvz -C "$target_dir" "$binary"
+    mv "$target_dir/$binary" "${target_dir}/$target_name"
+  elif [ "$isTar" = false ]; then
+    curl -LJ "$url" -o "$target_dir/$target_name"
+  fi
+  chmod +x "$target_dir/$target_name"
 }
 
-set -e
-rm src/KSail/assets/binaries/versions.txt
-download_and_update "FiloSottile/age" "age-keygen" true "age"
-download_and_update "fluxcd/flux2" "flux" true
-download_and_update "getsops/sops" "sops" false
-download_and_update "k3d-io/k3d" "k3d" false
-download_and_update "kubernetes-sigs/kind" "kind" false
-download_and_update "kubernetes-sigs/kustomize" "kustomize" true
-download_and_update "yannh/kubeconform" "kubeconform" true
+download_and_move_binary "https://getbin.io/derailed/k9s?os=darwin&arch=amd64" "k9s" "src/KSail/assets/binaries" "k9s-darwin-amd64" true
+download_and_move_binary "https://getbin.io/derailed/k9s?os=darwin&arch=arm64" "k9s" "src/KSail/assets/binaries" "k9s-darwin-arm64" true
+download_and_move_binary "https://getbin.io/derailed/k9s?os=linux&arch=amd64" "usr/bin/k9s" "src/KSail/assets/binaries" "k9s-linux-amd64" true
+download_and_move_binary "https://getbin.io/derailed/k9s?os=linux&arch=arm64" "usr/bin/k9s" "src/KSail/assets/binaries" "k9s-linux-arm64" true
+
+download_and_move_binary "https://getbin.io/FiloSottile/age?os=darwin&arch=amd64" "age/age-keygen" "src/KSail/assets/binaries" "age-keygen-darwin-amd64" true
+download_and_move_binary "https://getbin.io/FiloSottile/age?os=darwin&arch=arm64" "age/age-keygen" "src/KSail/assets/binaries" "age-keygen-darwin-arm64" true
+download_and_move_binary "https://getbin.io/FiloSottile/age?os=linux&arch=amd64" "age/age-keygen" "src/KSail/assets/binaries" "age-keygen-linux-amd64" true
+download_and_move_binary "https://getbin.io/FiloSottile/age?os=linux&arch=arm64" "age/age-keygen" "src/KSail/assets/binaries" "age-keygen-linux-arm64" true
+
+download_and_move_binary "https://getbin.io/fluxcd/flux2?os=darwin&arch=amd64" "flux" "src/KSail/assets/binaries" "flux-darwin-amd64" true
+download_and_move_binary "https://getbin.io/fluxcd/flux2?os=darwin&arch=arm64" "flux" "src/KSail/assets/binaries" "flux-darwin-arm64" true
+download_and_move_binary "https://getbin.io/fluxcd/flux2?os=linux&arch=amd64" "flux" "src/KSail/assets/binaries" "flux-linux-amd64" true
+download_and_move_binary "https://getbin.io/fluxcd/flux2?os=linux&arch=arm64" "flux" "src/KSail/assets/binaries" "flux-linux-arm64" true
+
+download_and_move_binary "https://getbin.io/getsops/sops?os=darwin&arch=amd64" "sops" "src/KSail/assets/binaries" "sops-darwin-amd64" false
+download_and_move_binary "https://getbin.io/getsops/sops?os=darwin&arch=arm64" "sops" "src/KSail/assets/binaries" "sops-darwin-arm64" false
+download_and_move_binary "https://getbin.io/getsops/sops?os=linux&arch=amd64" "sops" "src/KSail/assets/binaries" "sops-linux-amd64" false
+download_and_move_binary "https://getbin.io/getsops/sops?os=linux&arch=arm64" "sops" "src/KSail/assets/binaries" "sops-linux-arm64" false
+
+download_and_move_binary "https://getbin.io/k3d-io/k3d?os=darwin&arch=amd64" "k3d" "src/KSail/assets/binaries" "k3d-darwin-amd64" false
+download_and_move_binary "https://getbin.io/k3d-io/k3d?os=darwin&arch=arm64" "k3d" "src/KSail/assets/binaries" "k3d-darwin-arm64" false
+download_and_move_binary "https://getbin.io/k3d-io/k3d?os=linux&arch=amd64" "k3d" "src/KSail/assets/binaries" "k3d-linux-amd64" false
+download_and_move_binary "https://getbin.io/k3d-io/k3d?os=linux&arch=arm64" "k3d" "src/KSail/assets/binaries" "k3d-linux-arm64" false
+
+download_and_move_binary "https://getbin.io/kubernetes-sigs/kind?os=darwin&arch=amd64" "kind" "src/KSail/assets/binaries" "kind-darwin-amd64" false
+download_and_move_binary "https://getbin.io/kubernetes-sigs/kind?os=darwin&arch=arm64" "kind" "src/KSail/assets/binaries" "kind-darwin-arm64" false
+download_and_move_binary "https://getbin.io/kubernetes-sigs/kind?os=linux&arch=amd64" "kind" "src/KSail/assets/binaries" "kind-linux-amd64" false
+download_and_move_binary "https://getbin.io/kubernetes-sigs/kind?os=linux&arch=arm64" "kind" "src/KSail/assets/binaries" "kind-linux-arm64" false
+
+curl -s "https://api.github.com/repos/kubernetes-sigs/kustomize/releases" | grep "browser_download.*darwin_amd64" | cut -d '"' -f 4 | sort -V | tail -n 1 | xargs curl -LJ | tar xvz -C src/KSail/assets/binaries kustomize
+mv src/KSail/assets/binaries/kustomize src/KSail/assets/binaries/kustomize-darwin-amd64
+chmod +x src/KSail/assets/binaries/kustomize-darwin-amd64
+curl -s "https://api.github.com/repos/kubernetes-sigs/kustomize/releases" | grep "browser_download.*darwin_arm64" | cut -d '"' -f 4 | sort -V | tail -n 1 | xargs curl -LJ | tar xvz -C src/KSail/assets/binaries kustomize
+mv src/KSail/assets/binaries/kustomize src/KSail/assets/binaries/kustomize-darwin-arm64
+chmod +x src/KSail/assets/binaries/kustomize-darwin-arm64
+curl -s "https://api.github.com/repos/kubernetes-sigs/kustomize/releases" | grep "browser_download.*linux_amd64" | cut -d '"' -f 4 | sort -V | tail -n 1 | xargs curl -LJ | tar xvz -C src/KSail/assets/binaries kustomize
+mv src/KSail/assets/binaries/kustomize src/KSail/assets/binaries/kustomize-linux-amd64
+chmod +x src/KSail/assets/binaries/kustomize-linux-amd64
+curl -s "https://api.github.com/repos/kubernetes-sigs/kustomize/releases" | grep "browser_download.*linux_arm64" | cut -d '"' -f 4 | sort -V | tail -n 1 | xargs curl -LJ | tar xvz -C src/KSail/assets/binaries kustomize
+mv src/KSail/assets/binaries/kustomize src/KSail/assets/binaries/kustomize-linux-arm64
+chmod +x src/KSail/assets/binaries/kustomize-linux-arm64
+
+download_and_move_binary "https://getbin.io/yannh/kubeconform?os=darwin&arch=amd64" "kubeconform" "src/KSail/assets/binaries" "kubeconform-darwin-amd64" true
+download_and_move_binary "https://getbin.io/yannh/kubeconform?os=darwin&arch=arm64" "kubeconform" "src/KSail/assets/binaries" "kubeconform-darwin-arm64" true
+download_and_move_binary "https://getbin.io/yannh/kubeconform?os=linux&arch=amd64" "kubeconform" "src/KSail/assets/binaries" "kubeconform-linux-amd64" true
+download_and_move_binary "https://getbin.io/yannh/kubeconform?os=linux&arch=arm64" "kubeconform" "src/KSail/assets/binaries" "kubeconform-linux-arm64" true

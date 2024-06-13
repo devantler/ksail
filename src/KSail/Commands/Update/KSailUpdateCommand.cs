@@ -16,7 +16,7 @@ sealed class KSailUpdateCommand : Command
   readonly NoReconcileOption _noReconcileOption = new();
   internal KSailUpdateCommand() : base(
     "update",
-    "Update manifests in an OCI registry"
+    "Update a cluster"
   )
   {
     AddArgument(_clusterNameArgument);
