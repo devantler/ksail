@@ -13,6 +13,7 @@
   <summary>Show/hide folder structure</summary>
 
 <!-- readme-tree start -->
+
 ```
 .
 ├── .github
@@ -90,6 +91,7 @@
 
 72 directories
 ```
+
 <!-- readme-tree end -->
 
 </details>
@@ -98,25 +100,22 @@
 
 ### Prerequisites
 
-Supported OSes:
+#### Supported OSes
 
 > [!NOTE]
 > On MacOS (darwin) you need to "Allow the default Docker socket to be used (requires password)" in Docker Desktop settings.
+>
 > <details><summary>Show me how!</summary>
 >
 > ![Enable Docker Socket in Docker Desktop](images/enable-docker-socket-in-docker-desktop.png)
 >
 > </details>
 
-- darwin-amd64 ✅
-- darwin-arm64 ✅
-- linux-amd64 🐧✅
-- linux-arm64 🐧✅
-- windows-amd64 🪟❌
-- windows-arm64 🪟❌
-
-Required Tools:
-
+- Supported OSes
+  - darwin-amd64 
+  - darwin-arm64 
+  - linux-amd64 🐧
+  - linux-arm64 🐧
 - [Docker](https://www.docker.com)
 
 ### Installation
@@ -141,57 +140,60 @@ KSail is built to run as either a local binary, or as a Docker container.
 Setting sail for your voyage and navigating beyond the shore with KSail is as straightforward as:
 
 ```sh
-# --- Local Binary ---
 ksail init <name-of-cluster>
-ksail up <name-of-cluster>
-
-# --- Docker Container ---
-docker run --rm \
-  -v $(pwd):/app `# Mount working directories` \
-  ghcr.io/devantler/ksail:latest init <name-of-cluster>
-
-docker run --rm \
-  -v /var/run/docker.sock:/var/run/docker.sock `# Mount Docker socket` \
-  -v $(pwd):/app `# Mount working directories` \
-  -v $(pwd):/root/.ksail `# Mount KSail config files` \
-  --network host `# Allow access to containers on localhost` \
-  ghcr.io/devantler/ksail:latest up <name-of-cluster>
 ```
+
+- Generates a small cluster configuration with my recommended structure, and Traefik, Cert-Manager, and Podinfo. This is a great starting point to build up your Kubernetes environments.
+
+```sh
+ksail up <name-of-cluster>
+```
+
+- Provisions a GitOps-enabled cluster from your working directory.
+
+```sh
+ksail update <name-of-cluster>
+```
+
+- Updates a cluster with new changes from your working directory.
+
+```sh
+ksail down <name-of-cluster>
+```
+
+- Debugs a cluster with the amazing [K9s](https://github.com/derailed/k9s) tool.
 
 For more intricate navigational techniques, consult the global --help flag:
 
 ```sh
-# --- Local Binary ---
 ksail --help
-
-# --- Docker Container ---
-docker run --rm ghcr.io/devantler/ksail:latest --help
 ```
 
 ## What is KSail?
 
-![KSail Architecture](https://github.com/devantler/ksail/assets/26203420/6f1fb35c-29c8-4f28-8418-13d3123bc16a)
+![KSail Architecture](images/architecture.drawio.svg)
 
-KSail is a CLI tool designed to simplify the management of GitOps-enabled Kubernetes clusters in Docker. It provides a set of commands that allow you to easily create, manage, and dismantle GitOps-enabled clusters. KSail also integrates with SOPS for managing secrets in Git repositories and provides features for validating and verifying your clusters.
+KSail is a CLI tool designed to simplify the management of GitOps-enabled Kubernetes clusters. It enables you to easily create, manage, and dismantle GitOps-enabled clusters in Docker, such that you can develop and test your applications in a fully local Kubernetes environment, before deploying them to other environments.
 
-KSail provides the following features:
+### Key Features
 
 - **Initialize YAML and configuration:** KSail can be used to generate needed YAML and configuration files for your clusters.
 - **Create clusters:** KSail can be used to create GitOps-enabled Kubernetes clusters in Docker.
-- **Sync clusters:** KSail can be used to sync GitOps-enabled Kubernetes clusters in Docker (both manually and automatically).
+- **Update clusters:** KSail can be used to update running Kubernetes clusters in Docker.
 - **Lint manifests:** KSail can be used to lint your manifest files before deploying your clusters.
+- **Debug clusters:** KSail can be used to debug your clusters with the K9s tool.
 - **Check cluster reconciliations:** KSail can be used to verify that your clusters reconcile successfully after deployment.
-- **Manage secrets:** KSail can be used to manage secrets in Git repositories.
-- **Docker Container Support:** KSail can be run as a Docker container.
+- **Manage secrets:** KSail can be used to manage secrets in Git repositories with SOPS and Age.
 
 ## How does it work?
 
 KSail leverages several key technologies to provide its functionality:
 
-- **Embedded Binaries:** KSail embeds binaries for tools like k3d, flux, age, and sops. This enables KSail to work out of the box without requiring you to install any additional dependencies.
-- **K3d Backend:** KSail uses K3d, allowing you to run Kubernetes clusters inside Docker containers with a small footprint.
-- **Flux GitOps:** KSail sets up Flux GitOps to manage the state of your clusters, with your manifest source serving as the single source of truth.
-- **Local OCI Registries:** KSail uses local OCI registries to store and distribute Docker images and manifests.
+- **Embedded Binaries:** KSail embeds binaries, and provides APIs for awesome Kubernetes CLI tools. This enables KSail to work out of the box without requiring you to install any additional dependencies.
+- **Container Engine Backends:** KSail uses various Container Engine backends, allowing you to run encapsulated Kubernetes clusters inside containers with a small footprint.
+- **Flux GitOps:** KSail sets up Flux GitOps to manage the deployment of your clusters, with your manifest source serving as the single source of truth.
+- **OCI:** KSail uses OCI registries to pull and push images to and from your clusters. This is what enables you to build and test your applications without needing to push them to a remote registry.
+- **K9s Integration:** KSail integrates with K9s to provide a powerful CLI tool for debugging your clusters.
 - **SOPS and Age Integration:** KSail integrates with SOPS and Age for managing secrets in Git repositories.
 - **Kustomize and Kubeconform Integration:** KSail integrates with Kustomize and Kubeconform for linting your manifest files before deploying your clusters.
 - **Kubernetes API:** KSail uses the Kubernetes API to verify that your clusters reconcile successfully after deployment.
@@ -208,6 +210,23 @@ KSail was created to fill a gap in the tooling landscape for managing GitOps-ena
 ### Why use KSail instead of e.g. k3d or kind?
 
 KSail is built on top of k3d, so it provides all the same functionality as k3d. However, KSail also provides additional functionality for managing GitOps-enabled Kubernetes clusters in Docker. For a GitOps-enabled cluster to work well in Docker, you need quite a few tools to be installed and configured. KSail aims to simplify this process by providing a set of commands that allow you to easily create, manage, and dismantle GitOps-enabled clusters.
+
+### How can I run KSail as a Docker Container?
+
+To run KSail as a Docker container you need to mount the Docker socket, your working directories, and KSail config files. You also need to run KSail on your host network to allow it to connect to containers on localhost.
+
+```sh
+docker run --rm \
+  -v $(pwd):/app `# Mount working directories` \
+  ghcr.io/devantler/ksail:latest init <name-of-cluster>
+
+docker run --rm \
+  -v /var/run/docker.sock:/var/run/docker.sock `# Mount Docker socket` \
+  -v $(pwd):/app `# Mount working directories` \
+  -v $(pwd):/root/.ksail `# Mount KSail config files` \
+  --network host `# Allow access to containers on localhost` \
+  ghcr.io/devantler/ksail:latest up <name-of-cluster>
+```
 
 ### How do I use KSail with CI/CD?
 
