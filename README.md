@@ -143,7 +143,9 @@ Setting sail for your voyage and navigating beyond the shore with KSail is as st
 ksail init <name-of-cluster>
 ```
 
-- Generates a small cluster configuration with my recommended structure, and Traefik, Cert-Manager, and Podinfo. This is a great starting point to build up your Kubernetes environments.
+- Generates a small cluster configuration with my recommended structure, Traefik, Cert-Manager, and Podinfo. This is a great starting point to build up your Kubernetes environments.
+- Includes a `*.k3d-config.yaml` file to configure your K3d cluster. You can check out [the official k3d docs](https://k3d.io/v5.1.0/usage/configfile/) on how to use this configuration file.
+- Includes a `.sops.yaml` file to configure SOPS. You can check out [the official SOPS docs](https://getsops.io/docs/#using-sopsyaml-conf-to-select-kms-pgp-and-age-for-new-files) on how to use this configuration file to configure which files should be encrypted/decrypted by which keys.
 
 ```sh
 ksail up <name-of-cluster>
