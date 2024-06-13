@@ -157,7 +157,7 @@ ksail update <name-of-cluster>
 - Updates a cluster with new changes from your working directory.
 
 ```sh
-ksail down <name-of-cluster>
+ksail debug
 ```
 
 - Debugs a cluster with the amazing [K9s](https://github.com/derailed/k9s) tool.
