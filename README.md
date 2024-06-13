@@ -7,7 +7,7 @@
 > [!NOTE]
 > This is an early release of KSail. I am actively working on the tool, so if you encounter any issues, please let me know 🙏🏻
 
-![image](https://github.com/devantler/ksail/assets/26203420/b6baf389-c5ca-4a7c-a0cc-8fa08bc50db3)
+![image](https://github.com/devantler/ksail/assets/26203420/2c4596bd-68e5-438f-9a8b-0626bb44f353)
 
 <details>
   <summary>Show/hide folder structure</summary>
