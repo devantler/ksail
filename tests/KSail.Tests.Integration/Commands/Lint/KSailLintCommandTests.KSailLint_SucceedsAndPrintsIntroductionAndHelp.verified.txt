@@ -1,7 +1,7 @@
 ﻿Required argument missing for command: 'lint'.
 
 Description:
-  Lint manifest files
+  Lint manifests for a cluster
 
 Usage:
   lint <clusterName> [options]

@@ -16,7 +16,7 @@ public class KSailListCommandTests : IAsyncLifetime
   public Task InitializeAsync() => Task.CompletedTask;
 
   /// <summary>
-  /// Tests that the <c>ksail up [clusterName]</c> command succeeds and creates a cluster.
+  /// Tests that the 'ksail list' command succeeds and lists clusters.
   /// </summary>
   [Fact]
   public async Task KSailList_SucceedsAndListsClusters()

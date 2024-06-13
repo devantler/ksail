@@ -1,5 +1,5 @@
 ﻿Description:
-  KSail is a CLI tool for provisioning GitOps enabled K8s clusters in Docker.
+  KSail is a CLI tool for provisioning GitOps enabled clusters in Docker.
 
 Usage:
   testhost [command] [options]
@@ -9,14 +9,15 @@ Options:
   -?, -h, --help  Show help and usage information
 
 Commands:
-  init <clusterName>    Initialize a new K8s cluster
-  up <clusterName>      Provision a K8s cluster
-  start <clusterName>   Start a K8s cluster
-  update <clusterName>  Update manifests in an OCI registry
-  stop <clusterName>    Stop a K8s cluster
-  down <clusterName>    Destroy a K8s cluster
-  list                  List running clusters
-  lint <clusterName>    Lint manifest files
-  check <clusterName>   Check the status of the cluster
-  sops <clusterName>    Manage SOPS key
+  check                 Check the status of a cluster
+  debug                 Debug a cluster (❤️ K9s)
+  down <clusterName>    Destroy a cluster
+  init <clusterName>    Initialize a cluster
+  lint <clusterName>    Lint manifests for a cluster
+  list                  List active clusters
+  sops <clusterName>    Manage secrets with SOPS
+  start <clusterName>   Start a cluster
+  stop <clusterName>    Stop a cluster
+  up <clusterName>      Provision a cluster
+  update <clusterName>  Update a cluster
 

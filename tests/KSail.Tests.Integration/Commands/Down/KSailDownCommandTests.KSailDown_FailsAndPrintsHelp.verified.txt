@@ -1,7 +1,7 @@
 ﻿Required argument missing for command: 'down'.
 
 Description:
-  Destroy a K8s cluster
+  Destroy a cluster
 
 Usage:
   down <clusterName> [options]

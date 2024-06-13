@@ -67,7 +67,7 @@ class K3dCLIWrapper()
   internal static async Task<(int ExitCode, string Result)> ListClustersAsync(CancellationToken token)
   {
     var cmd = K3d.WithArguments("cluster list");
-    var (ExitCode, Result) = await CLIRunner.RunAsync(cmd, token);
+    var (ExitCode, Result) = await CLIRunner.RunAsync(cmd, token, CommandResultValidation.ZeroExitCode);
     return (ExitCode, Result);
   }
 }
