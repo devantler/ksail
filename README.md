@@ -13,7 +13,6 @@
   <summary>Show/hide folder structure</summary>
 
 <!-- readme-tree start -->
-
 ```
 .
 ├── .github
@@ -27,8 +26,9 @@
 │       ├── CLIWrappers
 │       ├── Commands
 │       │   ├── Check
-│       │   │   ├── Handlers
-│       │   │   └── Options
+│       │   │   └── Handlers
+│       │   ├── Debug
+│       │   │   └── Handlers
 │       │   ├── Down
 │       │   │   ├── Handlers
 │       │   │   └── Options
@@ -80,6 +80,7 @@
     └── KSail.Tests.Integration
         ├── Commands
         │   ├── Check
+        │   ├── Debug
         │   ├── Down
         │   ├── Lint
         │   ├── List
@@ -89,9 +90,8 @@
         │   └── Update
         └── TestUtils
 
-72 directories
+74 directories
 ```
-
 <!-- readme-tree end -->
 
 </details>
