@@ -9,7 +9,7 @@
 > - [ ] [devantler/dotnet-kubeconform-cli](https://github.com/devantler/dotnet-kubeconform-cli)
 > - [ ] [devantler/dotnet-kustomize-cli](https://github.com/devantler/dotnet-kustomize-cli)
 > - [ ] [devantler/dotnet-sops-cli](https://github.com/devantler/dotnet-sops-cli)
-> - [ x ] [devantler/dotnet-template-engine](https://github.com/devantler/dotnet-template-engine)
+> - [x] [devantler/dotnet-template-engine](https://github.com/devantler/dotnet-template-engine)
 
 # 🛥️🐳 KSail
 
