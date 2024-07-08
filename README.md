@@ -1,5 +1,5 @@
 > [!NOTE]  
-> A larger restructuring is on the way, so KSail might not see bug fixes and feature releases before August.
+> A larger restructuring is on the way, where all embedded binaries are extratded into their own .NET project. This makes it much easier for me to maintain. However this also means that KSail will not see bug fixes and feature releases before late this year, as the changes are expected to take a few months to get right.
 > Follow the progress on:
 > - https://github.com/devantler/dotnet-age-cli
 > - https://github.com/devantler/dotnet-flux-cli
