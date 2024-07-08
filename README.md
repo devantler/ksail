@@ -1,3 +1,16 @@
+> [!NOTE]  
+> A larger restructuring is on the way, so KSail might not see bug fixes and feature releases before August.
+> Follow the progress on:
+> - https://github.com/devantler/dotnet-age-cli
+> - https://github.com/devantler/dotnet-flux-cli
+> - https://github.com/devantler/dotnet-k3d-cli
+> - https://github.com/devantler/dotnet-k9s-cli
+> - https://github.com/devantler/dotnet-kind-cli
+> - https://github.com/devantler/dotnet-kubeconform-cli
+> - https://github.com/devantler/dotnet-kustomize-cli
+> - https://github.com/devantler/dotnet-sops-cli
+> - https://github.com/devantler/dotnet-template-engine
+
 # 🛥️🐳 KSail
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
