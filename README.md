@@ -1,15 +1,15 @@
 > [!NOTE]  
 > A larger restructuring is on the way, where all embedded binaries are extracted into their own .NET project. This makes it much easier for me to maintain. However this also means that KSail will not see bug fixes and feature releases before late this year, as the changes are expected to take a few months to get right.
 > Follow the progress on:
-> - https://github.com/devantler/dotnet-age-cli
-> - https://github.com/devantler/dotnet-flux-cli
-> - https://github.com/devantler/dotnet-k3d-cli
-> - https://github.com/devantler/dotnet-k9s-cli
-> - https://github.com/devantler/dotnet-kind-cli
-> - https://github.com/devantler/dotnet-kubeconform-cli
-> - https://github.com/devantler/dotnet-kustomize-cli
-> - https://github.com/devantler/dotnet-sops-cli
-> - https://github.com/devantler/dotnet-template-engine
+> - [ ] [devantler/dotnet-age-cli](https://github.com/devantler/dotnet-age-cli)
+> - [ ] [devantler/dotnet-flux-cli](https://github.com/devantler/dotnet-flux-cli)
+> - [ ] [devantler/dotnet-k3d-cli](https://github.com/devantler/dotnet-k3d-cli)
+> - [ ] [devantler/dotnet-k9s-cli](https://github.com/devantler/dotnet-k9s-cli)
+> - [ ] [devantler/dotnet-kind-cli](https://github.com/devantler/dotnet-kind-cli)
+> - [ ] [devantler/dotnet-kubeconform-cli](https://github.com/devantler/dotnet-kubeconform-cli)
+> - [ ] [devantler/dotnet-kustomize-cli](https://github.com/devantler/dotnet-kustomize-cli)
+> - [ ] [devantler/dotnet-sops-cli](https://github.com/devantler/dotnet-sops-cli)
+> - [x] [devantler/dotnet-template-engine](https://github.com/devantler/dotnet-template-engine)
 
 # 🛥️🐳 KSail
 
