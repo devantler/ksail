@@ -1,6 +1,19 @@
+> [!NOTE]  
+> A larger restructuring is on the way, where all embedded binaries are extracted into their own .NET project. This makes it much easier for me to maintain. However this also means that KSail will not see bug fixes and feature releases before late this year, as the changes are expected to take a few months to get right.
+> Follow the progress on:
+> - [ ] [devantler/dotnet-age-cli](https://github.com/devantler/dotnet-age-cli)
+> - [ ] [devantler/dotnet-flux-cli](https://github.com/devantler/dotnet-flux-cli)
+> - [ ] [devantler/dotnet-k3d-cli](https://github.com/devantler/dotnet-k3d-cli)
+> - [ ] [devantler/dotnet-k9s-cli](https://github.com/devantler/dotnet-k9s-cli)
+> - [ ] [devantler/dotnet-kind-cli](https://github.com/devantler/dotnet-kind-cli)
+> - [ ] [devantler/dotnet-kubeconform-cli](https://github.com/devantler/dotnet-kubeconform-cli)
+> - [ ] [devantler/dotnet-kustomize-cli](https://github.com/devantler/dotnet-kustomize-cli)
+> - [ ] [devantler/dotnet-sops-cli](https://github.com/devantler/dotnet-sops-cli)
+> - [x] [devantler/dotnet-template-engine](https://github.com/devantler/dotnet-template-engine)
+
 # 🛥️🐳 KSail
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Test](https://github.com/devantler/ksail/actions/workflows/test.yaml/badge.svg?branch=main)](https://github.com/devantler/ksail/actions/workflows/test.yaml)
 [![codecov](https://codecov.io/gh/devantler/ksail/graph/badge.svg?token=DNEO90PfNR)](https://codecov.io/gh/devantler/ksail)
 

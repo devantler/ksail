@@ -1,6 +1,7 @@
 using System.Text;
 using CliWrap;
 using CliWrap.EventStream;
+using Spectre.Console;
 
 namespace KSail.CLIWrappers;
 
@@ -14,18 +15,41 @@ class CLIRunner()
     {
       await foreach (var cmdEvent in command.WithValidation(validation).ListenAsync(cancellationToken: cancellationToken))
       {
-        if (cmdEvent is StandardOutputCommandEvent or StandardErrorCommandEvent)
+        switch (cmdEvent)
         {
-          if (cmdEvent is null)
-          {
-            Console.WriteLine("✕ Command event is 'null'");
-            return (1, "");
-          }
-          if (!silent)
-          {
-            Console.WriteLine(cmdEvent.ToString() ?? "");
-          }
-          _ = result.AppendLine(cmdEvent.ToString());
+          case StartedCommandEvent started:
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+              AnsiConsole.MarkupLine($"[bold blue]DEBUG[/] Process started: {started.ProcessId}");
+            }
+            break;
+          case StandardOutputCommandEvent stdOut:
+            if (!silent)
+            {
+              Console.WriteLine(stdOut.Text);
+            }
+            _ = result.AppendLine(stdOut.Text);
+            break;
+          case StandardErrorCommandEvent stdErr:
+            if (!silent)
+            {
+              AnsiConsole.MarkupLine(stdErr.Text);
+            }
+            _ = result.AppendLine(stdErr.Text);
+            break;
+          case ExitedCommandEvent exited:
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+              AnsiConsole.MarkupLine($"[bold blue]DEBUG[/] Process exited with code {exited.ExitCode}");
+            }
+            break;
+          default:
+            if (cmdEvent is null)
+            {
+              Console.WriteLine("✕ Command event is 'null'");
+              return (1, "");
+            }
+            break;
         }
       }
     }
