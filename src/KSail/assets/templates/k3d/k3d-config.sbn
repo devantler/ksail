@@ -4,6 +4,8 @@ metadata:
   name: {{ name }}
 volumes:
   - volume: k3d-{{ name }}-storage:/var/lib/rancher/k3s/storage
+    nodeFilters:
+      - server:*
 network: k3d-{{ name }}
 options:
   k3s:
