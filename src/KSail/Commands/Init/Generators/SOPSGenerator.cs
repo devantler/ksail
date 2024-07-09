@@ -1,12 +1,12 @@
 using KSail.Models.K3d;
 using KSail.Provisioners.SecretManager;
-using KSail.TemplateEngine;
+using Devantler.TemplateEngine;
 
 namespace KSail.Commands.Init.Generators;
 
 class SOPSGenerator : IDisposable
 {
-  readonly Generator _generator = new(new TemplateEngine.TemplateEngine());
+  readonly Generator _generator = new(new TemplateEngine());
   readonly LocalSOPSProvisioner _localSOPSProvisioner = new();
   internal async Task GenerateSOPSConfigAsync(string manifestsDirectory, CancellationToken token)
   {
