@@ -2,7 +2,9 @@ name: Test
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review, closed]
+    # Added 'edited' temporarily, as there currently is no trigger for when the base branch is updated.
+    # https://github.com/orgs/community/discussions/64119
+    types: [opened, synchronize, reopened, ready_for_review, closed, edited]
     branches: main
   push:
     branches: main
