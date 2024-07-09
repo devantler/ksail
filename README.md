@@ -79,7 +79,6 @@
 │       │   ├── GitOps
 │       │   ├── KubernetesDistribution
 │       │   └── SecretManager
-│       ├── TemplateEngine
 │       └── assets
 │           ├── binaries
 │           └── templates
@@ -100,7 +99,7 @@
         │   └── Update
         └── TestUtils
 
-74 directories
+73 directories
 ```
 <!-- readme-tree end -->
 
