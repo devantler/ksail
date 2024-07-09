@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <PackageReference Include="CliWrap" Version="3.6.6" />
-    <PackageReference Include="Devantler.TemplateEngine" Version="1.0.1" />
+    <PackageReference Include="Devantler.TemplateEngine" Version="1.0.2" />
     <PackageReference Include="Docker.DotNet" Version="3.125.15" />
     <PackageReference Include="KubernetesClient" Version="14.0.2" />
     <PackageReference Include="Scriban" Version="5.10.0" />
