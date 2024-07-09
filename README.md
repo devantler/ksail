@@ -1,6 +1,7 @@
-> [!NOTE]  
+> [!NOTE]
 > A larger restructuring is on the way, where all embedded binaries are extracted into their own .NET project. This makes it much easier for me to maintain. However this also means that KSail will not see bug fixes and feature releases before late this year, as the changes are expected to take a few months to get right.
 > Follow the progress on:
+>
 > - [ ] [devantler/dotnet-age-cli](https://github.com/devantler/dotnet-age-cli)
 > - [ ] [devantler/dotnet-flux-cli](https://github.com/devantler/dotnet-flux-cli)
 > - [ ] [devantler/dotnet-k3d-cli](https://github.com/devantler/dotnet-k3d-cli)
@@ -23,6 +24,7 @@
   <summary>Show/hide folder structure</summary>
 
 <!-- readme-tree start -->
+
 ```
 .
 ├── .github
@@ -101,6 +103,7 @@
 
 73 directories
 ```
+
 <!-- readme-tree end -->
 
 </details>
@@ -144,41 +147,91 @@ Manually:
 
 ### Usage
 
-```sh
-ksail init <name-of-cluster>
-```
+Getting started with KSail is easy. Here are a few commands to get you started:
 
-- Generates a small cluster configuration with my recommended structure, Traefik, Cert-Manager, and Podinfo. This is a great starting point to build up your Kubernetes environments.
-  - KSail will target the `k8s/clusters/<cluster-name>/flux-system` flux kustomizations. So you can follow their paths to get an idea on how the files are related.
-    - `k8s/clusters/*` - This folder contains cluster configurations. This is the entrypoint for flux. I recommend having one cluster configuration per env (local, dev, test, prod).
-    - `k8s/manifests/*` - This folder contains all the manifests to deploy. It is organized according to its kustomization, and it is assumed that all clusters can deploy these files (use flux-post-build variables for variables).
-  - Flux kustomizations target files and folders within the flux-system OCI container that KSail creates. This container contains all files within `k8s/**`, so be aware that the paths are not from your projects root directory.
-- Includes a `*.k3d-config.yaml` file to configure your K3d cluster. You can check out [the official k3d docs](https://k3d.io/v5.1.0/usage/configfile/) on how to use this configuration file.
-- Includes a `.sops.yaml` file to configure SOPS. You can check out [the official SOPS docs](https://getsops.io/docs/#using-sopsyaml-conf-to-select-kms-pgp-and-age-for-new-files) on how to use this configuration file to configure which files should be encrypted/decrypted by which keys.
+> `ksail init <name-of-cluster>` - To initialize your cluster.
+> `ksail up <name-of-cluster>` - To provision your cluster.
 
-```sh
-ksail up <name-of-cluster>
-```
+From there, you can make some changes to your manifest files, and when you are ready to apply them, you can run:
 
-- Provisions a GitOps-enabled cluster from your working directory.
+>`ksail update <name-of-cluster>` - To update your cluster.
 
-```sh
-ksail update <name-of-cluster>
-```
+At some point, you might encounter an issue, and wonder what is going on. In that case, you can run:
 
-- Updates a cluster with new changes from your working directory.
+> `ksail check` - To check the status of your cluster reconciliations.
 
-```sh
-ksail debug
-```
+And for more advanced debugging, you can run:
 
-- Debugs a cluster with the amazing [K9s](https://github.com/derailed/k9s) tool.
+> `ksail debug` - To debug your cluster with the K9s tool.
 
-For more intricate navigational techniques, consult the global --help flag:
+Finally, when you are done working with your cluster, you can run:
 
-```sh
-ksail --help
-```
+> `ksail stop <name-of-cluster>` - To stop your cluster, so you can continue working on it later.
+
+Or if you really want to get rid of it for now, you can run:
+
+> `ksail down <name-of-cluster>` - To dismantle your cluster and remove its resources.
+
+## CLI Command Reference
+
+#### `ksail check`
+
+Checks the status of your cluster reconciliations.
+
+#### `ksail debug`
+
+Debugs a cluster with the amazing [K9s](https://github.com/derailed/k9s) tool.
+
+#### `ksail down <name-of-cluster>`
+
+Dismantles a cluster and removes its resources.
+
+#### `ksail init <name-of-cluster>`
+
+Generates a small cluster configuration with my recommended structure and a few services to get started. The generated files are as follows:
+
+- `k8s/clusters/*` - This folder contains cluster configurations. This is the entrypoint for flux. I recommend having one cluster configuration per env (local, dev, test, prod).
+- `k8s/manifests/*` - This folder contains all the manifests to deploy. It is organized according to its kustomization, and it is assumed that all clusters can deploy these files (use flux-post-build variables for variables).
+- `*.k3d-config.yaml` file to configure your K3d cluster. You can check out [the official k3d docs](https://k3d.io/v5.1.0/usage/configfile/) on how to use this configuration file.
+- `.sops.yaml` file to configure SOPS. You can check out [the official SOPS docs](https://getsops.io/docs/#using-sopsyaml-conf-to-select-kms-pgp-and-age-for-new-files) on how to use this configuration file to configure which files should be encrypted/decrypted by which keys.
+
+> [!NOTE]
+> KSail will target the `k8s/clusters/<cluster-name>/flux-system` flux kustomizations. So you can follow their paths to get an idea on how the files are related.
+
+> [!NOTE]
+> Flux kustomizations target files and folders within the flux-system OCI container that KSail creates. This container contains all files within `k8s/**`, so be aware that the paths are not from your projects root directory.
+
+#### `ksail lint <name-of-cluster>`
+
+Lints your manifest files for errors.
+
+#### `ksail list`
+
+Lists all clusters managed by KSail.
+
+#### `ksail sops <name-of-cluster>
+
+Manages secrets that can be stored safely in Git repositories with SOPS and Age.
+
+#### `ksail start <name-of-cluster>`
+
+Starts a cluster that has been stopped.
+
+#### `ksail stop <name-of-cluster>`
+
+Stops a running cluster.
+
+#### `ksail up <name-of-cluster>`
+
+Provisions a GitOps-enabled cluster from your working directory.
+
+#### `ksail update <name-of-cluster>`
+
+Updates a cluster with new changes from your working directory.
+
+#### `ksail --help`
+
+Prints helpful information about the KSail CLI. The option can also be appended to other commands to get more information about them. For example, `ksail up --help`.
 
 ## What is KSail?
 
