@@ -2,6 +2,7 @@ name: Test
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, closed]
     branches: main
   push:
     branches: main
