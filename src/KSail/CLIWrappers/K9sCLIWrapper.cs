@@ -23,7 +23,7 @@ class K9sCLIWrapper()
 
   internal static async Task<int> DebugClusterAsync(string kubeconfig, string? context, CancellationToken token)
   {
-    var cmd = context is null ? K9s.WithArguments([$"--kubeconfig {kubeconfig}"]) : K9s.WithArguments([$"--kubeconfig {kubeconfig}", $"--context {context}"]);
+    var cmd = context is null ? K9s.WithArguments(["--kubeconfig", kubeconfig]) : K9s.WithArguments(["--kubeconfig", kubeconfig, "--context", context]);
     var (ExitCode, _) = await CLIRunner.RunAsync(cmd, token);
     return ExitCode;
   }
