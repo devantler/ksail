@@ -21,6 +21,10 @@ class CLIRunner()
             Console.WriteLine("✕ Command event is 'null'");
             return (1, "");
           }
+          if (cmdEvent is StandardErrorCommandEvent)
+          {
+            isFaulty = true;
+          }
           if (!silent)
           {
             Console.WriteLine(cmdEvent.ToString() ?? "");
