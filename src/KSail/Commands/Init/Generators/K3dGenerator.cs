@@ -1,11 +1,11 @@
 using KSail.Models.K3d;
-using KSail.TemplateEngine;
+using Devantler.TemplateEngine;
 
 namespace KSail.Commands.Init.Generators;
 
 class K3dGenerator
 {
-  readonly Generator _generator = new(new TemplateEngine.TemplateEngine());
+  readonly Generator _generator = new(new TemplateEngine());
 
   internal async Task GenerateK3dConfigAsync(string filePath, string clusterName)
   {

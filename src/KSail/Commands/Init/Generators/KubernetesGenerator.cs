@@ -1,13 +1,13 @@
 using System.Text;
 using KSail.Models.Kubernetes;
 using KSail.Models.Kubernetes.FluxKustomization;
-using KSail.TemplateEngine;
+using Devantler.TemplateEngine;
 
 namespace KSail.Commands.Init.Generators;
 
 class KubernetesGenerator
 {
-  readonly Generator _generator = new(new TemplateEngine.TemplateEngine());
+  readonly Generator _generator = new(new TemplateEngine());
 
   internal async Task GenerateNamespaceAsync(string filePath, string name)
   {

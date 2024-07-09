@@ -9,27 +9,7 @@ charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
 
-[*.{cs}]
-# Rule: Set severity of analyzer diagnostics
-dotnet_analyzer_diagnostic.category-CodeQuality.severity = warning
-dotnet_analyzer_diagnostic.category-Design.severity = warning
-dotnet_analyzer_diagnostic.category-Documentation.severity = warning
-dotnet_analyzer_diagnostic.category-Globalization.severity = warning
-dotnet_analyzer_diagnostic.category-Interoperability.severity = warning
-dotnet_analyzer_diagnostic.category-Maintainability.severity = warning
-dotnet_analyzer_diagnostic.category-Naming.severity = warning
-dotnet_analyzer_diagnostic.category-Performance.severity = warning
-dotnet_analyzer_diagnostic.category-Reliability.severity = warning
-dotnet_analyzer_diagnostic.category-roslynator.severity = warning
-dotnet_analyzer_diagnostic.category-Security.severity = warning
-dotnet_analyzer_diagnostic.category-SingleFile.severity = warning
-dotnet_analyzer_diagnostic.category-Style.severity = warning
-dotnet_analyzer_diagnostic.category-Usage.severity = warning
-dotnet_diagnostic.rcs1228.severity = warning
-roslynator_analyzers.enabled_by_default = true
-roslynator_compiler_diagnostic_fixes.enabled = true
-roslynator_refactorings.enabled = true
-
+[*.cs]
 # Rule: Set personal preferences for analyzer diagnostics
 csharp_style_expression_bodied_accessors = when_on_single_line
 csharp_style_expression_bodied_constructors = when_on_single_line
@@ -45,39 +25,8 @@ csharp_style_var_when_type_is_apparent = true
 dotnet_sort_system_directives_first = true
 dotnet_style_require_accessibility_modifiers = omit_if_default
 
-# Rule: Private instance fields with underscore
-## Define the 'private_fields' symbol group:
-dotnet_naming_symbols.private_fields.applicable_kinds = field
-dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+[*.{received,verified}.*]
+generated_code = true
 
-## Define the 'private_static_fields' symbol group
-dotnet_naming_symbols.private_static_fields.applicable_kinds = field
-dotnet_naming_symbols.private_static_fields.applicable_accessibilities = private
-dotnet_naming_symbols.private_static_fields.required_modifiers = static
-
-## Define the 'underscored' naming style
-dotnet_naming_style.underscored.capitalization = camel_case
-dotnet_naming_style.underscored.required_prefix = _
-
-## Define the 'private_fields_underscored' naming rule
-dotnet_naming_rule.private_fields_underscored.symbols = private_fields
-dotnet_naming_rule.private_fields_underscored.style = underscored
-dotnet_naming_rule.private_fields_underscored.severity = error
-
-## Define the 'private_static_fields_none' naming rule
-dotnet_naming_rule.private_static_fields_none.symbols = private_static_fields
-dotnet_naming_rule.private_static_fields_none.style = underscored
-dotnet_naming_rule.private_static_fields_none.severity = none
-
-[*.{received,verified}.{txt,xml,json}]
-charset = "utf-8-bom"
-end_of_line = lf
-indent_size = unset
-indent_style = unset
-insert_final_newline = false
-tab_width = unset
-trim_trailing_whitespace = false
-
-[{*Test.cs,*Tests.cs}]
-#Rule: Identifiers are allowed to contain underscores
+[tests/**/*Tests.cs]
 dotnet_diagnostic.CA1707.severity = none
