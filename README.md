@@ -121,14 +121,14 @@
 >
 > </details>
 
-- Supported OSes
-  - darwin-amd64 
-  - darwin-arm64 
-  - linux-amd64 🐧
-  - linux-arm64 🐧
-- [Docker](https://www.docker.com)
-- Knowledge of [FluxCD](https://fluxcd.io)
-- Knowledge of [Kustomize](https://kubectl.docs.kubernetes.io/guides/introduction/kustomize/)
+KSail supports MacOS and Linox on the following architectures:
+
+- darwin-amd64 
+- darwin-arm64 
+- linux-amd64 🐧
+- linux-arm64 🐧
+
+If you are using Windows, you can use WSL2 to run KSail.
 
 ### Installation
 
