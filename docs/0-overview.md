@@ -4,7 +4,7 @@ Besides the core concepts of [Docker](https://docs.docker.com/guides/docker-over
 
 ## What is KSail?
 
-![KSail Architecture](images/architecture.drawio.png)
+![KSail Architecture](../images/architecture.drawio.png)
 
 KSail is a CLI tool designed to simplify the management of GitOps-enabled Kubernetes clusters. It enables you to easily create, manage, and dismantle GitOps-enabled clusters in Docker, such that you can develop and test your applications in a fully local Kubernetes environment, before deploying them to other environments.
 
