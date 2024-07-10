@@ -24,13 +24,13 @@
   <summary>Show/hide folder structure</summary>
 
 <!-- readme-tree start -->
-
 ```
 .
 ├── .github
 │   └── workflows
 ├── .vscode
-├── images
+├── docs
+│   └── images
 ├── scripts
 ├── src
 │   └── KSail
@@ -101,9 +101,8 @@
         │   └── Update
         └── TestUtils
 
-73 directories
+74 directories
 ```
-
 <!-- readme-tree end -->
 
 </details>
