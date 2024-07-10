@@ -20,20 +20,3 @@ docker run --rm \
   --network host `# Allow access to containers on localhost` \
   ghcr.io/devantler/ksail:latest up <name-of-cluster>
 ```
-
-
-
-### What is next for KSail?
-
-Features in the pipeline:
-
-- **KSail Gen:** With the template engine implemented I intend to add support for various generators that can generate anything from Kubernetes manifests to config files.
-- **Kind Support:** KSail will be able to create and manage GitOps-enabled Kubernetes clusters in Kind.
-- **Talos in Docker Support:** KSail will be able to create and manage GitOps-enabled Kubernetes clusters in Docker with Talos Linux.
-- **Setting Hosts:** KSail will be able to set hosts for services made accessible through ingresses.
-- **KSail YAML config:** As KSail matures, I will support more container engines and Kubernetes distributions, so a way to set defaults will be required. As such I plan to add support for a YAML config file to specify KSail-related settings and defaults. KSail will support generating the file if it does not exist, or generate it with `ksail gen` when the template engine matures.
-
-Features I'm considering:
-
-- **ArgoCD Support through Flamingo:** Working with YAML is not necessarily the preferred approach for all, so I am contemplating including Flamingo as a helm release provided by the `ksail init` command, so users can choose to create new releases from ArgoCDs proven UI. This might just be a matter of installing Flamingo, and configuring it to work with the structure KSail provides.
-- **VCluster Support:** I am considering adding support for VCluster, so users can create and manage VClusters in existing clusters.
