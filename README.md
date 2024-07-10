@@ -121,7 +121,7 @@
 >
 > </details>
 
-KSail supports MacOS and Linox on the following architectures:
+KSail supports MacOS and Linux on the following architectures:
 
 - darwin-amd64 
 - darwin-arm64 
