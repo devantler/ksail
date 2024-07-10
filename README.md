@@ -117,7 +117,7 @@
 >
 > <details><summary>Show me how!</summary>
 >
-> ![Enable Docker Socket in Docker Desktop](images/enable-docker-socket-in-docker-desktop.png)
+> ![Enable Docker Socket in Docker Desktop](docs/images/enable-docker-socket-in-docker-desktop.png)
 >
 > </details>
 
