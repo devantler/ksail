@@ -13,17 +13,15 @@
 > - [x] [devantler/dotnet-cli-runner](https://github.com/devantler/dotnet-cli-runner)
 > - [x] [devantler/dotnet-template-engine](https://github.com/devantler/dotnet-template-engine)
 
+<div align="center">
+  <img width="250px" alt="ksail" align="center" src="https://github.com/user-attachments/assets/749580e5-e412-4231-9d6a-d544afd366da"/>
+</div>
+
 # 🛥️🐳 KSail
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Test](https://github.com/devantler/ksail/actions/workflows/test.yaml/badge.svg?branch=main)](https://github.com/devantler/ksail/actions/workflows/test.yaml)
 [![codecov](https://codecov.io/gh/devantler/ksail/graph/badge.svg?token=DNEO90PfNR)](https://codecov.io/gh/devantler/ksail)
-
-<div align="center">
-  <img width="250px" alt="ksail" align="center" src="https://github.com/user-attachments/assets/749580e5-e412-4231-9d6a-d544afd366da"/>
-</div>
-
----
 
 ![image](https://github.com/devantler/ksail/assets/26203420/2c4596bd-68e5-438f-9a8b-0626bb44f353)
 
