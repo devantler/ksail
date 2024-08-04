@@ -28,5 +28,5 @@ dotnet_style_require_accessibility_modifiers = omit_if_default
 [*.{received,verified}.*]
 generated_code = true
 
-[tests/**/*Tests.cs]
+[**/*Tests.cs]
 dotnet_diagnostic.CA1707.severity = none

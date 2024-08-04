@@ -93,7 +93,7 @@
 │               ├── kubernetes
 │               └── sops
 └── tests
-    └── KSail.Tests.Integration
+    └── KSail.Tests
         ├── Commands
         │   ├── Check
         │   ├── Debug
