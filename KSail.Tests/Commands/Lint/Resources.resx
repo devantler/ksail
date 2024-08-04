@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="KSailLint_SucceedsAndPrintsIntroductionAndHelp" xml:space="preserve">
+    <value>🧪 Running test: KSailLint_SucceedsAndPrintsIntroductionAndHelp</value>
+  </data>
+  <data name="KSailLint_SucceedsAndLintsCluster" xml:space="preserve">
+    <value>🧪 Running test: KSailLint_SucceedsAndLintsCluster</value>
+  </data>
+</root>

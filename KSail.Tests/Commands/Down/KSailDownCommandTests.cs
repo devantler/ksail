@@ -1,5 +1,8 @@
 using System.CommandLine;
 using System.CommandLine.IO;
+using System.Globalization;
+using System.Reflection;
+using System.Resources;
 using KSail.Commands.Down;
 
 namespace KSail.Tests.Commands.Down;
@@ -10,6 +13,7 @@ namespace KSail.Tests.Commands.Down;
 [Collection("KSail.Tests")]
 public class KSailDownCommandTests : IAsyncLifetime
 {
+  readonly ResourceManager ResourceManager = new("KSail.Tests.Commands.Down.Resources", Assembly.GetExecutingAssembly());
   /// <inheritdoc/>
   public Task DisposeAsync() => Task.CompletedTask;
   /// <inheritdoc/>
@@ -21,7 +25,7 @@ public class KSailDownCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailDown_FailsAndPrintsHelp()
   {
-    Console.WriteLine($"🧪 Running test: {nameof(KSailDown_FailsAndPrintsHelp)}");
+    Console.WriteLine(ResourceManager.GetString(nameof(KSailDown_FailsAndPrintsHelp), CultureInfo.InvariantCulture));
     //Arrange
     var console = new TestConsole();
     var ksailDownCommand = new KSailDownCommand();

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="KSail_SucceedsAndPrintsIntroductionAndHelp" xml:space="preserve">
+    <value>🧪 Running test: KSail_SucceedsAndPrintsIntroductionAndHelp</value>
+  </data>
+  <data name="KSailHelp_SucceedsAndPrintsHelp" xml:space="preserve">
+    <value>🧪 Running test: KSailHelp_SucceedsAndPrintsHelp</value>
+  </data>
+</root>

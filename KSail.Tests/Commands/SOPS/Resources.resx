@@ -3,6 +3,9 @@
   <data name="KSailSOPS_FailsAndPrintsHelp" xml:space="preserve">
     <value>🧪 Running test: KSailSOPS_FailsAndPrintsHelp</value>
   </data>
+  <data name="KSailSOPSShowKey_PrintsFullKey" xml:space="preserve">
+    <value>🧪 Running test: KSailSOPSShowKey_PrintsFullKey</value>
+  </data>
   <data name="KSailSOPSShowPublicKey_PrintsPublicKey" xml:space="preserve">
     <value>🧪 Running test: KSailSOPSShowPublicKey_PrintsPublicKey</value>
   </data>

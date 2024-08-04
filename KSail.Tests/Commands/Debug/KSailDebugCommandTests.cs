@@ -1,5 +1,8 @@
 using System.CommandLine;
 using System.CommandLine.IO;
+using System.Globalization;
+using System.Reflection;
+using System.Resources;
 using KSail.Commands.Debug;
 
 namespace KSail.Tests.Commands.Debug;
@@ -10,6 +13,7 @@ namespace KSail.Tests.Commands.Debug;
 [Collection("KSail.Tests")]
 public class KSailDebugCommandTests : IAsyncLifetime
 {
+  readonly ResourceManager ResourceManager = new("KSail.Tests.Commands.Debug.Resources", Assembly.GetExecutingAssembly());
   /// <inheritdoc/>
   public Task DisposeAsync() => Task.CompletedTask;
   /// <inheritdoc/>
@@ -21,7 +25,7 @@ public class KSailDebugCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailDebug_GivenInvalidKubeconfigPath_Fails()
   {
-    Console.WriteLine($"🧪 Running test: {nameof(KSailDebug_GivenInvalidKubeconfigPath_Fails)}");
+    Console.WriteLine(ResourceManager.GetString(nameof(KSailDebug_GivenInvalidKubeconfigPath_Fails), CultureInfo.InvariantCulture));
     //Arrange
     var console = new TestConsole();
     var ksailDebugCommand = new KSailDebugCommand();
@@ -40,7 +44,7 @@ public class KSailDebugCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailDebug_GivenNoKubeconfigPath_Fails()
   {
-    Console.WriteLine($"🧪 Running test: {nameof(KSailDebug_GivenInvalidKubeconfigPath_Fails)}");
+    Console.WriteLine(ResourceManager.GetString(nameof(KSailDebug_GivenNoKubeconfigPath_Fails), CultureInfo.InvariantCulture));
     //Arrange
     var console = new TestConsole();
     var ksailDebugCommand = new KSailDebugCommand();
@@ -63,7 +67,7 @@ public class KSailDebugCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailDebug_GivenValidKubeconfigPathAndInvalidContext_Fails()
   {
-    Console.WriteLine($"🧪 Running test: {nameof(KSailDebug_GivenInvalidKubeconfigPath_Fails)}");
+    Console.WriteLine(ResourceManager.GetString(nameof(KSailDebug_GivenValidKubeconfigPathAndInvalidContext_Fails), CultureInfo.InvariantCulture));
     //Arrange
     var console = new TestConsole();
     var ksailDebugCommand = new KSailDebugCommand();

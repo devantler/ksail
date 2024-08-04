@@ -43,7 +43,7 @@ public class KSailSOPSCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailSOPSShowKey_PrintsFullKey()
   {
-    Console.WriteLine($"🧪 Running test: {nameof(KSailSOPSShowKey_PrintsFullKey)}");
+    Console.WriteLine(ResourceManager.GetString(nameof(KSailSOPSShowKey_PrintsFullKey), CultureInfo.InvariantCulture));
     //Arrange
     var ksailSOPSCommand = new KSailSOPSCommand();
 

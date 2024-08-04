@@ -1,5 +1,8 @@
 using System.CommandLine;
 using System.CommandLine.IO;
+using System.Globalization;
+using System.Reflection;
+using System.Resources;
 using KSail.Commands.Init;
 using KSail.Commands.Update;
 using KSail.Provisioners.ContainerEngine;
@@ -12,6 +15,7 @@ namespace KSail.Tests.Commands.Update;
 [Collection("KSail.Tests")]
 public class KSailUpdateCommandTests : IAsyncLifetime
 {
+  readonly ResourceManager ResourceManager = new("KSail.Tests.Commands.Update.Resources", Assembly.GetExecutingAssembly());
   /// <inheritdoc/>
   public Task DisposeAsync() => Task.CompletedTask;
   /// <inheritdoc/>
@@ -23,7 +27,7 @@ public class KSailUpdateCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailUpdate_FailsAndPrintsHelp()
   {
-    Console.WriteLine($"🧪 Running test: {nameof(KSailUpdate_FailsAndPrintsHelp)}");
+    Console.WriteLine(ResourceManager.GetString(nameof(KSailUpdate_FailsAndPrintsHelp), CultureInfo.InvariantCulture));
     //Arrange
     var console = new TestConsole();
     var ksailUpdateCommand = new KSailUpdateCommand();
@@ -42,7 +46,7 @@ public class KSailUpdateCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailUpdateNameNoReconcile_SucceedsAndPushesUpdatesToOCI()
   {
-    Console.WriteLine($"🧪 Running test: {nameof(KSailUpdateNameNoReconcile_SucceedsAndPushesUpdatesToOCI)}");
+    Console.WriteLine(ResourceManager.GetString(nameof(KSailUpdateNameNoReconcile_SucceedsAndPushesUpdatesToOCI), CultureInfo.InvariantCulture));
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpdateCommand = new KSailUpdateCommand();

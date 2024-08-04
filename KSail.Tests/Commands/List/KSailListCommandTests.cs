@@ -1,4 +1,7 @@
 using System.CommandLine;
+using System.Globalization;
+using System.Reflection;
+using System.Resources;
 using KSail.Commands.List;
 using KSail.Commands.Up;
 
@@ -10,6 +13,7 @@ namespace KSail.Tests.Commands.List;
 [Collection("KSail.Tests")]
 public class KSailListCommandTests : IAsyncLifetime
 {
+  readonly ResourceManager ResourceManager = new("KSail.Tests.Commands.List.Resources", Assembly.GetExecutingAssembly());
   /// <inheritdoc/>
   public Task DisposeAsync() => Task.CompletedTask;
   /// <inheritdoc/>
@@ -21,7 +25,7 @@ public class KSailListCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailList_SucceedsAndListsClusters()
   {
-    Console.WriteLine($"🧪 Running test: {nameof(KSailList_SucceedsAndListsClusters)}");
+    Console.WriteLine(ResourceManager.GetString(nameof(KSailList_SucceedsAndListsClusters), CultureInfo.InvariantCulture));
     //Arrange
     var ksailListCommand = new KSailListCommand();
 

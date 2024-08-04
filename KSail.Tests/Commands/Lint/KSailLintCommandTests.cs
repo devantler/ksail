@@ -1,5 +1,8 @@
 using System.CommandLine;
 using System.CommandLine.IO;
+using System.Globalization;
+using System.Reflection;
+using System.Resources;
 using KSail.Commands.Init;
 using KSail.Commands.Lint;
 
@@ -11,6 +14,7 @@ namespace KSail.Tests.Commands.Lint;
 [Collection("KSail.Tests")]
 public class KSailLintCommandTests : IAsyncLifetime
 {
+  readonly ResourceManager ResourceManager = new("KSail.Tests.Commands.Lint.Resources", Assembly.GetExecutingAssembly());
   /// <inheritdoc/>
   public Task DisposeAsync() => Task.CompletedTask;
   /// <inheritdoc/>
@@ -22,7 +26,7 @@ public class KSailLintCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailLint_SucceedsAndPrintsIntroductionAndHelp()
   {
-    Console.WriteLine($"🧪 Running test: {nameof(KSailLint_SucceedsAndPrintsIntroductionAndHelp)}");
+    Console.WriteLine(ResourceManager.GetString(nameof(KSailLint_SucceedsAndPrintsIntroductionAndHelp), CultureInfo.InvariantCulture));
     //Arrange
     var console = new TestConsole();
     var ksailCommand = new KSailLintCommand();
@@ -41,7 +45,7 @@ public class KSailLintCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailLint_SucceedsAndLintsCluster()
   {
-    Console.WriteLine($"🧪 Running test: {nameof(KSailLint_SucceedsAndLintsCluster)}");
+    Console.WriteLine(ResourceManager.GetString(nameof(KSailLint_SucceedsAndLintsCluster), CultureInfo.InvariantCulture));
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailLintCommand = new KSailLintCommand();
