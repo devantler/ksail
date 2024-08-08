@@ -3,7 +3,7 @@
 > Follow the progress on:
 >
 > - [x] [devantler/dotnet-keys](https://github.com/devantler/dotnet-keys)
-> - [x] [devantler/dotnet-age-cli](https://github.com/devantler/dotnet-age-cli)
+> - [ ] [devantler/dotnet-age-cli](https://github.com/devantler/dotnet-age-cli)
 > - [ ] [devantler/dotnet-flux-cli](https://github.com/devantler/dotnet-flux-cli)
 > - [ ] [devantler/dotnet-k3d-cli](https://github.com/devantler/dotnet-k3d-cli)
 > - [ ] [devantler/dotnet-k9s-cli](https://github.com/devantler/dotnet-k9s-cli)
