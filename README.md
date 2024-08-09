@@ -156,6 +156,7 @@ Manually:
 Getting started with KSail is easy. Here are a few commands to get you started:
 
 > `ksail init <name-of-cluster>` - To initialize your cluster.
+> 
 > `ksail up <name-of-cluster>` - To provision your cluster.
 
 From there, you can make some changes to your manifest files, and when you are ready to apply them, you can run:
