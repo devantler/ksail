@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="KSailCheck_GivenInvalidKubeconfigPath_Fails" xml:space="preserve">
+    <value>🧪 Running test: KSailCheck_GivenInvalidKubeconfigPath_Fails</value>
+  </data>
+  <data name="KSailCheck_GivenNoKubeconfigPath_Fails" xml:space="preserve">
+    <value>🧪 Running test: KSailCheck_GivenNoKubeconfigPath_Fails</value>
+  </data>
+  <data name="KSailCheck_GivenValidKubeconfigPathAndInvalidContext_Fails" xml:space="preserve">
+    <value>🧪 Running test: KSailCheck_GivenValidKubeconfigPathAndInvalidContext_Fails</value>
+  </data>
+</root>

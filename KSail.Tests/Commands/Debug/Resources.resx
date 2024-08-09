@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="KSailDebug_GivenInvalidKubeconfigPath_Fails" xml:space="preserve">
+    <value>🧪 Running test: KSailDebug_GivenInvalidKubeconfigPath_Fails</value>
+  </data>
+  <data name="KSailDebug_GivenNoKubeconfigPath_Fails" xml:space="preserve">
+    <value>Console.WriteLine($"🧪 Running test: KSailDebug_GivenNoKubeconfigPath_Fails</value>
+  </data>
+  <data name="KSailDebug_GivenValidKubeconfigPathAndInvalidContext_Fails" xml:space="preserve">
+    <value>🧪 Running test: KSailDebug_GivenValidKubeconfigPathAndInvalidContext_Fails</value>
+  </data>
+</root>
