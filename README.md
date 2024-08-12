@@ -203,10 +203,6 @@ Or if you really want to get rid of it for now, you can run:
 - [OCI Artifacts](https://github.com/devantler/oci-artifacts) - Ready-to-deploy OCI artifacts for Flux GitOps-enabled clusters.
 - [Homelab](https://github.com/devantler/homelab) - My personal homelab setup, including an example of how I use KSail to manage my Homelab cluster.
 
-## Contributions
-
-Contributions to KSail are welcome! You can contribute by reporting bugs, requesting features, or submitting pull requests. When creating an issue or pull request, please provide as much detail as possible to help understand the problem or feature. Check out the [Contribution Guidelines](https://github.com/devantler/ksail/blob/main/CONTRIBUTING.md) for more info.
-
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=devantler/ksail&type=Date)](https://star-history.com/#devantler/ksail&Date)
