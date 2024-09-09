@@ -7,7 +7,7 @@
 > - [ ] [devantler/dotnet-k9s-cli](https://github.com/devantler/dotnet-k9s-cli)
 > - [ ] [devantler/dotnet-kind-cli](https://github.com/devantler/dotnet-kind-cli)
 > - [ ] [devantler/dotnet-kubeconform-cli](https://github.com/devantler/dotnet-kubeconform-cli)
-> - [ ] [devantler/dotnet-kubernetes-generator](https://github.com/devantler/dotnet-kubernetes-generator)
+> - [x] [devantler/dotnet-kubernetes-generator](https://github.com/devantler/dotnet-kubernetes-generator)
 > - [ ] [devantler/dotnet-kubernetes-provisioner](https://github.com/devantler/dotnet-kubernetes-provisioner)
 > - [ ] [devantler/dotnet-kustomize-cli](https://github.com/devantler/dotnet-kustomize-cli)
 > - [ ] [devantler/dotnet-sops-cli](https://github.com/devantler/dotnet-sops-cli)
@@ -199,8 +199,21 @@ Or if you really want to get rid of it for now, you can run:
 
 ## Related Projects
 
-- [OCI Artifacts](https://github.com/devantler/oci-artifacts) - Ready-to-deploy OCI artifacts for Flux GitOps-enabled clusters.
-- [Homelab](https://github.com/devantler/homelab) - My personal homelab setup, including an example of how I use KSail to manage my Homelab cluster.
+- [devantler/homelab](https://github.com/devantler/homelab) - My personal homelab setup, including an example of how I use KSail to manage my Homelab cluster.
+- [devantler/dotnet-kubernetes-generator](https://github.com/devantler/dotnet-kubernetes-generator) - Generators to generate Kubernetes resources with `ksail init` and `ksail gen`.
+- [devantler/dotnet-kubernetes-provisioner](https://github.com/devantler/dotnet-kubernetes-provisioner) - Provisioners to provision K3d, Flux, secrets and more.
+- [devantler/dotnet-key-manager](https://github.com/devantler/dotnet-key-manager) - A key manager to manage local Age keys.
+- [devantler/dotnet-template-engine](https://github.com/devantler/dotnet-template-engine) - A template engine to support code generation of non-serializable content.
+- [devantler/dotnet-keys](https://github.com/devantler/dotnet-keys) - A library with key models, e.g. the Age key model.
+- [devantler/dotnet-cli-runner](https://github.com/devantler/dotnet-cli-runner) - An implementation on top of CLI Wrap to support running different binaries from C# code.
+- [devantler/dotnet-age-cli](https://github.com/devantler/dotnet-age-cli) - A library that embeds and provides an API for the Age CLI.
+- [devantler/dotnet-flux-cli](https://github.com/devantler/dotnet-flux-cli) - A library that embeds and provides an API for the Flux CLI.
+- [devantler/dotnet-k3d-cli](https://github.com/devantler/dotnet-k3d-cli) - A library that embeds and provides an API for the K3d CLI.
+- [devantler/dotnet-k9s-cli](https://github.com/devantler/dotnet-k9s-cli) - A library that embeds and provides an API for the K9s CLI.
+- [devantler/dotnet-kind-cli](https://github.com/devantler/dotnet-kind-cli) - A library that embeds and provides an API for the Kind CLI.
+- [devantler/dotnet-kubeconform-cli](https://github.com/devantler/dotnet-kubeconform-cli) - A library that embeds and provides an API for the Kubeconform CLI.
+- [devantler/dotnet-kustomize-cli](https://github.com/devantler/dotnet-kustomize-cli) - A library that embeds and provides an API for the Kustomize CLI.
+- [devantler/dotnet-sops-cli](https://github.com/devantler/dotnet-sops-cli) - A library that embeds and provides an API for the SOPS CLI.
 
 ## Star History
 
