@@ -2,10 +2,9 @@
 > A larger restructuring is on the way, where all embedded binaries are extracted into their own .NET project. This makes it much easier for me to maintain. However this also means that KSail will not see bug fixes and feature releases before late this year, as the changes are expected to take a few months to get right.
 > Follow the progress on:
 >
-> - [ ] [devantler/dotnet-kubernetes-resource-generator](https://github.com/devantler/dotnet-kubernetes-resource-generator)
-> - [ ] [devantler/dotnet-kubernetes-resource-provisioner](https://github.com/devantler/dotnet-kubernetes-resource-provisioner)
-> - [ ] [devantler/dotnet-kubernetes-cluster-provisioner](https://github.com/devantler/dotnet-kubernetes-cluster-provisioner)
-> - [ ] [devantler/dotnet-sops-manager](https://github.com/devantler/dotnet-sops-manager)
+> - [x] [devantler/dotnet-kubernetes-generator](https://github.com/devantler/dotnet-kubernetes-generator)
+> - [ ] [devantler/dotnet-kubernetes-provisioner](https://github.com/devantler/dotnet-kubernetes-provisioner)
+> - [x] [devantler/dotnet-key-manager](https://github.com/devantler/dotnet-key-manager)
 > - [x] [devantler/dotnet-template-engine](https://github.com/devantler/dotnet-template-engine)  
 > - [x] [devantler/dotnet-keys](https://github.com/devantler/dotnet-keys)
 > - [x] [devantler/dotnet-cli-runner](https://github.com/devantler/dotnet-cli-runner)
