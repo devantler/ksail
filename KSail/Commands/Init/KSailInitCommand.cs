@@ -1,29 +1,33 @@
 using System.CommandLine;
 using KSail.Arguments;
 using KSail.Commands.Init.Handlers;
-using KSail.Options;
+using KSail.Commands.Init.Options;
 
 namespace KSail.Commands.Init;
 
 sealed class KSailInitCommand : Command
 {
-  readonly ClusterNameArgument _clusterNameArgument = new();
-  readonly ManifestsOption _manifestsOption = new() { IsRequired = true };
+  readonly NameArgument _nameArgument = new();
+  readonly DistributionOption _distributionOption = new();
+  readonly OutputOption _outputOption = new();
+  readonly TemplateOption _templateOption = new();
   public KSailInitCommand() : base("init", "Initialize a cluster")
   {
-    AddArgument(_clusterNameArgument);
-    AddOption(_manifestsOption);
+    AddArgument(_nameArgument);
+    AddOption(_distributionOption);
+    AddOption(_templateOption);
+    AddOption(_outputOption);
 
     this.SetHandler(async (context) =>
     {
-      string clusterName = context.ParseResult.GetValueForArgument(_clusterNameArgument);
-      string manifests = context.ParseResult.GetValueForOption(_manifestsOption) ??
-        throw new InvalidOperationException("🚨 Manifests path is 'null'");
-      var token = context.GetCancellationToken();
+      string name = context.ParseResult.GetValueForArgument(_nameArgument);
+      var distribution = context.ParseResult.GetValueForOption(_distributionOption);
+      var template = context.ParseResult.GetValueForOption(_templateOption);
+      string outputPath = context.ParseResult.GetValueForOption(_outputOption) ?? throw new ArgumentNullException(nameof(_outputOption));
       try
       {
-        var handler = new KSailInitCommandHandler(clusterName, manifests);
-        context.ExitCode = await handler.HandleAsync(token).ConfigureAwait(false);
+        var handler = new KSailInitCommandHandler(name, distribution, outputPath, template);
+        context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
       }
       catch (OperationCanceledException)
       {

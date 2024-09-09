@@ -1,7 +1,0 @@
-creation_rules:
-  - path_regex: .sops.yaml
-    encrypted_regex: ^(data|stringData)$
-    age: |-
-      {{~ for public_key in public_keys ~}}
-      {{ public_key }}{{ if !for.last }},{{ end }}
-      {{~ end ~}}

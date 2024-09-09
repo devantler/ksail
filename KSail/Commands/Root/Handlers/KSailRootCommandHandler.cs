@@ -11,15 +11,15 @@ static class KSailRootCommandHandler
   {
     if (console is null)
     {
-      AnsiConsole.Markup(introduction);
+      AnsiConsole.Markup(Introduction);
     }
     else
     {
-      console.WriteLine(introduction);
+      console.WriteLine(Introduction);
     }
   }
 
-  const string introduction = """
+  const string Introduction = """
     🛥️ 🐳    [bold underline]Welcome to [blue]KSail[/]![/]    🛥️ 🐳
                                          [blue]. . .[/]
                     __/___                 [blue]:[/]

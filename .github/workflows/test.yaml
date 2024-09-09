@@ -27,7 +27,7 @@ jobs:
       - name: 📄 Upload Code Coverage to CodeCov
         uses: codecov/codecov-action@v4
         with:
-          files: tests/**/TestResults/**/coverage.cobertura.xml
+          files: '**/coverage.cobertura.xml'
           fail_ci_if_error: true
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

@@ -8,6 +8,7 @@
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
+    <UseCurrentRuntimeIdentifier>true</UseCurrentRuntimeIdentifier>
 
     <OutputType>Exe</OutputType>
     <AssemblyName>ksail</AssemblyName>
@@ -18,24 +19,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CliWrap" Version="3.6.6" />
-    <PackageReference Include="Devantler.CLIRunner" Version="1.0.4" />
-    <PackageReference Include="Devantler.TemplateEngine" Version="1.0.4" />
-    <PackageReference Include="Devantler.AgeCLI" Version="1.0.7" />
-    <PackageReference Include="Docker.DotNet" Version="3.125.15" />
-    <PackageReference Include="KubernetesClient" Version="14.0.2" />
-    <PackageReference Include="Scriban" Version="5.10.0" />
+    <PackageReference Include="Devantler.KeyManager.Local.Age" Version="1.1.9" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Flux" Version="0.0.5" />
+    <PackageReference Include="Devantler.KubernetesGenerator.K3d" Version="0.0.5" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Kustomize" Version="0.0.5" />
     <PackageReference Include="Spectre.Console" Version="0.49.1" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
-    <PackageReference Include="YamlDotNet" Version="15.3.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="assets/binaries/*darwin*amd64" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' == 'osx-x64'" />
-    <Content Include="assets/binaries/*darwin*arm64" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' == 'osx-arm64'" />
-    <Content Include="assets/binaries/*linux*amd64" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' == 'linux-x64'" />
-    <Content Include="assets/binaries/*linux*arm64" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' == 'linux-arm64'" />
-    <Content Include="assets/templates/**" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>
