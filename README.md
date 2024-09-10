@@ -34,7 +34,6 @@
   <summary>Show/hide folder structure</summary>
 
 <!-- readme-tree start -->
-
 ```
 .
 ├── .github
@@ -99,7 +98,7 @@
 │               ├── kubernetes
 │               └── sops
 └── tests
-    └── KSail.Tests
+    └── KSail.Tests.Integration
         ├── Commands
         │   ├── Check
         │   ├── Debug
@@ -114,7 +113,6 @@
 
 74 directories
 ```
-
 <!-- readme-tree end -->
 
 </details>
