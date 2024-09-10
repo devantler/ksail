@@ -1,21 +1,22 @@
 > [!NOTE]
-> A larger restructuring is on the way, where all embedded binaries are extracted into their own .NET project. This makes it much easier for me to maintain. However this also means that KSail will not see bug fixes and feature releases before late this year, as the changes are expected to take a few months to get right.
-> Follow the progress on:
+> Ahoy, matey! Gather 'round and lend an ear, for a grand overhaul be on the horizon! All them embedded binaries be set to sail into their own .NET project, makin' it smoother fer me to keep 'em shipshape. But beware, this mighty endeavor means KSail won't be seein' any bug fixes or new features 'til the end of the year, as this here voyage will take a few moons to chart right.
 >
-> - [x] [devantler/dotnet-kubernetes-generator](https://github.com/devantler/dotnet-kubernetes-generator)
-> - [ ] [devantler/dotnet-kubernetes-provisioner](https://github.com/devantler/dotnet-kubernetes-provisioner)
-> - [x] [devantler/dotnet-key-manager](https://github.com/devantler/dotnet-key-manager)
-> - [x] [devantler/dotnet-template-engine](https://github.com/devantler/dotnet-template-engine)  
-> - [x] [devantler/dotnet-keys](https://github.com/devantler/dotnet-keys)
-> - [x] [devantler/dotnet-cli-runner](https://github.com/devantler/dotnet-cli-runner)
-> - [x] [devantler/dotnet-age-cli](https://github.com/devantler/dotnet-age-cli)
+> Keep yer spyglass fixed on the progress at:
+>
 > - [ ] [devantler/dotnet-flux-cli](https://github.com/devantler/dotnet-flux-cli)
 > - [ ] [devantler/dotnet-k3d-cli](https://github.com/devantler/dotnet-k3d-cli)
 > - [ ] [devantler/dotnet-k9s-cli](https://github.com/devantler/dotnet-k9s-cli)
 > - [ ] [devantler/dotnet-kind-cli](https://github.com/devantler/dotnet-kind-cli)
 > - [ ] [devantler/dotnet-kubeconform-cli](https://github.com/devantler/dotnet-kubeconform-cli)
+> - [x] [devantler/dotnet-kubernetes-generator](https://github.com/devantler/dotnet-kubernetes-generator)
+> - [ ] [devantler/dotnet-kubernetes-provisioner](https://github.com/devantler/dotnet-kubernetes-provisioner)
 > - [ ] [devantler/dotnet-kustomize-cli](https://github.com/devantler/dotnet-kustomize-cli)
 > - [ ] [devantler/dotnet-sops-cli](https://github.com/devantler/dotnet-sops-cli)
+> - [x] [devantler/dotnet-age-cli](https://github.com/devantler/dotnet-age-cli)
+> - [x] [devantler/dotnet-cli-runner](https://github.com/devantler/dotnet-cli-runner)
+> - [x] [devantler/dotnet-key-manager](https://github.com/devantler/dotnet-sops-manager)
+> - [x] [devantler/dotnet-keys](https://github.com/devantler/dotnet-keys)
+> - [x] [devantler/dotnet-template-engine](https://github.com/devantler/dotnet-template-engine)
 
 <div align="center">
   <img width="250px" alt="ksail" align="center" src="https://github.com/user-attachments/assets/749580e5-e412-4231-9d6a-d544afd366da"/>
@@ -33,6 +34,7 @@
   <summary>Show/hide folder structure</summary>
 
 <!-- readme-tree start -->
+
 ```
 .
 ├── .github
@@ -97,7 +99,7 @@
 │               ├── kubernetes
 │               └── sops
 └── tests
-    └── KSail.Tests.Integration
+    └── KSail.Tests
         ├── Commands
         │   ├── Check
         │   ├── Debug
@@ -112,6 +114,7 @@
 
 74 directories
 ```
+
 <!-- readme-tree end -->
 
 </details>
@@ -121,22 +124,22 @@
 ### Prerequisites
 
 > [!NOTE]
-> On MacOS (darwin) you need to "Allow the default Docker socket to be used (requires password)" in Docker Desktop settings.
+> On MacOS (darwin), ye need to "Allow the default Docker socket to be used (requires password)" in Docker Desktop settings.
 >
-> <details><summary>Show me how!</summary>
+> <details><summary>Show me how, ye scallywag!</summary>
 >
 > ![Enable Docker Socket in Docker Desktop](docs/images/enable-docker-socket-in-docker-desktop.png)
 >
 > </details>
 
-KSail supports MacOS and Linux on the following platforms:
+KSail supports MacOS and Linux on the followin' platforms:
 
 - darwin-amd64 
 - darwin-arm64 
 - linux-amd64 🐧
 - linux-arm64 🐧
 
-If you are using Windows, you can use WSL2 to run KSail.
+If ye be usin' Windows, ye can use WSL2 to run KSail.
 
 ### Installation
 
@@ -151,41 +154,41 @@ Manually:
 
 1. Download the latest release from the [releases page](https://github.com/devantler/ksail/releases).
 2. Make the binary executable: `chmod +x ksail`.
-3. Move the binary to a directory in your `$PATH`: `mv ksail /usr/local/bin/ksail`.
+3. Move the binary to a directory in yer `$PATH`: `mv ksail /usr/local/bin/ksail`.
 
 ### Usage
 
-Getting started with KSail is easy. Here are a few commands to get you started:
+Gettin' started with KSail be as easy as plunderin' treasure. Here be a few commands to get ye goin':
 
-> `ksail init <name-of-cluster>` - To initialize your cluster.
-> 
-> `ksail up <name-of-cluster>` - To provision your cluster.
+> `ksail init <name-of-cluster>` - To initialize yer cluster.
+>
+> `ksail up <name-of-cluster>` - To provision yer cluster.
 
-From there, you can make some changes to your manifest files, and when you are ready to apply them, you can run:
+From there, ye can make some changes to yer manifest files, and when ye be ready to apply 'em, ye can run:
 
->`ksail update <name-of-cluster>` - To update your cluster.
+> `ksail update <name-of-cluster>` - To update yer cluster.
 
-At some point, you might encounter an issue, and wonder what is going on. In that case, you can run:
+At some point, ye might encounter an issue and wonder what be goin' on. In that case, ye can run:
 
-> `ksail check` - To check the status of your cluster reconciliations.
+> `ksail check` - To check the status of yer cluster reconciliations.
 
-And for more advanced debugging, you can run:
+And for more advanced debuggin', ye can run:
 
-> `ksail debug` - To debug your cluster with the K9s tool.
+> `ksail debug` - To debug yer cluster with the K9s tool.
 
-Finally, when you are done working with your cluster, you can run:
+Finally, when ye be done workin' with yer cluster, ye can run:
 
-> `ksail stop <name-of-cluster>` - To stop your cluster, so you can continue working on it later.
+> `ksail stop <name-of-cluster>` - To stop yer cluster, so ye can continue workin' on it later.
 
-Or if you really want to get rid of it for now, you can run:
+Or if ye really want to get rid of it for now, ye can run:
 
-> `ksail down <name-of-cluster>` - To dismantle your cluster and remove its resources.
+> `ksail down <name-of-cluster>` - To dismantle yer cluster and remove its resources.
 
 ## Documentation
 
 > [!NOTE]
-> The documentation is a work in progress. When it is more mature, it will be made available on <ksail.devantler.com>.
-> For now it includes the information that was originally available in this README with a few additions.
+> The documentation be a work in progress. When it be more mature, it will be made available on <ksail.devantler.com>.
+> For now, it includes the information that was originally available in this README with a few additions.
 
 - [Overview](./docs/0-overview.md)
 - [Getting Started](./docs/1-getting-started.md)
@@ -199,21 +202,21 @@ Or if you really want to get rid of it for now, you can run:
 
 ## Related Projects
 
-- [devantler/homelab](https://github.com/devantler/homelab) - My personal homelab setup, including an example of how I use KSail to manage my Homelab cluster.
-- [devantler/dotnet-kubernetes-generator](https://github.com/devantler/dotnet-kubernetes-generator) - Generators to generate Kubernetes resources with `ksail init` and `ksail gen`.
-- [devantler/dotnet-kubernetes-provisioner](https://github.com/devantler/dotnet-kubernetes-provisioner) - Provisioners to provision K3d, Flux, secrets and more.
-- [devantler/dotnet-key-manager](https://github.com/devantler/dotnet-key-manager) - A key manager to manage local Age keys.
-- [devantler/dotnet-template-engine](https://github.com/devantler/dotnet-template-engine) - A template engine to support code generation of non-serializable content.
-- [devantler/dotnet-keys](https://github.com/devantler/dotnet-keys) - A library with key models, e.g. the Age key model.
-- [devantler/dotnet-cli-runner](https://github.com/devantler/dotnet-cli-runner) - An implementation on top of CLI Wrap to support running different binaries from C# code.
-- [devantler/dotnet-age-cli](https://github.com/devantler/dotnet-age-cli) - A library that embeds and provides an API for the Age CLI.
-- [devantler/dotnet-flux-cli](https://github.com/devantler/dotnet-flux-cli) - A library that embeds and provides an API for the Flux CLI.
-- [devantler/dotnet-k3d-cli](https://github.com/devantler/dotnet-k3d-cli) - A library that embeds and provides an API for the K3d CLI.
-- [devantler/dotnet-k9s-cli](https://github.com/devantler/dotnet-k9s-cli) - A library that embeds and provides an API for the K9s CLI.
-- [devantler/dotnet-kind-cli](https://github.com/devantler/dotnet-kind-cli) - A library that embeds and provides an API for the Kind CLI.
-- [devantler/dotnet-kubeconform-cli](https://github.com/devantler/dotnet-kubeconform-cli) - A library that embeds and provides an API for the Kubeconform CLI.
-- [devantler/dotnet-kustomize-cli](https://github.com/devantler/dotnet-kustomize-cli) - A library that embeds and provides an API for the Kustomize CLI.
-- [devantler/dotnet-sops-cli](https://github.com/devantler/dotnet-sops-cli) - A library that embeds and provides an API for the SOPS CLI.
+- **[devantler/homelab](https://github.com/devantler/homelab)** - My personal homelab setup, including an example of how I use KSail to manage my Homelab cluster.
+- **[devantler/dotnet-kubernetes-generator](https://github.com/devantler/dotnet-kubernetes-generator)** - Generators to conjure Kubernetes resources with `ksail init` and `ksail gen`.
+- **[devantler/dotnet-kubernetes-provisioner](https://github.com/devantler/dotnet-kubernetes-provisioner)** - Provisioners to provision K3d, Flux, secrets, and more.
+- **[devantler/dotnet-key-manager](https://github.com/devantler/dotnet-key-manager)** - A key manager to guard yer local Age keys.
+- **[devantler/dotnet-template-engine](https://github.com/devantler/dotnet-template-engine)** - A template engine to support code generation of non-serializable content.
+- **[devantler/dotnet-keys](https://github.com/devantler/dotnet-keys)** - A library with key models, like the Age key model.
+- **[devantler/dotnet-cli-runner](https://github.com/devantler/dotnet-cli-runner)** - An implementation atop CLI Wrap to support runnin' different binaries from C# code.
+- **[devantler/dotnet-age-cli](https://github.com/devantler/dotnet-age-cli)** - A library that embeds and provides an API for the Age CLI.
+- **[devantler/dotnet-flux-cli](https://github.com/devantler/dotnet-flux-cli)** - A library that embeds and provides an API for the Flux CLI.
+- **[devantler/dotnet-k3d-cli](https://github.com/devantler/dotnet-k3d-cli)** - A library that embeds and provides an API for the K3d CLI.
+- **[devantler/dotnet-k9s-cli](https://github.com/devantler/dotnet-k9s-cli)** - A library that embeds and provides an API for the K9s CLI.
+- **[devantler/dotnet-kind-cli](https://github.com/devantler/dotnet-kind-cli)** - A library that embeds and provides an API for the Kind CLI.
+- **[devantler/dotnet-kubeconform-cli](https://github.com/devantler/dotnet-kubeconform-cli)** - A library that embeds and provides an API for the Kubeconform CLI.
+- **[devantler/dotnet-kustomize-cli](https://github.com/devantler/dotnet-kustomize-cli)** - A library that embeds and provides an API for the Kustomize CLI.
+- **[devantler/dotnet-sops-cli](https://github.com/devantler/dotnet-sops-cli)** - A library that embeds and provides an API for the SOPS CLI.
 
 ## Star History
 
