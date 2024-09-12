@@ -187,18 +187,18 @@ Or if ye really want to get rid of it for now, ye can run:
 ## Documentation
 
 > [!NOTE]
-> The documentation be a work in progress. When it be more mature, it will be made available on <ksail.devantler.com>.
+> The documentation be a work in progress. When it be more mature, it will be made available on <ksail.devantler.com> and on the Wiki.
 > For now, it includes the information that was originally available in this README with a few additions.
 
-- [Overview](./docs/0-overview.md)
-- [Getting Started](./docs/1-getting-started.md)
-- [Configuration](./docs/2-configuration.md)
-- [Structure](./docs/3-structure.md)
-- [CI](./docs/4-ci.md)
-- [KSail CLI](./docs/5-ksail-cli.md)
-- [Supported Tooling](./docs/6-supported-tooling.md)
-- [FAQ](./docs/7-faq.md)
-- [Roadmap](./docs/8-roadmap.md)
+- [Overview](./wiki/0-overview.md)
+- [Getting Started](./wiki/1-getting-started.md)
+- [Configuration](./wiki/2-configuration.md)
+- [Structure](./wiki/3-structure.md)
+- [CI](./wiki/4-ci.md)
+- [KSail CLI](./wiki/5-ksail-cli.md)
+- [Supported Tooling](./wiki/6-supported-tooling.md)
+- [FAQ](./wiki/7-faq.md)
+- [Roadmap](./wiki/8-roadmap.md)
 
 ## Related Projects
 

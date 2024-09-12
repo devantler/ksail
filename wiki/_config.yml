@@ -1,0 +1,25 @@
+title: KSail
+author:
+  name: Nikolai Emil Damm
+  email: ned@devantler.com
+description: >-
+  CLI tool for provisioning GitOps enabled K8s clusters in Docker.
+timezone: Europe/Copenhagen
+github_username:  devantler
+linkedin_username: nikolai-emil-damm-14a786150
+
+remote_theme: jekyll/minima
+minima:
+  skin: auto
+  social_links:
+    - platform: github
+      user_url: "https://github.com/devantler"
+      title: GitHub
+    - platform: linkedin
+      user_url: "https://www.linkedin.com/in/nikolai-emil-damm-14a786150/"
+      title: LinkedIn
+show_excerpts: false
+plugins:
+  - jekyll-feed
+  - jekyll-remote-theme
+  - jekyll-remote-include
