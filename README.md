@@ -198,9 +198,8 @@ Or if ye really want to get rid of it for now, ye can run:
 - [FAQ](./docs/7-faq.md)
 - [Roadmap](./docs/8-roadmap.md)
 
-## Related Projects
+## Sub-projects
 
-- **[devantler/homelab](https://github.com/devantler/homelab)** - My personal homelab setup, including an example of how I use KSail to manage my Homelab cluster.
 - **[devantler/dotnet-kubernetes-generator](https://github.com/devantler/dotnet-kubernetes-generator)** - Generators to conjure Kubernetes resources with `ksail init` and `ksail gen`.
 - **[devantler/dotnet-kubernetes-provisioner](https://github.com/devantler/dotnet-kubernetes-provisioner)** - Provisioners to provision K3d, Flux, secrets, and more.
 - **[devantler/dotnet-key-manager](https://github.com/devantler/dotnet-key-manager)** - A key manager to guard yer local Age keys.
@@ -215,6 +214,10 @@ Or if ye really want to get rid of it for now, ye can run:
 - **[devantler/dotnet-kubeconform-cli](https://github.com/devantler/dotnet-kubeconform-cli)** - A library that embeds and provides an API for the Kubeconform CLI.
 - **[devantler/dotnet-kustomize-cli](https://github.com/devantler/dotnet-kustomize-cli)** - A library that embeds and provides an API for the Kustomize CLI.
 - **[devantler/dotnet-sops-cli](https://github.com/devantler/dotnet-sops-cli)** - A library that embeds and provides an API for the SOPS CLI.
+
+## Related Projects
+
+- **[devantler/homelab](https://github.com/devantler/homelab)** - My personal homelab setup, including an example of how I use KSail to manage my Homelab cluster.
 
 ## Star History
 
