@@ -1,6 +1,6 @@
 namespace KSail.Tests.Commands.Gen;
 
-sealed class TheoryData
+static class TheoryData
 {
   public static TheoryData<string> HelpTheoryData =>
     new()
@@ -42,6 +42,22 @@ sealed class TheoryData
       { "native cluster role", "role.yaml" },
       { "native cluster runtime-class", "runtime-class.yaml" },
       { "native cluster service-account", "service-account.yaml" },
-      { "native cluster storage-version-migration", "storage-version-migration.yaml" }
+      { "native cluster storage-version-migration", "storage-version-migration.yaml" },
+      { "native config-and-storage config-map", "config-map.yaml" },
+      { "native config-and-storage csi-driver", "csi-driver.yaml" },
+      { "native config-and-storage persistent-volume-claim", "persistent-volume-claim.yaml" },
+      { "native config-and-storage secret", "secret.yaml" },
+      { "native config-and-storage storage-class", "storage-class.yaml" },
+      { "native config-and-storage volume-attributes-class", "volume-attributes-class.yaml" },
+      { "native metadata cluster-trust-bundle", "cluster-trust-bundle.yaml" },
+      { "native metadata custom-resource-definition", "custom-resource-definition.yaml" },
+      { "native metadata horizontal-pod-autoscaler", "horizontal-pod-autoscaler.yaml" },
+      { "native metadata limit-range", "limit-range.yaml" },
+      { "native metadata mutating-webhook-configuration", "mutating-webhook-configuration.yaml" },
+      { "native metadata pod-disruption-budget", "pod-disruption-budget.yaml" },
+      { "native metadata priority-class", "priority-class.yaml" },
+      { "native metadata validating-admission-policy-binding", "validating-admission-policy-binding.yaml" },
+      { "native metadata validating-admission-policy", "validating-admission-policy.yaml" },
+      { "native metadata validating-webhook-configuration", "validating-webhook-configuration.yaml" }
     };
 }

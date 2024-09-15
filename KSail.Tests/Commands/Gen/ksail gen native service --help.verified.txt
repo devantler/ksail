@@ -1,0 +1,10 @@
+﻿Description:
+  Generate a native Kubernetes resource from the service category.
+
+Usage:
+  gen native service [options]
+
+Options:
+  -?, -h, --help  Show help and usage information
+
+

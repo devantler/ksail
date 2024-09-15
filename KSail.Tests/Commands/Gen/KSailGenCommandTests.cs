@@ -31,7 +31,7 @@ public class KSailGenCommandTests : IAsyncLifetime
 
     //Assert
     Assert.Equal(0, exitCode);
-    _ = await Verify(console.Error.ToString() + console.Out);
+    _ = await Verify(console.Error.ToString() + console.Out).UseFileName($"ksail gen {command}");
   }
 
   /// <summary>

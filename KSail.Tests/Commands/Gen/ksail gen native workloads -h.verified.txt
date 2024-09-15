@@ -1,0 +1,10 @@
+﻿Description:
+  Generate a native Kubernetes resource from the workloads category.
+
+Usage:
+  gen native workloads [options]
+
+Options:
+  -?, -h, --help  Show help and usage information
+
+

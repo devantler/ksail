@@ -19,7 +19,6 @@ class KSailGenNativeMetadataCommand : Command
   {
     AddCommand(new KSailGenNativeMetadataClusterTrustBundleCommand());
     AddCommand(new KSailGenNativeMetadataCustomResourceDefinitionCommand());
-    AddCommand(new KSailGenNativeMetadataDeviceClassCommand());
     AddCommand(new KSailGenNativeMetadataHorizontalPodAutoscalerCommand());
     AddCommand(new KSailGenNativeMetadataLimitRangeCommand());
     AddCommand(new KSailGenNativeMetadataMutatingWebhookConfigurationCommand());
