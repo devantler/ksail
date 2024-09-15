@@ -21,7 +21,6 @@ class KSailGenNativeClusterCommand : Command
     AddCommand(new KSailGenNativeClusterClusterRoleBindingCommand());
     AddCommand(new KSailGenNativeClusterClusterRoleCommand());
     AddCommand(new KSailGenNativeClusterFlowSchemaCommand());
-    AddCommand(new KSailGenNativeClusterIPAddressCommand());
     AddCommand(new KSailGenNativeClusterNamespaceCommand());
     AddCommand(new KSailGenNativeClusterNetworkPolicyCommand());
     AddCommand(new KSailGenNativeClusterPersistentVolumeCommand());
@@ -31,7 +30,6 @@ class KSailGenNativeClusterCommand : Command
     AddCommand(new KSailGenNativeClusterRoleCommand());
     AddCommand(new KSailGenNativeClusterRuntimeClassCommand());
     AddCommand(new KSailGenNativeClusterServiceAccountCommand());
-    AddCommand(new KSailGenNativeClusterServiceCIDRCommand());
     AddCommand(new KSailGenNativeClusterStorageVersionMigrationCommand());
   }
 }

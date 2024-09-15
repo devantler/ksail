@@ -341,32 +341,6 @@ public class KSailGenCommandTests : IAsyncLifetime
   }
 
   /// <summary>
-  /// Tests that the 'ksail gen native cluster ip-address' command generates a 'networking.k8s.io/v1beta1/IPAddress' resource.
-  /// </summary>
-  [Fact]
-  public async Task KSailGenNativeClusterIPAddress_SucceedsAndGeneratesAnIPAddressResource()
-  {
-    //Arrange
-    var ksailCommand = new KSailGenCommand();
-
-    //Act
-    string outputPath = Path.Combine(Path.GetTempPath(), "ip-address.yaml");
-    if (File.Exists(outputPath))
-    {
-      File.Delete(outputPath);
-    }
-    int exitCode = await ksailCommand.InvokeAsync($"native cluster ip-address --output {outputPath}");
-    string fileContents = await File.ReadAllTextAsync(outputPath);
-
-    //Assert
-    Assert.Equal(0, exitCode);
-    _ = await Verify(fileContents);
-
-    //Cleanup
-    File.Delete(outputPath);
-  }
-
-  /// <summary>
   /// Tests that the 'ksail gen native cluster namespace' command generates a 'core/v1/Namespace' resource.
   /// </summary>
   [Fact]
@@ -590,32 +564,6 @@ public class KSailGenCommandTests : IAsyncLifetime
       File.Delete(outputPath);
     }
     int exitCode = await ksailCommand.InvokeAsync($"native cluster service-account --output {outputPath}");
-    string fileContents = await File.ReadAllTextAsync(outputPath);
-
-    //Assert
-    Assert.Equal(0, exitCode);
-    _ = await Verify(fileContents);
-
-    //Cleanup
-    File.Delete(outputPath);
-  }
-
-  /// <summary>
-  /// Tests that the 'ksail gen native cluster service-cidr' command generates a 'networking.k8s.io/v1/ServiceCIDR' resource.
-  /// </summary>
-  [Fact]
-  public async Task KSailGenNativeClusterServiceCIDR_SucceedsAndGeneratesAServiceCIDRResource()
-  {
-    //Arrange
-    var ksailCommand = new KSailGenCommand();
-
-    //Act
-    string outputPath = Path.Combine(Path.GetTempPath(), "service-cidr.yaml");
-    if (File.Exists(outputPath))
-    {
-      File.Delete(outputPath);
-    }
-    int exitCode = await ksailCommand.InvokeAsync($"native cluster service-cidr --output {outputPath}");
     string fileContents = await File.ReadAllTextAsync(outputPath);
 
     //Assert
