@@ -15,7 +15,18 @@ class KSailGenNativeMetadataCommand : Command
     );
   }
 
-  static void AddCommands()
+  void AddCommands()
   {
+    AddCommand(new KSailGenNativeMetadataClusterTrustBundleCommand());
+    AddCommand(new KSailGenNativeMetadataCustomResourceDefinitionCommand());
+    AddCommand(new KSailGenNativeMetadataDeviceClassCommand());
+    AddCommand(new KSailGenNativeMetadataHorizontalPodAutoscalerCommand());
+    AddCommand(new KSailGenNativeMetadataLimitRangeCommand());
+    AddCommand(new KSailGenNativeMetadataMutatingWebhookConfigurationCommand());
+    AddCommand(new KSailGenNativeMetadataPodDisruptionBudgetCommand());
+    AddCommand(new KSailGenNativeMetadataPriorityClassCommand());
+    AddCommand(new KSailGenNativeMetadataValidatingAdmissionPolicyBindingCommand());
+    AddCommand(new KSailGenNativeMetadataValidatingAdmissionPolicyCommand());
+    AddCommand(new KSailGenNativeMetadataValidatingWebhookConfigurationCommand());
   }
 }
