@@ -59,6 +59,7 @@ public class KSailInitCommandTests : IAsyncLifetime
     foreach (string file in Directory.GetFiles(outputPath, "*", SearchOption.AllDirectories))
     {
       string relativefilePath = file.Replace(outputPath, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
+      relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, '/');
       files[relativefilePath] = await File.ReadAllTextAsync(file);
     }
     // Remove age keys in age: |- from .sops.yaml file
