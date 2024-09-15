@@ -1,0 +1,272 @@
+﻿{
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/.sops.yaml:
+creation_rules:
+- path_regex: ^k8s\/clusters\/test-cluster\/.+\.sops\.yaml$
+  encrypted_regex: ^(data | stringData)$
+  age: ''
+- path_regex: .sops.yaml
+  encrypted_regex: ^(data | stringData)$
+  age: ''
+,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k3d-config.yaml:
+---
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: test-cluster
+registries:
+  config: >2-
+      mirrors:
+        "docker.io":
+          endpoint:
+            - http://host.k3d.internal:5001
+        "registry.k8s.io":
+          endpoint:
+            - http://host.k3d.internal:5002
+        "gcr.io":
+          endpoint:
+            - http://host.k3d.internal:5003
+        "ghcr.io":
+          endpoint:
+            - http://host.k3d.internal:5004
+        "quay.io":
+          endpoint:
+            - http://host.k3d.internal:5005
+        "mcr.microsoft.com":
+          endpoint:
+            - http://host.k3d.internal:5006
+options:
+  k3s:
+    extraArgs:
+    - arg: --disable=traefik
+      nodeFilters:
+      - server:*
+,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/apps/kustomization.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/apps/podinfo/helm-release.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/apps/podinfo/helm-repository.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/apps/podinfo/kustomization.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/apps/podinfo/namespace.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/clusters/test-cluster/apps/kustomization.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/clusters/test-cluster/custom-resources/kustomization.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/clusters/test-cluster/flux-system/apps.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/clusters/test-cluster/flux-system/custom-resources.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/clusters/test-cluster/flux-system/infrastructure.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/clusters/test-cluster/flux-system/kustomization.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/clusters/test-cluster/flux-system/variables.yaml:
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  labels:
+    kustomize.toolkit.fluxcd.io: enabled
+  name: variables-cluster
+  namespace: flux-system
+spec:
+  interval: 60m
+  retryInterval: 2m
+  timeout: 3m
+  sourceRef:
+    kind: OCIRepository
+    name: flux-system
+  path: clusters/test-cluster/variables
+  prune: true
+  wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  labels:
+    kustomize.toolkit.fluxcd.io: enabled
+  name: variables-distribution
+  namespace: flux-system
+spec:
+  interval: 60m
+  retryInterval: 2m
+  timeout: 3m
+  sourceRef:
+    kind: OCIRepository
+    name: flux-system
+  path: distributions/K3d/variables
+  prune: true
+  wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  labels:
+    kustomize.toolkit.fluxcd.io: enabled
+  name: variables-global
+  namespace: flux-system
+spec:
+  interval: 60m
+  retryInterval: 2m
+  timeout: 3m
+  sourceRef:
+    kind: OCIRepository
+    name: flux-system
+  path: variables
+  prune: true
+  wait: true
+,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/clusters/test-cluster/infrastructure/kustomization.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/clusters/test-cluster/variables/variables-sensitive.sops.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/clusters/test-cluster/variables/variables.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/components/flux-kustomization-post-build-variables-label/kustomization.yaml:
+---
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+patches:
+- patch: |-
+    apiVersion: kustomize.toolkit.fluxcd.io/v1
+    kind: Kustomization
+    metadata:
+      name: all
+    spec:
+      postBuild:
+        substituteFrom:
+        - kind: ConfigMap
+          name: variables-cluster
+        - kind: Secret
+          name: variables-sensitive-cluster
+        - kind: ConfigMap
+          name: variables-distribution
+        - kind: Secret
+          name: variables-sensitive-distribution
+        - kind: ConfigMap
+          name: variables-global
+        - kind: Secret
+          name: variables-sensitive-global
+  target:
+    kind: Kustomization
+    labelSelector:
+      app.kubernetes.io/post-build-variables: enabled
+,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/components/flux-kustomization-sops-label/kustomization.yaml:
+---
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+patches:
+- patch: |-
+    apiVersion: kustomize.toolkit.fluxcd.io/v1
+    kind: Kustomization
+    metadata:
+      name: all
+    spec:
+      decryption:
+      provider: sops
+      secretRef:
+        name: sops - age
+  target:
+    kind: Kustomization
+    labelSelector:
+      kustomize.toolkit.fluxcd.io: enabled
+,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/components/helm-release-crds-label/kustomization.yaml:
+---
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+patches:
+- patch: |-
+    apiVersion: helm.toolkit.fluxcd.io/v2
+    kind: HelmRelease
+    metadata:
+      name: all
+    spec:
+      install:
+        crds: CreateReplace
+      upgrade:
+        crds: CreateReplace
+  target:
+    kind: HelmRelease
+    labelSelector:
+      app.kubernetes.io/crds: enabled
+,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/components/helm-release-remediation-label/kustomization.yaml:
+---
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+patches:
+- patch: |-
+    apiVersion: helm.toolkit.fluxcd.io/v2
+    kind: HelmRelease
+    metadata:
+      name: all
+    spec:
+      install:
+        remediation:
+          retries: 10
+      upgrade:
+        remediation:
+          retries: 10
+  target:
+    kind: HelmRelease
+    labelSelector:
+      app.kubernetes.io/remediation: enabled
+,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/custom-resources/kustomization.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/custom-resources/selfsigned-cluster-issuer/certificate.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/custom-resources/selfsigned-cluster-issuer/cluster-issuer.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/custom-resources/selfsigned-cluster-issuer/kustomization.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/distributions/K3d/apps/kustomization.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/distributions/K3d/custom-resources/kustomization.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/distributions/K3d/infrastructure/kustomization.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/distributions/K3d/variables/variables-sensitive.sops.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/distributions/K3d/variables/variables.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/infrastructure/cert-manager/helm-release.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/infrastructure/cert-manager/helm-repository.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/infrastructure/cert-manager/kustomization.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/infrastructure/cert-manager/namespace.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/infrastructure/kustomization.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/infrastructure/traefik/helm-release.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/infrastructure/traefik/helm-repository.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/infrastructure/traefik/kustomization.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/infrastructure/traefik/namespace.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/variables/variables-sensitive.sops.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/k8s/variables/variables.yaml: ,
+  /var/folders/b8/4896qbs96fx12y1vkvk3p6xh0000gn/T/ksail-init-k3d-flux-default/ksail-config.yaml:
+---
+apiVersion: ksail.io/v1alpha1
+kind: Cluster
+metadata:
+  name: test-cluster
+spec:
+  distribution: k3d
+  gitOpsTool: flux
+  registries:
+  - name: ksail-registry
+    hostPort: 5050
+    isGitOpsOCISource: true
+    provider: docker
+  - name: proxy-docker.io
+    hostPort: 5000
+    proxy:
+      url: https://registry-1.docker.io/
+    provider: docker
+  - name: proxy-ghcr.io
+    hostPort: 5001
+    proxy:
+      url: https://ghcr.io/
+    provider: docker
+  - name: proxy-gcr.io
+    hostPort: 5002
+    proxy:
+      url: https://gcr.io/
+    provider: docker
+  - name: proxy-mcr.microsoft.com
+    hostPort: 5003
+    proxy:
+      url: https://mcr.microsoft.com/
+    provider: docker
+  - name: proxy-registry.k8s.io
+    hostPort: 5004
+    proxy:
+      url: https://registry.k8s.io/
+    provider: docker
+  - name: proxy-quay.io
+    hostPort: 5005
+    proxy:
+      url: https://quay.io/
+    provider: docker
+
+}
