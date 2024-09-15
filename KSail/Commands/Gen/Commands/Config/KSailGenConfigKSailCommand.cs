@@ -8,7 +8,7 @@ namespace KSail.Commands.Gen.Commands.Config;
 class KSailGenConfigKSailCommand : Command
 {
   readonly FileOutputOption _outputOption = new("./ksail-config.yaml");
-  readonly KSailGenKSailConfigCommandHandler _handler = new();
+  readonly KSailGenConfigKSailCommandHandler _handler = new();
   public KSailGenConfigKSailCommand() : base("ksail", "Generate a 'ksail.io/v1alpha1/Cluster' resource.")
   {
     AddOption(_outputOption);

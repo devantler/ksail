@@ -6,7 +6,7 @@ using k8s.Models;
 
 namespace KSail.Commands.Gen.Handlers.Config;
 
-class KSailGenKSailConfigCommandHandler
+class KSailGenConfigKSailCommandHandler
 {
   readonly KSailClusterGenerator _ksailClusterGenerator = new();
   internal async Task HandleAsync(string outputPath, CancellationToken cancellationToken)

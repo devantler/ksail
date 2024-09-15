@@ -71,7 +71,7 @@ public class KSailGenCommandTests : IAsyncLifetime
   }
 
   /// <summary>
-  /// Tests that the 'ksail gen config k3d' command generates a K3d configuration file.
+  /// Tests that the 'ksail gen config k3d' command generates a 'k3d.io/v1alpha5/Simple' resource.
   /// </summary>
   [Fact]
   public async Task KSailGenConfigK3d_SucceedsAndGeneratesAK3dConfigurationFile()
@@ -97,7 +97,7 @@ public class KSailGenCommandTests : IAsyncLifetime
   }
 
   /// <summary>
-  /// Tests that the 'ksail gen config ksail' command generates a KSail configuration file.
+  /// Tests that the 'ksail gen config ksail' command generates a 'ksail.io/v1alpha1/Cluster' resource.
   /// </summary>
   [Fact]
   public async Task KSailGenConfigKSail_SucceedsAndGeneratesAKSailConfigurationFile()
@@ -149,7 +149,7 @@ public class KSailGenCommandTests : IAsyncLifetime
   }
 
   /// <summary>
-  /// Tests that the 'ksail gen flux kustomization' command generates a Flux Kustomization file.
+  /// Tests that the 'ksail gen flux kustomization' command generates a 'kustomize.toolkit.fluxcd.io/v1/Kustomization' resource.
   /// </summary>
   [Fact]
   public async Task KSailGenFluxKustomization_SucceedsAndGeneratesAFluxKustomizationFile()
@@ -175,7 +175,7 @@ public class KSailGenCommandTests : IAsyncLifetime
   }
 
   /// <summary>
-  /// Tests that the 'ksail gen kustomize component' command generates a Kustomize component file.
+  /// Tests that the 'ksail gen kustomize component' command generates a 'kustomize.config.k8s.io/v1alpha1/Component' resource.
   /// </summary>
   [Fact]
   public async Task KSailGenKustomizeComponent_SucceedsAndGeneratesAKustomizeComponentFile()
@@ -237,7 +237,7 @@ public class KSailGenCommandTests : IAsyncLifetime
   }
 
   /// <summary>
-  /// Tests that the 'ksail gen native cluster api-service' command generates an 'apiregistration.k8s.io.v1.APIService' resource.
+  /// Tests that the 'ksail gen native cluster api-service' command generates an 'apiregistration.k8s.io/v1/APIService' resource.
   /// </summary>
   [Fact]
   public async Task KSailGenNativeClusterApiService_SucceedsAndGeneratesAnAPIServiceResource()
@@ -263,7 +263,7 @@ public class KSailGenCommandTests : IAsyncLifetime
   }
 
   /// <summary>
-  /// Tests that the 'ksail gen native cluster cluster-role-binding' command generates a 'rbac.authorization.k8s.io.v1.ClusterRoleBinding' resource.
+  /// Tests that the 'ksail gen native cluster cluster-role-binding' command generates a 'rbac.authorization.k8s.io/v1/ClusterRoleBinding' resource.
   /// </summary>
   [Fact]
   public async Task KSailGenNativeClusterClusterRoleBinding_SucceedsAndGeneratesAClusterRoleBindingResource()
@@ -289,7 +289,7 @@ public class KSailGenCommandTests : IAsyncLifetime
   }
 
   /// <summary>
-  /// Tests that the 'ksail gen native cluster cluster-role' command generates a 'rbac.authorization.k8s.io.v1.ClusterRole' resource.
+  /// Tests that the 'ksail gen native cluster cluster-role' command generates a 'rbac.authorization.k8s.io/v1/ClusterRole' resource.
   /// </summary>
   [Fact]
   public async Task KSailGenNativeClusterClusterRole_SucceedsAndGeneratesAClusterRoleResource()
@@ -315,7 +315,7 @@ public class KSailGenCommandTests : IAsyncLifetime
   }
 
   /// <summary>
-  /// Tests that the 'ksail gen native cluster flow-schema' command generates a 'flowcontrol.apiserver.k8s.io.v1.FlowSchema' resource.
+  /// Tests that the 'ksail gen native cluster flow-schema' command generates a 'flowcontrol.apiserver.k8s.io/v1/FlowSchema' resource.
   /// </summary>
   [Fact]
   public async Task KSailGenNativeClusterFlowSchema_SucceedsAndGeneratesAFlowSchemaResource()
@@ -340,7 +340,317 @@ public class KSailGenCommandTests : IAsyncLifetime
     File.Delete(outputPath);
   }
 
-  // TODO: Add tests for the remaining 'ksail gen native cluster' commands.
+  /// <summary>
+  /// Tests that the 'ksail gen native cluster ip-address' command generates a 'networking.k8s.io/v1beta1/IPAddress' resource.
+  /// </summary>
+  [Fact]
+  public async Task KSailGenNativeClusterIPAddress_SucceedsAndGeneratesAnIPAddressResource()
+  {
+    //Arrange
+    var ksailCommand = new KSailGenCommand();
+
+    //Act
+    string outputPath = Path.Combine(Path.GetTempPath(), "ip-address.yaml");
+    if (File.Exists(outputPath))
+    {
+      File.Delete(outputPath);
+    }
+    int exitCode = await ksailCommand.InvokeAsync($"native cluster ip-address --output {outputPath}");
+    string fileContents = await File.ReadAllTextAsync(outputPath);
+
+    //Assert
+    Assert.Equal(0, exitCode);
+    _ = await Verify(fileContents);
+
+    //Cleanup
+    File.Delete(outputPath);
+  }
+
+  /// <summary>
+  /// Tests that the 'ksail gen native cluster namespace' command generates a 'core/v1/Namespace' resource.
+  /// </summary>
+  [Fact]
+  public async Task KSailGenNativeClusterNamespace_SucceedsAndGeneratesANamespaceResource()
+  {
+    //Arrange
+    var ksailCommand = new KSailGenCommand();
+
+    //Act
+    string outputPath = Path.Combine(Path.GetTempPath(), "namespace.yaml");
+    if (File.Exists(outputPath))
+    {
+      File.Delete(outputPath);
+    }
+    int exitCode = await ksailCommand.InvokeAsync($"native cluster namespace --output {outputPath}");
+    string fileContents = await File.ReadAllTextAsync(outputPath);
+
+    //Assert
+    Assert.Equal(0, exitCode);
+    _ = await Verify(fileContents);
+
+    //Cleanup
+    File.Delete(outputPath);
+  }
+
+  /// <summary>
+  /// Tests that the 'ksail gen native cluster network-policy' command generates a 'networking.k8s.io/v1/NetworkPolicy' resource.
+  /// </summary>
+  [Fact]
+  public async Task KSailGenNativeClusterNetworkPolicy_SucceedsAndGeneratesANetworkPolicyResource()
+  {
+    //Arrange
+    var ksailCommand = new KSailGenCommand();
+
+    //Act
+    string outputPath = Path.Combine(Path.GetTempPath(), "network-policy.yaml");
+    if (File.Exists(outputPath))
+    {
+      File.Delete(outputPath);
+    }
+    int exitCode = await ksailCommand.InvokeAsync($"native cluster network-policy --output {outputPath}");
+    string fileContents = await File.ReadAllTextAsync(outputPath);
+
+    //Assert
+    Assert.Equal(0, exitCode);
+    _ = await Verify(fileContents);
+
+    //Cleanup
+    File.Delete(outputPath);
+  }
+
+  /// <summary>
+  /// Tests that the 'ksail gen native cluster persistent-volume' command generates a 'core/v1/PersistentVolume' resource.
+  /// </summary>
+  [Fact]
+  public async Task KSailGenNativeClusterPersistentVolume_SucceedsAndGeneratesAPersistentVolumeResource()
+  {
+    //Arrange
+    var ksailCommand = new KSailGenCommand();
+
+    //Act
+    string outputPath = Path.Combine(Path.GetTempPath(), "persistent-volume.yaml");
+    if (File.Exists(outputPath))
+    {
+      File.Delete(outputPath);
+    }
+    int exitCode = await ksailCommand.InvokeAsync($"native cluster persistent-volume --output {outputPath}");
+    string fileContents = await File.ReadAllTextAsync(outputPath);
+
+    //Assert
+    Assert.Equal(0, exitCode);
+    _ = await Verify(fileContents);
+
+    //Cleanup
+    File.Delete(outputPath);
+  }
+
+  /// <summary>
+  /// Tests that the 'ksail gen native cluster priority-level-configuration' command generates a 'flowcontrol.apiserver.k8s.io/v1/PriorityLevelConfiguration' resource.
+  /// </summary>
+  [Fact]
+  public async Task KSailGenNativeClusterPriorityLevelConfiguration_SucceedsAndGeneratesAPriorityLevelConfigurationResource()
+  {
+    //Arrange
+    var ksailCommand = new KSailGenCommand();
+
+    //Act
+    string outputPath = Path.Combine(Path.GetTempPath(), "priority-level-configuration.yaml");
+    if (File.Exists(outputPath))
+    {
+      File.Delete(outputPath);
+    }
+    int exitCode = await ksailCommand.InvokeAsync($"native cluster priority-level-configuration --output {outputPath}");
+    string fileContents = await File.ReadAllTextAsync(outputPath);
+
+    //Assert
+    Assert.Equal(0, exitCode);
+    _ = await Verify(fileContents);
+
+    //Cleanup
+    File.Delete(outputPath);
+  }
+
+  /// <summary>
+  /// Tests that the 'ksail gen native cluster resource-quota' command generates a 'core/v1/ResourceQuota' resource.
+  /// </summary>
+  [Fact]
+  public async Task KSailGenNativeClusterResourceQuota_SucceedsAndGeneratesAResourceQuotaResource()
+  {
+    //Arrange
+    var ksailCommand = new KSailGenCommand();
+
+    //Act
+    string outputPath = Path.Combine(Path.GetTempPath(), "resource-quota.yaml");
+    if (File.Exists(outputPath))
+    {
+      File.Delete(outputPath);
+    }
+    int exitCode = await ksailCommand.InvokeAsync($"native cluster resource-quota --output {outputPath}");
+    string fileContents = await File.ReadAllTextAsync(outputPath);
+
+    //Assert
+    Assert.Equal(0, exitCode);
+    _ = await Verify(fileContents);
+
+    //Cleanup
+    File.Delete(outputPath);
+  }
+
+  /// <summary>
+  /// Tests that the 'ksail gen native cluster role-binding' command generates a 'rbac.authorization.k8s.io/v1/RoleBinding' resource.
+  /// </summary>
+  [Fact]
+  public async Task KSailGenNativeClusterRoleBinding_SucceedsAndGeneratesARoleBindingResource()
+  {
+    //Arrange
+    var ksailCommand = new KSailGenCommand();
+
+    //Act
+    string outputPath = Path.Combine(Path.GetTempPath(), "role-binding.yaml");
+    if (File.Exists(outputPath))
+    {
+      File.Delete(outputPath);
+    }
+    int exitCode = await ksailCommand.InvokeAsync($"native cluster role-binding --output {outputPath}");
+    string fileContents = await File.ReadAllTextAsync(outputPath);
+
+    //Assert
+    Assert.Equal(0, exitCode);
+    _ = await Verify(fileContents);
+
+    //Cleanup
+    File.Delete(outputPath);
+  }
+
+  /// <summary>
+  /// Tests that the 'ksail gen native cluster role' command generates a 'rbac.authorization.k8s.io/v1/Role' resource.
+  /// </summary>
+  [Fact]
+  public async Task KSailGenNativeClusterRole_SucceedsAndGeneratesARoleResource()
+  {
+    //Arrange
+    var ksailCommand = new KSailGenCommand();
+
+    //Act
+    string outputPath = Path.Combine(Path.GetTempPath(), "role.yaml");
+    if (File.Exists(outputPath))
+    {
+      File.Delete(outputPath);
+    }
+    int exitCode = await ksailCommand.InvokeAsync($"native cluster role --output {outputPath}");
+    string fileContents = await File.ReadAllTextAsync(outputPath);
+
+    //Assert
+    Assert.Equal(0, exitCode);
+    _ = await Verify(fileContents);
+
+    //Cleanup
+    File.Delete(outputPath);
+  }
+
+  /// <summary>
+  /// Tests that the 'ksail gen native cluster runtime-class' command generates a 'node.k8s.io/v1/RuntimeClass' resource.
+  /// </summary>
+  [Fact]
+  public async Task KSailGenNativeClusterRuntimeClass_SucceedsAndGeneratesARuntimeClassResource()
+  {
+    //Arrange
+    var ksailCommand = new KSailGenCommand();
+
+    //Act
+    string outputPath = Path.Combine(Path.GetTempPath(), "runtime-class.yaml");
+    if (File.Exists(outputPath))
+    {
+      File.Delete(outputPath);
+    }
+    int exitCode = await ksailCommand.InvokeAsync($"native cluster runtime-class --output {outputPath}");
+    string fileContents = await File.ReadAllTextAsync(outputPath);
+
+    //Assert
+    Assert.Equal(0, exitCode);
+    _ = await Verify(fileContents);
+
+    //Cleanup
+    File.Delete(outputPath);
+  }
+
+  /// <summary>
+  /// Tests that the 'ksail gen native cluster service-account' command generates a 'core/v1/ServiceAccount' resource.
+  /// </summary>
+  [Fact]
+  public async Task KSailGenNativeClusterServiceAccount_SucceedsAndGeneratesAServiceAccountResource()
+  {
+    //Arrange
+    var ksailCommand = new KSailGenCommand();
+
+    //Act
+    string outputPath = Path.Combine(Path.GetTempPath(), "service-account.yaml");
+    if (File.Exists(outputPath))
+    {
+      File.Delete(outputPath);
+    }
+    int exitCode = await ksailCommand.InvokeAsync($"native cluster service-account --output {outputPath}");
+    string fileContents = await File.ReadAllTextAsync(outputPath);
+
+    //Assert
+    Assert.Equal(0, exitCode);
+    _ = await Verify(fileContents);
+
+    //Cleanup
+    File.Delete(outputPath);
+  }
+
+  /// <summary>
+  /// Tests that the 'ksail gen native cluster service-cidr' command generates a 'networking.k8s.io/v1/ServiceCIDR' resource.
+  /// </summary>
+  [Fact]
+  public async Task KSailGenNativeClusterServiceCIDR_SucceedsAndGeneratesAServiceCIDRResource()
+  {
+    //Arrange
+    var ksailCommand = new KSailGenCommand();
+
+    //Act
+    string outputPath = Path.Combine(Path.GetTempPath(), "service-cidr.yaml");
+    if (File.Exists(outputPath))
+    {
+      File.Delete(outputPath);
+    }
+    int exitCode = await ksailCommand.InvokeAsync($"native cluster service-cidr --output {outputPath}");
+    string fileContents = await File.ReadAllTextAsync(outputPath);
+
+    //Assert
+    Assert.Equal(0, exitCode);
+    _ = await Verify(fileContents);
+
+    //Cleanup
+    File.Delete(outputPath);
+  }
+
+  /// <summary>
+  /// Tests that the 'ksail gen native cluster storage-version-migration' command generates a 'storagemigration.k8s.io/v1alpha1/StorageVersionMigration' resource.
+  /// </summary>
+  [Fact]
+  public async Task KSailGenNativeClusterStorageVersionMigration_SucceedsAndGeneratesAStorageVersionMigrationResource()
+  {
+    //Arrange
+    var ksailCommand = new KSailGenCommand();
+
+    //Act
+    string outputPath = Path.Combine(Path.GetTempPath(), "storage-version-migration.yaml");
+    if (File.Exists(outputPath))
+    {
+      File.Delete(outputPath);
+    }
+    int exitCode = await ksailCommand.InvokeAsync($"native cluster storage-version-migration --output {outputPath}");
+    string fileContents = await File.ReadAllTextAsync(outputPath);
+
+    //Assert
+    Assert.Equal(0, exitCode);
+    _ = await Verify(fileContents);
+
+    //Cleanup
+    File.Delete(outputPath);
+  }
 
   /// <summary>
   /// Tests that the 'ksail gen native config-and-storage' command succeeds and returns the help text.

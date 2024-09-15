@@ -4,7 +4,7 @@ using k8s.Models;
 
 namespace KSail.Commands.Gen.Handlers.Config;
 
-class KSailGenK3dConfigCommandHandler
+class KSailGenConfigK3dCommandHandler
 {
   readonly K3dConfigGenerator _generator = new();
   public async Task HandleAsync(string outputPath, CancellationToken cancellationToken = default)
