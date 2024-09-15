@@ -1,0 +1,43 @@
+﻿---
+apiVersion: ksail.io/v1alpha1
+kind: Cluster
+metadata:
+  name: default
+spec:
+  distribution: k3d
+  gitOpsTool: flux
+  registries:
+  - name: ksail-registry
+    hostPort: 5050
+    isGitOpsOCISource: true
+    provider: docker
+  - name: proxy-docker.io
+    hostPort: 5001
+    proxy:
+      url: https://registry-1.docker.io/
+    provider: docker
+  - name: proxy-registry.k8s.io
+    hostPort: 5002
+    proxy:
+      url: https://registry.k8s.io/
+    provider: docker
+  - name: proxy-gcr.io
+    hostPort: 5003
+    proxy:
+      url: https://gcr.io/
+    provider: docker
+  - name: proxy-ghcr.io
+    hostPort: 5004
+    proxy:
+      url: https://ghcr.io/
+    provider: docker
+  - name: proxy-quay.io
+    hostPort: 5005
+    proxy:
+      url: https://quay.io/
+    provider: docker
+  - name: proxy-mcr.microsoft.com
+    hostPort: 5006
+    proxy:
+      url: https://mcr.microsoft.com/
+    provider: docker

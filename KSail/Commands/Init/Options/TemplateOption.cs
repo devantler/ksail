@@ -1,13 +1,13 @@
 using System.CommandLine;
-using KSail.Commands.Init.Models;
+using KSail.Commands.Init.Enums;
 
 namespace KSail.Commands.Init.Options;
 
-class TemplateOption : Option<Template>
+class TemplateOption : Option<KSailInitTemplate>
 {
   public TemplateOption() : base(
     ["-t", "--template"],
-    () => Template.KSail,
+    () => KSailInitTemplate.K3dFluxDefault,
     "The template to use for the initialized cluster.")
   {
   }

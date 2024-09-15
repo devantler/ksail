@@ -1,11 +1,11 @@
-using KSail.Commands.Init.Models;
+using Devantler.KubernetesGenerator.KSail.Models;
 
 namespace KSail.Commands.Init.Generators;
 
 class InfrastructureGenerator
 {
 
-  internal static async Task GenerateAsync(string name, Distribution distribution, string outputPath, CancellationToken cancellationToken)
+  internal static async Task GenerateAsync(string name, KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
   {
     await GenerateClusterInfrastructure(name, outputPath, cancellationToken).ConfigureAwait(false);
     await GenerateDistributionInfrastructure(distribution, outputPath, cancellationToken).ConfigureAwait(false);
@@ -34,7 +34,7 @@ class InfrastructureGenerator
     await File.WriteAllTextAsync(clusterInfrastructureKustomizationPath, string.Empty, cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateDistributionInfrastructure(Distribution distribution, string outputPath, CancellationToken cancellationToken)
+  static async Task GenerateDistributionInfrastructure(KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
   {
     string distributionInfrastructurePath = Path.Combine(outputPath, "distributions", distribution.ToString(), "infrastructure");
     if (!Directory.Exists(distributionInfrastructurePath))

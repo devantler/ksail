@@ -1,0 +1,28 @@
+﻿Description:
+  Generate a native Kubernetes resource from the cluster category.
+
+Usage:
+  gen native cluster [command] [options]
+
+Options:
+  --version       Show version information
+  -?, -h, --help  Show help and usage information
+
+Commands:
+  api-service                   Generate a 'apiregistration.k8s.io/v1/APIService' resource.
+  cluster-role-binding          Generate a 'rbac.authorization.k8s.io/v1/ClusterRoleBinding' resource.
+  cluster-role                  Generate a 'rbac.authorization.k8s.io/v1/ClusterRole' resource.
+  flow-schema                   Generate a 'flowcontrol.apiserver.k8s.io/v1/FlowSchema' resource.
+  ip-address                    Generate a 'networking.k8s.io/v1beta1/IPAddress' resource.
+  namespace                     Generate a 'core/v1/Namespace' resource.
+  network-policy                Generate a 'networking.k8s.io/v1/NetworkPolicy' resource.
+  persistent-volume             Generate a 'core/v1/PersistentVolume' resource.
+  priority-level-configuration  Generate a 'flowcontrol.apiserver.k8s.io/v1/PriorityLevelConfiguration' resource.
+  resource-quota                Generate a 'core/v1/ResourceQuota' resource.
+  role-binding                  Generate a 'rbac.authorization.k8s.io/v1/RoleBinding' resource.
+  role                          Generate a 'rbac.authorization.k8s.io/v1/Role' resource.
+  runtime-class                 Generate a 'node.k8s.io/v1/RuntimeClass' resource.
+  service-account               Generate a 'core/v1/ServiceAccount' resource.
+  service-cidr                  Generate a 'networking.k8s.io/v1beta1/ServiceCIDR' resource.
+  storage-version-migration     Generate a 'storagemigration.k8s.io/v1alpha1/StorageVersionMigration' resource.
+

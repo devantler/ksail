@@ -1,10 +1,10 @@
-using KSail.Commands.Init.Models;
+using Devantler.KubernetesGenerator.KSail.Models;
 
 namespace KSail.Commands.Init.Generators;
 
 class AppsGenerator
 {
-  internal static async Task GenerateAsync(string name, Distribution distribution, string outputPath, CancellationToken cancellationToken)
+  internal static async Task GenerateAsync(string name, KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
   {
     await GenerateClusterApps(name, outputPath, cancellationToken).ConfigureAwait(false);
     await GenerateDistributionApps(distribution, outputPath, cancellationToken).ConfigureAwait(false);
@@ -33,7 +33,7 @@ class AppsGenerator
     await File.WriteAllTextAsync(clusterAppsKustomizationPath, string.Empty, cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateDistributionApps(Distribution distribution, string outputPath, CancellationToken cancellationToken)
+  static async Task GenerateDistributionApps(KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
   {
     string distributionAppsPath = Path.Combine(outputPath, "distributions", distribution.ToString(), "apps");
     if (!Directory.Exists(distributionAppsPath))

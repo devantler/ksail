@@ -1,0 +1,11 @@
+﻿Description:
+  Generate a native Kubernetes resource from the config-and-storage category.
+
+Usage:
+  gen native config-and-storage [options]
+
+Options:
+  --version       Show version information
+  -?, -h, --help  Show help and usage information
+
+

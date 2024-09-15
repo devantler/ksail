@@ -1,0 +1,11 @@
+﻿Description:
+  Generate a native Kubernetes resource from the metadata category.
+
+Usage:
+  gen native metadata [options]
+
+Options:
+  --version       Show version information
+  -?, -h, --help  Show help and usage information
+
+

@@ -1,11 +1,11 @@
-using KSail.Commands.Init.Models;
+using Devantler.KubernetesGenerator.KSail.Models;
 
 namespace KSail.Commands.Init.Generators;
 
 class CustomResourcesGenerator
 {
 
-  internal static async Task GenerateAsync(string name, Distribution distribution, string k8sPath, CancellationToken cancellationToken)
+  internal static async Task GenerateAsync(string name, KSailKubernetesDistribution distribution, string k8sPath, CancellationToken cancellationToken)
   {
     await GenerateClusterCustomResources(name, k8sPath, cancellationToken).ConfigureAwait(false);
     await GenerateDistributionCustomResources(distribution, k8sPath, cancellationToken).ConfigureAwait(false);
@@ -34,7 +34,7 @@ class CustomResourcesGenerator
     await File.WriteAllTextAsync(clusterCustomResourcesKustomizationPath, string.Empty, cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateDistributionCustomResources(Distribution distribution, string outputPath, CancellationToken cancellationToken)
+  static async Task GenerateDistributionCustomResources(KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
   {
     string distributionCustomResourcesPath = Path.Combine(outputPath, "distributions", distribution.ToString(), "custom-resources");
     if (!Directory.Exists(distributionCustomResourcesPath))

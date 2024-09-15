@@ -1,8 +1,5 @@
 using System.CommandLine;
 using System.CommandLine.IO;
-using System.Globalization;
-using System.Reflection;
-using System.Resources;
 using KSail.Commands.Root;
 
 namespace KSail.Tests.Commands.Root;
@@ -13,7 +10,6 @@ namespace KSail.Tests.Commands.Root;
 [Collection("KSail.Tests")]
 public class KSailRootCommandTests : IAsyncLifetime
 {
-  readonly ResourceManager ResourceManager = new("KSail.Tests.Commands.Root.Resources", Assembly.GetExecutingAssembly());
   /// <inheritdoc/>
   public Task DisposeAsync() => Task.CompletedTask;
   /// <inheritdoc/>
@@ -24,7 +20,6 @@ public class KSailRootCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSail_SucceedsAndPrintsIntroductionAndHelp()
   {
-    Console.WriteLine(ResourceManager.GetString(nameof(KSail_SucceedsAndPrintsIntroductionAndHelp), CultureInfo.InvariantCulture));
     //Arrange
     var console = new TestConsole();
     var ksailCommand = new KSailRootCommand(console);
@@ -43,7 +38,6 @@ public class KSailRootCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailHelp_SucceedsAndPrintsHelp()
   {
-    Console.WriteLine(ResourceManager.GetString(nameof(KSailHelp_SucceedsAndPrintsHelp), CultureInfo.InvariantCulture));
     //Arrange
     var console = new TestConsole();
     var ksailCommand = new KSailRootCommand(console);

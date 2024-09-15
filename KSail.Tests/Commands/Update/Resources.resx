@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<root>
-  <data name="KSailUpdate_FailsAndPrintsHelp" xml:space="preserve">
-    <value>🧪 Running test: KSailUpdate_FailsAndPrintsHelp</value>
-  </data>
-  <data name="KSailUpdateNameNoReconcile_SucceedsAndPushesUpdatesToOCI" xml:space="preserve">
-    <value>🧪 Running test: KSailUpdateNameNoReconcile_SucceedsAndPushesUpdatesToOCI</value>
-  </data>
-</root>

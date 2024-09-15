@@ -1,15 +1,15 @@
 using Devantler.KubernetesGenerator.Flux;
 using Devantler.KubernetesGenerator.Flux.Models;
 using Devantler.KubernetesGenerator.Flux.Models.Sources;
+using Devantler.KubernetesGenerator.KSail.Models;
 using k8s.Models;
-using KSail.Commands.Init.Models;
 
 namespace KSail.Commands.Init.Generators;
 
 class FluxSystemGenerator
 {
   readonly FluxKustomizationGenerator _fluxKustomizationGenerator = new();
-  internal async Task GenerateAsync(string name, Distribution distribution, string outputPath, CancellationToken cancellationToken)
+  internal async Task GenerateAsync(string name, KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
   {
     string fluxSystemPath = Path.Combine(outputPath, "clusters", name, "flux-system");
     if (!Directory.Exists(fluxSystemPath))
@@ -32,7 +32,7 @@ class FluxSystemGenerator
     await File.WriteAllTextAsync(fluxSystemKustomizationPath, string.Empty, cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateFluxSystemFluxKustomizations(string clusterName, Distribution distribution, string outputPath, CancellationToken cancellationToken)
+  async Task GenerateFluxSystemFluxKustomizations(string clusterName, KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
   {
     await GenerateFluxSystemVariablesFluxKustomization(clusterName, distribution, outputPath, cancellationToken).ConfigureAwait(false);
     await GenerateFluxSystemInfrastructureFluxKustomization(outputPath, cancellationToken).ConfigureAwait(false);
@@ -40,7 +40,7 @@ class FluxSystemGenerator
     await GenerateFluxSystemAppsFluxKustomization(outputPath, cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateFluxSystemVariablesFluxKustomization(string clusterName, Distribution distribution, string outputPath, CancellationToken cancellationToken)
+  async Task GenerateFluxSystemVariablesFluxKustomization(string clusterName, KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
   {
     string fluxSystemVariablesFluxKustomizationPath = Path.Combine(outputPath, "variables.yaml");
     if (File.Exists(fluxSystemVariablesFluxKustomizationPath))
@@ -67,7 +67,7 @@ class FluxSystemGenerator
         RetryInterval = "2m",
         SourceRef = new FluxKustomizationSpecSourceRef
         {
-          Kind = FluxSourceType.OCIRepository,
+          Kind = FluxSource.OCIRepository,
           Name = "flux-system"
         },
         Path = $"clusters/{clusterName}/variables",
@@ -93,7 +93,7 @@ class FluxSystemGenerator
         RetryInterval = "2m",
         SourceRef = new FluxKustomizationSpecSourceRef
         {
-          Kind = FluxSourceType.OCIRepository,
+          Kind = FluxSource.OCIRepository,
           Name = "flux-system"
         },
         Path = $"distributions/{distribution}/variables",
@@ -119,7 +119,7 @@ class FluxSystemGenerator
         RetryInterval = "2m",
         SourceRef = new FluxKustomizationSpecSourceRef
         {
-          Kind = FluxSourceType.OCIRepository,
+          Kind = FluxSource.OCIRepository,
           Name = "flux-system"
         },
         Path = "variables",
@@ -127,9 +127,9 @@ class FluxSystemGenerator
         Wait = true
       }
     };
-    await _fluxKustomizationGenerator.GenerateAsync(fluxKustomizationVariablesCluster, fluxSystemVariablesFluxKustomizationPath, cancellationToken).ConfigureAwait(false);
-    await _fluxKustomizationGenerator.GenerateAsync(fluxKustomizationVariablesDistribution, fluxSystemVariablesFluxKustomizationPath, cancellationToken).ConfigureAwait(false);
-    await _fluxKustomizationGenerator.GenerateAsync(fluxKustomizationVariablesGlobal, fluxSystemVariablesFluxKustomizationPath, cancellationToken).ConfigureAwait(false);
+    await _fluxKustomizationGenerator.GenerateAsync(fluxKustomizationVariablesCluster, fluxSystemVariablesFluxKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _fluxKustomizationGenerator.GenerateAsync(fluxKustomizationVariablesDistribution, fluxSystemVariablesFluxKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _fluxKustomizationGenerator.GenerateAsync(fluxKustomizationVariablesGlobal, fluxSystemVariablesFluxKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
   static async Task GenerateFluxSystemInfrastructureFluxKustomization(string outputPath, CancellationToken cancellationToken)

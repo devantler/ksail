@@ -1,12 +1,12 @@
 using System.CommandLine;
-using KSail.Commands.Init.Models;
+using Devantler.KubernetesGenerator.KSail.Models;
 
 namespace KSail.Commands.Init.Options;
 
 sealed class DistributionOption()
- : Option<Distribution>(
+ : Option<KSailKubernetesDistribution>(
     ["-d", "--distribution"],
-    () => Distribution.K3d,
+    () => KSailKubernetesDistribution.K3d,
     "The distribution to use for the cluster."
   )
 {

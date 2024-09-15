@@ -1,7 +1,7 @@
 using Devantler.KubernetesGenerator.K3d;
 using Devantler.KubernetesGenerator.K3d.Models;
+using Devantler.KubernetesGenerator.KSail.Models;
 using k8s.Models;
-using KSail.Commands.Init.Models;
 
 namespace KSail.Commands.Init.Generators;
 
@@ -9,11 +9,11 @@ class DistributionConfigFileGenerator
 {
   readonly K3dConfigGenerator _k3dConfigKubernetesGenerator = new();
 
-  internal async Task GenerateAsync(string clusterName, Distribution distribution, string outputPath, CancellationToken cancellationToken)
+  internal async Task GenerateAsync(string clusterName, KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
   {
     string distributionConfigPath = distribution switch
     {
-      Distribution.K3d => Path.Combine(outputPath, "k3d-config.yaml"),
+      KSailKubernetesDistribution.K3d => Path.Combine(outputPath, "k3d-config.yaml"),
       _ => throw new NotSupportedException($"Distribution '{distribution}' is not supported.")
     };
     if (File.Exists(distributionConfigPath))
@@ -23,7 +23,7 @@ class DistributionConfigFileGenerator
     }
     switch (distribution)
     {
-      case Distribution.K3d:
+      case KSailKubernetesDistribution.K3d:
         await GenerateK3DConfigFile(clusterName, distributionConfigPath, cancellationToken).ConfigureAwait(false);
         break;
       default:
@@ -81,6 +81,6 @@ class DistributionConfigFileGenerator
       }
     };
 
-    await _k3dConfigKubernetesGenerator.GenerateAsync(k3dConfig, outputPath, cancellationToken).ConfigureAwait(false);
+    await _k3dConfigKubernetesGenerator.GenerateAsync(k3dConfig, outputPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 }

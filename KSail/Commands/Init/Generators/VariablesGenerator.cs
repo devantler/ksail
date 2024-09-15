@@ -1,10 +1,10 @@
-using KSail.Commands.Init.Models;
+using Devantler.KubernetesGenerator.KSail.Models;
 
 namespace KSail.Commands.Init.Generators;
 
 class VariablesGenerator
 {
-  internal static async Task GenerateAsync(string name, Distribution distribution, string outputPath, CancellationToken cancellationToken)
+  internal static async Task GenerateAsync(string name, KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
   {
     await GenerateClusterVariables(name, outputPath, cancellationToken).ConfigureAwait(false);
     await GenerateDistributionVariables(distribution, outputPath, cancellationToken).ConfigureAwait(false);
@@ -22,7 +22,7 @@ class VariablesGenerator
     await GenerateVariablesSensitiveSecret(clusterVariablesPath, cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateDistributionVariables(Distribution distribution, string outputPath, CancellationToken cancellationToken)
+  static async Task GenerateDistributionVariables(KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
   {
     string distributionVariablesPath = Path.Combine(outputPath, "distributions", distribution.ToString(), "variables");
     if (!Directory.Exists(distributionVariablesPath))
