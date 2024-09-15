@@ -618,6 +618,162 @@ public class KSailGenCommandTests : IAsyncLifetime
     _ = await Verify(console.Error.ToString() + console.Out);
   }
 
+  /// <summary>
+  /// Tests that the 'ksail gen native config-and-storage config-map' command generates a 'core/v1/ConfigMap' resource.
+  /// </summary>
+  [Fact]
+  public async Task KSailGenNativeConfigAndStorageConfigMap_SucceedsAndGeneratesAConfigMapResource()
+  {
+    //Arrange
+    var ksailCommand = new KSailGenCommand();
+
+    //Act
+    string outputPath = Path.Combine(Path.GetTempPath(), "config-map.yaml");
+    if (File.Exists(outputPath))
+    {
+      File.Delete(outputPath);
+    }
+    int exitCode = await ksailCommand.InvokeAsync($"native config-and-storage config-map --output {outputPath}");
+    string fileContents = await File.ReadAllTextAsync(outputPath);
+
+    //Assert
+    Assert.Equal(0, exitCode);
+    _ = await Verify(fileContents);
+
+    //Cleanup
+    File.Delete(outputPath);
+  }
+
+  /// <summary>
+  /// Tests that the 'ksail gen native config-and-storage csi-driver' command generates a 'storage.k8s.io/v1/CSIDriver' resource.
+  /// </summary>
+  [Fact]
+  public async Task KSailGenNativeConfigAndStorageCSIDriver_SucceedsAndGeneratesACSIDriverResource()
+  {
+    //Arrange
+    var ksailCommand = new KSailGenCommand();
+
+    //Act
+    string outputPath = Path.Combine(Path.GetTempPath(), "csi-driver.yaml");
+    if (File.Exists(outputPath))
+    {
+      File.Delete(outputPath);
+    }
+    int exitCode = await ksailCommand.InvokeAsync($"native config-and-storage csi-driver --output {outputPath}");
+    string fileContents = await File.ReadAllTextAsync(outputPath);
+
+    //Assert
+    Assert.Equal(0, exitCode);
+    _ = await Verify(fileContents);
+
+    //Cleanup
+    File.Delete(outputPath);
+  }
+
+  /// <summary>
+  /// Tests that the 'ksail gen native config-and-storage persistent-volume-claim' command generates a 'core/v1/PersistentVolumeClaim' resource.
+  /// </summary>
+  [Fact]
+  public async Task KSailGenNativeConfigAndStoragePersistentVolumeClaim_SucceedsAndGeneratesAPersistentVolumeClaimResource()
+  {
+    //Arrange
+    var ksailCommand = new KSailGenCommand();
+
+    //Act
+    string outputPath = Path.Combine(Path.GetTempPath(), "persistent-volume-claim.yaml");
+    if (File.Exists(outputPath))
+    {
+      File.Delete(outputPath);
+    }
+    int exitCode = await ksailCommand.InvokeAsync($"native config-and-storage persistent-volume-claim --output {outputPath}");
+    string fileContents = await File.ReadAllTextAsync(outputPath);
+
+    //Assert
+    Assert.Equal(0, exitCode);
+    _ = await Verify(fileContents);
+
+    //Cleanup
+    File.Delete(outputPath);
+  }
+
+  /// <summary>
+  /// Tests that the 'ksail gen native config-and-storage secret' command generates a 'core/v1/Secret' resource.
+  /// </summary>
+  [Fact]
+  public async Task KSailGenNativeConfigAndStorageSecret_SucceedsAndGeneratesASecretResource()
+  {
+    //Arrange
+    var ksailCommand = new KSailGenCommand();
+
+    //Act
+    string outputPath = Path.Combine(Path.GetTempPath(), "secret.yaml");
+    if (File.Exists(outputPath))
+    {
+      File.Delete(outputPath);
+    }
+    int exitCode = await ksailCommand.InvokeAsync($"native config-and-storage secret --output {outputPath}");
+    string fileContents = await File.ReadAllTextAsync(outputPath);
+
+    //Assert
+    Assert.Equal(0, exitCode);
+    _ = await Verify(fileContents);
+
+    //Cleanup
+    File.Delete(outputPath);
+  }
+
+  /// <summary>
+  /// Tests that the 'ksail gen native config-and-storage storage-class' command generates a 'storage.k8s.io/v1/StorageClass' resource.
+  /// </summary>
+  [Fact]
+  public async Task KSailGenNativeConfigAndStorageStorageClass_SucceedsAndGeneratesAStorageClassResource()
+  {
+    //Arrange
+    var ksailCommand = new KSailGenCommand();
+
+    //Act
+    string outputPath = Path.Combine(Path.GetTempPath(), "storage-class.yaml");
+    if (File.Exists(outputPath))
+    {
+      File.Delete(outputPath);
+    }
+    int exitCode = await ksailCommand.InvokeAsync($"native config-and-storage storage-class --output {outputPath}");
+    string fileContents = await File.ReadAllTextAsync(outputPath);
+
+    //Assert
+    Assert.Equal(0, exitCode);
+    _ = await Verify(fileContents);
+
+    //Cleanup
+    File.Delete(outputPath);
+  }
+
+  /// <summary>
+  /// Tests that the 'ksail gen native config-and-storage volume-attributes-class' command generates a 'storage.k8s.io/v1beta1/VolumeAttributesClass' resource.
+  /// </summary>
+  [Fact]
+  public async Task KSailGenNativeConfigAndStorageVolumeAttributesClass_SucceedsAndGeneratesAVolumeAttributesClassResource()
+  {
+    //Arrange
+    var ksailCommand = new KSailGenCommand();
+
+    //Act
+    string outputPath = Path.Combine(Path.GetTempPath(), "volume-attributes-class.yaml");
+    if (File.Exists(outputPath))
+    {
+      File.Delete(outputPath);
+    }
+    int exitCode = await ksailCommand.InvokeAsync($"native config-and-storage volume-attributes-class --output {outputPath}");
+    string fileContents = await File.ReadAllTextAsync(outputPath);
+
+    //Assert
+    Assert.Equal(0, exitCode);
+    _ = await Verify(fileContents);
+
+    //Cleanup
+    File.Delete(outputPath);
+  }
+
   // TODO: Add tests for the remaining 'ksail gen native config-and-storage' commands.
 
   /// <summary>

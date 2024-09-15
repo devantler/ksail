@@ -15,7 +15,13 @@ class KSailGenNativeConfigAndStorageCommand : Command
     );
   }
 
-  static void AddCommands()
+  void AddCommands()
   {
+    AddCommand(new KSailGenNativeConfigAndStorageConfigMapCommand());
+    AddCommand(new KSailGenNativeConfigAndStorageCSIDriverCommand());
+    AddCommand(new KSailGenNativeConfigAndStoragePersistentVolumeClaimCommand());
+    AddCommand(new KSailGenNativeConfigAndStorageSecretCommand());
+    AddCommand(new KSailGenNativeConfigAndStorageStorageClassCommand());
+    AddCommand(new KSailGenNativeConfigAndStorageVolumeAttributesClassCommand());
   }
 }
