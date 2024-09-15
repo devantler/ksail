@@ -9,7 +9,7 @@ namespace KSail.Tests.Commands.Init;
 /// Tests for the <see cref="KSailInitCommand"/> class.
 /// </summary>
 [Collection("KSail.Tests")]
-public class KSailInitCommandTests : IAsyncLifetime
+public partial class KSailInitCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
   public Task DisposeAsync() => Task.CompletedTask;
@@ -58,13 +58,17 @@ public class KSailInitCommandTests : IAsyncLifetime
     Dictionary<string, string> files = [];
     foreach (string file in Directory.GetFiles(outputPath, "*", SearchOption.AllDirectories))
     {
-      files[file] = await File.ReadAllTextAsync(file);
+      string relativefilePath = file.Replace(outputPath, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
+      files[relativefilePath] = await File.ReadAllTextAsync(file);
     }
     // Remove age keys in age: |- from .sops.yaml file
-    files[Path.Combine(outputPath, ".sops.yaml")] = Regex.Replace(files[Path.Combine(outputPath, ".sops.yaml")], @"  age: \|-\n.+", "  age: ''");
+    files[".sops.yaml"] = SOPSConfigAgePropertyRegex().Replace(files[".sops.yaml"], "  age: ''");
     _ = await Verify(files);
 
     //Cleanup
     Directory.Delete(outputPath, true);
   }
+
+  [GeneratedRegex(@"  age: \|-\n.+")]
+  private static partial Regex SOPSConfigAgePropertyRegex();
 }
