@@ -49,17 +49,97 @@ options:
   k8s/apps/podinfo/namespace.yaml: ,
   k8s/clusters/test-cluster/apps/kustomization.yaml: ,
   k8s/clusters/test-cluster/custom-resources/kustomization.yaml: ,
-  k8s/clusters/test-cluster/flux-system/apps.yaml: ,
-  k8s/clusters/test-cluster/flux-system/custom-resources.yaml: ,
-  k8s/clusters/test-cluster/flux-system/infrastructure.yaml: ,
-  k8s/clusters/test-cluster/flux-system/kustomization.yaml: ,
+  k8s/clusters/test-cluster/flux-system/apps.yaml:
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  labels:
+    kustomize.toolkit.fluxcd.io/sops: enabled
+    kustomize.toolkit.fluxcd.io/post-build-variables: enabled
+  name: apps
+  namespace: flux-system
+spec:
+  interval: 60m
+  retryInterval: 2m
+  timeout: 3m
+  dependsOn:
+  - name: custom-resources
+  sourceRef:
+    kind: OCIRepository
+    name: flux-system
+  path: clusters/test-cluster/apps
+  prune: true
+  wait: true
+,
+  k8s/clusters/test-cluster/flux-system/custom-resources.yaml:
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  labels:
+    kustomize.toolkit.fluxcd.io/sops: enabled
+    kustomize.toolkit.fluxcd.io/post-build-variables: enabled
+  name: custom-resources
+  namespace: flux-system
+spec:
+  interval: 60m
+  retryInterval: 2m
+  timeout: 3m
+  dependsOn:
+  - name: infrastructure
+  sourceRef:
+    kind: OCIRepository
+    name: flux-system
+  path: clusters/test-cluster/custom-resources
+  prune: true
+  wait: true
+,
+  k8s/clusters/test-cluster/flux-system/infrastructure.yaml:
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  labels:
+    kustomize.toolkit.fluxcd.io/sops: enabled
+    kustomize.toolkit.fluxcd.io/post-build-variables: enabled
+  name: infrastructure
+  namespace: flux-system
+spec:
+  interval: 60m
+  retryInterval: 2m
+  timeout: 3m
+  dependsOn:
+  - name: variables-cluster
+  - name: variables-distribution
+  - name: variables-global
+  sourceRef:
+    kind: OCIRepository
+    name: flux-system
+  path: clusters/test-cluster/infrastructure
+  prune: true
+  wait: true
+,
+  k8s/clusters/test-cluster/flux-system/kustomization.yaml:
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- apps.yaml
+- custom-resources.yaml
+- infrastructure.yaml
+- variables.yaml
+components:
+- ../../../components/flux-kustomization-post-build-variables-label
+- ../../../components/flux-kustomization-sops-label
+,
   k8s/clusters/test-cluster/flux-system/variables.yaml:
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   labels:
-    kustomize.toolkit.fluxcd.io: enabled
+    kustomize.toolkit.fluxcd.io/sops: enabled
   name: variables-cluster
   namespace: flux-system
 spec:
@@ -77,7 +157,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   labels:
-    kustomize.toolkit.fluxcd.io: enabled
+    kustomize.toolkit.fluxcd.io/sops: enabled
   name: variables-distribution
   namespace: flux-system
 spec:
@@ -87,7 +167,7 @@ spec:
   sourceRef:
     kind: OCIRepository
     name: flux-system
-  path: distributions/K3d/variables
+  path: distributions/k3d/variables
   prune: true
   wait: true
 ---
@@ -95,7 +175,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   labels:
-    kustomize.toolkit.fluxcd.io: enabled
+    kustomize.toolkit.fluxcd.io/sops: enabled
   name: variables-global
   namespace: flux-system
 spec:
@@ -109,9 +189,34 @@ spec:
   prune: true
   wait: true
 ,
-  k8s/clusters/test-cluster/infrastructure/kustomization.yaml: ,
-  k8s/clusters/test-cluster/variables/variables-sensitive.sops.yaml: ,
-  k8s/clusters/test-cluster/variables/variables.yaml: ,
+  k8s/clusters/test-cluster/infrastructure/kustomization.yaml:
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../../../distributions/k3d/infrastructure
+components:
+- ../../../components/helm-release-crds-label
+- ../../../components/helm-release-remediation-label
+,
+  k8s/clusters/test-cluster/variables/variables-sensitive.sops.yaml:
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: variables-sensitive-cluster
+  namespace: flux-system
+stringData: {}
+,
+  k8s/clusters/test-cluster/variables/variables.yaml:
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: variables-cluster
+  namespace: flux-system
+data: {}
+,
   k8s/components/flux-kustomization-post-build-variables-label/kustomization.yaml:
 ---
 apiVersion: kustomize.config.k8s.io/v1alpha1
@@ -210,20 +315,160 @@ patches:
   k8s/custom-resources/selfsigned-cluster-issuer/kustomization.yaml: ,
   k8s/distributions/K3d/apps/kustomization.yaml: ,
   k8s/distributions/K3d/custom-resources/kustomization.yaml: ,
-  k8s/distributions/K3d/infrastructure/kustomization.yaml: ,
-  k8s/distributions/K3d/variables/variables-sensitive.sops.yaml: ,
-  k8s/distributions/K3d/variables/variables.yaml: ,
-  k8s/infrastructure/cert-manager/helm-release.yaml: ,
-  k8s/infrastructure/cert-manager/helm-repository.yaml: ,
-  k8s/infrastructure/cert-manager/kustomization.yaml: ,
-  k8s/infrastructure/cert-manager/namespace.yaml: ,
-  k8s/infrastructure/kustomization.yaml: ,
-  k8s/infrastructure/traefik/helm-release.yaml: ,
-  k8s/infrastructure/traefik/helm-repository.yaml: ,
-  k8s/infrastructure/traefik/kustomization.yaml: ,
-  k8s/infrastructure/traefik/namespace.yaml: ,
-  k8s/variables/variables-sensitive.sops.yaml: ,
-  k8s/variables/variables.yaml: ,
+  k8s/distributions/K3d/infrastructure/kustomization.yaml:
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../../../infrastructure
+components:
+- ../../../components/helm-release-crds-label
+- ../../../components/helm-release-remediation-label
+,
+  k8s/distributions/K3d/variables/variables-sensitive.sops.yaml:
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: variables-sensitive-distribution
+  namespace: flux-system
+stringData: {}
+,
+  k8s/distributions/K3d/variables/variables.yaml:
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: variables-distribution
+  namespace: flux-system
+data: {}
+,
+  k8s/infrastructure/cert-manager/helm-release.yaml:
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cert-manager
+  namespace: cert-manager
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: cert-manager
+      version: v1.15.3
+      sourceRef:
+        kind: HelmRepository
+        name: cert-manager
+  values:
+    crds:
+      enabled: true
+,
+  k8s/infrastructure/cert-manager/helm-repository.yaml:
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: cert-manager
+  namespace: cert-manager
+spec:
+  url: https://charts.jetstack.io/
+,
+  k8s/infrastructure/cert-manager/kustomization.yaml:
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- namespace.yaml
+- helm-release.yaml
+- helm-repository.yaml
+,
+  k8s/infrastructure/cert-manager/namespace.yaml:
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cert-manager
+,
+  k8s/infrastructure/kustomization.yaml:
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- cert-manager
+- traefik
+components:
+- ../components/helm-release-crds-label
+- ../components/helm-release-remediation-label
+,
+  k8s/infrastructure/traefik/helm-release.yaml:
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: traefik
+  namespace: traefik
+spec:
+  interval: 10m
+  dependsOn:
+  - name: cert-manager
+    namespace: cert-manager
+  chart:
+    spec:
+      chart: traefik
+      version: 31.0.0
+      sourceRef:
+        kind: HelmRepository
+        name: traefik
+  values:
+    tlsStore:
+      default:
+        defaultCertificate:
+          secretName: cluster-issuer-certificate-tls
+,
+  k8s/infrastructure/traefik/helm-repository.yaml:
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: traefik
+  namespace: traefik
+spec:
+  url: https://traefik.github.io/charts
+,
+  k8s/infrastructure/traefik/kustomization.yaml:
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- namespace.yaml
+- helm-release.yaml
+- helm-repository.yaml
+,
+  k8s/infrastructure/traefik/namespace.yaml:
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: traefik
+,
+  k8s/variables/variables-sensitive.sops.yaml:
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: variables-sensitive-global
+  namespace: flux-system
+stringData: {}
+,
+  k8s/variables/variables.yaml:
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: variables-global
+  namespace: flux-system
+data: {}
+,
   ksail-config.yaml:
 ---
 apiVersion: ksail.io/v1alpha1

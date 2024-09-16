@@ -1,28 +1,39 @@
+using Devantler.KubernetesGenerator.Flux;
+using Devantler.KubernetesGenerator.Flux.Models;
+using Devantler.KubernetesGenerator.Flux.Models.Dependencies;
+using Devantler.KubernetesGenerator.Flux.Models.Sources;
 using Devantler.KubernetesGenerator.KSail.Models;
+using Devantler.KubernetesGenerator.Kustomize;
+using Devantler.KubernetesGenerator.Kustomize.Models;
+using Devantler.KubernetesGenerator.Native.Cluster;
+using k8s.Models;
 
 namespace KSail.Commands.Init.Generators;
 
 class InfrastructureGenerator
 {
-
-  internal static async Task GenerateAsync(string name, KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
+  readonly KustomizeKustomizationGenerator _kustomizeKustomizationGenerator = new();
+  readonly NamespaceGenerator _namespaceGenerator = new();
+  readonly FluxHelmReleaseGenerator _helmReleaseGenerator = new();
+  readonly FluxHelmRepositoryGenerator _helmRepositoryGenerator = new();
+  internal async Task GenerateAsync(string name, KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
   {
-    await GenerateClusterInfrastructure(name, outputPath, cancellationToken).ConfigureAwait(false);
+    await GenerateClusterInfrastructure(name, distribution, outputPath, cancellationToken).ConfigureAwait(false);
     await GenerateDistributionInfrastructure(distribution, outputPath, cancellationToken).ConfigureAwait(false);
     await GenerateGlobalInfrastructure(outputPath, cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateClusterInfrastructure(string name, string outputPath, CancellationToken cancellationToken)
+  async Task GenerateClusterInfrastructure(string name, KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
   {
     string clusterInfrastructurePath = Path.Combine(outputPath, "clusters", name, "infrastructure");
     if (!Directory.Exists(clusterInfrastructurePath))
     {
       _ = Directory.CreateDirectory(clusterInfrastructurePath);
     }
-    await GenerateClusterInfrastructureKustomization(clusterInfrastructurePath, cancellationToken).ConfigureAwait(false);
+    await GenerateClusterInfrastructureKustomization(distribution, clusterInfrastructurePath, cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateClusterInfrastructureKustomization(string clusterInfrastructurePath, CancellationToken cancellationToken)
+  async Task GenerateClusterInfrastructureKustomization(KSailKubernetesDistribution distribution, string clusterInfrastructurePath, CancellationToken cancellationToken)
   {
     string clusterInfrastructureKustomizationPath = Path.Combine(clusterInfrastructurePath, "kustomization.yaml");
     if (File.Exists(clusterInfrastructureKustomizationPath))
@@ -31,10 +42,20 @@ class InfrastructureGenerator
       return;
     }
     Console.WriteLine($"✚ Generating '{clusterInfrastructureKustomizationPath}'");
-    await File.WriteAllTextAsync(clusterInfrastructureKustomizationPath, string.Empty, cancellationToken).ConfigureAwait(false);
+    var kustomization = new KustomizeKustomization()
+    {
+      Resources = [
+        $"../../../distributions/{distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}/infrastructure"
+      ],
+      Components = [
+        "../../../components/helm-release-crds-label",
+        "../../../components/helm-release-remediation-label"
+      ]
+    };
+    await _kustomizeKustomizationGenerator.GenerateAsync(kustomization, clusterInfrastructureKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateDistributionInfrastructure(KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
+  async Task GenerateDistributionInfrastructure(KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
   {
     string distributionInfrastructurePath = Path.Combine(outputPath, "distributions", distribution.ToString(), "infrastructure");
     if (!Directory.Exists(distributionInfrastructurePath))
@@ -44,7 +65,7 @@ class InfrastructureGenerator
     await GenerateDistributionInfrastructureKustomization(distributionInfrastructurePath, cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateDistributionInfrastructureKustomization(string outputPath, CancellationToken cancellationToken)
+  async Task GenerateDistributionInfrastructureKustomization(string outputPath, CancellationToken cancellationToken)
   {
     string distributionInfrastructureKustomizationPath = Path.Combine(outputPath, "kustomization.yaml");
     if (File.Exists(distributionInfrastructureKustomizationPath))
@@ -53,10 +74,20 @@ class InfrastructureGenerator
       return;
     }
     Console.WriteLine($"✚ Generating '{distributionInfrastructureKustomizationPath}'");
-    await File.WriteAllTextAsync(distributionInfrastructureKustomizationPath, string.Empty, cancellationToken).ConfigureAwait(false);
+    var kustomization = new KustomizeKustomization()
+    {
+      Resources = [
+        "../../../infrastructure"
+      ],
+      Components = [
+        "../../../components/helm-release-crds-label",
+        "../../../components/helm-release-remediation-label"
+      ]
+    };
+    await _kustomizeKustomizationGenerator.GenerateAsync(kustomization, distributionInfrastructureKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateGlobalInfrastructure(string outputPath, CancellationToken cancellationToken)
+  async Task GenerateGlobalInfrastructure(string outputPath, CancellationToken cancellationToken)
   {
     string globalInfrastructurePath = Path.Combine(outputPath, "infrastructure");
     if (!Directory.Exists(globalInfrastructurePath))
@@ -68,7 +99,7 @@ class InfrastructureGenerator
     await GenerateTraefik(globalInfrastructurePath, cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateGlobalInfrastructureKustomization(string outputPath, CancellationToken cancellationToken)
+  async Task GenerateGlobalInfrastructureKustomization(string outputPath, CancellationToken cancellationToken)
   {
     string globalInfrastructureKustomizationPath = Path.Combine(outputPath, "kustomization.yaml");
     if (File.Exists(globalInfrastructureKustomizationPath))
@@ -77,10 +108,21 @@ class InfrastructureGenerator
       return;
     }
     Console.WriteLine($"✚ Generating '{globalInfrastructureKustomizationPath}'");
-    await File.WriteAllTextAsync(globalInfrastructureKustomizationPath, string.Empty, cancellationToken).ConfigureAwait(false);
+    var kustomization = new KustomizeKustomization()
+    {
+      Resources = [
+        "cert-manager",
+        "traefik"
+      ],
+      Components = [
+        "../components/helm-release-crds-label",
+        "../components/helm-release-remediation-label"
+      ]
+    };
+    await _kustomizeKustomizationGenerator.GenerateAsync(kustomization, globalInfrastructureKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateCertManager(string outputPath, CancellationToken cancellationToken)
+  async Task GenerateCertManager(string outputPath, CancellationToken cancellationToken)
   {
     string certManagerPath = Path.Combine(outputPath, "cert-manager");
     if (!Directory.Exists(certManagerPath))
@@ -95,7 +137,15 @@ class InfrastructureGenerator
       return;
     }
     Console.WriteLine($"✚ Generating '{certManagerKustomizationPath}'");
-    await File.WriteAllTextAsync(certManagerKustomizationPath, string.Empty, cancellationToken).ConfigureAwait(false);
+    var certManagerKustomization = new KustomizeKustomization()
+    {
+      Resources = [
+        "namespace.yaml",
+        "helm-release.yaml",
+        "helm-repository.yaml"
+      ]
+    };
+    await _kustomizeKustomizationGenerator.GenerateAsync(certManagerKustomization, certManagerKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
 
     string certManagerNamespacePath = Path.Combine(certManagerPath, "namespace.yaml");
     if (File.Exists(certManagerNamespacePath))
@@ -104,7 +154,16 @@ class InfrastructureGenerator
       return;
     }
     Console.WriteLine($"✚ Generating '{certManagerNamespacePath}'");
-    await File.WriteAllTextAsync(certManagerNamespacePath, string.Empty, cancellationToken).ConfigureAwait(false);
+    var certManagerNamespace = new V1Namespace
+    {
+      ApiVersion = "v1",
+      Kind = "Namespace",
+      Metadata = new V1ObjectMeta
+      {
+        Name = "cert-manager"
+      }
+    };
+    await _namespaceGenerator.GenerateAsync(certManagerNamespace, certManagerNamespacePath, cancellationToken: cancellationToken).ConfigureAwait(false);
 
     string certManagerHelmReleasePath = Path.Combine(certManagerPath, "helm-release.yaml");
     if (File.Exists(certManagerHelmReleasePath))
@@ -113,7 +172,39 @@ class InfrastructureGenerator
       return;
     }
     Console.WriteLine($"✚ Generating '{certManagerHelmReleasePath}'");
-    await File.WriteAllTextAsync(certManagerHelmReleasePath, string.Empty, cancellationToken).ConfigureAwait(false);
+    var certManagerHelmRelease = new FluxHelmRelease()
+    {
+      Metadata = new V1ObjectMeta
+      {
+        Name = "cert-manager",
+        NamespaceProperty = "cert-manager"
+      },
+      Spec = new FluxHelmReleaseSpec
+      {
+        Interval = "10m",
+        Chart = new FluxHelmReleaseSpecChart
+        {
+          Spec = new FluxHelmReleaseSpecChartSpec
+          {
+            Chart = "cert-manager",
+            Version = "v1.15.3",
+            SourceRef = new FluxSourceRef
+            {
+              Kind = FluxSource.HelmRepository,
+              Name = "cert-manager"
+            }
+          }
+        },
+        Values = new Dictionary<string, object>
+        {
+          ["crds"] = new Dictionary<string, object>
+          {
+            ["enabled"] = true
+          }
+        }
+      }
+    };
+    await _helmReleaseGenerator.GenerateAsync(certManagerHelmRelease, certManagerHelmReleasePath, cancellationToken: cancellationToken).ConfigureAwait(false);
 
     string certManagerHelmRepositoryPath = Path.Combine(certManagerPath, "helm-repository.yaml");
     if (File.Exists(certManagerHelmRepositoryPath))
@@ -122,10 +213,22 @@ class InfrastructureGenerator
       return;
     }
     Console.WriteLine($"✚ Generating '{certManagerHelmRepositoryPath}'");
-    await File.WriteAllTextAsync(certManagerHelmRepositoryPath, string.Empty, cancellationToken).ConfigureAwait(false);
+    var certManagerHelmRepository = new FluxHelmRepository()
+    {
+      Metadata = new V1ObjectMeta
+      {
+        Name = "cert-manager",
+        NamespaceProperty = "cert-manager"
+      },
+      Spec = new FluxHelmRepositorySpec
+      {
+        Url = new Uri("https://charts.jetstack.io")
+      }
+    };
+    await _helmRepositoryGenerator.GenerateAsync(certManagerHelmRepository, certManagerHelmRepositoryPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateTraefik(string outputPath, CancellationToken cancellationToken)
+  async Task GenerateTraefik(string outputPath, CancellationToken cancellationToken)
   {
     string traefikPath = Path.Combine(outputPath, "traefik");
     if (!Directory.Exists(traefikPath))
@@ -140,7 +243,15 @@ class InfrastructureGenerator
       return;
     }
     Console.WriteLine($"✚ Generating '{traefikKustomizationPath}'");
-    await File.WriteAllTextAsync(traefikKustomizationPath, string.Empty, cancellationToken).ConfigureAwait(false);
+    var traefikKustomization = new KustomizeKustomization()
+    {
+      Resources = [
+        "namespace.yaml",
+        "helm-release.yaml",
+        "helm-repository.yaml"
+      ]
+    };
+    await _kustomizeKustomizationGenerator.GenerateAsync(traefikKustomization, traefikKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
 
     string traefikNamespacePath = Path.Combine(traefikPath, "namespace.yaml");
     if (File.Exists(traefikNamespacePath))
@@ -149,7 +260,16 @@ class InfrastructureGenerator
       return;
     }
     Console.WriteLine($"✚ Generating '{traefikNamespacePath}'");
-    await File.WriteAllTextAsync(traefikNamespacePath, string.Empty, cancellationToken).ConfigureAwait(false);
+    var traefikNamespace = new V1Namespace
+    {
+      ApiVersion = "v1",
+      Kind = "Namespace",
+      Metadata = new V1ObjectMeta
+      {
+        Name = "traefik"
+      }
+    };
+    await _namespaceGenerator.GenerateAsync(traefikNamespace, traefikNamespacePath, cancellationToken: cancellationToken).ConfigureAwait(false);
 
     string traefikHelmReleasePath = Path.Combine(traefikPath, "helm-release.yaml");
     if (File.Exists(traefikHelmReleasePath))
@@ -158,7 +278,52 @@ class InfrastructureGenerator
       return;
     }
     Console.WriteLine($"✚ Generating '{traefikHelmReleasePath}'");
-    await File.WriteAllTextAsync(traefikHelmReleasePath, string.Empty, cancellationToken).ConfigureAwait(false);
+    var traefikHelmRelease = new FluxHelmRelease()
+    {
+      Metadata = new V1ObjectMeta
+      {
+        Name = "traefik",
+        NamespaceProperty = "traefik"
+      },
+      Spec = new FluxHelmReleaseSpec
+      {
+        Interval = "10m",
+        DependsOn = [
+          new FluxDependsOn
+          {
+            Name = "cert-manager",
+            Namespace = "cert-manager"
+          }
+        ],
+        Chart = new FluxHelmReleaseSpecChart
+        {
+          Spec = new FluxHelmReleaseSpecChartSpec
+          {
+            Chart = "traefik",
+            Version = "31.0.0",
+            SourceRef = new FluxSourceRef
+            {
+              Kind = FluxSource.HelmRepository,
+              Name = "traefik"
+            }
+          }
+        },
+        Values = new Dictionary<string, object>
+        {
+          ["tlsStore"] = new Dictionary<string, object>
+          {
+            ["default"] = new Dictionary<string, object>
+            {
+              ["defaultCertificate"] = new Dictionary<string, object>
+              {
+                ["secretName"] = "cluster-issuer-certificate-tls"
+              }
+            }
+          }
+        }
+      }
+    };
+    await _helmReleaseGenerator.GenerateAsync(traefikHelmRelease, traefikHelmReleasePath, cancellationToken: cancellationToken).ConfigureAwait(false);
 
     string traefikHelmRepositoryPath = Path.Combine(traefikPath, "helm-repository.yaml");
     if (File.Exists(traefikHelmRepositoryPath))
@@ -167,6 +332,18 @@ class InfrastructureGenerator
       return;
     }
     Console.WriteLine($"✚ Generating '{traefikHelmRepositoryPath}'");
-    await File.WriteAllTextAsync(traefikHelmRepositoryPath, string.Empty, cancellationToken).ConfigureAwait(false);
+    var traefikHelmRepository = new FluxHelmRepository()
+    {
+      Metadata = new V1ObjectMeta
+      {
+        Name = "traefik",
+        NamespaceProperty = "traefik"
+      },
+      Spec = new FluxHelmRepositorySpec
+      {
+        Url = new Uri("https://traefik.github.io/charts")
+      }
+    };
+    await _helmRepositoryGenerator.GenerateAsync(traefikHelmRepository, traefikHelmRepositoryPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 }

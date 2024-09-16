@@ -61,7 +61,7 @@ class SOPSConfigFileGenerator
       var lastCreationRule = sopsConfig.CreationRules.Last();
       string lastCreationRuleAge = lastCreationRule.Age;
       lastCreationRule.Age = $"{lastCreationRuleAge},{Environment.NewLine}{ageKey.PublicKey}";
-      await LocalAgeKeyManager.CreateSOPSConfigAsync(path, sopsConfig, cancellationToken: cancellationToken).ConfigureAwait(false);
+      await LocalAgeKeyManager.CreateSOPSConfigAsync(path, sopsConfig, true, cancellationToken).ConfigureAwait(false);
     }
   }
 }

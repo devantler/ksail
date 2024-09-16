@@ -6,11 +6,13 @@ namespace KSail.Commands.Init.Handlers;
 
 class KSailInitCommandHandler(string name, KSailKubernetesDistribution distribution, string outputPath, KSailInitTemplate template) : ICommandHandler
 {
-  readonly ComponentsGenerator _componentsGenerator = new();
-  readonly DistributionConfigFileGenerator _distributionConfigFileGenerator = new();
-  readonly FluxSystemGenerator _fluxSystemGenerator = new();
-  readonly KSailClusterConfigGenerator _ksailClusterConfigGenerator = new();
   readonly SOPSConfigFileGenerator _sopsConfigFileGenerator = new();
+  readonly KSailClusterConfigGenerator _ksailClusterConfigGenerator = new();
+  readonly DistributionConfigFileGenerator _distributionConfigFileGenerator = new();
+  readonly ComponentsGenerator _componentsGenerator = new();
+  readonly FluxSystemGenerator _fluxSystemGenerator = new();
+  readonly VariablesGenerator _variablesGenerator = new();
+  readonly InfrastructureGenerator _infrastructureGenerator = new();
 
   public async Task<int> HandleAsync(CancellationToken cancellationToken)
   {
@@ -25,12 +27,10 @@ class KSailInitCommandHandler(string name, KSailKubernetesDistribution distribut
     {
       case KSailInitTemplate.K3dFluxDefault:
         await _componentsGenerator.GenerateAsync(k8sPath).ConfigureAwait(false);
-        // TODO: Implement FluxSystemGenerator
         await _fluxSystemGenerator.GenerateAsync(name, distribution, k8sPath, cancellationToken).ConfigureAwait(false);
-        // TODO: Implement VariablesGenerator
-        await VariablesGenerator.GenerateAsync(name, distribution, k8sPath, cancellationToken).ConfigureAwait(false);
+        await _variablesGenerator.GenerateAsync(name, distribution, k8sPath, cancellationToken).ConfigureAwait(false);
         // TODO: Implement InfrastructureGenerator
-        await InfrastructureGenerator.GenerateAsync(name, distribution, k8sPath, cancellationToken).ConfigureAwait(false);
+        await _infrastructureGenerator.GenerateAsync(name, distribution, k8sPath, cancellationToken).ConfigureAwait(false);
         // TODO: Implement CustomResourcesGenerator
         await CustomResourcesGenerator.GenerateAsync(name, distribution, k8sPath, cancellationToken).ConfigureAwait(false);
         // TODO: Implement AppsGenerator
