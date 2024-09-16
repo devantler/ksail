@@ -5,7 +5,7 @@ namespace KSail.Commands.Gen.Commands.Native.Service;
 
 class KSailGenNativeServiceCommand : Command
 {
-  public KSailGenNativeServiceCommand(IConsole? console = default) : base("service", "Generate a native Kubernetes resource from the service category.")
+  public KSailGenNativeServiceCommand(IConsole? console = default) : base("services", "Generate a native Kubernetes resource from the service category.")
   {
     AddCommands();
     this.SetHandler(async (context) =>
@@ -15,7 +15,10 @@ class KSailGenNativeServiceCommand : Command
     );
   }
 
-  static void AddCommands()
+  void AddCommands()
   {
+    AddCommand(new KSailGenNativeServiceIngressClassCommand());
+    AddCommand(new KSailGenNativeServiceIngressCommand());
+    AddCommand(new KSailGenNativeServiceServiceCommand());
   }
 }

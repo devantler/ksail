@@ -2,9 +2,16 @@
   Generate a native Kubernetes resource from the workloads category.
 
 Usage:
-  gen native workloads [options]
+  gen native workloads [command] [options]
 
 Options:
   -?, -h, --help  Show help and usage information
 
+Commands:
+  cron-job      Generate a 'batch/v1/CronJob' resource.
+  daemon-set    Generate a 'apps/v1/DaemonSet' resource.
+  deployment    Generate a 'apps/v1/Deployment' resource.
+  job           Generate a 'batch/v1/Job' resource.
+  replica-set   Generate a 'apps/v1/ReplicaSet' resource.
+  stateful-set  Generate a 'apps/v1/StatefulSet' resource.
 

@@ -19,7 +19,7 @@ public class KSailGenCommandTests : IAsyncLifetime
   /// Tests that the 'ksail gen' command succeeds and returns the help text.
   /// </summary>
   [Theory]
-  [MemberData(nameof(TheoryData.HelpTheoryData), MemberType = typeof(TheoryData))]
+  [MemberData(nameof(KSailGenCommandTestsTheoryData.HelpTheoryData), MemberType = typeof(KSailGenCommandTestsTheoryData))]
   public async Task KSailGen_SucceedsAndPrintsHelp(string command)
   {
     //Arrange
@@ -39,7 +39,7 @@ public class KSailGenCommandTests : IAsyncLifetime
   /// </summary>
   /// <returns></returns>
   [Theory]
-  [MemberData(nameof(TheoryData.GenerateNativeResourceTheoryData), MemberType = typeof(TheoryData))]
+  [MemberData(nameof(KSailGenCommandTestsTheoryData.GenerateNativeResourceTheoryData), MemberType = typeof(KSailGenCommandTestsTheoryData))]
   public async Task KSailGen_SucceedsAndGeneratesAResource(string command, string fileName)
   {
     //Arrange

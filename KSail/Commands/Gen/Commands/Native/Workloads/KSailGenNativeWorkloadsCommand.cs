@@ -15,7 +15,13 @@ class KSailGenNativeWorkloadsCommand : Command
     );
   }
 
-  static void AddCommands()
+  void AddCommands()
   {
+    AddCommand(new KSailGenNativeWorkloadsCronJobCommand());
+    AddCommand(new KSailGenNativeWorkloadsDaemonSetCommand());
+    AddCommand(new KSailGenNativeWorkloadsDeploymentCommand());
+    AddCommand(new KSailGenNativeWorkloadsJobCommand());
+    AddCommand(new KSailGenNativeWorkloadsReplicaSetCommand());
+    AddCommand(new KSailGenNativeWorkloadsStatefulSetCommand());
   }
 }

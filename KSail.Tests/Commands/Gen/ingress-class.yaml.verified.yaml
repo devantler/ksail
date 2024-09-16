@@ -1,0 +1,10 @@
+﻿---
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: <name>
+spec:
+  controller: <controller>
+  parameters:
+    kind: <kind>
+    name: <name>

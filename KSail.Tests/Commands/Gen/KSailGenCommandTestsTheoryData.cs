@@ -1,6 +1,6 @@
 namespace KSail.Tests.Commands.Gen;
 
-static class TheoryData
+static class KSailGenCommandTestsTheoryData
 {
   public static TheoryData<string> HelpTheoryData =>
     new()
@@ -19,9 +19,9 @@ static class TheoryData
       { "native config-and-storage --help" },
       { "native metadata" },
       { "native metadata -h" },
-      { "native service" },
-      { "native service -h" },
-      { "native service --help" },
+      { "native services" },
+      { "native services -h" },
+      { "native services --help" },
       { "native workloads" },
       { "native workloads -h" },
       { "native workloads --help" }
@@ -58,6 +58,15 @@ static class TheoryData
       { "native metadata priority-class", "priority-class.yaml" },
       { "native metadata validating-admission-policy-binding", "validating-admission-policy-binding.yaml" },
       { "native metadata validating-admission-policy", "validating-admission-policy.yaml" },
-      { "native metadata validating-webhook-configuration", "validating-webhook-configuration.yaml" }
+      { "native metadata validating-webhook-configuration", "validating-webhook-configuration.yaml" },
+      { "native services ingress-class", "ingress-class.yaml" },
+      { "native services ingress", "ingress.yaml" },
+      { "native services service", "service.yaml" },
+      { "native workloads cron-job", "cron-job.yaml" },
+      { "native workloads daemon-set", "daemon-set.yaml" },
+      { "native workloads deployment", "deployment.yaml" },
+      { "native workloads job", "job.yaml" },
+      { "native workloads replica-set", "replica-set.yaml" },
+      { "native workloads stateful-set", "stateful-set.yaml" }
     };
 }
