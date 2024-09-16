@@ -1,0 +1,16 @@
+﻿Description:
+  Generate a native Kubernetes resource from one of the available categories.
+
+Usage:
+  gen native [command] [options]
+
+Options:
+  -?, -h, --help  Show help and usage information
+
+Commands:
+  cluster             Generate a native Kubernetes resource from the cluster category.
+  config-and-storage  Generate a native Kubernetes resource from the config-and-storage category.
+  metadata            Generate a native Kubernetes resource from the metadata category.
+  services            Generate a native Kubernetes resource from the service category.
+  workloads           Generate a native Kubernetes resource from the workloads category.
+

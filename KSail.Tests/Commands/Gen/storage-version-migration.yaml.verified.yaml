@@ -1,0 +1,10 @@
+﻿---
+apiVersion: storagemigration.k8s.io/v1alpha1
+kind: StorageVersionMigration
+metadata:
+  name: <name>
+spec:
+  resource:
+    group: <group>
+    resource: <resource>
+    version: <version>

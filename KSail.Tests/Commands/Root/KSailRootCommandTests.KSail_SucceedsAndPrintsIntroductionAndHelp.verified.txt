@@ -1,0 +1,22 @@
+﻿🛥️ 🐳    [bold underline]Welcome to [blue]KSail[/]![/]    🛥️ 🐳
+                                     [blue]. . .[/]
+                __/___                 [blue]:[/]
+          _____/______|             ___[blue]|[/]____     |"\/"|
+  _______/_____\_______\_____     ,'        `.    \  /
+  \               [italic]KSail[/]      |    |  ^        \___/  |
+[bold blue]~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^[/]
+
+Description:
+  KSail is a CLI tool for provisioning GitOps enabled clusters in Docker.
+
+Usage:
+  testhost [command] [options]
+
+Options:
+  --version       Show version information
+  -?, -h, --help  Show help and usage information
+
+Commands:
+  init <name>  Initialize a cluster
+  gen          Generate a resource.
+

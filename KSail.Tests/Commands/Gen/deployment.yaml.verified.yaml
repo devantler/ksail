@@ -1,0 +1,19 @@
+﻿---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: <name>
+spec:
+  selector:
+    matchLabels:
+      app: <name>
+  template:
+    metadata:
+      labels:
+        app: <name>
+    spec:
+      containers:
+      - command: []
+        image: <image>
+        imagePullPolicy: IfNotPresent
+        name: <name>

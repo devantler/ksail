@@ -1,0 +1,21 @@
+﻿---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: <name>
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: <name>
+  serviceName: <name>
+  template:
+    metadata:
+      labels:
+        app: <name>
+    spec:
+      containers:
+      - command: []
+        image: <image>
+        imagePullPolicy: IfNotPresent
+        name: <name>

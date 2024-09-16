@@ -1,0 +1,18 @@
+﻿Description:
+  Initialize a cluster
+
+Usage:
+  init <name> [options]
+
+Arguments:
+  <name>  The name of the cluster.
+
+Options:
+  -d, --distribution <K3d>         The distribution to use for the cluster. [default: K3d]
+  -t, --template <K3dFluxDefault>  The template to use for the initialized cluster. [default: K3dFluxDefault]
+  -o, --output <output>            Location to place the generated cluster output. [default: ./]
+  --version                        Show version information
+  -?, -h, --help                   Show help and usage information
+
+
+

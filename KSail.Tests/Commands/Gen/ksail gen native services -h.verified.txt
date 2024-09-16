@@ -1,0 +1,14 @@
+﻿Description:
+  Generate a native Kubernetes resource from the service category.
+
+Usage:
+  gen native services [command] [options]
+
+Options:
+  -?, -h, --help  Show help and usage information
+
+Commands:
+  ingress-class  Generate a 'networking.k8s.io/v1/IngressClass' resource.
+  ingress        Generate a 'networking.k8s.io/v1/Ingress' resource.
+  service        Generate a 'core/v1/Service' resource.
+

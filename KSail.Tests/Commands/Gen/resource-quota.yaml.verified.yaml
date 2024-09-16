@@ -1,0 +1,8 @@
+﻿---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: <name>
+spec:
+  hard: {}
+  scopeSelector: {}
