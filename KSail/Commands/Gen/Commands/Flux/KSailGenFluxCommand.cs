@@ -15,7 +15,10 @@ class KSailGenFluxCommand : Command
     );
   }
 
-  void AddCommands() => AddCommand(new KSailGenFluxKustomizationCommand());
+  void AddCommands()
+  {
+    AddCommand(new KSailGenFluxHelmReleaseCommand());
+    AddCommand(new KSailGenFluxHelmRepositoryCommand());
+    AddCommand(new KSailGenFluxKustomizationCommand());
+  }
 }
-
-

@@ -1,0 +1,8 @@
+﻿---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: <name>
+  namespace: <namespace>
+spec:
+  url: https://charts.example.com/charts

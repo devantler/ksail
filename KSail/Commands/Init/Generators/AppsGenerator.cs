@@ -1,27 +1,39 @@
+using System.Globalization;
+using Devantler.KubernetesGenerator.Flux;
+using Devantler.KubernetesGenerator.Flux.Models;
+using Devantler.KubernetesGenerator.Flux.Models.Sources;
 using Devantler.KubernetesGenerator.KSail.Models;
+using Devantler.KubernetesGenerator.Kustomize;
+using Devantler.KubernetesGenerator.Kustomize.Models;
+using Devantler.KubernetesGenerator.Native.Cluster;
+using k8s.Models;
 
 namespace KSail.Commands.Init.Generators;
 
 class AppsGenerator
 {
-  internal static async Task GenerateAsync(string name, KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
+  readonly KustomizeKustomizationGenerator _kustomizationGenerator = new();
+  readonly NamespaceGenerator _namespaceGenerator = new();
+  readonly FluxHelmReleaseGenerator _helmReleaseGenerator = new();
+  readonly FluxHelmRepositoryGenerator _helmRepositoryGenerator = new();
+  internal async Task GenerateAsync(string name, KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
   {
-    await GenerateClusterApps(name, outputPath, cancellationToken).ConfigureAwait(false);
+    await GenerateClusterApps(name, distribution, outputPath, cancellationToken).ConfigureAwait(false);
     await GenerateDistributionApps(distribution, outputPath, cancellationToken).ConfigureAwait(false);
     await GenerateGlobalApps(outputPath, cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateClusterApps(string name, string outputPath, CancellationToken cancellationToken)
+  async Task GenerateClusterApps(string name, KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
   {
     string clusterAppsPath = Path.Combine(outputPath, "clusters", name, "apps");
     if (!Directory.Exists(clusterAppsPath))
     {
       _ = Directory.CreateDirectory(clusterAppsPath);
     }
-    await GenerateClusterAppsKustomization(clusterAppsPath, cancellationToken).ConfigureAwait(false);
+    await GenerateClusterAppsKustomization(distribution, clusterAppsPath, cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateClusterAppsKustomization(string outputPath, CancellationToken cancellationToken)
+  async Task GenerateClusterAppsKustomization(KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
   {
     string clusterAppsKustomizationPath = Path.Combine(outputPath, "kustomization.yaml");
     if (File.Exists(clusterAppsKustomizationPath))
@@ -30,10 +42,21 @@ class AppsGenerator
       return;
     }
     Console.WriteLine($"✚ Generating '{clusterAppsKustomizationPath}'");
-    await File.WriteAllTextAsync(clusterAppsKustomizationPath, string.Empty, cancellationToken).ConfigureAwait(false);
+    var kustomization = new KustomizeKustomization
+    {
+      Resources =
+      [
+        $"../../../distributions/{distribution.ToString().ToLower(CultureInfo.CurrentCulture)}/apps"
+      ],
+      Components = [
+        "../../../components/helm-release-crds-label",
+        "../../../components/helm-release-remediation-label"
+      ]
+    };
+    await _kustomizationGenerator.GenerateAsync(kustomization, clusterAppsKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateDistributionApps(KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
+  async Task GenerateDistributionApps(KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
   {
     string distributionAppsPath = Path.Combine(outputPath, "distributions", distribution.ToString(), "apps");
     if (!Directory.Exists(distributionAppsPath))
@@ -43,7 +66,7 @@ class AppsGenerator
     await GenerateDistributionAppsKustomization(distributionAppsPath, cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateDistributionAppsKustomization(string outputPath, CancellationToken cancellationToken)
+  async Task GenerateDistributionAppsKustomization(string outputPath, CancellationToken cancellationToken)
   {
     string distributionAppsKustomizationPath = Path.Combine(outputPath, "kustomization.yaml");
     if (File.Exists(distributionAppsKustomizationPath))
@@ -52,10 +75,21 @@ class AppsGenerator
       return;
     }
     Console.WriteLine($"✚ Generating '{distributionAppsKustomizationPath}'");
-    await File.WriteAllTextAsync(distributionAppsKustomizationPath, string.Empty, cancellationToken).ConfigureAwait(false);
+    var kustomization = new KustomizeKustomization
+    {
+      Resources =
+      [
+        "../../../apps"
+      ],
+      Components = [
+        "../../../components/helm-release-crds-label",
+        "../../../components/helm-release-remediation-label"
+      ]
+    };
+    await _kustomizationGenerator.GenerateAsync(kustomization, distributionAppsKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateGlobalApps(string outputPath, CancellationToken cancellationToken)
+  async Task GenerateGlobalApps(string outputPath, CancellationToken cancellationToken)
   {
     string globalAppsPath = Path.Combine(outputPath, "apps");
     if (!Directory.Exists(globalAppsPath))
@@ -66,7 +100,7 @@ class AppsGenerator
     await GeneratePodinfo(globalAppsPath, cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateGlobalAppsKustomization(string outputPath, CancellationToken cancellationToken)
+  async Task GenerateGlobalAppsKustomization(string outputPath, CancellationToken cancellationToken)
   {
     string globalAppsKustomizationPath = Path.Combine(outputPath, "kustomization.yaml");
     if (File.Exists(globalAppsKustomizationPath))
@@ -75,10 +109,21 @@ class AppsGenerator
       return;
     }
     Console.WriteLine($"✚ Generating '{globalAppsKustomizationPath}'");
-    await File.WriteAllTextAsync(globalAppsKustomizationPath, string.Empty, cancellationToken).ConfigureAwait(false);
+    var kustomization = new KustomizeKustomization
+    {
+      Resources =
+      [
+        "podinfo"
+      ],
+      Components = [
+        "../components/helm-release-crds-label",
+        "../components/helm-release-remediation-label"
+      ]
+    };
+    await _kustomizationGenerator.GenerateAsync(kustomization, globalAppsKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GeneratePodinfo(string outputPath, CancellationToken cancellationToken)
+  async Task GeneratePodinfo(string outputPath, CancellationToken cancellationToken)
   {
     string podinfoPath = Path.Combine(outputPath, "podinfo");
     if (!Directory.Exists(podinfoPath))
@@ -86,6 +131,14 @@ class AppsGenerator
       _ = Directory.CreateDirectory(podinfoPath);
     }
 
+    await GeneratePodInfoKustomization(podinfoPath, cancellationToken).ConfigureAwait(false);
+    await GeneratePodInfoNamespace(podinfoPath, cancellationToken).ConfigureAwait(false);
+    await GeneratePodInfoHelmRelease(podinfoPath, cancellationToken).ConfigureAwait(false);
+    await GeneratePodInfoHelmRepository(podinfoPath, cancellationToken).ConfigureAwait(false);
+  }
+
+  async Task GeneratePodInfoKustomization(string podinfoPath, CancellationToken cancellationToken)
+  {
     string podinfoKustomizationPath = Path.Combine(podinfoPath, "kustomization.yaml");
     if (File.Exists(podinfoKustomizationPath))
     {
@@ -93,8 +146,20 @@ class AppsGenerator
       return;
     }
     Console.WriteLine($"✚ Generating '{podinfoKustomizationPath}'");
-    await File.WriteAllTextAsync(podinfoKustomizationPath, string.Empty, cancellationToken).ConfigureAwait(false);
+    var kustomization = new KustomizeKustomization
+    {
+      Resources =
+      [
+        "namespace.yaml",
+        "helm-release.yaml",
+        "helm-repository.yaml"
+      ]
+    };
+    await _kustomizationGenerator.GenerateAsync(kustomization, podinfoKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+  }
 
+  async Task GeneratePodInfoNamespace(string podinfoPath, CancellationToken cancellationToken)
+  {
     string podinfoNamespacePath = Path.Combine(podinfoPath, "namespace.yaml");
     if (File.Exists(podinfoNamespacePath))
     {
@@ -102,8 +167,20 @@ class AppsGenerator
       return;
     }
     Console.WriteLine($"✚ Generating '{podinfoNamespacePath}'");
-    await File.WriteAllTextAsync(podinfoNamespacePath, string.Empty, cancellationToken).ConfigureAwait(false);
+    var @namespace = new V1Namespace
+    {
+      ApiVersion = "v1",
+      Kind = "Namespace",
+      Metadata = new V1ObjectMeta
+      {
+        Name = "podinfo"
+      }
+    };
+    await _namespaceGenerator.GenerateAsync(@namespace, podinfoNamespacePath, cancellationToken: cancellationToken).ConfigureAwait(false);
+  }
 
+  async Task GeneratePodInfoHelmRelease(string podinfoPath, CancellationToken cancellationToken)
+  {
     string podinfoHelmReleasePath = Path.Combine(podinfoPath, "helm-release.yaml");
     if (File.Exists(podinfoHelmReleasePath))
     {
@@ -111,8 +188,35 @@ class AppsGenerator
       return;
     }
     Console.WriteLine($"✚ Generating '{podinfoHelmReleasePath}'");
-    await File.WriteAllTextAsync(podinfoHelmReleasePath, string.Empty, cancellationToken).ConfigureAwait(false);
+    var helmRelease = new FluxHelmRelease
+    {
+      Metadata = new V1ObjectMeta
+      {
+        Name = "podinfo",
+        NamespaceProperty = "podinfo"
+      },
+      Spec = new FluxHelmReleaseSpec
+      {
+        Interval = "10m",
+        Chart = new FluxHelmReleaseSpecChart
+        {
+          Spec = new FluxHelmReleaseSpecChartSpec
+          {
+            Chart = "podinfo",
+            SourceRef = new FluxSourceRef
+            {
+              Kind = FluxSource.HelmRepository,
+              Name = "podinfo"
+            }
+          }
+        }
+      }
+    };
+    await _helmReleaseGenerator.GenerateAsync(helmRelease, podinfoHelmReleasePath, cancellationToken: cancellationToken).ConfigureAwait(false);
+  }
 
+  async Task GeneratePodInfoHelmRepository(string podinfoPath, CancellationToken cancellationToken)
+  {
     string podinfoHelmRepositoryPath = Path.Combine(podinfoPath, "helm-repository.yaml");
     if (File.Exists(podinfoHelmRepositoryPath))
     {
@@ -120,6 +224,21 @@ class AppsGenerator
       return;
     }
     Console.WriteLine($"✚ Generating '{podinfoHelmRepositoryPath}'");
-    await File.WriteAllTextAsync(podinfoHelmRepositoryPath, string.Empty, cancellationToken).ConfigureAwait(false);
+    var helmRepository = new FluxHelmRepository
+    {
+      Metadata = new V1ObjectMeta
+      {
+        Name = "podinfo",
+        NamespaceProperty = "podinfo"
+      },
+      Spec = new FluxHelmRepositorySpec
+      {
+        Interval = "10m",
+        Url = new Uri("oci://ghcr.io/stefanprodan/charts/podinfo"),
+        Type = FluxHelmRepositorySpecType.OCI
+      }
+    };
+    await _helmRepositoryGenerator.GenerateAsync(helmRepository, podinfoHelmRepositoryPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
+
 }

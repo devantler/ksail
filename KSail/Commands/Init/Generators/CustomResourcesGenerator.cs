@@ -1,28 +1,38 @@
+using System.Globalization;
+using Devantler.KubernetesGenerator.CertManager;
+using Devantler.KubernetesGenerator.CertManager.Models;
+using Devantler.KubernetesGenerator.CertManager.Models.IssuerRef;
 using Devantler.KubernetesGenerator.KSail.Models;
+using Devantler.KubernetesGenerator.Kustomize;
+using Devantler.KubernetesGenerator.Kustomize.Models;
+using k8s.Models;
 
 namespace KSail.Commands.Init.Generators;
 
 class CustomResourcesGenerator
 {
+  readonly KustomizeKustomizationGenerator _kustomizationGenerator = new();
+  readonly CertManagerCertificateGenerator _certificateGenerator = new();
+  readonly CertManagerClusterIssuerGenerator _clusterIssuerGenerator = new();
 
-  internal static async Task GenerateAsync(string name, KSailKubernetesDistribution distribution, string k8sPath, CancellationToken cancellationToken)
+  internal async Task GenerateAsync(string name, KSailKubernetesDistribution distribution, string k8sPath, CancellationToken cancellationToken)
   {
-    await GenerateClusterCustomResources(name, k8sPath, cancellationToken).ConfigureAwait(false);
+    await GenerateClusterCustomResources(name, distribution, k8sPath, cancellationToken).ConfigureAwait(false);
     await GenerateDistributionCustomResources(distribution, k8sPath, cancellationToken).ConfigureAwait(false);
     await GenerateGlobalCustomResources(k8sPath, cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateClusterCustomResources(string name, string outputPath, CancellationToken cancellationToken)
+  async Task GenerateClusterCustomResources(string name, KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
   {
     string clusterCustomResourcesPath = Path.Combine(outputPath, "clusters", name, "custom-resources");
     if (!Directory.Exists(clusterCustomResourcesPath))
     {
       _ = Directory.CreateDirectory(clusterCustomResourcesPath);
     }
-    await GenerateClusterCustomResourcesKustomization(clusterCustomResourcesPath, cancellationToken).ConfigureAwait(false);
+    await GenerateClusterCustomResourcesKustomization(distribution, clusterCustomResourcesPath, cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateClusterCustomResourcesKustomization(string clusterCustomResourcesPath, CancellationToken cancellationToken)
+  async Task GenerateClusterCustomResourcesKustomization(KSailKubernetesDistribution distribution, string clusterCustomResourcesPath, CancellationToken cancellationToken)
   {
     string clusterCustomResourcesKustomizationPath = Path.Combine(clusterCustomResourcesPath, "kustomization.yaml");
     if (File.Exists(clusterCustomResourcesKustomizationPath))
@@ -31,10 +41,17 @@ class CustomResourcesGenerator
       return;
     }
     Console.WriteLine($"✚ Generating '{clusterCustomResourcesKustomizationPath}'");
-    await File.WriteAllTextAsync(clusterCustomResourcesKustomizationPath, string.Empty, cancellationToken).ConfigureAwait(false);
+    var kustomization = new KustomizeKustomization
+    {
+      Resources =
+      [
+        $"../../../distributions/{distribution.ToString().ToLower(CultureInfo.CurrentCulture)}/custom-resources"
+      ]
+    };
+    await _kustomizationGenerator.GenerateAsync(kustomization, clusterCustomResourcesKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateDistributionCustomResources(KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
+  async Task GenerateDistributionCustomResources(KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
   {
     string distributionCustomResourcesPath = Path.Combine(outputPath, "distributions", distribution.ToString(), "custom-resources");
     if (!Directory.Exists(distributionCustomResourcesPath))
@@ -44,7 +61,7 @@ class CustomResourcesGenerator
     await GenerateDistributionCustomResourcesKustomization(distributionCustomResourcesPath, cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateDistributionCustomResourcesKustomization(string outputPath, CancellationToken cancellationToken)
+  async Task GenerateDistributionCustomResourcesKustomization(string outputPath, CancellationToken cancellationToken)
   {
     string distributionCustomResourcesKustomizationPath = Path.Combine(outputPath, "kustomization.yaml");
     if (File.Exists(distributionCustomResourcesKustomizationPath))
@@ -53,10 +70,17 @@ class CustomResourcesGenerator
       return;
     }
     Console.WriteLine($"✚ Generating '{distributionCustomResourcesKustomizationPath}'");
-    await File.WriteAllTextAsync(distributionCustomResourcesKustomizationPath, string.Empty, cancellationToken).ConfigureAwait(false);
+    var kustomization = new KustomizeKustomization
+    {
+      Resources =
+      [
+        "../../../custom-resources"
+      ]
+    };
+    await _kustomizationGenerator.GenerateAsync(kustomization, distributionCustomResourcesKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateGlobalCustomResources(string outputPath, CancellationToken cancellationToken)
+  async Task GenerateGlobalCustomResources(string outputPath, CancellationToken cancellationToken)
   {
     string globalCustomResourcesPath = Path.Combine(outputPath, "custom-resources");
     if (!Directory.Exists(globalCustomResourcesPath))
@@ -67,7 +91,7 @@ class CustomResourcesGenerator
     await GenerateSelfSignedClusterIssuer(globalCustomResourcesPath, cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateGlobalCustomResourcesKustomization(string outputPath, CancellationToken cancellationToken)
+  async Task GenerateGlobalCustomResourcesKustomization(string outputPath, CancellationToken cancellationToken)
   {
     string globalCustomResourcesKustomizationPath = Path.Combine(outputPath, "kustomization.yaml");
     if (File.Exists(globalCustomResourcesKustomizationPath))
@@ -76,10 +100,17 @@ class CustomResourcesGenerator
       return;
     }
     Console.WriteLine($"✚ Generating '{globalCustomResourcesKustomizationPath}'");
-    await File.WriteAllTextAsync(globalCustomResourcesKustomizationPath, string.Empty, cancellationToken).ConfigureAwait(false);
+    var kustomization = new KustomizeKustomization
+    {
+      Resources =
+      [
+        "selfsigned-cluster-issuer"
+      ]
+    };
+    await _kustomizationGenerator.GenerateAsync(kustomization, globalCustomResourcesKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  static async Task GenerateSelfSignedClusterIssuer(string outputPath, CancellationToken cancellationToken)
+  async Task GenerateSelfSignedClusterIssuer(string outputPath, CancellationToken cancellationToken)
   {
     string selfSignedClusterIssuerPath = Path.Combine(outputPath, "selfsigned-cluster-issuer");
     if (!Directory.Exists(selfSignedClusterIssuerPath))
@@ -94,7 +125,15 @@ class CustomResourcesGenerator
       return;
     }
     Console.WriteLine($"✚ Generating '{selfSignedClusterIssuerKustomizationPath}'");
-    await File.WriteAllTextAsync(selfSignedClusterIssuerKustomizationPath, string.Empty, cancellationToken).ConfigureAwait(false);
+    var selfSignedClusterIssuerKustomization = new KustomizeKustomization
+    {
+      Resources =
+      [
+        "certificate.yaml",
+        "cluster-issuer.yaml"
+      ]
+    };
+    await _kustomizationGenerator.GenerateAsync(selfSignedClusterIssuerKustomization, selfSignedClusterIssuerKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
 
     string selfSignedClusterIssuerCertificatePath = Path.Combine(selfSignedClusterIssuerPath, "certificate.yaml");
     if (File.Exists(selfSignedClusterIssuerCertificatePath))
@@ -103,7 +142,29 @@ class CustomResourcesGenerator
       return;
     }
     Console.WriteLine($"✚ Generating '{selfSignedClusterIssuerCertificatePath}'");
-    await File.WriteAllTextAsync(selfSignedClusterIssuerCertificatePath, string.Empty, cancellationToken).ConfigureAwait(false);
+    var certificate = new CertManagerCertificate
+    {
+      Metadata = new V1ObjectMeta
+      {
+        Name = "selfsigned-cluster-issuer",
+        NamespaceProperty = "cert-manager"
+      },
+      Spec = new CertManagerCertificateSpec
+      {
+        SecretName = "cluster-issuer-certificate-tls",
+        DnsNames =
+        [
+          "${cluster_domain}",
+          "*.${cluster_domain}"
+        ],
+        IssuerRef = new CertManagerIssuerRef
+        {
+          Name = "selfsigned-cluster-issuer",
+          Kind = "ClusterIssuer"
+        }
+      }
+    };
+    await _certificateGenerator.GenerateAsync(certificate, selfSignedClusterIssuerCertificatePath, cancellationToken: cancellationToken).ConfigureAwait(false);
 
     string selfSignedClusterIssuerClusterIssuerPath = Path.Combine(selfSignedClusterIssuerPath, "cluster-issuer.yaml");
     if (File.Exists(selfSignedClusterIssuerClusterIssuerPath))
@@ -112,6 +173,18 @@ class CustomResourcesGenerator
       return;
     }
     Console.WriteLine($"✚ Generating '{selfSignedClusterIssuerClusterIssuerPath}'");
-    await File.WriteAllTextAsync(selfSignedClusterIssuerClusterIssuerPath, string.Empty, cancellationToken).ConfigureAwait(false);
+    var clusterIssuer = new CertManagerClusterIssuer
+    {
+      Metadata = new V1ObjectMeta
+      {
+        Name = "selfsigned-cluster-issuer",
+        NamespaceProperty = "cert-manager"
+      },
+      Spec = new CertManagerClusterIssuerSpec
+      {
+        SelfSigned = new object()
+      }
+    };
+    await _clusterIssuerGenerator.GenerateAsync(clusterIssuer, selfSignedClusterIssuerClusterIssuerPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 }

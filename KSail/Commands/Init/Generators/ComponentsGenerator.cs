@@ -44,10 +44,7 @@ class ComponentsGenerator
           Target = new KustomizeTarget
           {
             Kind = "Kustomization",
-            LabelSelector = new Dictionary<string, string>
-            {
-              ["app.kubernetes.io/post-build-variables"] = "enabled"
-            }
+            LabelSelector = "kustomize.toolkit.fluxcd.io/post-build-variables=enabled"
           },
           Patch = """
           apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -99,10 +96,7 @@ class ComponentsGenerator
           Target = new KustomizeTarget
           {
             Kind = "Kustomization",
-            LabelSelector = new Dictionary<string, string>
-            {
-              ["kustomize.toolkit.fluxcd.io"] = "enabled"
-            }
+            LabelSelector = "kustomize.toolkit.fluxcd.io=enabled"
           },
           Patch = """
           apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -113,7 +107,7 @@ class ComponentsGenerator
             decryption:
             provider: sops
             secretRef:
-              name: sops - age
+              name: sops-age
           """
         }
       ]
@@ -144,10 +138,7 @@ class ComponentsGenerator
           Target = new KustomizeTarget
           {
             Kind = "HelmRelease",
-            LabelSelector = new Dictionary<string, string>
-            {
-              ["app.kubernetes.io/crds"] = "enabled"
-            }
+            LabelSelector = "helm.toolkit.fluxcd.io/crds=enabled"
           },
           Patch = """
           apiVersion: helm.toolkit.fluxcd.io/v2
@@ -189,10 +180,7 @@ class ComponentsGenerator
           Target = new KustomizeTarget
           {
             Kind = "HelmRelease",
-            LabelSelector = new Dictionary<string, string>
-            {
-              ["app.kubernetes.io/remediation"] = "enabled"
-            }
+            LabelSelector = "helm.toolkit.fluxcd.io/remediation=enabled"
           },
           Patch = """
           apiVersion: helm.toolkit.fluxcd.io/v2

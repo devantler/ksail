@@ -1,5 +1,6 @@
 
 using System.CommandLine;
+using KSail.Commands.Gen.Commands.CertManager;
 using KSail.Commands.Gen.Commands.Config;
 using KSail.Commands.Gen.Commands.Flux;
 using KSail.Commands.Gen.Commands.Kustomize;
@@ -21,6 +22,7 @@ sealed class KSailGenCommand : Command
 
   void AddCommands(IConsole? console)
   {
+    AddCommand(new KSailGenCertManagerCommand(console));
     AddCommand(new KSailGenConfigCommand(console));
     AddCommand(new KSailGenFluxCommand(console));
     AddCommand(new KSailGenKustomizeCommand(console));

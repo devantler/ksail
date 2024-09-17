@@ -15,7 +15,9 @@ class KSailGenKustomizeCommand : Command
     );
   }
 
-  void AddCommands() => AddCommand(new KSailGenKustomizeComponentCommand());
+  void AddCommands()
+  {
+    AddCommand(new KSailGenKustomizeComponentCommand());
+    AddCommand(new KSailGenKustomizeKustomizationCommand());
+  }
 }
-
-

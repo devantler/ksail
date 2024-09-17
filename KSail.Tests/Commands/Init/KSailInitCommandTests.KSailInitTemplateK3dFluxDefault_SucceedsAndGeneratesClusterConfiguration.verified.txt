@@ -42,13 +42,77 @@ options:
       nodeFilters:
       - server:*
 ,
-  k8s/apps/kustomization.yaml: ,
-  k8s/apps/podinfo/helm-release.yaml: ,
-  k8s/apps/podinfo/helm-repository.yaml: ,
-  k8s/apps/podinfo/kustomization.yaml: ,
-  k8s/apps/podinfo/namespace.yaml: ,
-  k8s/clusters/test-cluster/apps/kustomization.yaml: ,
-  k8s/clusters/test-cluster/custom-resources/kustomization.yaml: ,
+  k8s/apps/kustomization.yaml:
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- podinfo
+components:
+- ../components/helm-release-crds-label
+- ../components/helm-release-remediation-label
+,
+  k8s/apps/podinfo/helm-release.yaml:
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: podinfo
+  namespace: podinfo
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: podinfo
+      sourceRef:
+        kind: HelmRepository
+        name: podinfo
+,
+  k8s/apps/podinfo/helm-repository.yaml:
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: podinfo
+  namespace: podinfo
+spec:
+  interval: 10m
+  url: oci://ghcr.io/stefanprodan/charts/podinfo
+  type: oci
+,
+  k8s/apps/podinfo/kustomization.yaml:
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- namespace.yaml
+- helm-release.yaml
+- helm-repository.yaml
+,
+  k8s/apps/podinfo/namespace.yaml:
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: podinfo
+,
+  k8s/clusters/test-cluster/apps/kustomization.yaml:
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../../../distributions/k3d/apps
+components:
+- ../../../components/helm-release-crds-label
+- ../../../components/helm-release-remediation-label
+,
+  k8s/clusters/test-cluster/custom-resources/kustomization.yaml:
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../../../distributions/k3d/custom-resources
+,
   k8s/clusters/test-cluster/flux-system/apps.yaml:
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -244,8 +308,7 @@ patches:
           name: variables-sensitive-global
   target:
     kind: Kustomization
-    labelSelector:
-      app.kubernetes.io/post-build-variables: enabled
+    labelSelector: kustomize.toolkit.fluxcd.io/post-build-variables=enabled
 ,
   k8s/components/flux-kustomization-sops-label/kustomization.yaml:
 ---
@@ -261,11 +324,10 @@ patches:
       decryption:
       provider: sops
       secretRef:
-        name: sops - age
+        name: sops-age
   target:
     kind: Kustomization
-    labelSelector:
-      kustomize.toolkit.fluxcd.io: enabled
+    labelSelector: kustomize.toolkit.fluxcd.io=enabled
 ,
   k8s/components/helm-release-crds-label/kustomization.yaml:
 ---
@@ -284,8 +346,7 @@ patches:
         crds: CreateReplace
   target:
     kind: HelmRelease
-    labelSelector:
-      app.kubernetes.io/crds: enabled
+    labelSelector: helm.toolkit.fluxcd.io/crds=enabled
 ,
   k8s/components/helm-release-remediation-label/kustomization.yaml:
 ---
@@ -306,15 +367,66 @@ patches:
           retries: 10
   target:
     kind: HelmRelease
-    labelSelector:
-      app.kubernetes.io/remediation: enabled
+    labelSelector: helm.toolkit.fluxcd.io/remediation=enabled
 ,
-  k8s/custom-resources/kustomization.yaml: ,
-  k8s/custom-resources/selfsigned-cluster-issuer/certificate.yaml: ,
-  k8s/custom-resources/selfsigned-cluster-issuer/cluster-issuer.yaml: ,
-  k8s/custom-resources/selfsigned-cluster-issuer/kustomization.yaml: ,
-  k8s/distributions/K3d/apps/kustomization.yaml: ,
-  k8s/distributions/K3d/custom-resources/kustomization.yaml: ,
+  k8s/custom-resources/kustomization.yaml:
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- selfsigned-cluster-issuer
+,
+  k8s/custom-resources/selfsigned-cluster-issuer/certificate.yaml:
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: selfsigned-cluster-issuer
+  namespace: cert-manager
+spec:
+  secretName: cluster-issuer-certificate-tls
+  dnsNames:
+  - ${cluster_domain}
+  - '*.${cluster_domain}'
+  issuerRef:
+    name: selfsigned-cluster-issuer
+    kind: ClusterIssuer
+,
+  k8s/custom-resources/selfsigned-cluster-issuer/cluster-issuer.yaml:
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfsigned-cluster-issuer
+  namespace: cert-manager
+spec:
+  selfSigned: {}
+,
+  k8s/custom-resources/selfsigned-cluster-issuer/kustomization.yaml:
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- certificate.yaml
+- cluster-issuer.yaml
+,
+  k8s/distributions/K3d/apps/kustomization.yaml:
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../../../apps
+components:
+- ../../../components/helm-release-crds-label
+- ../../../components/helm-release-remediation-label
+,
+  k8s/distributions/K3d/custom-resources/kustomization.yaml:
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../../../custom-resources
+,
   k8s/distributions/K3d/infrastructure/kustomization.yaml:
 ---
 apiVersion: kustomize.config.k8s.io/v1beta1

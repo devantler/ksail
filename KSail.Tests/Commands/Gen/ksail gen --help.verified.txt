@@ -9,8 +9,9 @@ Options:
   -?, -h, --help  Show help and usage information
 
 Commands:
-  config     Generate a configuration file.
-  flux       Generate a Flux resource.
-  kustomize  Generate a Kustomize resource.
-  native     Generate a native Kubernetes resource from one of the available categories.
+  cert-manager  Generate a CertManager resource.
+  config        Generate a configuration file.
+  flux          Generate a Flux resource.
+  kustomize     Generate a Kustomize resource.
+  native        Generate a native Kubernetes resource from one of the available categories.
 

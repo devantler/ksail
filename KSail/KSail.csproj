@@ -6,9 +6,9 @@
     <Nullable>enable</Nullable>
     <AnalysisLevel>preview-all</AnalysisLevel>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
     <UseCurrentRuntimeIdentifier>true</UseCurrentRuntimeIdentifier>
 
     <OutputType>Exe</OutputType>
@@ -21,11 +21,12 @@
 
   <ItemGroup>
     <PackageReference Include="Devantler.KeyManager.Local.Age" Version="1.1.11" />
-    <PackageReference Include="Devantler.KubernetesGenerator.Flux" Version="0.0.18" />
-    <PackageReference Include="Devantler.KubernetesGenerator.K3d" Version="0.0.18" />
-    <PackageReference Include="Devantler.KubernetesGenerator.KSail" Version="0.0.18" />
-    <PackageReference Include="Devantler.KubernetesGenerator.Kustomize" Version="0.0.18" />
-    <PackageReference Include="Devantler.KubernetesGenerator.Native" Version="0.0.18" />
+    <PackageReference Include="Devantler.KubernetesGenerator.CertManager" Version="0.0.22" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Flux" Version="0.0.22" />
+    <PackageReference Include="Devantler.KubernetesGenerator.K3d" Version="0.0.22" />
+    <PackageReference Include="Devantler.KubernetesGenerator.KSail" Version="0.0.22" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Kustomize" Version="0.0.22" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Native" Version="0.0.22" />
     <PackageReference Include="Spectre.Console" Version="0.49.1" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
   </ItemGroup>

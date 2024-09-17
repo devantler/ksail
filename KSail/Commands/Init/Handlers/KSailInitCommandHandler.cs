@@ -13,6 +13,8 @@ class KSailInitCommandHandler(string name, KSailKubernetesDistribution distribut
   readonly FluxSystemGenerator _fluxSystemGenerator = new();
   readonly VariablesGenerator _variablesGenerator = new();
   readonly InfrastructureGenerator _infrastructureGenerator = new();
+  readonly CustomResourcesGenerator _customResourcesGenerator = new();
+  readonly AppsGenerator _appsGenerator = new();
 
   public async Task<int> HandleAsync(CancellationToken cancellationToken)
   {
@@ -29,12 +31,9 @@ class KSailInitCommandHandler(string name, KSailKubernetesDistribution distribut
         await _componentsGenerator.GenerateAsync(k8sPath).ConfigureAwait(false);
         await _fluxSystemGenerator.GenerateAsync(name, distribution, k8sPath, cancellationToken).ConfigureAwait(false);
         await _variablesGenerator.GenerateAsync(name, distribution, k8sPath, cancellationToken).ConfigureAwait(false);
-        // TODO: Implement InfrastructureGenerator
         await _infrastructureGenerator.GenerateAsync(name, distribution, k8sPath, cancellationToken).ConfigureAwait(false);
-        // TODO: Implement CustomResourcesGenerator
-        await CustomResourcesGenerator.GenerateAsync(name, distribution, k8sPath, cancellationToken).ConfigureAwait(false);
-        // TODO: Implement AppsGenerator
-        await AppsGenerator.GenerateAsync(name, distribution, k8sPath, cancellationToken).ConfigureAwait(false);
+        await _customResourcesGenerator.GenerateAsync(name, distribution, k8sPath, cancellationToken).ConfigureAwait(false);
+        await _appsGenerator.GenerateAsync(name, distribution, k8sPath, cancellationToken).ConfigureAwait(false);
         break;
       default:
         throw new NotSupportedException($"The template '{template}' is not supported.");

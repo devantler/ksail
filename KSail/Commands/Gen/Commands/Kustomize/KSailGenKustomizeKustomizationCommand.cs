@@ -5,11 +5,11 @@ using KSail.Commands.Gen.Options;
 
 namespace KSail.Commands.Gen.Commands.Kustomize;
 
-class KSailGenKustomizeComponentCommand : Command
+class KSailGenKustomizeKustomizationCommand : Command
 {
   readonly FileOutputOption _outputOption = new("./kustomization.yaml");
-  readonly KSailGenKustomizeComponentCommandHandler _handler = new();
-  internal KSailGenKustomizeComponentCommand() : base("component", "Generate a 'kustomize.config.k8s.io/v1alpha1/Component' resource.")
+  readonly KSailGenKustomizeKustomizationCommandHandler _handler = new();
+  public KSailGenKustomizeKustomizationCommand() : base("kustomization", "Generate a 'kustomize.config.k8s.io/v1beta1/Kustomization' resource.")
   {
     AddOption(_outputOption);
     this.SetHandler(async (context) =>
@@ -20,3 +20,4 @@ class KSailGenKustomizeComponentCommand : Command
     );
   }
 }
+

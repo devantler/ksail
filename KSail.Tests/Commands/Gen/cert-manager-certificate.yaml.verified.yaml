@@ -1,0 +1,13 @@
+﻿---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cluster-issuer-certificate
+  namespace: traefik
+spec:
+  secretName: cluster-issuer-certificate-tls
+  dnsNames:
+  - k8s.local
+  issuerRef:
+    name: selfsigned-cluster-issuer
+    kind: ClusterIssuer
