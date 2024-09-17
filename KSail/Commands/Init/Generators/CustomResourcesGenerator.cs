@@ -53,7 +53,7 @@ class CustomResourcesGenerator
 
   async Task GenerateDistributionCustomResources(KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
   {
-    string distributionCustomResourcesPath = Path.Combine(outputPath, "distributions", distribution.ToString(), "custom-resources");
+    string distributionCustomResourcesPath = Path.Combine(outputPath, "distributions", distribution.ToString().ToLower(CultureInfo.CurrentCulture), "custom-resources");
     if (!Directory.Exists(distributionCustomResourcesPath))
     {
       _ = Directory.CreateDirectory(distributionCustomResourcesPath);

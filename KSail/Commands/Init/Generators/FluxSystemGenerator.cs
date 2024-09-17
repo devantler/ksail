@@ -1,3 +1,4 @@
+using System.Globalization;
 using Devantler.KubernetesGenerator.Flux;
 using Devantler.KubernetesGenerator.Flux.Models;
 using Devantler.KubernetesGenerator.Flux.Models.Dependencies;
@@ -114,7 +115,7 @@ class FluxSystemGenerator
           Kind = FluxSource.OCIRepository,
           Name = "flux-system"
         },
-        Path = $"distributions/{distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}/variables",
+        Path = $"distributions/{distribution.ToString().ToLower(CultureInfo.CurrentCulture)}/variables",
         Prune = true,
         Wait = true
       }

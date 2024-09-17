@@ -1,3 +1,4 @@
+using System.Globalization;
 using Devantler.KubernetesGenerator.Flux;
 using Devantler.KubernetesGenerator.Flux.Models;
 using Devantler.KubernetesGenerator.Flux.Models.Dependencies;
@@ -57,7 +58,7 @@ class InfrastructureGenerator
 
   async Task GenerateDistributionInfrastructure(KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
   {
-    string distributionInfrastructurePath = Path.Combine(outputPath, "distributions", distribution.ToString(), "infrastructure");
+    string distributionInfrastructurePath = Path.Combine(outputPath, "distributions", distribution.ToString().ToLower(CultureInfo.CurrentCulture), "infrastructure");
     if (!Directory.Exists(distributionInfrastructurePath))
     {
       _ = Directory.CreateDirectory(distributionInfrastructurePath);

@@ -58,7 +58,7 @@ class AppsGenerator
 
   async Task GenerateDistributionApps(KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
   {
-    string distributionAppsPath = Path.Combine(outputPath, "distributions", distribution.ToString(), "apps");
+    string distributionAppsPath = Path.Combine(outputPath, "distributions", distribution.ToString().ToLower(CultureInfo.CurrentCulture), "apps");
     if (!Directory.Exists(distributionAppsPath))
     {
       _ = Directory.CreateDirectory(distributionAppsPath);

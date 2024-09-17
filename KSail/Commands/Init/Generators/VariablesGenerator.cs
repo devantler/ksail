@@ -1,3 +1,4 @@
+using System.Globalization;
 using Devantler.KubernetesGenerator.KSail.Models;
 using Devantler.KubernetesGenerator.Native.ConfigAndStorage;
 using k8s.Models;
@@ -28,7 +29,7 @@ class VariablesGenerator
 
   async Task GenerateDistributionVariables(KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
   {
-    string distributionVariablesPath = Path.Combine(outputPath, "distributions", distribution.ToString(), "variables");
+    string distributionVariablesPath = Path.Combine(outputPath, "distributions", distribution.ToString().ToLower(CultureInfo.CurrentCulture), "variables");
     if (!Directory.Exists(distributionVariablesPath))
     {
       _ = Directory.CreateDirectory(distributionVariablesPath);
