@@ -234,7 +234,7 @@ class AppsGenerator
       Spec = new FluxHelmRepositorySpec
       {
         Interval = "10m",
-        Url = new Uri("oci://ghcr.io/stefanprodan/charts/podinfo"),
+        Url = new Uri("oci://ghcr.io/stefanprodan/charts"),
         Type = FluxHelmRepositorySpecType.OCI
       }
     };

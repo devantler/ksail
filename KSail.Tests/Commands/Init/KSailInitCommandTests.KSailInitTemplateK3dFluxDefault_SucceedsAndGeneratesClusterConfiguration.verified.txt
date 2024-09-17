@@ -77,7 +77,7 @@ metadata:
   namespace: podinfo
 spec:
   interval: 10m
-  url: oci://ghcr.io/stefanprodan/charts/podinfo
+  url: oci://ghcr.io/stefanprodan/charts
   type: oci
 ,
   k8s/apps/podinfo/kustomization.yaml:
