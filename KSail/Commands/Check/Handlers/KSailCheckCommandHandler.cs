@@ -116,7 +116,8 @@ class KSailCheckCommandHandler()
 
   void HandleReadyStatus(string kustomizationName)
   {
-    Console.WriteLine($"✔ Kustomization '{kustomizationName}' is ready!");
+    var timeElapsed = _stopwatch.Elapsed;
+    Console.WriteLine($"✔ Kustomization '{kustomizationName}' is ready! ({timeElapsed.Minutes}m {timeElapsed.Seconds}s)");
     _ = _successfulKustomizations.Add(kustomizationName);
     _stopwatch.Restart();
   }
