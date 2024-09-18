@@ -176,7 +176,7 @@ spec:
   dependsOn:
   - name: variables-cluster
   - name: variables-distribution
-  - name: variables-global
+  - name: variables-shared
   sourceRef:
     kind: OCIRepository
     name: flux-system
@@ -240,7 +240,7 @@ kind: Kustomization
 metadata:
   labels:
     kustomize.toolkit.fluxcd.io/sops: enabled
-  name: variables-global
+  name: variables-shared
   namespace: flux-system
 spec:
   interval: 60m
@@ -303,9 +303,9 @@ patches:
         - kind: Secret
           name: variables-sensitive-distribution
         - kind: ConfigMap
-          name: variables-global
+          name: variables-shared
         - kind: Secret
-          name: variables-sensitive-global
+          name: variables-sensitive-shared
   target:
     kind: Kustomization
     labelSelector: kustomize.toolkit.fluxcd.io/post-build-variables=enabled
@@ -568,7 +568,7 @@ metadata:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: variables-sensitive-global
+  name: variables-sensitive-shared
   namespace: flux-system
 stringData: {}
 ,
@@ -577,7 +577,7 @@ stringData: {}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: variables-global
+  name: variables-shared
   namespace: flux-system
 data: {}
 ,

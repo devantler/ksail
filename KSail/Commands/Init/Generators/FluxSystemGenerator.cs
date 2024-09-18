@@ -124,7 +124,7 @@ class FluxSystemGenerator
     {
       Metadata = new V1ObjectMeta
       {
-        Name = "variables-global",
+        Name = "variables-shared",
         NamespaceProperty = "flux-system",
         Labels = new Dictionary<string, string>
           {
@@ -189,7 +189,7 @@ class FluxSystemGenerator
           },
           new FluxDependsOn
           {
-            Name = "variables-global"
+            Name = "variables-shared"
           }
         ],
         SourceRef = new FluxKustomizationSpecSourceRef

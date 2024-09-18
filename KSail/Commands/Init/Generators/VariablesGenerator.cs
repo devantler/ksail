@@ -45,8 +45,8 @@ class VariablesGenerator
     {
       _ = Directory.CreateDirectory(globalVariablesPath);
     }
-    await GenerateVariablesConfigMap(globalVariablesPath, "variables-global", cancellationToken).ConfigureAwait(false);
-    await GenerateVariablesSensitiveSecret(globalVariablesPath, "variables-sensitive-global", cancellationToken).ConfigureAwait(false);
+    await GenerateVariablesConfigMap(globalVariablesPath, "variables-shared", cancellationToken).ConfigureAwait(false);
+    await GenerateVariablesSensitiveSecret(globalVariablesPath, "variables-sensitive-shared", cancellationToken).ConfigureAwait(false);
   }
 
   async Task GenerateVariablesConfigMap(string outputPath, string name, CancellationToken cancellationToken)

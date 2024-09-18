@@ -63,9 +63,9 @@ class ComponentsGenerator
               - kind: Secret
                 name: variables-sensitive-distribution
               - kind: ConfigMap
-                name: variables-global
+                name: variables-shared
               - kind: Secret
-                name: variables-sensitive-global
+                name: variables-sensitive-shared
           """
         }
       ]
