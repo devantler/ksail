@@ -4,7 +4,7 @@
 > Keep yer spyglass fixed on the progress at:
 >
 > - [ ] [devantler/dotnet-flux-cli](https://github.com/devantler/dotnet-flux-cli)
-> - [ ] [devantler/dotnet-k3d-cli](https://github.com/devantler/dotnet-k3d-cli)
+> - [x] [devantler/dotnet-k3d-cli](https://github.com/devantler/dotnet-k3d-cli)
 > - [ ] [devantler/dotnet-k9s-cli](https://github.com/devantler/dotnet-k9s-cli)
 > - [ ] [devantler/dotnet-kind-cli](https://github.com/devantler/dotnet-kind-cli)
 > - [ ] [devantler/dotnet-kubeconform-cli](https://github.com/devantler/dotnet-kubeconform-cli)
