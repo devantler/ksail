@@ -1,14 +1,18 @@
+using Devantler.KubernetesGenerator.Core.Converters;
 using Devantler.KubernetesGenerator.KSail.Models;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
+using YamlDotNet.System.Text.Json;
 
 namespace KSail.Deserializer;
 
-class KSailClusterConfigDeserializer
+class KSailClusterDeserializer
 {
   readonly IDeserializer _deserializer = new DeserializerBuilder()
-    .WithNamingConvention(CamelCaseNamingConvention.Instance)
-    .Build();
+    .WithTypeInspector(inner => new SystemTextJsonTypeInspector(inner))
+    .WithTypeConverter(new IntstrIntOrStringTypeConverter())
+    .WithTypeConverter(new ResourceQuantityTypeConverter())
+    .WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
 
   internal async Task<KSailCluster> LocateAndDeserializeAsync()
   {

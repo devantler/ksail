@@ -8,6 +8,7 @@ namespace KSail.Commands.Gen.Handlers.CertManager;
 class KSailGenCertManagerCertificateCommandHandler
 {
   readonly CertManagerCertificateGenerator _generator = new();
+
   internal async Task HandleAsync(string outputPath, CancellationToken cancellationToken)
   {
     var certificate = new CertManagerCertificate

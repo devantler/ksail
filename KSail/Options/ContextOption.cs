@@ -2,9 +2,9 @@ using System.CommandLine;
 
 namespace KSail.Options;
 
-class KubernetesContextOption() : Option<string>(
+class ContextOption() : Option<string>(
   ["-c", "--context"],
-  "The context to use"
+  "The kubernetes context to use"
 )
 {
 }

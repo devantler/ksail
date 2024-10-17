@@ -33,7 +33,7 @@ class KSailGenConfigKSailCommandHandler
           new KSailRegistry()
           {
             Provider = KSailRegistryProvider.Docker,
-            Name = "proxy-docker.io",
+            Name = "docker.io",
             HostPort = 5001,
             Proxy = new KSailRegistryProxy()
             {
@@ -43,7 +43,7 @@ class KSailGenConfigKSailCommandHandler
           new KSailRegistry()
           {
             Provider = KSailRegistryProvider.Docker,
-            Name = "proxy-registry.k8s.io",
+            Name = "registry.k8s.io",
             HostPort = 5002,
             Proxy = new KSailRegistryProxy()
             {
@@ -53,7 +53,7 @@ class KSailGenConfigKSailCommandHandler
           new KSailRegistry()
           {
             Provider = KSailRegistryProvider.Docker,
-            Name = "proxy-gcr.io",
+            Name = "gcr.io",
             HostPort = 5003,
             Proxy = new KSailRegistryProxy()
             {
@@ -63,7 +63,7 @@ class KSailGenConfigKSailCommandHandler
           new KSailRegistry()
           {
             Provider = KSailRegistryProvider.Docker,
-            Name = "proxy-ghcr.io",
+            Name = "ghcr.io",
             HostPort = 5004,
             Proxy = new KSailRegistryProxy()
             {
@@ -73,7 +73,7 @@ class KSailGenConfigKSailCommandHandler
           new KSailRegistry()
           {
             Provider = KSailRegistryProvider.Docker,
-            Name = "proxy-quay.io",
+            Name = "quay.io",
             HostPort = 5005,
             Proxy = new KSailRegistryProxy()
             {
@@ -83,7 +83,7 @@ class KSailGenConfigKSailCommandHandler
           new KSailRegistry()
           {
             Provider = KSailRegistryProvider.Docker,
-            Name = "proxy-mcr.microsoft.com",
+            Name = "mcr.microsoft.com",
             HostPort = 5006,
             Proxy = new KSailRegistryProxy()
             {

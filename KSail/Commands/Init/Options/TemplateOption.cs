@@ -1,5 +1,5 @@
 using System.CommandLine;
-using KSail.Commands.Init.Enums;
+using Devantler.KubernetesGenerator.KSail.Models.Init;
 
 namespace KSail.Commands.Init.Options;
 
@@ -7,7 +7,7 @@ class TemplateOption : Option<KSailInitTemplate>
 {
   public TemplateOption() : base(
     ["-t", "--template"],
-    () => KSailInitTemplate.K3dFluxDefault,
+    () => KSailInitTemplate.FluxDefault,
     "The template to use for the initialized cluster.")
   {
   }

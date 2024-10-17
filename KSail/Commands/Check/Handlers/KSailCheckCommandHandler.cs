@@ -1,24 +1,31 @@
 using System.Diagnostics;
+using Devantler.KubernetesGenerator.KSail.Models;
+using Devantler.KubernetesProvisioner.Resources.Native;
 using k8s;
 using k8s.Models;
 using KSail.Commands.Check.Extensions;
 
 namespace KSail.Commands.Check.Handlers;
 
-class KSailCheckCommandHandler()
+class KSailCheckCommandHandler : IDisposable
 {
+  readonly KSailCluster _config;
+  readonly KubernetesResourceProvisioner _resourceProvisioner;
   readonly HashSet<string> _kustomizations = [];
   readonly HashSet<string> _successfulKustomizations = [];
   readonly Stopwatch _stopwatch = Stopwatch.StartNew();
   readonly Stopwatch _stopwatchTotal = Stopwatch.StartNew();
   string _lastPrintedMessage = "";
 
-  internal async Task<int> HandleAsync(string? context, int timeout, CancellationToken cancellationToken, string? kubeconfig = null)
+  internal KSailCheckCommandHandler(KSailCluster config)
   {
-    using var kubernetesClient = context is null ?
-      new Kubernetes(KubernetesClientConfiguration.BuildConfigFromConfigFile(kubeconfig)) :
-      new Kubernetes(KubernetesClientConfiguration.BuildConfigFromConfigFile(kubeconfig, context));
-    var responseTask = kubernetesClient.ListKustomizationsWithHttpMessagesAsync();
+    _config = config;
+    _resourceProvisioner = new KubernetesResourceProvisioner(_config.Spec?.Context);
+  }
+
+  internal async Task<int> HandleAsync(CancellationToken cancellationToken)
+  {
+    var responseTask = _resourceProvisioner.ListKustomizationsWithHttpMessagesAsync();
     await foreach (var (_, kustomization) in responseTask.WatchAsync<V1CustomResourceDefinition, object>(cancellationToken: cancellationToken))
     {
       string? kustomizationName = kustomization?.Metadata.Name ??
@@ -39,9 +46,9 @@ class KSailCheckCommandHandler()
         {
           continue;
         }
-        else if (_stopwatch.Elapsed.TotalSeconds >= timeout)
+        else if (_stopwatch.Elapsed.TotalSeconds >= _config.Spec?.Timeout)
         {
-          Console.WriteLine($"✕ Kustomization '{kustomizationName}' did not become ready within the specified time limit of {timeout} seconds.");
+          Console.WriteLine($"✕ Kustomization '{kustomizationName}' did not become ready within the specified time limit of {_config.Spec?.Timeout} seconds.");
           foreach (var statusCondition in statusConditions)
           {
             string? message = statusCondition.Message;
@@ -127,5 +134,12 @@ class KSailCheckCommandHandler()
     string? message = statusCondition.Message;
     Console.WriteLine($"✕ Kustomization '{kustomizationName}' failed with message: {message}");
     return 1;
+  }
+
+  public void Dispose()
+  {
+    _resourceProvisioner.Dispose();
+    _stopwatch.Stop();
+    _stopwatchTotal.Stop();
   }
 }

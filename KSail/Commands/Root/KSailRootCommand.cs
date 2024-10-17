@@ -7,7 +7,7 @@ namespace KSail.Commands.Root;
 
 sealed class KSailRootCommand : RootCommand
 {
-  internal KSailRootCommand(IConsole? console = null) : base("KSail is a CLI tool for provisioning GitOps enabled clusters in Docker.")
+  internal KSailRootCommand(IConsole? console = null) : base("KSail is an SDK for GitOps enabled clusters.")
   {
     AddCommands(console);
 

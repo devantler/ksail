@@ -1,4 +1,3 @@
-using Devantler.KubernetesGenerator.KSail.Models.Registry;
 using KSail.Models.Commands.Check;
 using KSail.Models.Commands.Debug;
 using KSail.Models.Commands.Down;

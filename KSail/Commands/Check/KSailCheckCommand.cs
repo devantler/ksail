@@ -1,20 +1,21 @@
 using System.CommandLine;
 using KSail.Commands.Check.Handlers;
-using KSail.Commands.Check.Options;
+using KSail.Deserializer;
 using KSail.Options;
 
 namespace KSail.Commands.Check;
 
 sealed class KSailCheckCommand : Command
 {
-  readonly KubeconfigOption _kubeconfigOption = new();
-  readonly KubernetesContextOption _kubernetesContextOption = new();
-  readonly TimeoutOption _timeoutOption = new();
+  readonly KSailClusterDeserializer _deserializer = new();
+  readonly KubeconfigOption _kubeconfigOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly ContextOption _contextOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly TimeoutOption _timeoutOption = new() { Arity = ArgumentArity.ZeroOrOne };
 
   internal KSailCheckCommand() : base("check", "Check the status of a cluster")
   {
     AddOption(_kubeconfigOption);
-    AddOption(_kubernetesContextOption);
+    AddOption(_contextOption);
     AddOption(_timeoutOption);
     AddValidator(result =>
     {
@@ -26,16 +27,15 @@ sealed class KSailCheckCommand : Command
     });
     this.SetHandler(async (context) =>
     {
-      string kubeconfig = context.ParseResult.GetValueForOption(_kubeconfigOption) ??
-        throw new InvalidOperationException("Kubeconfig not set");
-      string? kubernetesContext = context.ParseResult.GetValueForOption(_kubernetesContextOption);
-      int timeout = context.ParseResult.GetValueForOption(_timeoutOption);
+      var config = await _deserializer.LocateAndDeserializeAsync().ConfigureAwait(false);
+      await config.SetConfigValueAsync("Spec.Kubeconfig", context.ParseResult.GetValueForOption(_kubeconfigOption)).ConfigureAwait(false);
+      await config.SetConfigValueAsync("Spec.Context", context.ParseResult.GetValueForOption(_contextOption)).ConfigureAwait(false);
+      await config.SetConfigValueAsync("Spec.Timeout", context.ParseResult.GetValueForOption(_timeoutOption)).ConfigureAwait(false);
 
-      var cancellationToken = context.GetCancellationToken();
-      var handler = new KSailCheckCommandHandler();
+      var handler = new KSailCheckCommandHandler(config);
       try
       {
-        context.ExitCode = await handler.HandleAsync(kubernetesContext, timeout, cancellationToken, kubeconfig).ConfigureAwait(false);
+        context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
       }
       catch (OperationCanceledException)
       {

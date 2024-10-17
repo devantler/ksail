@@ -8,15 +8,23 @@ namespace KSail.Commands.Gen.Commands.CertManager;
 class KSailGenCertManagerClusterIssuerCommand : Command
 {
   readonly FileOutputOption _outputOption = new("./cluster-issuer.yaml");
-  readonly KSailGenCertManagerClusterIssuerCommandHandler _handler = new();
+
   public KSailGenCertManagerClusterIssuerCommand() : base("cluster-issuer", "Generate a 'cert-manager.io/v1/ClusterIssuer' resource.")
   {
     AddOption(_outputOption);
 
     this.SetHandler(async (context) =>
       {
-        string outputPath = context.ParseResult.GetValueForOption(_outputOption) ?? throw new ArgumentNullException(nameof(_outputOption));
-        await _handler.HandleAsync(outputPath, context.GetCancellationToken()).ConfigureAwait(false);
+        context.ParseResult.RootCommandResult.GetValueForOption(_outputOption).ConfigureAwait(false);
+        var handler = new KSailGenCertManagerClusterIssuerCommandHandler(config);
+        try
+        {
+          await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+          context.ExitCode = 1;
+        }
       }
     );
   }
