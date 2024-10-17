@@ -5,7 +5,7 @@
 >
 > - [x] [devantler/dotnet-flux-cli](https://github.com/devantler/dotnet-flux-cli)
 > - [x] [devantler/dotnet-k3d-cli](https://github.com/devantler/dotnet-k3d-cli)
-> - [ ] [devantler/dotnet-k9s-cli](https://github.com/devantler/dotnet-k9s-cli)
+> - [x] [devantler/dotnet-k9s-cli](https://github.com/devantler/dotnet-k9s-cli)
 > - [x] [devantler/dotnet-kind-cli](https://github.com/devantler/dotnet-kind-cli)
 > - [ ] [devantler/dotnet-kubeconform-cli](https://github.com/devantler/dotnet-kubeconform-cli)
 > - [x] [devantler/dotnet-kubernetes-generator](https://github.com/devantler/dotnet-kubernetes-generator)
