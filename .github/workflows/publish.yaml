@@ -8,6 +8,36 @@ on:
   workflow_dispatch:
 
 jobs:
+  publish-github:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v4.0.0
+      - name: Get version from tag
+        id: version
+        run: echo ::set-output name=version::${GITHUB_REF#refs/tags/v}
+      - name: Pack
+        run: dotnet pack --configuration Release /p:Version=${{ steps.version.outputs.version }}
+      - name: Add GitHub Packages as NuGet Source
+        run: dotnet nuget add source --username devantler --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/devantler/index.json"
+      - name: Push to GitHub Packages
+        run: dotnet nuget push **/*.nupkg --source "github" --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
+  publish-nuget:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v4.0.0
+      - name: Get version from tag
+        id: version
+        run: echo ::set-output name=version::${GITHUB_REF#refs/tags/v}
+      - name: Pack
+        run: dotnet pack --configuration Release /p:Version=${{ steps.version.outputs.version }}
+      - name: Push to NuGet
+        run: dotnet nuget push **/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
   publish-binaries:
     name: Publish binaries
     runs-on: macos-latest
@@ -123,4 +153,3 @@ jobs:
           provenance: false
           build-args: |
             DOCKER_METADATA_OUTPUT_VERSION
-
