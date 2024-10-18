@@ -16,7 +16,7 @@ using KSail.Models;
 
 namespace KSail.Commands.Up.Handlers;
 
-class KSailUpCommandHandler
+class KSailUpCommandHandler : IDisposable
 {
   readonly DockerProvisioner _containerEngineProvisioner;
   readonly IKubernetesClusterProvisioner _clusterProvisioner;
@@ -28,21 +28,21 @@ class KSailUpCommandHandler
 
   internal KSailUpCommandHandler(KSailCluster config)
   {
-    _containerEngineProvisioner = config.Spec?.ContainerEngine switch
+    _containerEngineProvisioner = config.Spec.ContainerEngine switch
     {
       KSailContainerEngine.Docker => new DockerProvisioner(),
-      _ => throw new NotSupportedException($"The container engine '{config.Spec?.ContainerEngine}' is not supported.")
+      _ => throw new NotSupportedException($"The container engine '{config.Spec.ContainerEngine}' is not supported.")
     };
-    _clusterProvisioner = config.Spec?.Distribution switch
+    _clusterProvisioner = config.Spec.Distribution switch
     {
       KSailKubernetesDistribution.K3d => new K3dProvisioner(),
       KSailKubernetesDistribution.Kind => new KindProvisioner(),
-      _ => throw new NotSupportedException($"The distribution '{config.Spec?.Distribution}' is not supported.")
+      _ => throw new NotSupportedException($"The distribution '{config.Spec.Distribution}' is not supported.")
     };
-    _gitOpsProvisioner = config.Spec?.GitOpsTool switch
+    _gitOpsProvisioner = config.Spec.GitOpsTool switch
     {
       KSailGitOpsTool.Flux => new FluxProvisioner(),
-      _ => throw new NotSupportedException($"The GitOps tool '{config.Spec?.GitOpsTool}' is not supported.")
+      _ => throw new NotSupportedException($"The GitOps tool '{config.Spec.GitOpsTool}' is not supported.")
     };
     _resourceProvisioner = new KubernetesResourceProvisioner(config.Spec.Context);
     _ksailUpdateCommandHandler = new KSailUpdateCommandHandler(config);
@@ -67,7 +67,7 @@ class KSailUpCommandHandler
   async Task<bool> CheckContainerEngineIsUp(KSailCluster config, CancellationToken cancellationToken)
   {
     bool containerEngineIsUp = await _containerEngineProvisioner.CheckReadyAsync(cancellationToken).ConfigureAwait(false);
-    switch (config.Spec?.ContainerEngine)
+    switch (config.Spec.ContainerEngine)
     {
       case KSailContainerEngine.Docker:
         Console.WriteLine("🐳 Checking Docker is running");
@@ -83,7 +83,7 @@ class KSailUpCommandHandler
         Console.WriteLine("");
         break;
       default:
-        throw new NotSupportedException($"Container engine type '{config.Spec?.ContainerEngine}' is not supported yet");
+        throw new NotSupportedException($"Container engine type '{config.Spec.ContainerEngine}' is not supported yet");
     }
     return true;
   }
@@ -91,7 +91,7 @@ class KSailUpCommandHandler
   async Task CreateRegistries(KSailCluster config, CancellationToken cancellationToken)
   {
     Console.WriteLine("🧮 Creating registries");
-    foreach (var registry in config.Spec?.Registries ?? [])
+    foreach (var registry in config.Spec.Registries ?? [])
     {
       _containerEngineProvisioner.CreateRegistryAsync(registry.Name, registry.HostPort, cancellationToken);
     }
@@ -130,7 +130,7 @@ class KSailUpCommandHandler
   async Task ProvisionCluster(KSailCluster config, CancellationToken cancellationToken)
   {
     Console.WriteLine($"🚀 Provisioning cluster '{config.Metadata.Name}'");
-    await _clusterProvisioner.ProvisionAsync(config.Metadata.Name, config.Spec?.ConfigPath!, cancellationToken).ConfigureAwait(false);
+    await _clusterProvisioner.ProvisionAsync(config.Metadata.Name, config.Spec.ConfigPath, cancellationToken).ConfigureAwait(false);
     Console.WriteLine("");
   }
 
@@ -140,12 +140,12 @@ class KSailUpCommandHandler
     Console.WriteLine("► Creating 'flux-system' namespace");
 
 #pragma warning disable CA1308 // Normalize strings to uppercase
-    string context = $"{config.Spec?.Distribution.ToString()?.ToLowerInvariant()}-{config.Metadata.Name}";
+    string context = $"{config.Spec.Distribution.ToString().ToLowerInvariant()}-{config.Metadata.Name}";
 #pragma warning restore CA1308 // Normalize strings to uppercase
     await _resourceProvisioner.CreateNamespaceAsync(context, "flux-system").ConfigureAwait(false);
     Console.WriteLine("");
 
-    if (config.Spec?.Sops == true)
+    if (config.Spec.Sops == true)
     {
       //TODO: Check that a .sops.yaml file exists in the current directory or a parent directory.
       Console.WriteLine("► Searching for a '.sops.yaml' file in the current directory or a parent directory");
@@ -167,7 +167,7 @@ class KSailUpCommandHandler
     }
     var kubernetesDistribution = await _clusterProvisioner.GetKubernetesDistributionTypeAsync().ConfigureAwait(false);
 #pragma warning disable CA1308 // Normalize strings to uppercase
-    string k8sContext = $"{kubernetesDistribution.ToString()?.ToLowerInvariant()}-{clusterName}";
+    string k8sContext = $"{kubernetesDistribution.ToString().ToLowerInvariant()}-{clusterName}";
 #pragma warning restore CA1308 // Normalize strings to uppercase
     string ociUrl = $"oci://host.k3d.internal:5050/{clusterName}";
 
@@ -204,4 +204,6 @@ class KSailUpCommandHandler
     Console.WriteLine($"✔ Pull-through registry '{name}' created");
     return 0;
   }
+
+  public void Dispose() => _resourceProvisioner.Dispose();
 }

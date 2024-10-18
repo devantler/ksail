@@ -7,6 +7,7 @@ using Devantler.KubernetesGenerator.Kustomize;
 using Devantler.KubernetesGenerator.Kustomize.Models;
 using Devantler.KubernetesGenerator.Native.Cluster;
 using k8s.Models;
+using KSail.Models;
 
 namespace KSail.Commands.Init.Generators.SubGenerators;
 
@@ -16,19 +17,19 @@ class InfrastructureGenerator
   readonly NamespaceGenerator _namespaceGenerator = new();
   readonly FluxHelmReleaseGenerator _helmReleaseGenerator = new();
   readonly FluxHelmRepositoryGenerator _helmRepositoryGenerator = new();
-  internal async Task GenerateAsync(string name, KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
+  internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken)
   {
-    await GenerateClusterInfrastructure(name, distribution, outputPath, cancellationToken).ConfigureAwait(false);
-    await GenerateDistributionInfrastructure(distribution, outputPath, cancellationToken).ConfigureAwait(false);
-    await GenerateGlobalInfrastructure(outputPath, cancellationToken).ConfigureAwait(false);
+    await GenerateClusterInfrastructure(config, cancellationToken).ConfigureAwait(false);
+    await GenerateDistributionInfrastructure(config, cancellationToken).ConfigureAwait(false);
+    await GenerateGlobalInfrastructure(config, cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateClusterInfrastructure(string name, KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
+  async Task GenerateClusterInfrastructure(KSailCluster config, CancellationToken cancellationToken)
   {
-    string clusterInfrastructurePath = Path.Combine(outputPath, "clusters", name, "infrastructure");
+    string clusterInfrastructurePath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "clusters", config.Metadata.Name, "infrastructure");
     if (!Directory.Exists(clusterInfrastructurePath))
       _ = Directory.CreateDirectory(clusterInfrastructurePath);
-    await GenerateClusterInfrastructureKustomization(distribution, clusterInfrastructurePath, cancellationToken).ConfigureAwait(false);
+    await GenerateClusterInfrastructureKustomization(config.Spec.Distribution, clusterInfrastructurePath, cancellationToken).ConfigureAwait(false);
   }
 
   async Task GenerateClusterInfrastructureKustomization(KSailKubernetesDistribution distribution, string clusterInfrastructurePath, CancellationToken cancellationToken)
@@ -53,9 +54,9 @@ class InfrastructureGenerator
     await _kustomizeKustomizationGenerator.GenerateAsync(kustomization, clusterInfrastructureKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateDistributionInfrastructure(KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
+  async Task GenerateDistributionInfrastructure(KSailCluster config, CancellationToken cancellationToken)
   {
-    string distributionInfrastructurePath = Path.Combine(outputPath, "distributions", distribution.ToString().ToLower(CultureInfo.CurrentCulture), "infrastructure");
+    string distributionInfrastructurePath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "distributions", config.Spec.Distribution.ToString().ToLower(CultureInfo.CurrentCulture), "infrastructure");
     if (!Directory.Exists(distributionInfrastructurePath))
       _ = Directory.CreateDirectory(distributionInfrastructurePath);
     await GenerateDistributionInfrastructureKustomization(distributionInfrastructurePath, cancellationToken).ConfigureAwait(false);
@@ -83,9 +84,9 @@ class InfrastructureGenerator
     await _kustomizeKustomizationGenerator.GenerateAsync(kustomization, distributionInfrastructureKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateGlobalInfrastructure(string outputPath, CancellationToken cancellationToken)
+  async Task GenerateGlobalInfrastructure(KSailCluster config, CancellationToken cancellationToken)
   {
-    string globalInfrastructurePath = Path.Combine(outputPath, "infrastructure");
+    string globalInfrastructurePath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "infrastructure");
     if (!Directory.Exists(globalInfrastructurePath))
       _ = Directory.CreateDirectory(globalInfrastructurePath);
     await GenerateGlobalInfrastructureKustomization(globalInfrastructurePath, cancellationToken).ConfigureAwait(false);

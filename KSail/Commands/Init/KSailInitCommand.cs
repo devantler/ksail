@@ -17,11 +17,10 @@ sealed class KSailInitCommand : Command
   readonly ComponentsOption _componentsOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly HelmReleasesOption _helmReleasesOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly TemplateOption _templateOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly KSailClusterConfigLoader _kSailClusterConfigDeserializer = new();
 
   public KSailInitCommand() : base("init", "Initialize a cluster")
   {
-    var config = _kSailClusterConfigDeserializer.LocateAndDeserializeAsync().Result;
+    var config = KSailClusterConfigLoader.LoadAsync().Result;
 
     AddOptions();
     AddValidators(config);

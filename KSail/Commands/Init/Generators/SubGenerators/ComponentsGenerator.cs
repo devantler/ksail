@@ -1,6 +1,8 @@
 using Devantler.KubernetesGenerator.Kustomize;
 using Devantler.KubernetesGenerator.Kustomize.Models;
 using Devantler.KubernetesGenerator.Kustomize.Models.Patches;
+using KSail.Models;
+using KSail.Models.Commands.Init;
 
 namespace KSail.Commands.Init.Generators.SubGenerators;
 
@@ -8,18 +10,18 @@ class ComponentsGenerator
 {
   readonly KustomizeComponentGenerator _kustomizeComponentKubernetesGenerator = new();
 
-  internal async Task GenerateAsync(string outputPath, KSailInitTemplate template, bool sops)
+  internal async Task GenerateAsync(KSailCluster config)
   {
-    string componentsPath = Path.Combine(outputPath, "components");
+    string componentsPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "components");
     if (!Directory.Exists(componentsPath))
       _ = Directory.CreateDirectory(componentsPath);
-    if (template == KSailInitTemplate.FluxDefault)
+    if (config.Spec.InitOptions.Template == KSailInitTemplate.Simple)
     {
       await GenerateFluxKustomizationPostBuildVariablesLabelComponent(componentsPath).ConfigureAwait(false);
       await GenerateHelmReleaseCRDSLabelComponent(componentsPath).ConfigureAwait(false);
       await GenerateHelmReleaseRemediationLabelComponent(componentsPath).ConfigureAwait(false);
     }
-    if (sops)
+    if (config.Spec.Sops)
       await GenerateFluxKustomizationSOPSLabelComponent(componentsPath).ConfigureAwait(false);
   }
 

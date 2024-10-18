@@ -6,6 +6,7 @@ using Devantler.KubernetesGenerator.Kustomize;
 using Devantler.KubernetesGenerator.Kustomize.Models;
 using Devantler.KubernetesGenerator.Native.Cluster;
 using k8s.Models;
+using KSail.Models;
 
 namespace KSail.Commands.Init.Generators.SubGenerators;
 
@@ -17,17 +18,17 @@ class AppsGenerator
   readonly FluxHelmRepositoryGenerator _helmRepositoryGenerator = new();
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken)
   {
-    await GenerateClusterApps(name, distribution, outputPath, cancellationToken).ConfigureAwait(false);
-    await GenerateDistributionApps(distribution, outputPath, cancellationToken).ConfigureAwait(false);
-    await GenerateGlobalApps(outputPath, cancellationToken).ConfigureAwait(false);
+    await GenerateClusterApps(config, cancellationToken).ConfigureAwait(false);
+    await GenerateDistributionApps(config, cancellationToken).ConfigureAwait(false);
+    await GenerateGlobalApps(config, cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateClusterApps(string name, KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
+  async Task GenerateClusterApps(KSailCluster config, CancellationToken cancellationToken)
   {
-    string clusterAppsPath = Path.Combine(outputPath, "clusters", name, "apps");
+    string clusterAppsPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "clusters", config.Metadata.Name, "apps");
     if (!Directory.Exists(clusterAppsPath))
       _ = Directory.CreateDirectory(clusterAppsPath);
-    await GenerateClusterAppsKustomization(distribution, clusterAppsPath, cancellationToken).ConfigureAwait(false);
+    await GenerateClusterAppsKustomization(config.Spec.Distribution, clusterAppsPath, cancellationToken).ConfigureAwait(false);
   }
 
   async Task GenerateClusterAppsKustomization(KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
@@ -53,9 +54,9 @@ class AppsGenerator
     await _kustomizationGenerator.GenerateAsync(kustomization, clusterAppsKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateDistributionApps(KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
+  async Task GenerateDistributionApps(KSailCluster config, CancellationToken cancellationToken)
   {
-    string distributionAppsPath = Path.Combine(outputPath, "distributions", distribution.ToString().ToLower(CultureInfo.CurrentCulture), "apps");
+    string distributionAppsPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "distributions", config.Spec.Distribution.ToString().ToLower(CultureInfo.CurrentCulture), "apps");
     if (!Directory.Exists(distributionAppsPath))
       _ = Directory.CreateDirectory(distributionAppsPath);
     await GenerateDistributionAppsKustomization(distributionAppsPath, cancellationToken).ConfigureAwait(false);
@@ -84,9 +85,9 @@ class AppsGenerator
     await _kustomizationGenerator.GenerateAsync(kustomization, distributionAppsKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateGlobalApps(string outputPath, CancellationToken cancellationToken)
+  async Task GenerateGlobalApps(KSailCluster config, CancellationToken cancellationToken)
   {
-    string globalAppsPath = Path.Combine(outputPath, "apps");
+    string globalAppsPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "apps");
     if (!Directory.Exists(globalAppsPath))
       _ = Directory.CreateDirectory(globalAppsPath);
     await GenerateGlobalAppsKustomization(globalAppsPath, cancellationToken).ConfigureAwait(false);

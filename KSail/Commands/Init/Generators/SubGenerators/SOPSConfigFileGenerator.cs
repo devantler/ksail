@@ -1,6 +1,7 @@
 using Devantler.KeyManager.Core.Models;
 using Devantler.KeyManager.Local.Age;
 using Devantler.Keys.Age;
+using KSail.Models;
 
 namespace KSail.Commands.Init.Generators.SubGenerators;
 
@@ -8,17 +9,17 @@ class SOPSConfigFileGenerator
 {
   LocalAgeKeyManager LocalAgeKeyManager { get; } = new();
 
-  internal async Task GenerateAsync(string clusterName, string outputPath, CancellationToken cancellationToken)
+  internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken)
   {
     var ageKey = await LocalAgeKeyManager.CreateKeyAsync(cancellationToken).ConfigureAwait(false);
-    string sopsConfigPath = Path.Combine(outputPath, ".sops.yaml");
+    string sopsConfigPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, ".sops.yaml");
     if (!File.Exists(sopsConfigPath) || string.IsNullOrEmpty(await File.ReadAllTextAsync(sopsConfigPath, cancellationToken).ConfigureAwait(false)))
     {
-      await GenerateNewSOPSConfigFile(sopsConfigPath, clusterName, ageKey, cancellationToken).ConfigureAwait(false);
+      await GenerateNewSOPSConfigFile(sopsConfigPath, config.Metadata.Name, ageKey, cancellationToken).ConfigureAwait(false);
     }
     else
     {
-      await GenerateUpdatedSOPSConfigFile(sopsConfigPath, clusterName, ageKey, cancellationToken).ConfigureAwait(false);
+      await GenerateUpdatedSOPSConfigFile(sopsConfigPath, config.Metadata.Name, ageKey, cancellationToken).ConfigureAwait(false);
     }
   }
 

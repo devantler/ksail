@@ -7,7 +7,6 @@ namespace KSail.Commands.Down;
 
 sealed class KSailDownCommand : Command
 {
-  readonly KSailClusterConfigLoader _deserializer = new();
   readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly DistributionOption _distributionOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly RegistriesOption _registriesOption = new() { Arity = ArgumentArity.ZeroOrOne };
@@ -19,7 +18,7 @@ sealed class KSailDownCommand : Command
 
     this.SetHandler(async (context) =>
     {
-      var config = await _deserializer.LocateAndDeserializeAsync().ConfigureAwait(false);
+      var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
       config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
       config.UpdateConfig("Spec.Distribution", context.ParseResult.GetValueForOption(_distributionOption));
       config.UpdateConfig("Spec.DownOptions.Registries", context.ParseResult.GetValueForOption(_registriesOption));

@@ -6,15 +6,10 @@ using YamlDotNet.System.Text.Json;
 
 namespace KSail;
 
-class KSailClusterConfigLoader
+static class KSailClusterConfigLoader
 {
-  readonly IDeserializer _deserializer = new DeserializerBuilder()
-    .WithTypeInspector(inner => new SystemTextJsonTypeInspector(inner))
-    .WithTypeConverter(new IntstrIntOrStringTypeConverter())
-    .WithTypeConverter(new ResourceQuantityTypeConverter())
-    .WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
 
-  internal async Task<KSailCluster> LocateAndDeserializeAsync()
+  internal static async Task<KSailCluster> LoadAsync()
   {
     var ksailClusterConfig = new KSailCluster();
     string currentDirectory = Directory.GetCurrentDirectory();
@@ -27,7 +22,14 @@ class KSailClusterConfigLoader
     string? ksailYaml = FindConfigFile(currentDirectory, possibleFiles);
 
     if (ksailYaml != null)
-      ksailClusterConfig = _deserializer.Deserialize<KSailCluster>(await File.ReadAllTextAsync(ksailYaml).ConfigureAwait(false));
+    {
+      var deserializer = new DeserializerBuilder()
+        .WithTypeInspector(inner => new SystemTextJsonTypeInspector(inner))
+        .WithTypeConverter(new IntstrIntOrStringTypeConverter())
+        .WithTypeConverter(new ResourceQuantityTypeConverter())
+        .WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
+      ksailClusterConfig = deserializer.Deserialize<KSailCluster>(await File.ReadAllTextAsync(ksailYaml).ConfigureAwait(false));
+    }
     return ksailClusterConfig;
   }
 

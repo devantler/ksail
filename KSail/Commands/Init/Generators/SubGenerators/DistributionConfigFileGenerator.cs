@@ -1,6 +1,11 @@
 using System.Text;
 using Devantler.KubernetesGenerator.K3d;
 using Devantler.KubernetesGenerator.K3d.Models;
+using Devantler.KubernetesGenerator.K3d.Models.Options;
+using Devantler.KubernetesGenerator.K3d.Models.Options.K3s;
+using Devantler.KubernetesGenerator.K3d.Models.Registries;
+using Devantler.KubernetesGenerator.Kind;
+using Devantler.KubernetesGenerator.Kind.Models;
 using k8s.Models;
 using KSail.Models;
 
@@ -9,6 +14,7 @@ namespace KSail.Commands.Init.Generators.SubGenerators;
 class DistributionConfigFileGenerator
 {
   readonly K3dConfigGenerator _k3dConfigKubernetesGenerator = new();
+  readonly KindConfigGenerator _kindConfigKubernetesGenerator = new();
 
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken)
   {
@@ -31,24 +37,15 @@ class DistributionConfigFileGenerator
     }
   }
 
-  private async Task GenerateKindConfigFile(KSailCluster config, string outputPath, CancellationToken cancellationToken)
+  async Task GenerateKindConfigFile(KSailCluster config, string outputPath, CancellationToken cancellationToken)
   {
     Console.WriteLine($"✚ Generating '{outputPath}'");
-    var mirrors = new StringBuilder();
-    // Add each registry as a kind syntax mirror
-
-    // Create the KindConfig object
     var kindConfig = new KindConfig
     {
-      Metadata = new V1ObjectMeta
-      {
-        Name = config.Metadata.Name
-      },
-      Spec = new KindConfigSpec
-      {
-        RegistryMirrors = mirrors.ToString()
-      }
+      Name = config.Metadata.Name
     };
+
+    await _kindConfigKubernetesGenerator.GenerateAsync(kindConfig, outputPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
   async Task GenerateK3DConfigFile(KSailCluster config, string outputPath, CancellationToken cancellationToken)
@@ -71,12 +68,12 @@ class DistributionConfigFileGenerator
       {
         Name = config.Metadata.Name
       },
-      Options = new K3dConfigOptions
+      Options = new K3dOptions
       {
-        K3s = new K3dConfigOptionsK3s
+        K3s = new K3dOptionsK3s
         {
           ExtraArgs = [
-            new K3dConfigOptionsK3sExtraArg
+            new K3dOptionsK3sExtraArg
             {
               Arg = "--disable=traefik",
               NodeFilters = [
@@ -86,7 +83,7 @@ class DistributionConfigFileGenerator
           ]
         }
       },
-      Registries = new K3dConfigRegistries
+      Registries = new K3dRegistries
       {
         Config = $"""
           {mirrors}

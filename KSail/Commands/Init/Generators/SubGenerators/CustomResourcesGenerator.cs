@@ -5,6 +5,7 @@ using Devantler.KubernetesGenerator.CertManager.Models.IssuerRef;
 using Devantler.KubernetesGenerator.Kustomize;
 using Devantler.KubernetesGenerator.Kustomize.Models;
 using k8s.Models;
+using KSail.Models;
 
 namespace KSail.Commands.Init.Generators.SubGenerators;
 
@@ -14,19 +15,19 @@ class CustomResourcesGenerator
   readonly CertManagerCertificateGenerator _certificateGenerator = new();
   readonly CertManagerClusterIssuerGenerator _clusterIssuerGenerator = new();
 
-  internal async Task GenerateAsync(string name, KSailKubernetesDistribution distribution, string k8sPath, CancellationToken cancellationToken)
+  internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken)
   {
-    await GenerateClusterCustomResources(name, distribution, k8sPath, cancellationToken).ConfigureAwait(false);
-    await GenerateDistributionCustomResources(distribution, k8sPath, cancellationToken).ConfigureAwait(false);
-    await GenerateGlobalCustomResources(k8sPath, cancellationToken).ConfigureAwait(false);
+    await GenerateClusterCustomResources(config, cancellationToken).ConfigureAwait(false);
+    await GenerateDistributionCustomResources(config, cancellationToken).ConfigureAwait(false);
+    await GenerateGlobalCustomResources(config, cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateClusterCustomResources(string name, KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
+  async Task GenerateClusterCustomResources(KSailCluster config, CancellationToken cancellationToken)
   {
-    string clusterCustomResourcesPath = Path.Combine(outputPath, "clusters", name, "custom-resources");
+    string clusterCustomResourcesPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "clusters", config.Metadata.Name, "custom-resources");
     if (!Directory.Exists(clusterCustomResourcesPath))
       _ = Directory.CreateDirectory(clusterCustomResourcesPath);
-    await GenerateClusterCustomResourcesKustomization(distribution, clusterCustomResourcesPath, cancellationToken).ConfigureAwait(false);
+    await GenerateClusterCustomResourcesKustomization(config.Spec.Distribution, clusterCustomResourcesPath, cancellationToken).ConfigureAwait(false);
   }
 
   async Task GenerateClusterCustomResourcesKustomization(KSailKubernetesDistribution distribution, string clusterCustomResourcesPath, CancellationToken cancellationToken)
@@ -48,9 +49,9 @@ class CustomResourcesGenerator
     await _kustomizationGenerator.GenerateAsync(kustomization, clusterCustomResourcesKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateDistributionCustomResources(KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
+  async Task GenerateDistributionCustomResources(KSailCluster config, CancellationToken cancellationToken)
   {
-    string distributionCustomResourcesPath = Path.Combine(outputPath, "distributions", distribution.ToString().ToLower(CultureInfo.CurrentCulture), "custom-resources");
+    string distributionCustomResourcesPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "distributions", config.Spec.Distribution.ToString().ToLower(CultureInfo.CurrentCulture), "custom-resources");
     if (!Directory.Exists(distributionCustomResourcesPath))
       _ = Directory.CreateDirectory(distributionCustomResourcesPath);
     await GenerateDistributionCustomResourcesKustomization(distributionCustomResourcesPath, cancellationToken).ConfigureAwait(false);
@@ -75,9 +76,9 @@ class CustomResourcesGenerator
     await _kustomizationGenerator.GenerateAsync(kustomization, distributionCustomResourcesKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateGlobalCustomResources(string outputPath, CancellationToken cancellationToken)
+  async Task GenerateGlobalCustomResources(KSailCluster config, CancellationToken cancellationToken)
   {
-    string globalCustomResourcesPath = Path.Combine(outputPath, "custom-resources");
+    string globalCustomResourcesPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "custom-resources");
     if (!Directory.Exists(globalCustomResourcesPath))
       _ = Directory.CreateDirectory(globalCustomResourcesPath);
     await GenerateGlobalCustomResourcesKustomization(globalCustomResourcesPath, cancellationToken).ConfigureAwait(false);

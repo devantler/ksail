@@ -1,14 +1,13 @@
 using System.CommandLine.Parsing;
-using KSail.Models;
 using KSail.Options;
 
 namespace KSail.Validators;
 
-class DistributionOptionValidator(KSailCluster config, DistributionOption distributionOption)
+class DistributionOptionValidator(DistributionOption distributionOption)
 {
   internal void Validate(CommandResult symbolResult)
   {
-    if (symbolResult.GetValueForOption(distributionOption) is null && config.Spec?.Distribution is null)
-      symbolResult.ErrorMessage = "The distribution option is required.";
+    if (symbolResult.GetValueForOption(distributionOption) is null)
+      symbolResult.ErrorMessage = "The distribution option could not be determined from the command line options.";
   }
 }

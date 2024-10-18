@@ -31,8 +31,8 @@ class KSailCheckCommandHandler : IDisposable
         responseTask.WatchAsync<V1CustomResourceDefinition, object>(cancellationToken: cancellationToken)
     )
     {
-      string kustomizationName = kustomization?.Metadata.Name!;
-      var statusConditions = kustomization?.Status.Conditions;
+      string kustomizationName = kustomization.Metadata.Name;
+      var statusConditions = kustomization.Status.Conditions;
       if (statusConditions is null)
       {
         _ = _kustomizations.Remove(kustomizationName);

@@ -1,7 +1,4 @@
 using System.CommandLine;
-using Devantler.KubernetesProvisioner.Cluster.Core;
-using Devantler.KubernetesProvisioner.Cluster.K3d;
-using Devantler.KubernetesProvisioner.GitOps.Flux;
 using KSail.Commands.Update.Handlers;
 using KSail.Commands.Update.Options;
 using KSail.Options;
@@ -10,34 +7,31 @@ namespace KSail.Commands.Update;
 
 sealed class KSailUpdateCommand : Command
 {
-  readonly NameOption _clusterNameOption = new() { Arity = ArgumentArity.ExactlyOne };
+  readonly NameOption _nameOption = new() { Arity = ArgumentArity.ExactlyOne };
   readonly ManifestsOption _manifestsOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly NoLintOption _noLintOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly NoReconcileOption _noReconcileOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly LintOption _lintOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly ReconcileOption _noReconcileOption = new() { Arity = ArgumentArity.ZeroOrOne };
   internal KSailUpdateCommand() : base(
     "update",
     "Update a cluster"
   )
   {
-    AddOption(_clusterNameOption);
+    AddOption(_nameOption);
     AddOption(_manifestsOption);
-    AddOption(_noLintOption);
+    AddOption(_lintOption);
     AddOption(_noReconcileOption);
     this.SetHandler(async (context) =>
     {
-      IKubernetesClusterProvisioner clusterProvisioner = new K3dProvisioner();
-      var gitOpsProvisioner = new FluxProvisioner();
+      var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
+      config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
+      config.UpdateConfig("Spec.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsOption));
+      config.UpdateConfig("Spec.UpdateOptions.Lint", context.ParseResult.GetValueForOption(_lintOption));
+      config.UpdateConfig("Spec.UpdateOptions.Reconcile", context.ParseResult.GetValueForOption(_noReconcileOption));
 
-      string clusterName = context.ParseResult.GetValueForOption(_clusterNameOption);
-      string manifests = context.ParseResult.GetValueForOption(_manifestsOption);
-      bool noLint = context.ParseResult.GetValueForOption(_noLintOption);
-      bool noReconcile = context.ParseResult.GetValueForOption(_noReconcileOption);
-
-      var cancellationToken = context.GetCancellationToken();
-      var handler = new KSailUpdateCommandHandler(clusterProvisioner, gitOpsProvisioner);
+      var handler = new KSailUpdateCommandHandler(config);
       try
       {
-        context.ExitCode = await handler.HandleAsync(clusterName, manifests, noLint, noReconcile, cancellationToken).ConfigureAwait(false);
+        context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
       }
       catch (OperationCanceledException)
       {

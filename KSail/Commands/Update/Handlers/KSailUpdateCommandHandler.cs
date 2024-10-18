@@ -1,41 +1,44 @@
 using Devantler.KubernetesProvisioner.GitOps.Flux;
 using KSail.Commands.Lint.Handlers;
+using KSail.Models;
 
 namespace KSail.Commands.Update.Handlers;
 
 class KSailUpdateCommandHandler
 {
   readonly FluxProvisioner _gitOpsProvisioner;
+  readonly KSailCluster _config;
 
   internal KSailUpdateCommandHandler(KSailCluster config)
   {
-    string context = $"{config.Spec?.Distribution?.ToString()?.ToLower(System.Globalization.CultureInfo.CurrentCulture)}-{config.Metadata.Name}";
-    _gitOpsProvisioner = config.Spec?.GitOpsTool switch
+    string context = $"{config.Spec.Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-{config.Metadata.Name}";
+    _gitOpsProvisioner = config.Spec.GitOpsTool switch
     {
       KSailGitOpsTool.Flux => new FluxProvisioner(context),
-      _ => throw new NotSupportedException($"The GitOps tool '{config.Spec?.GitOpsTool}' is not supported.")
+      _ => throw new NotSupportedException($"The GitOps tool '{config.Spec.GitOpsTool}' is not supported.")
     };
+    _config = config;
   }
 
-  internal async Task HandleAsync(KSailCluster config, CancellationToken cancellationToken)
+  internal async Task<int> HandleAsync(CancellationToken cancellationToken)
   {
-    if (config.Spec?.UpdateOptions?.Lint == true)
+    if (_config.Spec.UpdateOptions.Lint)
     {
-      await KSailLintCommandHandler.HandleAsync(config, cancellationToken).ConfigureAwait(false);
+      _ = await KSailLintCommandHandler.HandleAsync(_config, cancellationToken).ConfigureAwait(false);
     };
 
-    var ksailRegistryUri = new Uri($"oci://localhost:{config.Spec?.Registries?.First().HostPort}/{config.Metadata.Name}");
+    var ksailRegistryUri = new Uri($"oci://localhost:{_config.Spec.Registries.First().HostPort}/{_config.Metadata.Name}");
 
-    Console.WriteLine($"📥 Pushing manifests to {config.Spec?.Registries?.First().Name} on '{ksailRegistryUri}'");
-    await _gitOpsProvisioner.PushManifestsAsync(ksailRegistryUri, config.Spec?.ManifestsDirectory!, cancellationToken: cancellationToken).ConfigureAwait(false);
+    Console.WriteLine($"📥 Pushing manifests to {_config.Spec.Registries.First().Name} on '{ksailRegistryUri}'");
+    await _gitOpsProvisioner.PushManifestsAsync(ksailRegistryUri, _config.Spec.ManifestsDirectory, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-    if (config.Spec?.UpdateOptions?.Reconcile == true)
+    if (_config.Spec.UpdateOptions.Reconcile)
     {
-
       Console.WriteLine("");
-      Console.WriteLine("🔄 Reconciling Flux");
+      Console.WriteLine("🔄 Reconciling changes");
       await _gitOpsProvisioner.ReconcileAsync(cancellationToken).ConfigureAwait(false);
     }
     Console.WriteLine("");
+    return 0;
   }
 }

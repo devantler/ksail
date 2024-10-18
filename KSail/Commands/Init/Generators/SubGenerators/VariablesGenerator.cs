@@ -1,6 +1,7 @@
 using System.Globalization;
 using Devantler.KubernetesGenerator.Native.ConfigAndStorage;
 using k8s.Models;
+using KSail.Models;
 
 namespace KSail.Commands.Init.Generators.SubGenerators;
 
@@ -8,34 +9,34 @@ class VariablesGenerator
 {
   readonly ConfigMapGenerator _configMapGenerator = new();
   readonly SecretGenerator _secretGenerator = new();
-  internal async Task GenerateAsync(string name, KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
+  internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken)
   {
-    await GenerateClusterVariables(name, outputPath, cancellationToken).ConfigureAwait(false);
-    await GenerateDistributionVariables(distribution, outputPath, cancellationToken).ConfigureAwait(false);
-    await GenerateGlobalVariables(outputPath, cancellationToken).ConfigureAwait(false);
+    await GenerateClusterVariables(config, cancellationToken).ConfigureAwait(false);
+    await GenerateDistributionVariables(config, cancellationToken).ConfigureAwait(false);
+    await GenerateGlobalVariables(config, cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateClusterVariables(string name, string outputPath, CancellationToken cancellationToken)
+  async Task GenerateClusterVariables(KSailCluster config, CancellationToken cancellationToken)
   {
-    string clusterVariablesPath = Path.Combine(outputPath, "clusters", name, "variables");
+    string clusterVariablesPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "clusters", config.Metadata.Name, "variables");
     if (!Directory.Exists(clusterVariablesPath))
       _ = Directory.CreateDirectory(clusterVariablesPath);
     await GenerateVariablesConfigMap(clusterVariablesPath, "variables-cluster", cancellationToken).ConfigureAwait(false);
     await GenerateVariablesSensitiveSecret(clusterVariablesPath, "variables-sensitive-cluster", cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateDistributionVariables(KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
+  async Task GenerateDistributionVariables(KSailCluster config, CancellationToken cancellationToken)
   {
-    string distributionVariablesPath = Path.Combine(outputPath, "distributions", distribution.ToString().ToLower(CultureInfo.CurrentCulture), "variables");
+    string distributionVariablesPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "distributions", config.Spec.Distribution.ToString().ToLower(CultureInfo.CurrentCulture), "variables");
     if (!Directory.Exists(distributionVariablesPath))
       _ = Directory.CreateDirectory(distributionVariablesPath);
     await GenerateVariablesConfigMap(distributionVariablesPath, "variables-distribution", cancellationToken).ConfigureAwait(false);
     await GenerateVariablesSensitiveSecret(distributionVariablesPath, "variables-sensitive-distribution", cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateGlobalVariables(string outputPath, CancellationToken cancellationToken)
+  async Task GenerateGlobalVariables(KSailCluster config, CancellationToken cancellationToken)
   {
-    string globalVariablesPath = Path.Combine(outputPath, "variables");
+    string globalVariablesPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "variables");
     if (!Directory.Exists(globalVariablesPath))
       _ = Directory.CreateDirectory(globalVariablesPath);
     await GenerateVariablesConfigMap(globalVariablesPath, "variables-shared", cancellationToken).ConfigureAwait(false);

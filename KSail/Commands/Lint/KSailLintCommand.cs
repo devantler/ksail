@@ -6,22 +6,23 @@ namespace KSail.Commands.Lint;
 
 sealed class KSailLintCommand : Command
 {
-  readonly NameOption _clusterNameOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly ManifestsOption _manifestsOption = new() { Arity = ArgumentArity.ZeroOrOne };
   internal KSailLintCommand() : base(
    "lint", "Lint manifests for a cluster"
   )
   {
-    AddOption(_clusterNameOption);
+    AddOption(_nameOption);
     AddOption(_manifestsOption);
     this.SetHandler(async (context) =>
     {
-      string clusterName = context.ParseResult.GetValueForOption(_clusterNameOption)!;
-      string manifests = context.ParseResult.GetValueForOption(_manifestsOption)!;
-      var cancellationToken = context.GetCancellationToken();
+      var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
+      config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
+      config.UpdateConfig("Spec.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsOption));
+
       try
       {
-        context.ExitCode = await KSailLintCommandHandler.HandleAsync(clusterName, manifests, cancellationToken).ConfigureAwait(false);
+        context.ExitCode = await KSailLintCommandHandler.HandleAsync(config, context.GetCancellationToken()).ConfigureAwait(false);
       }
       catch (OperationCanceledException)
       {

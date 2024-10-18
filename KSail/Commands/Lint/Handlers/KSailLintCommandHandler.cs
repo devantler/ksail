@@ -1,3 +1,4 @@
+using KSail.CLIWrappers;
 using KSail.Models;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
@@ -10,7 +11,7 @@ class KSailLintCommandHandler()
   {
     Console.WriteLine("🧹 Linting manifest files");
     await ValidateYamlAsync(config).ConfigureAwait(false);
-    await ValidateKustomizationsAsync(config, cancellationToken).ConfigureAwait(false);
+    _ = await ValidateKustomizationsAsync(config, cancellationToken).ConfigureAwait(false);
     Console.WriteLine("");
   }
 
@@ -52,24 +53,24 @@ class KSailLintCommandHandler()
   // Move the CLI commands to an appropriate CLIWrapper class.
   // Extract methods
   // Consider a helper class
-  static async Task<int> ValidateKustomizationsAsync(KSailCluster config, CancellationToken cancellationToken)
+  static async Task ValidateKustomizationsAsync(KSailCluster config, CancellationToken cancellationToken)
   {
     string[] kubeconformFlags = ["-skip=Secret"];
     string[] kubeconformConfig = ["-strict", "-ignore-missing-schemas", "-schema-location", "default", "-schema-location", "https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json", "-verbose"];
 
-    string clusterPath = $"{manifestsPath}/clusters/{clusterName}";
+    string clusterPath = $"{config.Spec.ManifestsDirectory}/clusters/{config.Metadata.Name}";
     if (!Directory.Exists(clusterPath))
     {
-      Console.WriteLine($"✕ Cluster '{clusterName}' not found in path '{clusterPath}'");
-      return 1;
+      Console.WriteLine($"✕ Cluster '{config.Metadata.Name}' not found in path '{clusterPath}'");
+      return;
     }
-    Console.WriteLine($"► Validating cluster '{clusterName}' with Kubeconform");
+    Console.WriteLine($"► Validating cluster '{config.Metadata.Name}' with Kubeconform");
     foreach (string manifest in Directory.GetFiles(clusterPath, "*.yaml", SearchOption.AllDirectories))
     {
       if (await KubeconformCLIWrapper.RunAsync(kubeconformFlags, kubeconformConfig, manifest, cancellationToken).ConfigureAwait(false) != 0)
       {
         Console.WriteLine($"✕ Validation failed for '{manifest}'");
-        return 1;
+        return;
       }
     }
 
