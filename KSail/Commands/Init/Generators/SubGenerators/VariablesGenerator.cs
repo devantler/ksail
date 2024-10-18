@@ -1,5 +1,4 @@
 using System.Globalization;
-using Devantler.KubernetesGenerator.KSail.Models;
 using Devantler.KubernetesGenerator.Native.ConfigAndStorage;
 using k8s.Models;
 

@@ -1,14 +1,13 @@
 using System.CommandLine;
 using KSail.Commands.Debug.Handlers;
 using KSail.Commands.Debug.Options;
-using KSail.Deserializer;
 using KSail.Options;
 
 namespace KSail.Commands.Debug;
 
 sealed class KSailDebugCommand : Command
 {
-  readonly KSailClusterDeserializer _deserializer = new();
+  readonly KSailClusterConfigLoader _deserializer = new();
   readonly KubeconfigOption _kubeconfigOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly ContextOption _contextOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly EditorOption _editorOption = new() { Arity = ArgumentArity.ZeroOrOne };
@@ -29,9 +28,9 @@ sealed class KSailDebugCommand : Command
     this.SetHandler(async (context) =>
     {
       var config = await _deserializer.LocateAndDeserializeAsync().ConfigureAwait(false);
-      await config.SetConfigValueAsync("Spec.Kubeconfig", context.ParseResult.GetValueForOption(_kubeconfigOption)).ConfigureAwait(false);
-      await config.SetConfigValueAsync("Spec.Context", context.ParseResult.GetValueForOption(_contextOption)).ConfigureAwait(false);
-      await config.SetConfigValueAsync("Spec.DebugOptions.Editor", context.ParseResult.GetValueForOption(_editorOption)).ConfigureAwait(false);
+      config.UpdateConfig("Spec.Kubeconfig", context.ParseResult.GetValueForOption(_kubeconfigOption));
+      config.UpdateConfig("Spec.Context", context.ParseResult.GetValueForOption(_contextOption));
+      config.UpdateConfig("Spec.DebugOptions.Editor", context.ParseResult.GetValueForOption(_editorOption));
 
       var handler = new KSailDebugCommandHandler(config);
       try

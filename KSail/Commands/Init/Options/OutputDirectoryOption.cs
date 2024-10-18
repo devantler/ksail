@@ -2,7 +2,7 @@ using System.CommandLine;
 
 namespace KSail.Commands.Init.Options;
 
-sealed class OutputOption()
+sealed class OutputDirectoryOption()
  : Option<string>(
     ["-o", "--output"],
     () => $"./",

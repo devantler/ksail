@@ -2,13 +2,12 @@
 using System.CommandLine;
 using KSail.Commands.Gen.Handlers.Config;
 using KSail.Commands.Gen.Options;
-using KSail.Deserializer;
 
 namespace KSail.Commands.Gen.Commands.Config;
 
 class KSailGenConfigK3dCommand : Command
 {
-  readonly KSailClusterDeserializer _deserializer = new();
+  readonly KSailClusterConfigLoader _deserializer = new();
   readonly FileOutputOption _outputOption = new("./k3d-config.yaml");
   public KSailGenConfigK3dCommand() : base("k3d", "Generate a 'k3d.io/v1alpha5/Simple' resource.")
   {

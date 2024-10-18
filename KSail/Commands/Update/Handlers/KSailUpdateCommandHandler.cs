@@ -1,4 +1,3 @@
-using Devantler.KubernetesGenerator.KSail.Models;
 using Devantler.KubernetesProvisioner.GitOps.Flux;
 using KSail.Commands.Lint.Handlers;
 

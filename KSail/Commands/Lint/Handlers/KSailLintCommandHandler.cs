@@ -1,4 +1,4 @@
-using Devantler.KubernetesGenerator.KSail.Models;
+using KSail.Models;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
 
@@ -6,7 +6,7 @@ namespace KSail.Commands.Lint.Handlers;
 
 class KSailLintCommandHandler()
 {
-  internal static async Task HandleAsync(KSailCluster config, CancellationToken cancellationToken)
+  internal static async Task<int> HandleAsync(KSailCluster config, CancellationToken cancellationToken)
   {
     Console.WriteLine("🧹 Linting manifest files");
     await ValidateYamlAsync(config).ConfigureAwait(false);
@@ -14,7 +14,7 @@ class KSailLintCommandHandler()
     Console.WriteLine("");
   }
 
-  static Task<int> ValidateYamlAsync(KSailCluster config)
+  static Task ValidateYamlAsync(KSailCluster config)
   {
     Console.WriteLine("► Validating YAML files with YAMLDotNet");
     try

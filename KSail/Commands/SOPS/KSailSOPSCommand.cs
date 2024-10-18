@@ -43,7 +43,7 @@ sealed class KSailSOPSCommand : Command
 
     this.SetHandler(async (context) =>
     {
-      string clusterName = context.ParseResult.GetValueForOption(_clusterNameOption) ?? throw new InvalidOperationException("Cluster name is required");
+      string clusterName = context.ParseResult.GetValueForOption(_clusterNameOption)!;
       bool generateKey = context.ParseResult.GetValueForOption(_generateKeyOption);
       bool showKey = context.ParseResult.GetValueForOption(_showKeyOption);
       bool showPublicKey = context.ParseResult.GetValueForOption(_showPublicKeyOption);

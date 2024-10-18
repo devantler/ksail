@@ -1,9 +1,7 @@
 using System.CommandLine;
-using System.CommandLine.Invocation;
-using Devantler.KubernetesGenerator.KSail.Models;
 using KSail.Commands.Init.Handlers;
 using KSail.Commands.Init.Options;
-using KSail.Deserializer;
+using KSail.Models;
 using KSail.Options;
 using KSail.Validators;
 
@@ -11,15 +9,15 @@ namespace KSail.Commands.Init;
 
 sealed class KSailInitCommand : Command
 {
-  readonly NameOption _clusterNameOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly OutputOption _outputOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly OutputDirectoryOption _outputDirectoryOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly SOPSOption _sopsOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly DistributionOption _distributionOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly GitOpsToolOption _gitOpsToolOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly ComponentsOption _componentsOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly HelmReleasesOption _helmReleasesOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly TemplateOption _templateOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly KSailClusterDeserializer _kSailClusterConfigDeserializer = new();
+  readonly KSailClusterConfigLoader _kSailClusterConfigDeserializer = new();
 
   public KSailInitCommand() : base("init", "Initialize a cluster")
   {
@@ -30,17 +28,17 @@ sealed class KSailInitCommand : Command
 
     this.SetHandler(async (context) =>
     {
-      await config.SetConfigValueAsync("metadata.name", context.ParseResult.GetValueForOption(_clusterNameOption)!).ConfigureAwait(false);
-      await config.SetConfigValueAsync("spec.manifestsPath", context.ParseResult.GetValueForOption(_outputOption)!).ConfigureAwait(false);
-      await config.SetConfigValueAsync("spec.sops", context.ParseResult.GetValueForOption(_sopsOption)!).ConfigureAwait(false);
-      await config.SetConfigValueAsync("spec.distribution", context.ParseResult.GetValueForOption(_distributionOption)!).ConfigureAwait(false);
-      await config.SetConfigValueAsync("spec.gitOpsTool", context.ParseResult.GetValueForOption(_gitOpsToolOption)!).ConfigureAwait(false);
-      await config.SetConfigValueAsync("spec.initOptions.components", context.ParseResult.GetValueForOption(_componentsOption)!).ConfigureAwait(false);
-      await config.SetConfigValueAsync("spec.initOptions.helmReleases", context.ParseResult.GetValueForOption(_helmReleasesOption)!).ConfigureAwait(false);
-      await config.SetConfigValueAsync("spec.initOptions.template", context.ParseResult.GetValueForOption(_templateOption)!).ConfigureAwait(false);
+      config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
+      config.UpdateConfig("Spec.Sops", context.ParseResult.GetValueForOption(_sopsOption));
+      config.UpdateConfig("Spec.Distribution", context.ParseResult.GetValueForOption(_distributionOption));
+      config.UpdateConfig("Spec.GitOpsTool", context.ParseResult.GetValueForOption(_gitOpsToolOption));
+      config.UpdateConfig("Spec.InitOptions.OutputDirectory", context.ParseResult.GetValueForOption(_outputDirectoryOption));
+      config.UpdateConfig("Spec.InitOptions.Components", context.ParseResult.GetValueForOption(_componentsOption));
+      config.UpdateConfig("Spec.InitOptions.HelmReleases", context.ParseResult.GetValueForOption(_helmReleasesOption));
+      config.UpdateConfig("Spec.InitOptions.Template", context.ParseResult.GetValueForOption(_templateOption));
       try
       {
-        var handler = new KSailInitCommandHandler(CreateOptions(context, config));
+        var handler = new KSailInitCommandHandler(config);
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
       }
       catch (OperationCanceledException)
@@ -52,32 +50,19 @@ sealed class KSailInitCommand : Command
 
   void AddOptions()
   {
-    AddOption(_clusterNameOption);
+    AddOption(_nameOption);
     AddOption(_componentsOption);
     AddOption(_distributionOption);
     AddOption(_helmReleasesOption);
-    AddOption(_outputOption);
+    AddOption(_outputDirectoryOption);
     AddOption(_sopsOption);
     AddOption(_templateOption);
   }
 
   void AddValidators(KSailCluster config)
   {
-    AddValidator(new ClusterNameOptionValidator(config, _clusterNameOption).Validate);
+    AddValidator(new NameOptionValidator(config, _nameOption).Validate);
     AddValidator(new DistributionOptionValidator(config, _distributionOption).Validate);
-  }
 
-  KSailInitCommandHandlerOptions CreateOptions(InvocationContext context, KSailCluster config)
-  {
-    return new KSailInitCommandHandlerOptions
-    {
-      ClusterName = config.Metadata.Name,
-      Distribution = (KSailKubernetesDistribution)config.Spec?.Distribution!,
-      OutputPath = context.ParseResult.GetValueForOption(_outputOption)!,
-      Template = context.ParseResult.GetValueForOption(_templateOption),
-      EnableSOPS = context.ParseResult.GetValueForOption(_sopsOption),
-      IncludeComponents = context.ParseResult.GetValueForOption(_componentsOption),
-      IncludeHelmReleases = context.ParseResult.GetValueForOption(_helmReleasesOption),
-    };
   }
 }

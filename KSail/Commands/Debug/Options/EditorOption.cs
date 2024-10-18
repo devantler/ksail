@@ -5,5 +5,6 @@ namespace KSail.Commands.Debug.Options;
 
 sealed class EditorOption() : Option<Editor>(
   ["--editor", "-e"],
+  () => Editor.Nano,
   "Editor to use"
 );

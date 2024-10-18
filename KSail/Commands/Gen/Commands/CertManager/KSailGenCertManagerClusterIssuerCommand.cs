@@ -15,11 +15,11 @@ class KSailGenCertManagerClusterIssuerCommand : Command
 
     this.SetHandler(async (context) =>
       {
-        context.ParseResult.RootCommandResult.GetValueForOption(_outputOption).ConfigureAwait(false);
-        var handler = new KSailGenCertManagerClusterIssuerCommandHandler(config);
+        string outputPath = context.ParseResult.RootCommandResult.GetValueForOption(_outputOption)!;
+        var handler = new KSailGenCertManagerClusterIssuerCommandHandler();
         try
         {
-          await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
+          await handler.HandleAsync(outputPath, context.GetCancellationToken()).ConfigureAwait(false);
         }
         catch (OperationCanceledException)
         {

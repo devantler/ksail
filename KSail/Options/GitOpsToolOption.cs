@@ -1,5 +1,5 @@
 using System.CommandLine;
-using Devantler.KubernetesGenerator.KSail.Models;
+using KSail.Models;
 
 namespace KSail.Options;
 

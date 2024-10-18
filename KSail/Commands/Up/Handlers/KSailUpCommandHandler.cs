@@ -2,7 +2,6 @@ using System.Globalization;
 using System.Resources;
 using Devantler.ContainerEngineProvisioner.Docker;
 using Devantler.KeyManager.Local.Age;
-using Devantler.KubernetesGenerator.KSail.Models;
 using Devantler.KubernetesProvisioner.Cluster.Core;
 using Devantler.KubernetesProvisioner.Cluster.K3d;
 using Devantler.KubernetesProvisioner.Cluster.Kind;
@@ -13,6 +12,7 @@ using k8s;
 using KSail.Commands.Check.Handlers;
 using KSail.Commands.Lint.Handlers;
 using KSail.Commands.Update.Handlers;
+using KSail.Models;
 
 namespace KSail.Commands.Up.Handlers;
 

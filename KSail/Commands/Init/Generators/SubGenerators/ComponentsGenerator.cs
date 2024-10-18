@@ -1,4 +1,3 @@
-using Devantler.KubernetesGenerator.KSail.Models.Init;
 using Devantler.KubernetesGenerator.Kustomize;
 using Devantler.KubernetesGenerator.Kustomize.Models;
 using Devantler.KubernetesGenerator.Kustomize.Models.Patches;

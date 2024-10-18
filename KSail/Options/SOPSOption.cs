@@ -1,6 +1,6 @@
 using System.CommandLine;
 
-namespace KSail.Commands.Init.Options;
+namespace KSail.Options;
 
 class SOPSOption() : Option<bool>(
   ["--sops"],

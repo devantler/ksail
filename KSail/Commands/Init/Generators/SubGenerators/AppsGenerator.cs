@@ -2,7 +2,6 @@ using System.Globalization;
 using Devantler.KubernetesGenerator.Flux;
 using Devantler.KubernetesGenerator.Flux.Models;
 using Devantler.KubernetesGenerator.Flux.Models.Sources;
-using Devantler.KubernetesGenerator.KSail.Models;
 using Devantler.KubernetesGenerator.Kustomize;
 using Devantler.KubernetesGenerator.Kustomize.Models;
 using Devantler.KubernetesGenerator.Native.Cluster;
@@ -16,7 +15,7 @@ class AppsGenerator
   readonly NamespaceGenerator _namespaceGenerator = new();
   readonly FluxHelmReleaseGenerator _helmReleaseGenerator = new();
   readonly FluxHelmRepositoryGenerator _helmRepositoryGenerator = new();
-  internal async Task GenerateAsync(string name, KSailKubernetesDistribution distribution, string outputPath, CancellationToken cancellationToken)
+  internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken)
   {
     await GenerateClusterApps(name, distribution, outputPath, cancellationToken).ConfigureAwait(false);
     await GenerateDistributionApps(distribution, outputPath, cancellationToken).ConfigureAwait(false);

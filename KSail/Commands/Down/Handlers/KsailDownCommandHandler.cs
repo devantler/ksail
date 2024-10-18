@@ -1,8 +1,8 @@
 using Devantler.ContainerEngineProvisioner.Docker;
-using Devantler.KubernetesGenerator.KSail.Models;
 using Devantler.KubernetesProvisioner.Cluster.Core;
 using Devantler.KubernetesProvisioner.Cluster.K3d;
 using Devantler.KubernetesProvisioner.Cluster.Kind;
+using KSail.Models;
 
 namespace KSail.Commands.Down.Handlers;
 
@@ -15,25 +15,24 @@ class KSailDownCommandHandler
   internal KSailDownCommandHandler(KSailCluster config)
   {
     _config = config;
-    _containerEngineProvisioner = _config.Spec?.ContainerEngine switch
+    _containerEngineProvisioner = _config.Spec.ContainerEngine switch
     {
       KSailContainerEngine.Docker => new DockerProvisioner(),
-      null => new DockerProvisioner(),
-      _ => throw new NotSupportedException($"Container engine '{_config.Spec?.ContainerEngine}' is not supported.")
+      _ => throw new NotSupportedException($"Container engine '{_config.Spec.ContainerEngine}' is not supported.")
     };
-    _kubernetesDistributionProvisioner = _config.Spec?.Distribution switch
+    _kubernetesDistributionProvisioner = _config.Spec.Distribution switch
     {
       KSailKubernetesDistribution.K3d => new K3dProvisioner(),
       KSailKubernetesDistribution.Kind => new KindProvisioner(),
-      _ => throw new NotSupportedException($"Kubernetes distribution '{_config.Spec?.ContainerEngine}' is not supported.")
+      _ => throw new NotSupportedException($"Kubernetes distribution '{_config.Spec.ContainerEngine}' is not supported.")
     };
   }
 
   internal async Task<int> HandleAsync(CancellationToken cancellationToken = default)
   {
-    Console.WriteLine($"🔥 Destroying cluster '{_config.Spec?.Distribution}-{_config.Metadata.Name}'");
+    Console.WriteLine($"🔥 Destroying cluster '{_config.Spec.Distribution}-{_config.Metadata.Name}'");
     await _kubernetesDistributionProvisioner.DeprovisionAsync(_config.Metadata.Name, cancellationToken).ConfigureAwait(false);
-    if (_config.Spec?.DownOptions?.Registries == true)
+    if (_config.Spec.DownOptions.Registries)
     {
       await DeleteRegistriesAsync(cancellationToken).ConfigureAwait(false);
     }
@@ -44,7 +43,7 @@ class KSailDownCommandHandler
 
   async Task DeleteRegistriesAsync(CancellationToken cancellationToken)
   {
-    foreach (var registry in _config.Spec?.Registries!)
+    foreach (var registry in _config.Spec.Registries)
     {
       await _containerEngineProvisioner.DeleteRegistryAsync(registry.Name, cancellationToken).ConfigureAwait(false);
     }

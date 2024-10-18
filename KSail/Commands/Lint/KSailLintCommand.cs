@@ -16,9 +16,8 @@ sealed class KSailLintCommand : Command
     AddOption(_manifestsOption);
     this.SetHandler(async (context) =>
     {
-      string clusterName = context.ParseResult.GetValueForOption(_clusterNameOption) ?? throw new InvalidOperationException("Cluster name is required");
-      string manifests = context.ParseResult.GetValueForOption(_manifestsOption) ??
-        throw new InvalidOperationException("🚨 Manifests path is 'null'");
+      string clusterName = context.ParseResult.GetValueForOption(_clusterNameOption)!;
+      string manifests = context.ParseResult.GetValueForOption(_manifestsOption)!;
       var cancellationToken = context.GetCancellationToken();
       try
       {

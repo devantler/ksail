@@ -1,3 +1,4 @@
+# pragma warning disable CS1716
 namespace KSail.Models.Commands.Stop;
 
 /// <summary>

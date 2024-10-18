@@ -2,7 +2,6 @@
 using System.CommandLine;
 using KSail.Commands.Gen.Handlers.CertManager;
 using KSail.Commands.Gen.Options;
-using KSail.Exceptions;
 
 namespace KSail.Commands.Gen.Commands.CertManager;
 
@@ -15,7 +14,7 @@ class KSailGenCertManagerCertificateCommand : Command
 
     this.SetHandler(async (context) =>
       {
-        string? outputPath = context.ParseResult.RootCommandResult.GetValueForOption(_outputOption) ?? throw new KSailException("Output path is not set.");
+        string outputPath = context.ParseResult.RootCommandResult.GetValueForOption(_outputOption)!;
         var handler = new KSailGenCertManagerCertificateCommandHandler();
         try
         {

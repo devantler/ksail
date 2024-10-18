@@ -1,10 +1,10 @@
 using System.CommandLine.Parsing;
-using Devantler.KubernetesGenerator.KSail.Models;
+using KSail.Models;
 using KSail.Options;
 
 namespace KSail.Validators;
 
-class ClusterNameOptionValidator(KSailCluster config, NameOption clusterNameOption)
+class NameOptionValidator(KSailCluster config, NameOption clusterNameOption)
 {
   internal void Validate(CommandResult symbolResult)
   {

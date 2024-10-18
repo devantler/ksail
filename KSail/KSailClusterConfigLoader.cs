@@ -1,0 +1,50 @@
+using Devantler.KubernetesGenerator.Core.Converters;
+using KSail.Models;
+using YamlDotNet.Serialization;
+using YamlDotNet.Serialization.NamingConventions;
+using YamlDotNet.System.Text.Json;
+
+namespace KSail;
+
+class KSailClusterConfigLoader
+{
+  readonly IDeserializer _deserializer = new DeserializerBuilder()
+    .WithTypeInspector(inner => new SystemTextJsonTypeInspector(inner))
+    .WithTypeConverter(new IntstrIntOrStringTypeConverter())
+    .WithTypeConverter(new ResourceQuantityTypeConverter())
+    .WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
+
+  internal async Task<KSailCluster> LocateAndDeserializeAsync()
+  {
+    var ksailClusterConfig = new KSailCluster();
+    string currentDirectory = Directory.GetCurrentDirectory();
+    string[] possibleFiles = [
+      "ksail-cluster.yaml",
+      "ksail-config.yaml",
+      "ksail.yaml",
+      ".ksail.yaml"
+    ];
+    string? ksailYaml = FindConfigFile(currentDirectory, possibleFiles);
+
+    if (ksailYaml != null)
+      ksailClusterConfig = _deserializer.Deserialize<KSailCluster>(await File.ReadAllTextAsync(ksailYaml).ConfigureAwait(false));
+    return ksailClusterConfig;
+  }
+
+  static string? FindConfigFile(string startDirectory, string[] possibleFiles)
+  {
+    string? currentDirectory = startDirectory;
+    while (currentDirectory != null)
+    {
+      foreach (string file in possibleFiles)
+      {
+        string filePath = Path.Combine(currentDirectory, file);
+        if (File.Exists(filePath))
+          return filePath;
+      }
+      var parentDirectory = Directory.GetParent(currentDirectory);
+      currentDirectory = parentDirectory?.FullName;
+    }
+    return null;
+  }
+}

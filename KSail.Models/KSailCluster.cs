@@ -18,7 +18,7 @@ public class KSailCluster
   /// <summary>
   /// The metadata of the KSail Cluster object.
   /// </summary>
-  public V1ObjectMeta Metadata { get; set; } = new() { Name = "default" };
+  public V1ObjectMeta Metadata { get; set; } = new() { Name = "ksail-default" };
   /// <summary>
   /// The spec of the KSail Cluster object.
   /// </summary>

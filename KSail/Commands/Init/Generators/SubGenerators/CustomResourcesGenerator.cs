@@ -2,7 +2,6 @@ using System.Globalization;
 using Devantler.KubernetesGenerator.CertManager;
 using Devantler.KubernetesGenerator.CertManager.Models;
 using Devantler.KubernetesGenerator.CertManager.Models.IssuerRef;
-using Devantler.KubernetesGenerator.KSail.Models;
 using Devantler.KubernetesGenerator.Kustomize;
 using Devantler.KubernetesGenerator.Kustomize.Models;
 using k8s.Models;

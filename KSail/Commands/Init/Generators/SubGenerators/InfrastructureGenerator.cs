@@ -3,7 +3,6 @@ using Devantler.KubernetesGenerator.Flux;
 using Devantler.KubernetesGenerator.Flux.Models;
 using Devantler.KubernetesGenerator.Flux.Models.Dependencies;
 using Devantler.KubernetesGenerator.Flux.Models.Sources;
-using Devantler.KubernetesGenerator.KSail.Models;
 using Devantler.KubernetesGenerator.Kustomize;
 using Devantler.KubernetesGenerator.Kustomize.Models;
 using Devantler.KubernetesGenerator.Native.Cluster;

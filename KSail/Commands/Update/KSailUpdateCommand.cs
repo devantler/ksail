@@ -28,9 +28,8 @@ sealed class KSailUpdateCommand : Command
       IKubernetesClusterProvisioner clusterProvisioner = new K3dProvisioner();
       var gitOpsProvisioner = new FluxProvisioner();
 
-      string clusterName = context.ParseResult.GetValueForOption(_clusterNameOption) ?? throw new InvalidOperationException("Cluster name is not set");
-      string manifests = context.ParseResult.GetValueForOption(_manifestsOption) ??
-        throw new InvalidOperationException("🚨 Manifests path is 'null'");
+      string clusterName = context.ParseResult.GetValueForOption(_clusterNameOption);
+      string manifests = context.ParseResult.GetValueForOption(_manifestsOption);
       bool noLint = context.ParseResult.GetValueForOption(_noLintOption);
       bool noReconcile = context.ParseResult.GetValueForOption(_noReconcileOption);
 

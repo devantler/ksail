@@ -1,18 +1,14 @@
 using Devantler.KubernetesGenerator.CertManager;
 using Devantler.KubernetesGenerator.CertManager.Models;
-using Devantler.KubernetesGenerator.KSail.Models;
 using k8s.Models;
 
 namespace KSail.Commands.Gen.Handlers.CertManager;
 
 class KSailGenCertManagerClusterIssuerCommandHandler
 {
-  readonly KSailCluster _config;
   readonly CertManagerClusterIssuerGenerator _generator = new();
 
-  internal KSailGenCertManagerClusterIssuerCommandHandler(KSailCluster config) => _config = config;
-
-  internal async Task HandleAsync(CancellationToken cancellationToken = default)
+  internal async Task HandleAsync(string outputPath, CancellationToken cancellationToken)
   {
     var clusterIssuer = new CertManagerClusterIssuer
     {
@@ -27,6 +23,6 @@ class KSailGenCertManagerClusterIssuerCommandHandler
 
       }
     };
-    await _generator.GenerateAsync(clusterIssuer, _config.Spec?.ManifestsDirectory!, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _generator.GenerateAsync(clusterIssuer, outputPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 }

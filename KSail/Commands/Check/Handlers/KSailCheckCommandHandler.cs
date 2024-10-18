@@ -1,9 +1,9 @@
 using System.Diagnostics;
-using Devantler.KubernetesGenerator.KSail.Models;
 using Devantler.KubernetesProvisioner.Resources.Native;
 using k8s;
 using k8s.Models;
 using KSail.Commands.Check.Extensions;
+using KSail.Models;
 
 namespace KSail.Commands.Check.Handlers;
 
@@ -20,16 +20,18 @@ class KSailCheckCommandHandler : IDisposable
   internal KSailCheckCommandHandler(KSailCluster config)
   {
     _config = config;
-    _resourceProvisioner = new KubernetesResourceProvisioner(_config.Spec?.Context);
+    _resourceProvisioner = new KubernetesResourceProvisioner(_config.Spec.Context);
   }
 
   internal async Task<int> HandleAsync(CancellationToken cancellationToken)
   {
     var responseTask = _resourceProvisioner.ListKustomizationsWithHttpMessagesAsync();
-    await foreach (var (_, kustomization) in responseTask.WatchAsync<V1CustomResourceDefinition, object>(cancellationToken: cancellationToken))
+    await foreach (
+      var (_, kustomization) in
+        responseTask.WatchAsync<V1CustomResourceDefinition, object>(cancellationToken: cancellationToken)
+    )
     {
-      string? kustomizationName = kustomization?.Metadata.Name ??
-        throw new InvalidOperationException("🚨 Kustomization name is null");
+      string kustomizationName = kustomization?.Metadata.Name!;
       var statusConditions = kustomization?.Status.Conditions;
       if (statusConditions is null)
       {
@@ -46,9 +48,12 @@ class KSailCheckCommandHandler : IDisposable
         {
           continue;
         }
-        else if (_stopwatch.Elapsed.TotalSeconds >= _config.Spec?.Timeout)
+        else if (_stopwatch.Elapsed.TotalSeconds >= _config.Spec.Timeout)
         {
-          Console.WriteLine($"✕ Kustomization '{kustomizationName}' did not become ready within the specified time limit of {_config.Spec?.Timeout} seconds.");
+          Console.WriteLine(
+            $"✕ Kustomization '{kustomizationName}' did not become ready within the specified time limit of" +
+            $"{_config.Spec.Timeout} seconds."
+          );
           foreach (var statusCondition in statusConditions)
           {
             string? message = statusCondition.Message;
@@ -124,7 +129,9 @@ class KSailCheckCommandHandler : IDisposable
   void HandleReadyStatus(string kustomizationName)
   {
     var timeElapsed = _stopwatch.Elapsed;
-    Console.WriteLine($"✔ Kustomization '{kustomizationName}' is ready! ({timeElapsed.Minutes}m {timeElapsed.Seconds}s)");
+    Console.WriteLine(
+      $"✔ Kustomization '{kustomizationName}' is ready! ({timeElapsed.Minutes}m {timeElapsed.Seconds}s)"
+    );
     _ = _successfulKustomizations.Add(kustomizationName);
     _stopwatch.Restart();
   }

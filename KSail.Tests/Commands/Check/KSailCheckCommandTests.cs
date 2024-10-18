@@ -1,6 +1,7 @@
 using System.CommandLine;
 using System.CommandLine.IO;
 using KSail.Commands.Check;
+using KSail.Exceptions;
 
 namespace KSail.Tests.Commands.Check;
 
@@ -31,28 +32,6 @@ public class KSailCheckCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(1, exitCode);
     _ = await Verify(console.Error.ToString() + console.Out);
-  }
-
-  /// <summary>
-  /// Tests that the <c>ksail check</c> command fails when given an empty kubeconfig path.
-  /// </summary>
-  [Fact]
-  public async Task KSailCheck_GivenNoKubeconfigPath_Fails()
-  {
-    //Arrange
-    var console = new TestConsole();
-    var ksailCheckCommand = new KSailCheckCommand();
-
-    //Act
-    try
-    {
-      _ = await ksailCheckCommand.InvokeAsync("--kubeconfig ", console);
-    }
-    catch (InvalidOperationException exception)
-    {
-      //Assert
-      _ = await Verify(exception.Message);
-    }
   }
 
   /// <summary>
