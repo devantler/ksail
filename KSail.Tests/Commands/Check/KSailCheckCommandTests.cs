@@ -1,7 +1,6 @@
 using System.CommandLine;
 using System.CommandLine.IO;
 using KSail.Commands.Check;
-using KSail.Exceptions;
 
 namespace KSail.Tests.Commands.Check;
 

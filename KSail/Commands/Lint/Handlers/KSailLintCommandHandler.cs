@@ -2,16 +2,17 @@ using KSail.CLIWrappers;
 using KSail.Models;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
+using YamlDotNet.Serialization;
 
 namespace KSail.Commands.Lint.Handlers;
 
 class KSailLintCommandHandler()
 {
-  internal static async Task<int> HandleAsync(KSailCluster config, CancellationToken cancellationToken)
+  internal static async Task HandleAsync(KSailCluster config, CancellationToken cancellationToken)
   {
     Console.WriteLine("🧹 Linting manifest files");
     await ValidateYamlAsync(config).ConfigureAwait(false);
-    _ = await ValidateKustomizationsAsync(config, cancellationToken).ConfigureAwait(false);
+    await ValidateKustomizationsAsync(config, cancellationToken).ConfigureAwait(false);
     Console.WriteLine("");
   }
 
@@ -36,17 +37,14 @@ class KSailLintCommandHandler()
         }
         catch (YamlException)
         {
-          Console.WriteLine($"✕ Validation failed for {manifest}");
-          return Task.FromResult(1);
+          throw new KSailException("YAML validation failed for {manifest}");
         }
       }
     }
     catch (ArgumentException e)
     {
-      Console.WriteLine($"✕ An error occurred while validating YAML files: {e.Message}");
-      return Task.FromResult(1);
+      throw new KSailException($"An error occurred while validating YAML files: {e.Message}");
     }
-    return Task.FromResult(0);
   }
 
   //TODO: Refactor the ValidateKustomizationsAsync method
@@ -61,16 +59,14 @@ class KSailLintCommandHandler()
     string clusterPath = $"{config.Spec.ManifestsDirectory}/clusters/{config.Metadata.Name}";
     if (!Directory.Exists(clusterPath))
     {
-      Console.WriteLine($"✕ Cluster '{config.Metadata.Name}' not found in path '{clusterPath}'");
-      return;
+      throw new KSailException($"Cluster '{config.Metadata.Name}' not found in path '{clusterPath}'");
     }
     Console.WriteLine($"► Validating cluster '{config.Metadata.Name}' with Kubeconform");
     foreach (string manifest in Directory.GetFiles(clusterPath, "*.yaml", SearchOption.AllDirectories))
     {
       if (await KubeconformCLIWrapper.RunAsync(kubeconformFlags, kubeconformConfig, manifest, cancellationToken).ConfigureAwait(false) != 0)
       {
-        Console.WriteLine($"✕ Validation failed for '{manifest}'");
-        return;
+        throw new KSailException($"Validation failed for '{manifest}'");
       }
     }
 
@@ -86,8 +82,7 @@ class KSailLintCommandHandler()
       var (exitCode, _) = await CLIRunner.RunAsync(cmd, cancellationToken).ConfigureAwait(false);
       if (exitCode != 0)
       {
-        Console.WriteLine($"✕ Validation failed for '{kustomizationPath}'");
-        return 1;
+        throw new KSailException($"Validation failed for '{kustomizationPath}'");
       }
     }
     return 0;

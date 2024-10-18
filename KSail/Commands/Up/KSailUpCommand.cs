@@ -1,7 +1,4 @@
 using System.CommandLine;
-using Devantler.ContainerEngineProvisioner.Docker;
-using Devantler.KubernetesProvisioner.Cluster.K3d;
-using Devantler.KubernetesProvisioner.GitOps.Flux;
 using KSail.Commands.Up.Handlers;
 using KSail.Commands.Up.Options;
 using KSail.Options;
@@ -16,7 +13,7 @@ sealed class KSailUpCommand : Command
   readonly KustomizationsOption _kustomizationsOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly TimeoutOption _timeoutOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly SOPSOption _sopsOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly SkipLintingOption _skipLintingOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly LintOption _lintOption = new() { Arity = ArgumentArity.ZeroOrOne };
   internal KSailUpCommand() : base("up", "Provision a cluster")
   {
     AddOption(_nameOption);
@@ -25,7 +22,7 @@ sealed class KSailUpCommand : Command
     AddOption(_kustomizationsOption);
     AddOption(_timeoutOption);
     AddOption(_sopsOption);
-    AddOption(_skipLintingOption);
+    AddOption(_lintOption);
 
     AddValidator(result =>
     {
@@ -48,34 +45,19 @@ sealed class KSailUpCommand : Command
     });
     this.SetHandler(async (context) =>
     {
-      var containerEngineProvisioner = new DockerProvisioner();
-      var kubernetesDistributionProvisioner = new K3dProvisioner();
-      var gitOpsProvisioner = new FluxProvisioner();
+      var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
+      config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
+      config.UpdateConfig("Spec.ConfigPath", context.ParseResult.GetValueForOption(_configOption));
+      config.UpdateConfig("Spec.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsOption));
+      config.UpdateConfig("Spec.KustomizationDirectory", context.ParseResult.GetValueForOption(_kustomizationsOption));
+      config.UpdateConfig("Spec.Timeout", context.ParseResult.GetValueForOption(_timeoutOption));
+      config.UpdateConfig("Spec.Sops", context.ParseResult.GetValueForOption(_sopsOption));
+      config.UpdateConfig("Spec.UpOptions.Lint", context.ParseResult.GetValueForOption(_lintOption));
 
-      string clusterName = context.ParseResult.GetValueForOption(_nameOption);
-      string config = context.ParseResult.GetValueForOption(_configOption);
-      string manifests = context.ParseResult.GetValueForOption(_manifestsOption)!;
-      string kustomizations = context.ParseResult.GetValueForOption(_kustomizationsOption)!;
-      int timeout = context.ParseResult.GetValueForOption(_timeoutOption);
-      bool noSOPS = context.ParseResult.GetValueForOption(_sopsOption);
-      bool skipLintingOption = context.ParseResult.GetValueForOption(_skipLintingOption);
-
-      config = $"{clusterName}-{config}";
-
-      var cancellationToken = context.GetCancellationToken();
-      var handler = new KSailUpCommandHandler(containerEngineProvisioner, kubernetesDistributionProvisioner, gitOpsProvisioner);
+      var handler = new KSailUpCommandHandler(config);
       try
       {
-        context.ExitCode = await handler.HandleAsync(
-          clusterName,
-          config,
-          manifests,
-          kustomizations,
-          timeout,
-          noSOPS,
-          skipLintingOption,
-          cancellationToken
-        ).ConfigureAwait(false);
+        context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
       }
       catch (OperationCanceledException)
       {

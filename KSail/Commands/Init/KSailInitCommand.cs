@@ -61,7 +61,7 @@ sealed class KSailInitCommand : Command
   void AddValidators(KSailCluster config)
   {
     AddValidator(new NameOptionValidator(config, _nameOption).Validate);
-    AddValidator(new DistributionOptionValidator(config, _distributionOption).Validate);
+    AddValidator(new DistributionOptionValidator(_distributionOption).Validate);
 
   }
 }

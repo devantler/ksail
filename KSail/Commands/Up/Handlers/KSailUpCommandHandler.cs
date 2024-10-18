@@ -24,7 +24,7 @@ class KSailUpCommandHandler : IDisposable
   readonly KubernetesResourceProvisioner _resourceProvisioner;
   readonly KSailUpdateCommandHandler _ksailUpdateCommandHandler;
   readonly LocalAgeKeyManager _keyManager = new();
-
+  readonly KSailCluster _config;
 
   internal KSailUpCommandHandler(KSailCluster config)
   {
@@ -46,14 +46,22 @@ class KSailUpCommandHandler : IDisposable
     };
     _resourceProvisioner = new KubernetesResourceProvisioner(config.Spec.Context);
     _ksailUpdateCommandHandler = new KSailUpdateCommandHandler(config);
+    _config = config;
   }
 
-  internal async Task<int> HandleAsync(KSailCluster config, CancellationToken cancellationToken)
+  internal async Task<int> HandleAsync(CancellationToken cancellationToken)
   {
-    if (!await CheckContainerEngineIsUp(config, cancellationToken).ConfigureAwait(false))
+    Console.WriteLine($"🐳 Checking {_config.Spec.ContainerEngine} is running");
+    if (await CheckContainerEngineIsUp(cancellationToken).ConfigureAwait(false))
     {
-      return 1;
+      Console.WriteLine($"✔ {_config.Spec.ContainerEngine} is running");
     }
+    else
+    {
+      throw new KSailException($"{_config.Spec.ContainerEngine} is not running");
+    }
+    Console.WriteLine("");
+
     await CreateRegistries(config, cancellationToken).ConfigureAwait(false);
     await KSailLintCommandHandler.HandleAsync(config, cancellationToken).ConfigureAwait(false);
     await ProvisionCluster(config, cancellationToken).ConfigureAwait(false);
@@ -62,31 +70,11 @@ class KSailUpCommandHandler : IDisposable
 
     await _ksailUpdateCommandHandler.HandleAsync(config, cancellationToken).ConfigureAwait(false);
     return 0;
+
   }
 
-  async Task<bool> CheckContainerEngineIsUp(KSailCluster config, CancellationToken cancellationToken)
-  {
-    bool containerEngineIsUp = await _containerEngineProvisioner.CheckReadyAsync(cancellationToken).ConfigureAwait(false);
-    switch (config.Spec.ContainerEngine)
-    {
-      case KSailContainerEngine.Docker:
-        Console.WriteLine("🐳 Checking Docker is running");
-        if (containerEngineIsUp)
-        {
-          Console.WriteLine("✔ Docker is running");
-        }
-        else
-        {
-          Console.WriteLine("✕ Docker is not running");
-          return false;
-        }
-        Console.WriteLine("");
-        break;
-      default:
-        throw new NotSupportedException($"Container engine type '{config.Spec.ContainerEngine}' is not supported yet");
-    }
-    return true;
-  }
+  async Task<bool> CheckContainerEngineIsUp(CancellationToken cancellationToken) =>
+    await _containerEngineProvisioner.CheckReadyAsync(cancellationToken).ConfigureAwait(false);
 
   async Task CreateRegistries(KSailCluster config, CancellationToken cancellationToken)
   {

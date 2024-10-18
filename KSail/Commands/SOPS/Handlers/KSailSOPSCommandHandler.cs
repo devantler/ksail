@@ -26,8 +26,7 @@ class KSailSOPSCommandHandler() : IDisposable
       case (false, false, false, false, "", "", "", not null):
         return await HandleExport(clusterName, export, cancellationToken).ConfigureAwait(false);
       default:
-        Console.WriteLine("✕ More than one option specified");
-        return 1;
+        throw new KSailException("More than one option specified");
     }
   }
 
@@ -48,8 +47,7 @@ class KSailSOPSCommandHandler() : IDisposable
     var (exitCode, privateKey) = await _keyManager.GetPrivateKeyAsync(KeyType.Age, clusterName, cancellationToken).ConfigureAwait(false);
     if (exitCode != 0)
     {
-      Console.WriteLine("✕ Private SOPS key not found");
-      return 1;
+      throw new KSailException("Private SOPS key not found");
     }
     Console.WriteLine(privateKey);
     return 0;
@@ -60,8 +58,7 @@ class KSailSOPSCommandHandler() : IDisposable
     var (exitCode, publicKey) = await _LocalProvisioner.GetPublicKeyAsync(KeyType.Age, clusterName, cancellationToken).ConfigureAwait(false);
     if (exitCode != 0)
     {
-      Console.WriteLine("✕ Public SOPS key not found");
-      return 1;
+      throw new KSailException("Public SOPS key not found");
     }
     Console.WriteLine(publicKey);
     return 0;
@@ -72,7 +69,7 @@ class KSailSOPSCommandHandler() : IDisposable
 
   }
 
-  static async Task<int> HandleEncrypt(string encrypt, string clusterName, CancellationToken cancellationToken)
+  static async Task HandleEncrypt(string encrypt, string clusterName, CancellationToken cancellationToken)
   {
 #pragma warning disable CA1308 // Normalize strings to uppercase
     clusterName = clusterName.ToLowerInvariant();
@@ -81,11 +78,9 @@ class KSailSOPSCommandHandler() : IDisposable
     string masterKeyPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", $"{clusterName}.agekey");
     if (await SOPSCLIWrapper.EncryptAsync(encrypt, masterKeyPath, cancellationToken).ConfigureAwait(false) != 0)
     {
-      Console.WriteLine("✕ SOPS encryption failed");
-      return 1;
+      throw new KSailException("SOPS encryption failed");
     }
     Console.WriteLine($"✔ '{encrypt}' encrypted");
-    return 0;
   }
 
   static async Task<int> HandleImport(string clusterName, string import, CancellationToken cancellationToken)

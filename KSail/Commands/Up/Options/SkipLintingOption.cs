@@ -2,8 +2,8 @@ using System.CommandLine;
 
 namespace KSail.Commands.Up.Options;
 
-sealed class SkipLintingOption() : Option<bool>(
- ["--skip-linting", "-sl"],
-  () => false,
-  "Skip linting of manifests"
+sealed class LintOption() : Option<bool>(
+ ["--lint", "-l"],
+  () => true,
+  "Lint the manifests before applying them"
 );

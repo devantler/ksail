@@ -18,7 +18,7 @@ class KSailGenCertManagerCertificateCommand : Command
         var handler = new KSailGenCertManagerCertificateCommandHandler();
         try
         {
-          await handler.HandleAsync(outputPath, context.GetCancellationToken()).ConfigureAwait(false);
+          context.ExitCode = await handler.HandleAsync(outputPath, context.GetCancellationToken()).ConfigureAwait(false);
         }
         catch (OperationCanceledException)
         {
