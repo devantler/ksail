@@ -19,7 +19,6 @@ class KSailGenConfigK3dCommandHandler(string outputFile)
       }
     };
 
-    Console.WriteLine($"✚ Generating {_outputFile}");
     await _generator.GenerateAsync(k3dConfig, _outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);
     return 0;
   }

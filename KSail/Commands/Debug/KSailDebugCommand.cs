@@ -34,10 +34,13 @@ sealed class KSailDebugCommand : Command
       var handler = new KSailDebugCommandHandler(config);
       try
       {
+        Console.WriteLine($"🔍 Debugging cluster with K9s and '{config.Spec.DebugOptions.Editor}' set as the editor.");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
+        Console.WriteLine("");
       }
       catch (OperationCanceledException)
       {
+        Console.WriteLine("✕ Operation was canceled by the user.");
         context.ExitCode = 1;
       }
     });

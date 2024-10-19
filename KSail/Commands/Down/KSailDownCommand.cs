@@ -26,10 +26,13 @@ sealed class KSailDownCommand : Command
       var handler = new KSailDownCommandHandler(config);
       try
       {
+        Console.WriteLine($"🔥 Destroying cluster '{config.Spec.Distribution}-{config.Metadata.Name}'");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
+        Console.WriteLine("");
       }
       catch (OperationCanceledException)
       {
+        Console.WriteLine("✕ Operation was canceled by the user.");
         context.ExitCode = 1;
       }
     });

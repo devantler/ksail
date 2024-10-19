@@ -7,7 +7,7 @@ class KSailGenNativeClusterNetworkPolicyCommandHandler
 {
   readonly NetworkPolicyGenerator _generator = new();
 
-  internal async Task HandleAsync(string outputPath, CancellationToken cancellationToken)
+  internal async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken)
   {
     var model = new V1NetworkPolicy()
     {
@@ -43,7 +43,8 @@ class KSailGenNativeClusterNetworkPolicyCommandHandler
         ]
       }
     };
-    await _generator.GenerateAsync(model, outputPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _generator.GenerateAsync(model, outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);
+    return 0;
   }
 }
 

@@ -1,4 +1,4 @@
-# pragma warning disable CS1716
+# pragma warning disable CA1716
 namespace KSail.Models.Commands.Stop;
 
 /// <summary>

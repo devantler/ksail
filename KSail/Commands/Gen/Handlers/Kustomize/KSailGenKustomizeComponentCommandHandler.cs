@@ -6,7 +6,7 @@ namespace KSail.Commands.Gen.Handlers.Kustomize;
 class KSailGenKustomizeComponentCommandHandler
 {
   readonly KustomizeComponentGenerator _generator = new();
-  public async Task HandleAsync(string outputPath, CancellationToken cancellationToken = default)
+  public async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken = default)
   {
     var kustomizeComponent = new KustomizeComponent()
     {
@@ -16,6 +16,7 @@ class KSailGenKustomizeComponentCommandHandler
       SecretGenerator = []
     };
 
-    await _generator.GenerateAsync(kustomizeComponent, outputPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _generator.GenerateAsync(kustomizeComponent, outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);
+    return 0;
   }
 }

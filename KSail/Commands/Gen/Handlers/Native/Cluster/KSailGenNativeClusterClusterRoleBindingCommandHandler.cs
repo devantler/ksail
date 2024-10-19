@@ -7,7 +7,7 @@ namespace KSail.Commands.Gen.Handlers.Native.Cluster;
 class KSailGenNativeClusterClusterRoleBindingCommandHandler
 {
   readonly ClusterRoleBindingGenerator _generator = new();
-  internal async Task HandleAsync(string outputPath, CancellationToken cancellationToken)
+  internal async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken)
   {
     var model = new V1ClusterRoleBinding()
     {
@@ -33,6 +33,7 @@ class KSailGenNativeClusterClusterRoleBindingCommandHandler
         ApiGroup = "rbac.authorization.k8s.io",
       }
     };
-    await _generator.GenerateAsync(model, outputPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _generator.GenerateAsync(model, outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);
+    return 0;
   }
 }

@@ -7,15 +7,24 @@ namespace KSail.Commands.Gen.Commands.Config;
 
 class KSailGenConfigKSailCommand : Command
 {
-  readonly FileOutputOption _outputOption = new("./ksail-config.yaml");
+  readonly FileOutputOption _fileOutputOption = new("./ksail-config.yaml");
   readonly KSailGenConfigKSailCommandHandler _handler = new();
   public KSailGenConfigKSailCommand() : base("ksail", "Generate a 'ksail.io/v1alpha1/Cluster' resource.")
   {
-    AddOption(_outputOption);
+    AddOption(_fileOutputOption);
     this.SetHandler(async (context) =>
       {
-        string outputPath = context.ParseResult.GetValueForOption(_outputOption) ?? throw new ArgumentNullException(nameof(_outputOption));
-        await _handler.HandleAsync(outputPath, context.GetCancellationToken()).ConfigureAwait(false);
+        string outputFile = context.ParseResult.GetValueForOption(_fileOutputOption)!;
+        try
+        {
+          Console.WriteLine($"✚ Generating {outputFile}");
+          context.ExitCode = await _handler.HandleAsync(outputFile, context.GetCancellationToken()).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+          Console.WriteLine("✕ Operation was canceled by the user.");
+          context.ExitCode = 1;
+        }
       }
     );
   }

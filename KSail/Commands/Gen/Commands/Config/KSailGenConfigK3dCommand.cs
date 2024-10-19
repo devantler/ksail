@@ -18,6 +18,7 @@ class KSailGenConfigK3dCommand : Command
       var handler = new KSailGenConfigK3dCommandHandler(outputFile);
       try
       {
+        Console.WriteLine($"✚ Generating {outputFile}");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
       }
       catch (OperationCanceledException)

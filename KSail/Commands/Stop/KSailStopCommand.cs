@@ -6,20 +6,21 @@ namespace KSail.Commands.Stop;
 
 sealed class KSailStopCommand : Command
 {
-  readonly NameOption _clusterNameArgument = new();
+  readonly NameOption _nameOption = new();
 
   internal KSailStopCommand() : base("stop", "Stop a cluster")
   {
-    AddArgument(_clusterNameArgument);
+    AddOption(_nameOption);
 
     this.SetHandler(async (context) =>
     {
-      string clusterName = context.ParseResult.GetValueForArgument(_clusterNameArgument);
+      var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
+      config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
 
-      var cancellationToken = context.GetCancellationToken();
+      var handler = new KSailStopCommandHandler(config);
       try
       {
-        context.ExitCode = await KSailStopCommandHandler.HandleAsync(clusterName, cancellationToken).ConfigureAwait(false);
+        context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
       }
       catch (OperationCanceledException)
       {

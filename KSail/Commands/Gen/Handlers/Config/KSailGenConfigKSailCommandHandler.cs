@@ -7,10 +7,10 @@ namespace KSail.Commands.Gen.Handlers.Config;
 class KSailGenConfigKSailCommandHandler
 {
   readonly KSailClusterGenerator _ksailClusterGenerator = new();
-  internal async Task HandleAsync(string outputPath, CancellationToken cancellationToken)
+  internal async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken)
   {
     var ksailCluster = new KSailCluster();
-    await _ksailClusterGenerator.GenerateAsync(ksailCluster, outputPath, cancellationToken: cancellationToken).ConfigureAwait(false);
-    Console.WriteLine($"✚ Generating {outputPath}");
+    await _ksailClusterGenerator.GenerateAsync(ksailCluster, outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);
+    return 0;
   }
 }

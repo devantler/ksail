@@ -33,10 +33,13 @@ sealed class KSailCheckCommand : Command
       var handler = new KSailCheckCommandHandler(config);
       try
       {
+        Console.WriteLine("🔍 Checking cluster status");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
+        Console.WriteLine("");
       }
       catch (OperationCanceledException)
       {
+        Console.WriteLine("✕ Operation was canceled by the user.");
         context.ExitCode = 1;
       }
     });

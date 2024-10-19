@@ -8,7 +8,7 @@ namespace KSail.Commands.Gen.Handlers.Flux;
 class KSailGenFluxKustomizationCommandHandler
 {
   readonly FluxKustomizationGenerator _generator = new();
-  public async Task<int> HandleAsync(string outputPath, CancellationToken cancellationToken = default)
+  public async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken = default)
   {
     var fluxKustomization = new FluxKustomization
     {
@@ -34,7 +34,7 @@ class KSailGenFluxKustomizationCommandHandler
       }
     };
 
-    await _generator.GenerateAsync(fluxKustomization, outputPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _generator.GenerateAsync(fluxKustomization, outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);
     return 0;
   }
 }

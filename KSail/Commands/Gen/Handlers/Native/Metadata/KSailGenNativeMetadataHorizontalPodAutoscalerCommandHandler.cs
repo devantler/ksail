@@ -6,7 +6,7 @@ namespace KSail.Commands.Gen.Handlers.Native.Metadata;
 class KSailGenNativeMetadataHorizontalPodAutoscalerCommandHandler
 {
   readonly HorizontalPodAutoscalerGenerator _generator = new();
-  internal async Task HandleAsync(string outputPath, CancellationToken cancellationToken = default)
+  internal async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken = default)
   {
     var model = new V2HorizontalPodAutoscaler()
     {
@@ -30,6 +30,7 @@ class KSailGenNativeMetadataHorizontalPodAutoscalerCommandHandler
         Metrics = []
       }
     };
-    await _generator.GenerateAsync(model, outputPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _generator.GenerateAsync(model, outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);
+    return 0;
   }
 }

@@ -6,7 +6,7 @@ namespace KSail.Commands.Gen.Handlers.Config;
 class KSailGenConfigSOPSCommandHandler
 {
   readonly LocalAgeKeyManager _keyManager = new();
-  internal async Task HandleAsync(string outputPath, CancellationToken cancellationToken = default)
+  internal async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken = default)
   {
     var sopsConfig = new SOPSConfig
     {
@@ -21,7 +21,7 @@ class KSailGenConfigSOPSCommandHandler
         }
       ]
     };
-    await _keyManager.CreateSOPSConfigAsync(outputPath, sopsConfig, cancellationToken: cancellationToken).ConfigureAwait(false);
-    Console.WriteLine($"✚ Generating {outputPath}");
+    await _keyManager.CreateSOPSConfigAsync(outputFile, sopsConfig, cancellationToken: cancellationToken).ConfigureAwait(false);
+    return 0;
   }
 }

@@ -22,10 +22,13 @@ sealed class KSailLintCommand : Command
 
       try
       {
+        Console.WriteLine("🧹 Linting manifest files");
         context.ExitCode = await KSailLintCommandHandler.HandleAsync(config, context.GetCancellationToken()).ConfigureAwait(false);
+        Console.WriteLine("");
       }
       catch (OperationCanceledException)
       {
+        Console.WriteLine("✕ Operation was canceled by the user.");
         context.ExitCode = 1;
       }
     });

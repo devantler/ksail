@@ -15,8 +15,17 @@ sealed class KSailGenFluxKustomizationCommand : Command
 
     this.SetHandler(async (context) =>
       {
-        string outputPath = context.ParseResult.GetValueForOption(_outputOption) ?? throw new ArgumentNullException(nameof(_outputOption));
-        context.ExitCode = await _handler.HandleAsync(outputPath, context.GetCancellationToken()).ConfigureAwait(false);
+        string outputFile = context.ParseResult.GetValueForOption(_outputOption) ?? throw new ArgumentNullException(nameof(_outputOption));
+        try
+        {
+          Console.WriteLine($"✚ Generating {outputFile}");
+          context.ExitCode = await _handler.HandleAsync(outputFile, context.GetCancellationToken()).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+          Console.WriteLine("✕ Operation was canceled by the user.");
+          context.ExitCode = 1;
+        }
       }
     );
   }

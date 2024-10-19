@@ -7,7 +7,7 @@ namespace KSail.Commands.Gen.Handlers.Native.ConfigAndStorage;
 class KSailGenNativeConfigAndStorageVolumeAttributesClassCommandHandler
 {
   readonly VolumeAttributesClassGenerator _generator = new();
-  internal async Task HandleAsync(string outputPath, CancellationToken cancellationToken = default)
+  internal async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken = default)
   {
     var model = new V1beta1VolumeAttributesClass
     {
@@ -20,7 +20,8 @@ class KSailGenNativeConfigAndStorageVolumeAttributesClassCommandHandler
       DriverName = "<driverName>",
       Parameters = new Dictionary<string, string>()
     };
-    await _generator.GenerateAsync(model, outputPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _generator.GenerateAsync(model, outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);
+    return 0;
 
   }
 }

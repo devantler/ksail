@@ -7,7 +7,7 @@ namespace KSail.Commands.Gen.Handlers.Native.Cluster;
 class KSailGenNativeClusterAPIServiceCommandHandler
 {
   readonly APIServiceGenerator _generator = new();
-  internal async Task HandleAsync(string outputPath, CancellationToken cancellationToken)
+  internal async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken)
   {
     var model = new V1APIService()
     {
@@ -31,6 +31,7 @@ class KSailGenNativeClusterAPIServiceCommandHandler
       }
     };
 
-    await _generator.GenerateAsync(model, outputPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _generator.GenerateAsync(model, outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);
+    return 0;
   }
 }

@@ -13,7 +13,9 @@ sealed class KSailListCommand : Command
       var handler = new KSailListCommandHandler();
       try
       {
+        Console.WriteLine("📋 Listing active clusters");
         var clusters = await handler.HandleAsync(cancellationToken).ConfigureAwait(false);
+        Console.WriteLine();
       }
       catch (OperationCanceledException)
       {

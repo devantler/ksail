@@ -6,7 +6,7 @@ namespace KSail.Commands.Gen.Handlers.Native.ConfigAndStorage;
 class KSailGenNativeConfigAndStorageSecretCommandHandler
 {
   readonly SecretGenerator _generator = new();
-  internal async Task HandleAsync(string outputPath, CancellationToken cancellationToken = default)
+  internal async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken = default)
   {
     var model = new V1Secret
     {
@@ -20,6 +20,7 @@ class KSailGenNativeConfigAndStorageSecretCommandHandler
       Type = "<type>",
       StringData = new Dictionary<string, string>()
     };
-    await _generator.GenerateAsync(model, outputPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _generator.GenerateAsync(model, outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);
+    return 0;
   }
 }

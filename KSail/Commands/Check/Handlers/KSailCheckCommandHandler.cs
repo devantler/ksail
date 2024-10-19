@@ -42,7 +42,8 @@ class KSailCheckCommandHandler : IDisposable
       {
         if (_successfulKustomizations.Count == _kustomizations.Count)
         {
-          return HandleSuccesfulKustomizations();
+          HandleSuccesfulKustomizations();
+          return 0;
         }
         else if (_successfulKustomizations.Contains(kustomizationName))
         {
@@ -75,7 +76,8 @@ class KSailCheckCommandHandler : IDisposable
         {
           case "Stalled":
           case "Failed" when IsCritical(statusCondition):
-            return HandleFailedStatus(statusCondition, kustomizationName);
+            HandleFailedStatus(statusCondition, kustomizationName);
+            return 1;
           case "Ready":
           case "Healthy":
             break;
@@ -104,13 +106,12 @@ class KSailCheckCommandHandler : IDisposable
   static bool HasDependencies(IList<V1CustomResourceDefinitionCondition> statusConditions) =>
     statusConditions.FirstOrDefault()?.Reason.Equals("DependencyNotReady", StringComparison.Ordinal) ?? false;
 
-  int HandleSuccesfulKustomizations()
+  void HandleSuccesfulKustomizations()
   {
     var totalTimeElapsed = _stopwatchTotal.Elapsed;
     int minutes = totalTimeElapsed.Minutes;
     int seconds = totalTimeElapsed.Seconds;
     Console.WriteLine($"✔ All kustomizations are ready! ({minutes}m {seconds}s)");
-    return 0;
   }
 
   void HandleOtherStatus(string kustomizationName)
@@ -136,11 +137,10 @@ class KSailCheckCommandHandler : IDisposable
     _stopwatch.Restart();
   }
 
-  static int HandleFailedStatus(V1CustomResourceDefinitionCondition statusCondition, string kustomizationName)
+  static void HandleFailedStatus(V1CustomResourceDefinitionCondition statusCondition, string kustomizationName)
   {
     string? message = statusCondition.Message;
     Console.WriteLine($"✕ Kustomization '{kustomizationName}' failed with message: {message}");
-    return 1;
   }
 
   public void Dispose()

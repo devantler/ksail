@@ -19,7 +19,7 @@ class KSailDebugCommandHandler
     }
     catch (K3dException ex)
     {
-      Console.WriteLine($"🚨 K9s failed to start: {ex.Message}");
+      Console.WriteLine($"✕ K9s failed to start: {ex.Message}");
       return 1;
     }
   }

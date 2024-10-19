@@ -1,7 +1,6 @@
 using System.CommandLine;
 using KSail.Commands.Init.Handlers;
 using KSail.Commands.Init.Options;
-using KSail.Models;
 using KSail.Options;
 using KSail.Validators;
 
@@ -20,13 +19,12 @@ sealed class KSailInitCommand : Command
 
   public KSailInitCommand() : base("init", "Initialize a cluster")
   {
-    var config = KSailClusterConfigLoader.LoadAsync().Result;
-
     AddOptions();
-    AddValidators(config);
+    AddValidators();
 
     this.SetHandler(async (context) =>
     {
+      var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
       config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
       config.UpdateConfig("Spec.Sops", context.ParseResult.GetValueForOption(_sopsOption));
       config.UpdateConfig("Spec.Distribution", context.ParseResult.GetValueForOption(_distributionOption));
@@ -35,13 +33,17 @@ sealed class KSailInitCommand : Command
       config.UpdateConfig("Spec.InitOptions.Components", context.ParseResult.GetValueForOption(_componentsOption));
       config.UpdateConfig("Spec.InitOptions.HelmReleases", context.ParseResult.GetValueForOption(_helmReleasesOption));
       config.UpdateConfig("Spec.InitOptions.Template", context.ParseResult.GetValueForOption(_templateOption));
+
+      var handler = new KSailInitCommandHandler(config);
       try
       {
-        var handler = new KSailInitCommandHandler(config);
+        Console.WriteLine($"🗂️ Initializing new cluster configuration in {config.Spec.InitOptions.OutputDirectory}");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
+        Console.WriteLine("");
       }
       catch (OperationCanceledException)
       {
+        Console.WriteLine("✕ Operation was canceled by the user.");
         context.ExitCode = 1;
       }
     });
@@ -58,10 +60,9 @@ sealed class KSailInitCommand : Command
     AddOption(_templateOption);
   }
 
-  void AddValidators(KSailCluster config)
+  void AddValidators()
   {
-    AddValidator(new NameOptionValidator(config, _nameOption).Validate);
+    AddValidator(new NameOptionValidator(_nameOption).Validate);
     AddValidator(new DistributionOptionValidator(_distributionOption).Validate);
-
   }
 }
