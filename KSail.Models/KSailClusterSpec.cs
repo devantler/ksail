@@ -22,7 +22,7 @@ public class KSailClusterSpec
   /// <summary>
   /// The path to the kubeconfig file.
   /// </summary>
-  public string Kubeconfig { get; set; } = "~/.kube/config";
+  public string Kubeconfig { get; set; } = $"{Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)}/.kube/config";
 
   /// <summary>
   /// The kube context.
