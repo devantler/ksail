@@ -10,11 +10,11 @@ public class KSailCluster
   /// <summary>
   /// The API version where the KSail Cluster object is defined.
   /// </summary>
-  public string ApiVersion { get; } = "ksail.io/v1alpha1";
+  public string ApiVersion { get; set; } = "ksail.io/v1alpha1";
   /// <summary>
   /// The KSail Cluster object kind.
   /// </summary>
-  public string Kind { get; } = "Cluster";
+  public string Kind { get; set; } = "Cluster";
   /// <summary>
   /// The metadata of the KSail Cluster object.
   /// </summary>
