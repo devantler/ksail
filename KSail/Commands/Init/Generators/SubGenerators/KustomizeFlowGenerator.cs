@@ -2,6 +2,7 @@
 using Devantler.KubernetesGenerator.Kustomize;
 using Devantler.KubernetesGenerator.Kustomize.Models;
 using KSail.Models;
+using Microsoft.IdentityModel.Tokens;
 
 namespace KSail.Commands.Init.Generators.SubGenerators;
 
@@ -10,6 +11,10 @@ class KustomizeFlowGenerator
   readonly KustomizeKustomizationGenerator _kustomizationGenerator = new();
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken)
   {
+    if (config.Spec.InitOptions.KustomizeHooks.IsNullOrEmpty())
+    {
+      config.Spec.InitOptions.KustomizeHooks = [""];
+    }
     foreach (string currentHook in config.Spec.InitOptions.KustomizeHooks)
     {
       foreach (string currentFlow in config.Spec.InitOptions.KustomizeFlows)

@@ -6,6 +6,7 @@ using Devantler.KubernetesGenerator.Kustomize;
 using Devantler.KubernetesGenerator.Kustomize.Models;
 using k8s.Models;
 using KSail.Models;
+using Microsoft.IdentityModel.Tokens;
 
 namespace KSail.Commands.Init.Generators.SubGenerators;
 
@@ -81,7 +82,7 @@ class FluxSystemGenerator
         Interval = "60m",
         Timeout = "3m",
         RetryInterval = "2m",
-        DependsOn = config.Spec.InitOptions.PostBuildVariables && config.Spec.InitOptions.KustomizeFlows.First() == flow ?
+        DependsOn = config.Spec.InitOptions.PostBuildVariables && !config.Spec.InitOptions.KustomizeFlows.IsNullOrEmpty() && config.Spec.InitOptions.KustomizeFlows.First() == flow ?
           config.Spec.InitOptions.KustomizeHooks.Select(hook => new FluxDependsOn { Name = string.IsNullOrEmpty(hook) ? "variables" : $"variables-{hook}" }).ToList() :
           config.Spec.InitOptions.KustomizeFlows.TakeWhile(f => f != flow).Select(f => new FluxDependsOn { Name = f.Replace('/', '-') }).TakeLast(1).ToList(),
         SourceRef = new FluxKustomizationSpecSourceRef
@@ -89,7 +90,7 @@ class FluxSystemGenerator
           Kind = FluxSource.OCIRepository,
           Name = "flux-system"
         },
-        Path = string.IsNullOrEmpty(config.Spec.InitOptions.KustomizeHooks.First()) ? flow : $"{config.Spec.InitOptions.KustomizeHooks.First()}/{flow}",
+        Path = config.Spec.InitOptions.KustomizeHooks.IsNullOrEmpty() ? flow : $"{config.Spec.InitOptions.KustomizeHooks.First()}/{flow}",
         Prune = true,
         Wait = true
       }
