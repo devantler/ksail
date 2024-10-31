@@ -234,7 +234,7 @@ Or if ye really want to get rid of it for now, ye can run:
 
 ## Related Projects
 
-- **[devantler/homelab](https://github.com/devantler/homelab)** - My personal homelab setup, including an example of how I use KSail to manage my Homelab cluster.
+- **[devantler/homelab](https://github.com/devantler/homelab)** - My personal homelab setup, including an example of how I use KSail.
 
 ## Star History
 
