@@ -25,7 +25,7 @@ class AppsGenerator
 
   async Task GenerateClusterApps(KSailCluster config, CancellationToken cancellationToken)
   {
-    string clusterAppsPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "clusters", config.Metadata.Name, "apps");
+    string clusterAppsPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "k8s", "clusters", config.Metadata.Name, "apps");
     if (!Directory.Exists(clusterAppsPath))
       _ = Directory.CreateDirectory(clusterAppsPath);
     await GenerateClusterAppsKustomization(config.Spec.Distribution, clusterAppsPath, cancellationToken).ConfigureAwait(false);

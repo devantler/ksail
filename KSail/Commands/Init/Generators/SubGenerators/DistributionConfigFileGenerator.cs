@@ -18,7 +18,7 @@ class DistributionConfigFileGenerator
 
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken)
   {
-    string distributionConfigPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, $"{config.Spec.Distribution}-config.yaml");
+    string distributionConfigPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, $"{config.Spec.Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-config.yaml");
     if (File.Exists(distributionConfigPath))
     {
       Console.WriteLine($"✔ Skipping '{distributionConfigPath}', as it already exists.");

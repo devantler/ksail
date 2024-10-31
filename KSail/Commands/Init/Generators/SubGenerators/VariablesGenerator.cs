@@ -18,7 +18,7 @@ class VariablesGenerator
 
   async Task GenerateClusterVariables(KSailCluster config, CancellationToken cancellationToken)
   {
-    string clusterVariablesPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "clusters", config.Metadata.Name, "variables");
+    string clusterVariablesPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "k8s", "clusters", config.Metadata.Name, "variables");
     if (!Directory.Exists(clusterVariablesPath))
       _ = Directory.CreateDirectory(clusterVariablesPath);
     await GenerateVariablesConfigMap(clusterVariablesPath, "variables-cluster", cancellationToken).ConfigureAwait(false);

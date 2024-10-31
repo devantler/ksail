@@ -26,7 +26,7 @@ class InfrastructureGenerator
 
   async Task GenerateClusterInfrastructure(KSailCluster config, CancellationToken cancellationToken)
   {
-    string clusterInfrastructurePath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "clusters", config.Metadata.Name, "infrastructure");
+    string clusterInfrastructurePath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "k8s", "clusters", config.Metadata.Name, "infrastructure");
     if (!Directory.Exists(clusterInfrastructurePath))
       _ = Directory.CreateDirectory(clusterInfrastructurePath);
     await GenerateClusterInfrastructureKustomization(config.Spec.Distribution, clusterInfrastructurePath, cancellationToken).ConfigureAwait(false);

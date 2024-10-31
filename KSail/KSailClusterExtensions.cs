@@ -21,7 +21,7 @@ public static class KSailClusterExtensions
     if (string.IsNullOrEmpty(propertyPath)) throw new ArgumentException("Property path cannot be null or empty.", nameof(propertyPath));
 
     string[] properties = propertyPath.Split('.');
-    object? currentObject = config.Spec;
+    object? currentObject = config;
 
     for (int i = 0; i < properties.Length; i++)
     {

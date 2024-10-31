@@ -24,7 +24,7 @@ class CustomResourcesGenerator
 
   async Task GenerateClusterCustomResources(KSailCluster config, CancellationToken cancellationToken)
   {
-    string clusterCustomResourcesPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "clusters", config.Metadata.Name, "custom-resources");
+    string clusterCustomResourcesPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "k8s", "clusters", config.Metadata.Name, "custom-resources");
     if (!Directory.Exists(clusterCustomResourcesPath))
       _ = Directory.CreateDirectory(clusterCustomResourcesPath);
     await GenerateClusterCustomResourcesKustomization(config.Spec.Distribution, clusterCustomResourcesPath, cancellationToken).ConfigureAwait(false);
