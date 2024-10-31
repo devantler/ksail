@@ -1,23 +1,23 @@
 > [!NOTE]
-> Ahoy, matey! Gather 'round and lend an ear, for a grand overhaul be on the horizon! All them embedded binaries be set to sail into their own .NET project, makin' it smoother fer me to keep 'em shipshape. But beware, this mighty endeavor means KSail won't be seein' any bug fixes or new features 'til the end of the year, as this here voyage will take a few moons to chart right.
+> Ahoy, matey! Gather 'round and lend an ear, for a grand overhaul be on the horizon! All them embedded binaries be set to sail into their own .NET project, makin' it smoother fer me to keep 'em shipshape. But beware, this mighty endeavor means KSail won't be seein' any bug fixes or new features 'til the end of october, as this here voyage will take a few moons to chart right.
 >
 > Keep yer spyglass fixed on the progress at:
 >
-> - [x] [devantler/dotnet-container-engine-provisioner](https://github.com/devantler/dotnet-container-engine-provisioner)
-> - [ ] [devantler/dotnet-kubernetes-provisioner](https://github.com/devantler/dotnet-kubernetes-provisioner)
-> - [x] [devantler/dotnet-cli-runner](https://github.com/devantler/dotnet-cli-runner)
-> - [x] [devantler/dotnet-key-manager](https://github.com/devantler/dotnet-sops-manager)
-> - [x] [devantler/dotnet-keys](https://github.com/devantler/dotnet-keys)
-> - [x] [devantler/dotnet-kubernetes-generator](https://github.com/devantler/dotnet-kubernetes-generator)
-> - [x] [devantler/dotnet-template-engine](https://github.com/devantler/dotnet-template-engine)
-> - [ ] [devantler/dotnet-flux-cli](https://github.com/devantler/dotnet-flux-cli)
-> - [x] [devantler/dotnet-k3d-cli](https://github.com/devantler/dotnet-k3d-cli)
-> - [ ] [devantler/dotnet-k9s-cli](https://github.com/devantler/dotnet-k9s-cli)
-> - [x] [devantler/dotnet-kind-cli](https://github.com/devantler/dotnet-kind-cli)
 > - [ ] [devantler/dotnet-kubeconform-cli](https://github.com/devantler/dotnet-kubeconform-cli)
 > - [ ] [devantler/dotnet-kustomize-cli](https://github.com/devantler/dotnet-kustomize-cli)
 > - [ ] [devantler/dotnet-sops-cli](https://github.com/devantler/dotnet-sops-cli)
 > - [x] [devantler/dotnet-age-cli](https://github.com/devantler/dotnet-age-cli)
+> - [x] [devantler/dotnet-cli-runner](https://github.com/devantler/dotnet-cli-runner)
+> - [x] [devantler/dotnet-container-engine-provisioner](https://github.com/devantler/dotnet-container-engine-provisioner)
+> - [x] [devantler/dotnet-flux-cli](https://github.com/devantler/dotnet-flux-cli)
+> - [x] [devantler/dotnet-k3d-cli](https://github.com/devantler/dotnet-k3d-cli)
+> - [x] [devantler/dotnet-k9s-cli](https://github.com/devantler/dotnet-k9s-cli)
+> - [x] [devantler/dotnet-key-manager](https://github.com/devantler/dotnet-sops-manager)
+> - [x] [devantler/dotnet-keys](https://github.com/devantler/dotnet-keys)
+> - [x] [devantler/dotnet-kind-cli](https://github.com/devantler/dotnet-kind-cli)
+> - [x] [devantler/dotnet-kubernetes-generator](https://github.com/devantler/dotnet-kubernetes-generator)
+> - [x] [devantler/dotnet-kubernetes-provisioner](https://github.com/devantler/dotnet-kubernetes-provisioner)
+> - [x] [devantler/dotnet-template-engine](https://github.com/devantler/dotnet-template-engine)
 
 <div align="center">
   <img width="400px" alt="ksail" align="center" src="./wiki/images/ksail-logo.png" />
@@ -41,6 +41,21 @@
 ├── .github
 │   └── workflows
 ├── .vscode
+├── KSail.Models
+│   ├── Commands
+│   │   ├── Check
+│   │   ├── Debug
+│   │   ├── Down
+│   │   ├── Gen
+│   │   ├── Init
+│   │   ├── Lint
+│   │   ├── List
+│   │   ├── Sops
+│   │   ├── Start
+│   │   ├── Stop
+│   │   ├── Up
+│   │   └── Update
+│   └── Registry
 ├── docs
 │   └── images
 ├── scripts
@@ -113,7 +128,7 @@
         │   └── Update
         └── TestUtils
 
-74 directories
+89 directories
 ```
 
 <!-- readme-tree end -->
@@ -203,25 +218,25 @@ Or if ye really want to get rid of it for now, ye can run:
 
 ## Sub-projects
 
-- **[devantler/dotnet-kubernetes-generator](https://github.com/devantler/dotnet-kubernetes-generator)** - Generators to conjure Kubernetes resources with `ksail init` and `ksail gen`.
-- **[devantler/dotnet-kubernetes-provisioner](https://github.com/devantler/dotnet-kubernetes-provisioner)** - Provisioners to provision Kubernetes clusters and resources.
-- **[devantler/dotnet-container-engine-provisioner](https://github.com/devantler/dotnet-container-engine-provisioner)** - Provisioners to provision resources in container engines like Docker or Podman.
-- **[devantler/dotnet-key-manager](https://github.com/devantler/dotnet-key-manager)** - A key manager to guard yer local Age keys.
-- **[devantler/dotnet-template-engine](https://github.com/devantler/dotnet-template-engine)** - A template engine to support code generation of non-serializable content.
-- **[devantler/dotnet-keys](https://github.com/devantler/dotnet-keys)** - A library with key models, like the Age key model.
-- **[devantler/dotnet-cli-runner](https://github.com/devantler/dotnet-cli-runner)** - An implementation atop CLI Wrap to support runnin' different binaries from C# code.
 - **[devantler/dotnet-age-cli](https://github.com/devantler/dotnet-age-cli)** - A library that embeds and provides an API for the Age CLI.
+- **[devantler/dotnet-cli-runner](https://github.com/devantler/dotnet-cli-runner)** - An implementation atop CLI Wrap to support runnin' different binaries from C# code.
+- **[devantler/dotnet-container-engine-provisioner](https://github.com/devantler/dotnet-container-engine-provisioner)** - Provisioners to provision resources in container engines like Docker or Podman.
 - **[devantler/dotnet-flux-cli](https://github.com/devantler/dotnet-flux-cli)** - A library that embeds and provides an API for the Flux CLI.
 - **[devantler/dotnet-k3d-cli](https://github.com/devantler/dotnet-k3d-cli)** - A library that embeds and provides an API for the K3d CLI.
 - **[devantler/dotnet-k9s-cli](https://github.com/devantler/dotnet-k9s-cli)** - A library that embeds and provides an API for the K9s CLI.
+- **[devantler/dotnet-key-manager](https://github.com/devantler/dotnet-key-manager)** - A key manager to guard yer local Age keys.
+- **[devantler/dotnet-keys](https://github.com/devantler/dotnet-keys)** - A library with key models, like the Age key model.
 - **[devantler/dotnet-kind-cli](https://github.com/devantler/dotnet-kind-cli)** - A library that embeds and provides an API for the Kind CLI.
 - **[devantler/dotnet-kubeconform-cli](https://github.com/devantler/dotnet-kubeconform-cli)** - A library that embeds and provides an API for the Kubeconform CLI.
+- **[devantler/dotnet-kubernetes-generator](https://github.com/devantler/dotnet-kubernetes-generator)** - Generators to conjure Kubernetes resources with `ksail init` and `ksail gen`.
+- **[devantler/dotnet-kubernetes-provisioner](https://github.com/devantler/dotnet-kubernetes-provisioner)** - Provisioners to provision Kubernetes clusters and resources.
 - **[devantler/dotnet-kustomize-cli](https://github.com/devantler/dotnet-kustomize-cli)** - A library that embeds and provides an API for the Kustomize CLI.
 - **[devantler/dotnet-sops-cli](https://github.com/devantler/dotnet-sops-cli)** - A library that embeds and provides an API for the SOPS CLI.
+- **[devantler/dotnet-template-engine](https://github.com/devantler/dotnet-template-engine)** - A template engine to support code generation of non-serializable content.
 
 ## Related Projects
 
-- **[devantler/homelab](https://github.com/devantler/homelab)** - My personal homelab setup, including an example of how I use KSail to manage my Homelab cluster.
+- **[devantler/homelab](https://github.com/devantler/homelab)** - My personal homelab setup, including an example of how I use KSail.
 
 ## Star History
 

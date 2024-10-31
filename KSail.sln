@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KSail.Tests", "KSail.Tests\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KSail.Models", "KSail.Models\KSail.Models.csproj", "{046004DE-276F-40C3-89BF-FFFA7D4CAA08}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KSail.Models", "KSail.Models\KSail.Models.csproj", "{FA417BA4-06F8-4DB7-A276-D76CF8499432}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
