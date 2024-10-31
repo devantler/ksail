@@ -1,6 +1,5 @@
 using System.CommandLine;
 using System.CommandLine.IO;
-using System.Text.RegularExpressions;
 using KSail.Commands.Init;
 
 namespace KSail.Tests.Commands.Init;
@@ -35,14 +34,14 @@ public class KSailInitCommandTests : IAsyncLifetime
   }
 
   /// <summary>
-  /// Tests that the 'ksail init * --output * --template k3d-flux-default' command generates a new cluster configuration in the specified output directory.
+  /// Tests that the 'ksail init * --output * --template simple' command generates a new cluster configuration in the specified output directory.
   /// </summary>
   [Fact]
-  public async Task KSailInitTemplateK3dFluxDefault_SucceedsAndGeneratesClusterConfiguration()
+  public async Task KSailInitTemplateSimple_SucceedsAndGeneratesClusterConfiguration()
   {
     //Arrange
     var ksailCommand = new KSailInitCommand();
-    string outputPath = Path.Combine(Path.GetTempPath(), "ksail-init-k3d-flux-default");
+    string outputPath = Path.Combine(Path.GetTempPath(), "ksail-init-simple");
     if (Directory.Exists(outputPath))
     {
       Directory.Delete(outputPath, true);
@@ -50,7 +49,7 @@ public class KSailInitCommandTests : IAsyncLifetime
     _ = Directory.CreateDirectory(outputPath);
 
     //Act
-    int exitCode = await ksailCommand.InvokeAsync($"test-cluster --output {outputPath} --template K3dFluxDefault");
+    int exitCode = await ksailCommand.InvokeAsync($"--name test-cluster --output {outputPath} --template simple");
 
     //Assert
     Assert.Equal(0, exitCode);
@@ -62,8 +61,6 @@ public class KSailInitCommandTests : IAsyncLifetime
       relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, '/');
       files[relativefilePath] = await File.ReadAllTextAsync(file);
     }
-    // Remove age keys in age: |- from .sops.yaml file
-    files[".sops.yaml"] = Regex.Replace(files[".sops.yaml"], @$"  age: \|-{Environment.NewLine}.+", "  age: ''");
     _ = await Verify(files);
 
     //Cleanup

@@ -2,17 +2,17 @@
   Initialize a cluster
 
 Usage:
-  init <name> [options]
-
-Arguments:
-  <name>  The name of the cluster.
+  init [options]
 
 Options:
-  -d, --distribution <K3d>         The distribution to use for the cluster. [default: K3d]
-  -t, --template <K3dFluxDefault>  The template to use for the initialized cluster. [default: K3dFluxDefault]
-  -o, --output <output>            Location to place the generated cluster output. [default: ./]
-  --version                        Show version information
-  -?, -h, --help                   Show help and usage information
-
+  -n, --name <name>                 The name of the cluster. [default: ksail-default]
+  --components                      Generate components to reduce duplication. [default: False]
+  -d, --distribution <K3d|Kind>     The distribution to use for the cluster. [default: Kind]
+  --helm-releases                   Generate Helm releases for Traefik, Cert-Manager, and PodInfo. [default: False]
+  -o, --output <output>             Location to place the generated cluster output. [default: ./]
+  --sops                            Enable SOPS support. [default: False]
+  -t, --template <Advanced|Simple>  The template to use for the initialized cluster. [default: Simple]
+  --version                         Show version information
+  -?, -h, --help                    Show help and usage information
 
 
