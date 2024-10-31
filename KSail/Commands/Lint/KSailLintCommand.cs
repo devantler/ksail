@@ -19,7 +19,6 @@ sealed class KSailLintCommand : Command
       var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
       config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
       config.UpdateConfig("Spec.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsOption));
-
       try
       {
         Console.WriteLine("🧹 Linting manifest files");
