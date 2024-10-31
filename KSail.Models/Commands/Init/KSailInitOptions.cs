@@ -38,5 +38,5 @@ public class KSailInitOptions
   /// <summary>
   /// The different places that it should be able to hook into the Kustomization flows. For example per cluster or distribution.
   /// </summary>
-  public IEnumerable<string> KustomizeHooks { get; set; } = ["clusters"];
+  public IEnumerable<string> KustomizeHooks { get; set; } = [""];
 }

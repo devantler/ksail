@@ -45,9 +45,9 @@ public class KSailClusterSpec
   public string KustomizationDirectory { get; set; }
 
   /// <summary>
-  /// The path to the configuration file.
+  /// The path to the distribution configuration file.
   /// </summary>
-  public string ConfigPath { get; set; } = "./ksail-cluster.yaml";
+  public string ConfigPath { get; set; }
 
   /// <summary>
   /// The Kubernetes distribution to use.
@@ -146,6 +146,9 @@ public class KSailClusterSpec
   /// Initializes a new instance of the <see cref="KSailClusterSpec"/> class.
   /// </summary>
   /// <param name="name"></param>
-  public KSailClusterSpec(string name) =>
+  public KSailClusterSpec(string name)
+  {
     KustomizationDirectory = $"{ManifestsDirectory}/clusters/{name}/flux-system";
+    ConfigPath = $"{Distribution}-config.yaml";
+  }
 }
