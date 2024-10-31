@@ -1,5 +1,6 @@
 using Devantler.CLIRunner;
-using KSail.CLIWrappers;
+using Devantler.KubeconformCLI;
+using Devantler.KustomizeCLI;
 using KSail.Models;
 using YamlDotNet.Core;
 using YamlDotNet.Core.Events;
@@ -9,13 +10,10 @@ namespace KSail.Commands.Lint.Handlers;
 
 class KSailLintCommandHandler()
 {
-  internal static async Task<int> HandleAsync(KSailCluster config, CancellationToken cancellationToken)
-  {
-    return
-      ValidateYaml(config) ||
-      await ValidateKustomizationsAsync(config, cancellationToken).ConfigureAwait(false) ?
-      0 : 1;
-  }
+  internal static async Task<int> HandleAsync(KSailCluster config, CancellationToken cancellationToken) =>
+    ValidateYaml(config) &&
+    await ValidateKustomizationsAsync(config, cancellationToken).ConfigureAwait(false) ?
+    0 : 1;
 
   static bool ValidateYaml(KSailCluster config)
   {
@@ -38,7 +36,7 @@ class KSailLintCommandHandler()
         }
         catch (YamlException)
         {
-          Console.WriteLine("✕ YAML validation failed for {manifest}");
+          Console.WriteLine($"✕ YAML validation failed for {manifest}");
           return false;
         }
       }
@@ -48,6 +46,8 @@ class KSailLintCommandHandler()
       Console.WriteLine($"✕ An error occurred while validating YAML files: {e.Message}");
       return false;
     }
+    Console.WriteLine("✔ YAML files are valid");
+    Console.WriteLine("");
     return true;
   }
 
@@ -57,9 +57,42 @@ class KSailLintCommandHandler()
   // Consider a helper class
   static async Task<bool> ValidateKustomizationsAsync(KSailCluster config, CancellationToken cancellationToken)
   {
-    string[] kubeconformFlags = ["-skip=Secret"];
+    string[] kubeconformFlags = ["-ignore-filename-pattern=.*\\.sops\\.yaml"];
     string[] kubeconformConfig = ["-strict", "-ignore-missing-schemas", "-schema-location", "default", "-schema-location", "https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json", "-verbose"];
+    bool isValid = await RunKubeconform(config, kubeconformFlags, kubeconformConfig, cancellationToken).ConfigureAwait(false);
 
+    if (!isValid)
+    {
+      return false;
+    }
+
+    isValid = await RunKubeconformAndKustomize(config, kubeconformFlags, kubeconformConfig, cancellationToken).ConfigureAwait(false);
+    return isValid;
+  }
+
+  static async Task<bool> RunKubeconformAndKustomize(KSailCluster config, string[] kubeconformFlags, string[] kubeconformConfig, CancellationToken cancellationToken)
+  {
+    string[] kustomizeFlags = ["--load-restrictor=LoadRestrictionsNone"];
+    const string Kustomization = "kustomization.yaml";
+    Console.WriteLine("► Validating kustomizations with Kustomize and Kubeconform");
+    foreach (string manifest in Directory.GetFiles(config.Spec.ManifestsDirectory, Kustomization, SearchOption.AllDirectories))
+    {
+      string kustomizationPath = manifest.Replace(Kustomization, "", StringComparison.Ordinal);
+      var kustomizeBuildCmd = Kustomize.Command.WithArguments(["build", kustomizationPath, .. kustomizeFlags]);
+      var kubeconformCmd = Kubeconform.Command.WithArguments([.. kubeconformFlags, .. kubeconformConfig]);
+      var cmd = kustomizeBuildCmd | kubeconformCmd;
+      var (exitCode, _) = await CLI.RunAsync(cmd, cancellationToken: cancellationToken).ConfigureAwait(false);
+      if (exitCode != 0)
+      {
+        Console.WriteLine($"✕ Validation failed for '{kustomizationPath}'");
+        return false;
+      }
+    }
+    return true;
+  }
+
+  static async Task<bool> RunKubeconform(KSailCluster config, string[] kubeconformFlags, string[] kubeconformConfig, CancellationToken cancellationToken)
+  {
     string clusterPath = $"{config.Spec.ManifestsDirectory}/clusters/{config.Metadata.Name}";
     if (!Directory.Exists(clusterPath))
     {
@@ -67,28 +100,15 @@ class KSailLintCommandHandler()
       return false;
     }
     Console.WriteLine($"► Validating cluster '{config.Metadata.Name}' with Kubeconform");
-    foreach (string manifest in Directory.GetFiles(clusterPath, "*.yaml", SearchOption.AllDirectories))
+    foreach (string file in Directory.GetFiles(clusterPath, "*.yaml", SearchOption.AllDirectories))
     {
-      if (await KubeconformCLIWrapper.RunAsync(kubeconformFlags, kubeconformConfig, manifest, cancellationToken).ConfigureAwait(false) != 0)
+      try
       {
-        Console.WriteLine($"✕ Validation failed for '{manifest}'");
-        return false;
+        await Kubeconform.RunAsync(file, kubeconformFlags, kubeconformConfig, cancellationToken).ConfigureAwait(false);
       }
-    }
-
-    string[] kustomizeFlags = ["--load-restrictor=LoadRestrictionsNone"];
-    const string Kustomization = "kustomization.yaml";
-    Console.WriteLine("► Validating kustomizations with Kustomize and Kubeconform");
-    foreach (string manifest in Directory.GetFiles(config.Spec.ManifestsDirectory, Kustomization, SearchOption.AllDirectories))
-    {
-      string kustomizationPath = manifest.Replace(Kustomization, "", StringComparison.Ordinal);
-      var kustomizeBuildCmd = KustomizeCLIWrapper.Kustomize.WithArguments(["build", kustomizationPath, .. kustomizeFlags]);
-      var kubeconformCmd = KubeconformCLIWrapper.Kubeconform.WithArguments([.. kubeconformFlags, .. kubeconformConfig]);
-      var cmd = kustomizeBuildCmd | kubeconformCmd;
-      var (exitCode, _) = await CLI.RunAsync(cmd, cancellationToken: cancellationToken).ConfigureAwait(false);
-      if (exitCode != 0)
+      catch (KubeconformException e)
       {
-        Console.WriteLine($"✕ Validation failed for '{kustomizationPath}'");
+        Console.WriteLine($"✕ {e.Message}");
         return false;
       }
     }

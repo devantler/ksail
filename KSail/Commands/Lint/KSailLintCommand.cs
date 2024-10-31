@@ -7,18 +7,18 @@ namespace KSail.Commands.Lint;
 sealed class KSailLintCommand : Command
 {
   readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly ManifestsOption _manifestsOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly PathOption _manifestsPathOption = new("./k8s", " Path to the manifests directory") { Arity = ArgumentArity.ZeroOrOne };
   internal KSailLintCommand() : base(
    "lint", "Lint manifests for a cluster"
   )
   {
     AddOption(_nameOption);
-    AddOption(_manifestsOption);
+    AddOption(_manifestsPathOption);
     this.SetHandler(async (context) =>
     {
       var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
       config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
-      config.UpdateConfig("Spec.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsOption));
+      config.UpdateConfig("Spec.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsPathOption));
       try
       {
         Console.WriteLine("🧹 Linting manifest files");
