@@ -8,7 +8,7 @@ namespace KSail.Commands.Update;
 sealed class KSailUpdateCommand : Command
 {
   readonly NameOption _nameOption = new() { Arity = ArgumentArity.ExactlyOne };
-  readonly ManifestsOption _manifestsOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly PathOption _manifestsPathOption = new("./k8s", "Path to the manifests directory") { Arity = ArgumentArity.ZeroOrOne };
   readonly LintOption _lintOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly ReconcileOption _noReconcileOption = new() { Arity = ArgumentArity.ZeroOrOne };
   internal KSailUpdateCommand() : base(
@@ -17,14 +17,14 @@ sealed class KSailUpdateCommand : Command
   )
   {
     AddOption(_nameOption);
-    AddOption(_manifestsOption);
+    AddOption(_manifestsPathOption);
     AddOption(_lintOption);
     AddOption(_noReconcileOption);
     this.SetHandler(async (context) =>
     {
       var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
       config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
-      config.UpdateConfig("Spec.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsOption));
+      config.UpdateConfig("Spec.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsPathOption));
       config.UpdateConfig("Spec.UpdateOptions.Lint", context.ParseResult.GetValueForOption(_lintOption));
       config.UpdateConfig("Spec.UpdateOptions.Reconcile", context.ParseResult.GetValueForOption(_noReconcileOption));
 
