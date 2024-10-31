@@ -149,6 +149,6 @@ public class KSailClusterSpec
   public KSailClusterSpec(string name)
   {
     KustomizationDirectory = $"{ManifestsDirectory}/clusters/{name}/flux-system";
-    ConfigPath = $"{Distribution}-config.yaml";
+    ConfigPath = $"{Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-config.yaml";
   }
 }
