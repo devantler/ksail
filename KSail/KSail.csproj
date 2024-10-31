@@ -24,17 +24,19 @@
     <PackageReference Include="Devantler.ContainerEngineProvisioner.Docker" Version="0.0.3" />
     <PackageReference Include="Devantler.K9sCLI" Version="0.0.3" />
     <PackageReference Include="Devantler.KeyManager.Local.Age" Version="1.1.15" />
-    <PackageReference Include="Devantler.KubernetesGenerator.CertManager" Version="0.1.5" />
-    <PackageReference Include="Devantler.KubernetesGenerator.Flux" Version="0.1.5" />
-    <PackageReference Include="Devantler.KubernetesGenerator.K3d" Version="0.1.5" />
-    <PackageReference Include="Devantler.KubernetesGenerator.Kind" Version="0.1.5" />
-    <PackageReference Include="Devantler.KubernetesGenerator.KSail" Version="0.1.5" />
-    <PackageReference Include="Devantler.KubernetesGenerator.Kustomize" Version="0.1.5" />
-    <PackageReference Include="Devantler.KubernetesGenerator.Native" Version="0.1.5" />
+    <PackageReference Include="Devantler.KubeconformCLI" Version="0.0.3" />
+    <PackageReference Include="Devantler.KubernetesGenerator.CertManager" Version="0.1.6" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Flux" Version="0.1.6" />
+    <PackageReference Include="Devantler.KubernetesGenerator.K3d" Version="0.1.6" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Kind" Version="0.1.6" />
+    <PackageReference Include="Devantler.KubernetesGenerator.KSail" Version="0.1.6" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Kustomize" Version="0.1.6" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Native" Version="0.1.6" />
     <PackageReference Include="Devantler.KubernetesProvisioner.Cluster.K3d" Version="0.0.10" />
     <PackageReference Include="Devantler.KubernetesProvisioner.Cluster.Kind" Version="0.0.10" />
     <PackageReference Include="Devantler.KubernetesProvisioner.GitOps.Flux" Version="0.0.10" />
-    <PackageReference Include="KSail.Models" Version="1.4.29" />
+    <PackageReference Include="Devantler.KustomizeCLI" Version="0.0.1" />
+    <PackageReference Include="KSail.Models" Version="1.4.30" />
     <PackageReference Include="Spectre.Console" Version="0.49.1" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
   </ItemGroup>
