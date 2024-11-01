@@ -1,5 +1,5 @@
 > [!NOTE]
-> Ahoy, matey! Gather 'round and lend an ear, for a grand overhaul be on the horizon! All them embedded binaries be set to sail into their own .NET project, makin' it smoother fer me to keep 'em shipshape. But beware, this mighty endeavor means KSail won't be seein' any bug fixes or new features 'til the end of october, as this here voyage will take a few moons to chart right.
+> Ahoy, matey! Gather 'round and lend an ear, for a grand overhaul be on the horizon! All them embedded binaries be set to sail into their own .NET project, makin' it smoother fer me to keep 'em shipshape. But beware, this mighty endeavor means KSail won't be seein' any bug fixes or new features 'til the midst of November, as this here voyage will take a few moons to chart right.
 >
 > Keep yer spyglass fixed on the progress at:
 >
