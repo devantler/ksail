@@ -16,8 +16,7 @@ sealed class KSailLintCommand : Command
     AddOption(_manifestsPathOption);
     this.SetHandler(async (context) =>
     {
-      var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
-      config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
+      var config = await KSailClusterConfigLoader.LoadAsync(context.ParseResult.GetValueForOption(_manifestsPathOption), context.ParseResult.GetValueForOption(_nameOption)).ConfigureAwait(false);
       config.UpdateConfig("Spec.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsPathOption));
       try
       {

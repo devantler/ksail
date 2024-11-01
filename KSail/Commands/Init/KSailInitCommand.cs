@@ -24,7 +24,7 @@ sealed class KSailInitCommand : Command
 
     this.SetHandler(async (context) =>
     {
-      var config = await KSailClusterConfigLoader.LoadAsync(context.ParseResult.GetValueForOption(_nameOption)).ConfigureAwait(false);
+      var config = await KSailClusterConfigLoader.LoadAsync(name: context.ParseResult.GetValueForOption(_nameOption)).ConfigureAwait(false);
       config.UpdateConfig("Spec.Sops", context.ParseResult.GetValueForOption(_sopsOption));
       config.UpdateConfig("Spec.Distribution", context.ParseResult.GetValueForOption(_distributionOption));
       config.UpdateConfig("Spec.GitOpsTool", context.ParseResult.GetValueForOption(_gitOpsToolOption));

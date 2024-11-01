@@ -1,6 +1,7 @@
 using Devantler.KubernetesGenerator.Core.Converters;
 using Devantler.KubernetesGenerator.Core.Inspectors;
 using KSail.Models;
+using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using YamlDotNet.System.Text.Json;
@@ -10,17 +11,17 @@ namespace KSail;
 static class KSailClusterConfigLoader
 {
 
-  internal static async Task<KSailCluster> LoadAsync(string? name = default)
+  internal static async Task<KSailCluster> LoadAsync(string? directory = default, string? name = default)
   {
     var ksailClusterConfig = name != null ? new KSailCluster(name) : new KSailCluster();
-    string currentDirectory = Directory.GetCurrentDirectory();
+    directory ??= Directory.GetCurrentDirectory();
     string[] possibleFiles = [
       "ksail-cluster.yaml",
       "ksail-config.yaml",
       "ksail.yaml",
       ".ksail.yaml"
     ];
-    string? ksailYaml = FindConfigFile(currentDirectory, possibleFiles);
+    string? ksailYaml = FindConfigFile(directory, possibleFiles);
 
     if (ksailYaml != null)
     {
@@ -30,7 +31,15 @@ static class KSailClusterConfigLoader
         .WithTypeConverter(new ResourceQuantityTypeConverter())
         .WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
 
-      ksailClusterConfig = deserializer.Deserialize<KSailCluster>(await File.ReadAllTextAsync(ksailYaml).ConfigureAwait(false));
+      try
+      {
+        ksailClusterConfig = deserializer.Deserialize<KSailCluster>(await File.ReadAllTextAsync(ksailYaml).ConfigureAwait(false));
+      }
+      catch (YamlException ex)
+      {
+        Console.WriteLine($"✕ {ex} - {ex.InnerException?.Message}");
+        Environment.Exit(1);
+      }
     }
     return ksailClusterConfig;
   }
