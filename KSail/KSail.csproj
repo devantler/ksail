@@ -36,7 +36,7 @@
     <PackageReference Include="Devantler.KubernetesProvisioner.Cluster.Kind" Version="0.0.10" />
     <PackageReference Include="Devantler.KubernetesProvisioner.GitOps.Flux" Version="0.0.10" />
     <PackageReference Include="Devantler.KustomizeCLI" Version="0.0.1" />
-    <PackageReference Include="KSail.Models" Version="1.4.30" />
+    <PackageReference Include="KSail.Models" Version="1.4.31" />
     <PackageReference Include="Spectre.Console" Version="0.49.1" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
   </ItemGroup>
