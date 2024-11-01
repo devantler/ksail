@@ -34,6 +34,9 @@ public class KSailCluster
   /// Initializes a new instance of the <see cref="KSailCluster"/> class with the specified name.
   /// </summary>
   /// <param name="name"></param>
-  public KSailCluster(string name) =>
+  public KSailCluster(string name)
+  {
+    Metadata.Name = name;
     Spec = new KSailClusterSpec(name);
+  }
 }
