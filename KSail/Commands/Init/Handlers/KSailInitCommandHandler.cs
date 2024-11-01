@@ -10,7 +10,7 @@ class KSailInitCommandHandler(KSailCluster config)
   readonly SOPSConfigFileGenerator _sopsConfigFileGenerator = new();
   readonly KSailClusterConfigGenerator _ksailClusterConfigGenerator = new();
   readonly DistributionConfigFileGenerator _distributionConfigFileGenerator = new();
-  readonly TemplateGenerator _templateGenerator = new();
+  readonly ProjectGenerator _templateGenerator = new();
 
   public async Task<int> HandleAsync(CancellationToken cancellationToken)
   {

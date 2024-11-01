@@ -3,7 +3,7 @@ using KSail.Models;
 
 namespace KSail.Commands.Init.Generators;
 
-class TemplateGenerator
+class ProjectGenerator
 {
   readonly FluxSystemGenerator _fluxSystemGenerator = new();
   readonly KustomizeFlowGenerator _kustomizeFlowGenerator = new();

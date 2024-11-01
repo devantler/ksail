@@ -10,7 +10,7 @@ namespace KSail;
 static class KSailClusterConfigLoader
 {
 
-  internal static async Task<KSailCluster> LoadAsync()
+  internal static async Task<KSailCluster> LoadAsync(string? name)
   {
     var ksailClusterConfig = new KSailCluster();
     string currentDirectory = Directory.GetCurrentDirectory();

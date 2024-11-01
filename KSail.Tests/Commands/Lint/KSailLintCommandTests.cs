@@ -42,15 +42,15 @@ public class KSailLintCommandTests : IAsyncLifetime
   {
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
-    //var ksailLintCommand = new KSailLintCommand();
+    var ksailLintCommand = new KSailLintCommand();
 
     //Act
     string outputPath = Path.Combine(Path.GetTempPath(), "ksail-lint-test-cluster");
     int initExitCode = await ksailInitCommand.InvokeAsync($"--name test-cluster --output {outputPath} --template simple");
-    //int lintExitCode = await ksailLintCommand.InvokeAsync($"--path {outputPath}/k8s");
+    int lintExitCode = await ksailLintCommand.InvokeAsync($"--path {outputPath}/k8s");
 
     //Assert
     Assert.Equal(0, initExitCode);
-    //Assert.Equal(0, lintExitCode);
+    Assert.Equal(0, lintExitCode);
   }
 }

@@ -34,16 +34,21 @@ class KSailLintCommandHandler()
             object? doc = deserializer.Deserialize(parser);
           }
         }
-        catch (YamlException)
+        catch (YamlException e)
         {
-          Console.WriteLine($"✕ YAML validation failed for {manifest}");
+          Console.WriteLine($"✕ {e.Message}");
           return false;
         }
       }
     }
     catch (ArgumentException e)
     {
-      Console.WriteLine($"✕ An error occurred while validating YAML files: {e.Message}");
+      Console.WriteLine($"✕ {e.Message}");
+      return false;
+    }
+    catch (DirectoryNotFoundException e)
+    {
+      Console.WriteLine($"✕ {e.Message}");
       return false;
     }
     Console.WriteLine("✔ YAML files are valid");
