@@ -145,6 +145,15 @@ public class KSailClusterSpec
   /// <summary>
   /// Initializes a new instance of the <see cref="KSailClusterSpec"/> class.
   /// </summary>
+  public KSailClusterSpec()
+  {
+    KustomizationDirectory = "";
+    ConfigPath = $"{Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-config.yaml";
+  }
+
+  /// <summary>
+  /// Initializes a new instance of the <see cref="KSailClusterSpec"/> class.
+  /// </summary>
   /// <param name="name"></param>
   public KSailClusterSpec(string name)
   {
