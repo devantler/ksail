@@ -1,11 +1,8 @@
 > [!NOTE]
-> Ahoy, matey! Gather 'round and lend an ear, for a grand overhaul be on the horizon! All them embedded binaries be set to sail into their own .NET project, makin' it smoother fer me to keep 'em shipshape. But beware, this mighty endeavor means KSail won't be seein' any bug fixes or new features 'til the end of october, as this here voyage will take a few moons to chart right.
+> Ahoy, matey! Gather 'round and lend an ear, for a grand overhaul be on the horizon! All them embedded binaries be set to sail into their own .NET project, makin' it smoother fer me to keep 'em shipshape. But beware, this mighty endeavor means KSail won't be seein' any bug fixes or new features 'til the midst of November, as this here voyage will take a few moons to chart right.
 >
 > Keep yer spyglass fixed on the progress at:
 >
-> - [ ] [devantler/dotnet-kubeconform-cli](https://github.com/devantler/dotnet-kubeconform-cli)
-> - [ ] [devantler/dotnet-kubernetes-validator](https://github.com/devantler/dotnet-kubernetes-validator)
-> - [ ] [devantler/dotnet-kustomize-cli](https://github.com/devantler/dotnet-kustomize-cli)
 > - [ ] [devantler/dotnet-sops-cli](https://github.com/devantler/dotnet-sops-cli)
 > - [x] [devantler/dotnet-age-cli](https://github.com/devantler/dotnet-age-cli)
 > - [x] [devantler/dotnet-cli-runner](https://github.com/devantler/dotnet-cli-runner)
@@ -16,8 +13,10 @@
 > - [x] [devantler/dotnet-key-manager](https://github.com/devantler/dotnet-sops-manager)
 > - [x] [devantler/dotnet-keys](https://github.com/devantler/dotnet-keys)
 > - [x] [devantler/dotnet-kind-cli](https://github.com/devantler/dotnet-kind-cli)
+> - [x] [devantler/dotnet-kubeconform-cli](https://github.com/devantler/dotnet-kubeconform-cli)
 > - [x] [devantler/dotnet-kubernetes-generator](https://github.com/devantler/dotnet-kubernetes-generator)
 > - [x] [devantler/dotnet-kubernetes-provisioner](https://github.com/devantler/dotnet-kubernetes-provisioner)
+> - [x] [devantler/dotnet-kustomize-cli](https://github.com/devantler/dotnet-kustomize-cli)
 > - [x] [devantler/dotnet-template-engine](https://github.com/devantler/dotnet-template-engine)
 
 <div align="center">

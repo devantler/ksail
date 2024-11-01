@@ -29,4 +29,11 @@ public class KSailCluster
   /// </summary>
   public KSailCluster() =>
     Spec = new KSailClusterSpec(Metadata.Name);
+
+  /// <summary>
+  /// Initializes a new instance of the <see cref="KSailCluster"/> class with the specified name.
+  /// </summary>
+  /// <param name="name"></param>
+  public KSailCluster(string name) =>
+    Spec = new KSailClusterSpec(name);
 }
