@@ -27,7 +27,7 @@ sealed class KSailDownCommand : Command
         config.UpdateConfig("Spec.DownOptions.Registries", context.ParseResult.GetValueForOption(_registriesOption));
 
         var handler = new KSailDownCommandHandler(config);
-        Console.WriteLine($"🔥 Destroying cluster '{config.Spec.Distribution}-{config.Metadata.Name}'");
+        Console.WriteLine($"🔥 Destroying cluster '{config.Spec.Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-{config.Metadata.Name}'");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         Console.WriteLine("");
       }

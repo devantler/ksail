@@ -9,6 +9,7 @@ using KSail.Commands.List;
 using KSail.Commands.Root.Handlers;
 using KSail.Commands.Start;
 using KSail.Commands.Stop;
+using KSail.Commands.Up;
 using KSail.Commands.Update;
 using KSail.Utils;
 
@@ -38,17 +39,17 @@ sealed class KSailRootCommand : RootCommand
 
   void AddCommands(IConsole? console)
   {
-    AddCommand(new KSailInitCommand());
-    AddCommand(new KSailGenCommand(console));
+    //AddCommand(new KSailSOPSCommand());
     AddCommand(new KSailCheckCommand());
     AddCommand(new KSailDebugCommand());
     AddCommand(new KSailDownCommand());
+    AddCommand(new KSailGenCommand(console));
+    AddCommand(new KSailInitCommand());
     AddCommand(new KSailLintCommand());
     AddCommand(new KSailListCommand());
-    //AddCommand(new KSailSOPSCommand());
     AddCommand(new KSailStartCommand());
     AddCommand(new KSailStopCommand());
-    //AddCommand(new KSailUpCommand());
+    AddCommand(new KSailUpCommand());
     AddCommand(new KSailUpdateCommand());
   }
 }

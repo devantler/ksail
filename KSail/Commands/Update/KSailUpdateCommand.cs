@@ -30,7 +30,7 @@ sealed class KSailUpdateCommand : Command
         config.UpdateConfig("Spec.UpdateOptions.Reconcile", context.ParseResult.GetValueForOption(_noReconcileOption));
 
         var handler = new KSailUpdateCommandHandler(config);
-        context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
+        context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;
       }
       catch (OperationCanceledException ex)
       {

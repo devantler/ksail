@@ -1,4 +1,5 @@
 using System.CommandLine;
+using Devantler.KindCLI;
 using KSail.Commands.Up.Handlers;
 using KSail.Commands.Up.Options;
 using KSail.Options;
@@ -11,7 +12,7 @@ sealed class KSailUpCommand : Command
   readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly ConfigOption _configOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly PathOption _manifestsPathOption = new("./k8s", " Path to the manifests directory") { Arity = ArgumentArity.ZeroOrOne };
-  readonly PathOption _kustomizationDirectoryOption = new("", " Path to the root kustomization directory") { Arity = ArgumentArity.ZeroOrOne };
+  readonly PathOption _kustomizationDirectoryOption = new("default", " Path to the root kustomization directory", ["--kustomization-path", "-kp"]) { Arity = ArgumentArity.ZeroOrOne };
   readonly TimeoutOption _timeoutOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly SOPSOption _sopsOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly LintOption _lintOption = new() { Arity = ArgumentArity.ZeroOrOne };
@@ -33,7 +34,7 @@ sealed class KSailUpCommand : Command
       config.UpdateConfig("Spec.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsPathOption));
 
       string? kustomizationDirectory = context.ParseResult.GetValueForOption(_kustomizationDirectoryOption);
-      if (!string.IsNullOrEmpty(kustomizationDirectory))
+      if (!string.IsNullOrEmpty(kustomizationDirectory) || kustomizationDirectory == "default")
         config.UpdateConfig("Spec.KustomizationDirectory", context.ParseResult.GetValueForOption(_kustomizationDirectoryOption));
 
       config.UpdateConfig("Spec.Timeout", context.ParseResult.GetValueForOption(_timeoutOption));
@@ -47,6 +48,11 @@ sealed class KSailUpCommand : Command
       }
       catch (OperationCanceledException)
       {
+        context.ExitCode = 1;
+      }
+      catch (KindException ex)
+      {
+        ExceptionHandler.HandleException(ex);
         context.ExitCode = 1;
       }
     });

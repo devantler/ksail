@@ -55,6 +55,7 @@ sealed class KSailInitCommand : Command
   void AddOptions()
   {
     AddOption(_nameOption);
+    AddOption(_declarativeConfigOption);
     AddOption(_componentsOption);
     AddOption(_distributionOption);
     AddOption(_helmReleasesOption);

@@ -10,22 +10,18 @@ namespace KSail.Commands.Check.Handlers;
 class KSailCheckCommandHandler : IDisposable
 {
   readonly KSailCluster _config;
-  readonly KubernetesResourceProvisioner _resourceProvisioner;
   readonly HashSet<string> _kustomizations = [];
   readonly HashSet<string> _successfulKustomizations = [];
   readonly Stopwatch _stopwatch = Stopwatch.StartNew();
   readonly Stopwatch _stopwatchTotal = Stopwatch.StartNew();
   string _lastPrintedMessage = "";
 
-  internal KSailCheckCommandHandler(KSailCluster config)
-  {
-    _config = config;
-    _resourceProvisioner = new KubernetesResourceProvisioner(_config.Spec.Context);
-  }
+  internal KSailCheckCommandHandler(KSailCluster config) => _config = config;
 
   internal async Task<bool> HandleAsync(CancellationToken cancellationToken = default)
   {
-    var responseTask = _resourceProvisioner.ListKustomizationsWithHttpMessagesAsync();
+    using var resourceProvisioner = new KubernetesResourceProvisioner(_config.Spec.Context);
+    var responseTask = resourceProvisioner.ListKustomizationsWithHttpMessagesAsync();
     await foreach (
       var (_, kustomization) in
         responseTask.WatchAsync<V1CustomResourceDefinition, object>(cancellationToken: cancellationToken)
@@ -146,7 +142,6 @@ class KSailCheckCommandHandler : IDisposable
 
   public void Dispose()
   {
-    _resourceProvisioner.Dispose();
     _stopwatch.Stop();
     _stopwatchTotal.Stop();
   }
