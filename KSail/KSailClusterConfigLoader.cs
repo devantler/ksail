@@ -1,7 +1,6 @@
 using Devantler.KubernetesGenerator.Core.Converters;
 using Devantler.KubernetesGenerator.Core.Inspectors;
 using KSail.Models;
-using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using YamlDotNet.System.Text.Json;
@@ -31,15 +30,7 @@ static class KSailClusterConfigLoader
         .WithTypeConverter(new ResourceQuantityTypeConverter())
         .WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
 
-      try
-      {
-        ksailClusterConfig = deserializer.Deserialize<KSailCluster>(await File.ReadAllTextAsync(ksailYaml).ConfigureAwait(false));
-      }
-      catch (YamlException ex)
-      {
-        Console.WriteLine($"✕ {ex} - {ex.InnerException?.Message}");
-        Environment.Exit(1);
-      }
+      ksailClusterConfig = deserializer.Deserialize<KSailCluster>(await File.ReadAllTextAsync(ksailYaml).ConfigureAwait(false));
     }
     return ksailClusterConfig;
   }
