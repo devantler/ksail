@@ -1,8 +1,8 @@
 using System.CommandLine;
 using KSail.Commands.Down.Handlers;
 using KSail.Commands.Down.Options;
-using KSail.Extensions;
 using KSail.Options;
+using KSail.Utils;
 
 namespace KSail.Commands.Down;
 

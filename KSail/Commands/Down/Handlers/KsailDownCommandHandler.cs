@@ -38,7 +38,7 @@ class KSailDownCommandHandler
     return 0;
   }
 
-  async Task DeleteRegistriesAsync(CancellationToken cancellationToken)
+  async Task DeleteRegistriesAsync(CancellationToken cancellationToken = default)
   {
     foreach (var registry in _config.Spec.Registries)
     {
