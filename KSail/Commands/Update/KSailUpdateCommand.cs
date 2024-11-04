@@ -1,8 +1,8 @@
 using System.CommandLine;
 using KSail.Commands.Update.Handlers;
 using KSail.Commands.Update.Options;
-using KSail.Extensions;
 using KSail.Options;
+using KSail.Utils;
 
 namespace KSail.Commands.Update;
 

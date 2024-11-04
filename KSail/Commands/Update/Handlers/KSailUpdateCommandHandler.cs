@@ -21,7 +21,7 @@ class KSailUpdateCommandHandler
     _config = config;
   }
 
-  internal async Task<int> HandleAsync(CancellationToken cancellationToken)
+  internal async Task<bool> HandleAsync(CancellationToken cancellationToken = default)
   {
     if (_config.Spec.UpdateOptions.Lint)
     {
@@ -40,6 +40,6 @@ class KSailUpdateCommandHandler
       await _gitOpsProvisioner.ReconcileAsync(cancellationToken).ConfigureAwait(false);
     }
     Console.WriteLine("");
-    return 0;
+    return true;
   }
 }
