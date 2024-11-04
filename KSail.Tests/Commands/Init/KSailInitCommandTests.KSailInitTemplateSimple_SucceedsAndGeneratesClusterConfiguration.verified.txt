@@ -106,7 +106,7 @@ spec:
   context: default
   timeout: 300
   manifestsDirectory: ./k8s
-  kustomizationDirectory: ./k8s/clusters/ksail-default/flux-system
+  kustomizationDirectory: ./k8s/clusters/test-cluster/flux-system
   configPath: kind-config.yaml
   distribution: kind
   gitOpsTool: flux
