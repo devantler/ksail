@@ -1,6 +1,7 @@
 using Devantler.KubernetesValidator.ClientSide.Schemas;
 using Devantler.KubernetesValidator.ClientSide.YamlSyntax;
 using KSail.Models;
+using KSail.Utils;
 
 namespace KSail.Commands.Lint.Handlers;
 
@@ -9,7 +10,7 @@ class KSailLintCommandHandler()
   readonly YamlSyntaxValidator _yamlSyntaxValidator = new();
   readonly SchemaValidator _schemaValidator = new();
 
-  internal async Task<bool> HandleAsync(KSailCluster config, CancellationToken cancellationToken)
+  internal async Task<bool> HandleAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
     try
     {

@@ -1,7 +1,7 @@
 using System.CommandLine;
 using KSail.Commands.Lint.Handlers;
-using KSail.Extensions;
 using KSail.Options;
+using KSail.Utils;
 
 namespace KSail.Commands.Lint;
 
