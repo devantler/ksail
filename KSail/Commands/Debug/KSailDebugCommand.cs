@@ -1,6 +1,7 @@
 using System.CommandLine;
 using KSail.Commands.Debug.Handlers;
 using KSail.Commands.Debug.Options;
+using KSail.Extensions;
 using KSail.Options;
 
 namespace KSail.Commands.Debug;
@@ -26,21 +27,20 @@ sealed class KSailDebugCommand : Command
     });
     this.SetHandler(async (context) =>
     {
-      var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
-      config.UpdateConfig("Spec.Kubeconfig", context.ParseResult.GetValueForOption(_kubeconfigOption));
-      config.UpdateConfig("Spec.Context", context.ParseResult.GetValueForOption(_contextOption));
-      config.UpdateConfig("Spec.DebugOptions.Editor", context.ParseResult.GetValueForOption(_editorOption));
-
-      var handler = new KSailDebugCommandHandler(config);
       try
       {
-        Console.WriteLine($"🔍 Debugging cluster with K9s and '{config.Spec.DebugOptions.Editor}' set as the editor.");
-        context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
+        var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
+        config.UpdateConfig("Spec.Kubeconfig", context.ParseResult.GetValueForOption(_kubeconfigOption));
+        config.UpdateConfig("Spec.Context", context.ParseResult.GetValueForOption(_contextOption));
+        config.UpdateConfig("Spec.DebugOptions.Editor", context.ParseResult.GetValueForOption(_editorOption));
+
+        var handler = new KSailDebugCommandHandler(config);
+        context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;
         Console.WriteLine("");
       }
-      catch (OperationCanceledException)
+      catch (OperationCanceledException ex)
       {
-        Console.WriteLine("✕ Operation was canceled by the user.");
+        ExceptionHandler.HandleException(ex);
         context.ExitCode = 1;
       }
     });
