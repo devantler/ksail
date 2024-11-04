@@ -9,14 +9,14 @@ class VariablesGenerator
 {
   readonly ConfigMapGenerator _configMapGenerator = new();
   readonly SecretGenerator _secretGenerator = new();
-  internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken)
+  internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
     await GenerateClusterVariables(config, cancellationToken).ConfigureAwait(false);
     await GenerateDistributionVariables(config, cancellationToken).ConfigureAwait(false);
     await GenerateGlobalVariables(config, cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateClusterVariables(KSailCluster config, CancellationToken cancellationToken)
+  async Task GenerateClusterVariables(KSailCluster config, CancellationToken cancellationToken = default)
   {
     string clusterVariablesPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "k8s", "clusters", config.Metadata.Name, "variables");
     if (!Directory.Exists(clusterVariablesPath))
@@ -25,7 +25,7 @@ class VariablesGenerator
     await GenerateVariablesSensitiveSecret(clusterVariablesPath, "variables-sensitive-cluster", cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateDistributionVariables(KSailCluster config, CancellationToken cancellationToken)
+  async Task GenerateDistributionVariables(KSailCluster config, CancellationToken cancellationToken = default)
   {
     string distributionVariablesPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "distributions", config.Spec.Distribution.ToString().ToLower(CultureInfo.CurrentCulture), "variables");
     if (!Directory.Exists(distributionVariablesPath))
@@ -34,7 +34,7 @@ class VariablesGenerator
     await GenerateVariablesSensitiveSecret(distributionVariablesPath, "variables-sensitive-distribution", cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateGlobalVariables(KSailCluster config, CancellationToken cancellationToken)
+  async Task GenerateGlobalVariables(KSailCluster config, CancellationToken cancellationToken = default)
   {
     string globalVariablesPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "variables");
     if (!Directory.Exists(globalVariablesPath))
@@ -43,7 +43,7 @@ class VariablesGenerator
     await GenerateVariablesSensitiveSecret(globalVariablesPath, "variables-sensitive-shared", cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateVariablesConfigMap(string outputPath, string name, CancellationToken cancellationToken)
+  async Task GenerateVariablesConfigMap(string outputPath, string name, CancellationToken cancellationToken = default)
   {
     string variablesConfigMapPath = Path.Combine(outputPath, "variables.yaml");
     if (File.Exists(variablesConfigMapPath))
@@ -66,7 +66,7 @@ class VariablesGenerator
     await _configMapGenerator.GenerateAsync(configMap, variablesConfigMapPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateVariablesSensitiveSecret(string outputPath, string name, CancellationToken cancellationToken)
+  async Task GenerateVariablesSensitiveSecret(string outputPath, string name, CancellationToken cancellationToken = default)
   {
     string variablesSensitiveSecretPath = Path.Combine(outputPath, "variables-sensitive.sops.yaml");
     if (File.Exists(variablesSensitiveSecretPath))

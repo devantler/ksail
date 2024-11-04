@@ -14,7 +14,7 @@ class FluxSystemGenerator
 {
   readonly KustomizeKustomizationGenerator _kustomizeKustomizationGenerator = new();
   readonly FluxKustomizationGenerator _fluxKustomizationGenerator = new();
-  internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken)
+  internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
     string outputDirectory = Path.Combine(config.Spec.InitOptions.OutputDirectory, "k8s", "clusters", config.Metadata.Name, "flux-system");
     if (!Directory.Exists(outputDirectory))
@@ -33,7 +33,7 @@ class FluxSystemGenerator
     }
   }
 
-  async Task GenerateFluxSystemKustomization(KSailCluster config, string outputDirectory, CancellationToken cancellationToken)
+  async Task GenerateFluxSystemKustomization(KSailCluster config, string outputDirectory, CancellationToken cancellationToken = default)
   {
     outputDirectory = Path.Combine(outputDirectory, "kustomization.yaml");
     if (File.Exists(outputDirectory))
@@ -55,7 +55,7 @@ class FluxSystemGenerator
     await _kustomizeKustomizationGenerator.GenerateAsync(kustomization, outputDirectory, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateFluxSystemFluxKustomization(KSailCluster config, string outputDirectory, string flow, CancellationToken cancellationToken)
+  async Task GenerateFluxSystemFluxKustomization(KSailCluster config, string outputDirectory, string flow, CancellationToken cancellationToken = default)
   {
     outputDirectory = Path.Combine(outputDirectory, $"{flow.Replace('/', '-')}.yaml");
     if (File.Exists(outputDirectory))

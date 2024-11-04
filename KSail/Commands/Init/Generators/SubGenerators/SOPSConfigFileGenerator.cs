@@ -9,7 +9,7 @@ class SOPSConfigFileGenerator
 {
   LocalAgeKeyManager LocalAgeKeyManager { get; } = new();
 
-  internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken)
+  internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
     var ageKey = await LocalAgeKeyManager.CreateKeyAsync(cancellationToken).ConfigureAwait(false);
     string sopsConfigPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, ".sops.yaml");
@@ -23,7 +23,7 @@ class SOPSConfigFileGenerator
     }
   }
 
-  async Task GenerateNewSOPSConfigFile(string path, string clusterName, AgeKey ageKey, CancellationToken cancellationToken)
+  async Task GenerateNewSOPSConfigFile(string path, string clusterName, AgeKey ageKey, CancellationToken cancellationToken = default)
   {
     Console.WriteLine($"✚ Generating '{path}'");
     var sopsConfig = new SOPSConfig()
@@ -45,7 +45,7 @@ class SOPSConfigFileGenerator
     await LocalAgeKeyManager.CreateSOPSConfigAsync(path, sopsConfig, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateUpdatedSOPSConfigFile(string path, string clusterName, AgeKey ageKey, CancellationToken cancellationToken)
+  async Task GenerateUpdatedSOPSConfigFile(string path, string clusterName, AgeKey ageKey, CancellationToken cancellationToken = default)
   {
     Console.WriteLine($"✚ Generating and overwriting '{path}'");
     var sopsConfig = await LocalAgeKeyManager.GetSOPSConfigAsync(path, cancellationToken: cancellationToken).ConfigureAwait(false);

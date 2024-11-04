@@ -16,7 +16,7 @@ class DistributionConfigFileGenerator
   readonly K3dConfigGenerator _k3dConfigKubernetesGenerator = new();
   readonly KindConfigGenerator _kindConfigKubernetesGenerator = new();
 
-  internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken)
+  internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
     string distributionConfigPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, $"{config.Spec.Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-config.yaml");
     if (File.Exists(distributionConfigPath))
@@ -37,7 +37,7 @@ class DistributionConfigFileGenerator
     }
   }
 
-  async Task GenerateKindConfigFile(KSailCluster config, string outputPath, CancellationToken cancellationToken)
+  async Task GenerateKindConfigFile(KSailCluster config, string outputPath, CancellationToken cancellationToken = default)
   {
     Console.WriteLine($"✚ Generating '{outputPath}'");
     var kindConfig = new KindConfig
@@ -48,7 +48,7 @@ class DistributionConfigFileGenerator
     await _kindConfigKubernetesGenerator.GenerateAsync(kindConfig, outputPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateK3DConfigFile(KSailCluster config, string outputPath, CancellationToken cancellationToken)
+  async Task GenerateK3DConfigFile(KSailCluster config, string outputPath, CancellationToken cancellationToken = default)
   {
     Console.WriteLine($"✚ Generating '{outputPath}'");
     var mirrors = new StringBuilder();

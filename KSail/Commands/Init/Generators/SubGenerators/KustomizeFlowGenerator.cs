@@ -9,7 +9,7 @@ namespace KSail.Commands.Init.Generators.SubGenerators;
 class KustomizeFlowGenerator
 {
   readonly KustomizeKustomizationGenerator _kustomizationGenerator = new();
-  internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken)
+  internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
     if (config.Spec.InitOptions.KustomizeHooks.IsNullOrEmpty())
     {
@@ -24,7 +24,7 @@ class KustomizeFlowGenerator
     }
   }
 
-  async Task GenerateKustomizeFlowHook(KSailCluster config, string currentHook, string currentFlow, CancellationToken cancellationToken)
+  async Task GenerateKustomizeFlowHook(KSailCluster config, string currentHook, string currentFlow, CancellationToken cancellationToken = default)
   {
     string outputPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "k8s", currentHook, currentFlow);
     if (!Directory.Exists(outputPath))

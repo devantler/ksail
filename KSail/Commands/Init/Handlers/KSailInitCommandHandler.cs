@@ -12,12 +12,15 @@ class KSailInitCommandHandler(KSailCluster config)
   readonly DistributionConfigFileGenerator _distributionConfigFileGenerator = new();
   readonly ProjectGenerator _templateGenerator = new();
 
-  public async Task<int> HandleAsync(CancellationToken cancellationToken)
+  public async Task<int> HandleAsync(CancellationToken cancellationToken = default)
   {
-    await _ksailClusterConfigGenerator.GenerateAsync(
-      _config,
-      cancellationToken
-    ).ConfigureAwait(false);
+    if (_config.Spec.InitOptions.DeclarativeConfig)
+    {
+      await _ksailClusterConfigGenerator.GenerateAsync(
+        _config,
+        cancellationToken
+      ).ConfigureAwait(false);
+    }
 
     await _distributionConfigFileGenerator.GenerateAsync(
       _config,

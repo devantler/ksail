@@ -16,7 +16,7 @@ class HelmReleaseGenerator
   readonly NamespaceGenerator _namespaceGenerator = new();
   readonly FluxHelmReleaseGenerator _helmReleaseGenerator = new();
   readonly FluxHelmRepositoryGenerator _helmRepositoryGenerator = new();
-  internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken)
+  internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
     string appsPath = Path.Combine(config.Spec.ManifestsDirectory, "apps");
     string infrastructurePath = Path.Combine(config.Spec.ManifestsDirectory, "infrastructure");
@@ -33,7 +33,7 @@ class HelmReleaseGenerator
     await GenerateTraefik(infrastructureControllersPath, cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GeneratePodinfo(string outputPath, CancellationToken cancellationToken)
+  async Task GeneratePodinfo(string outputPath, CancellationToken cancellationToken = default)
   {
     string podinfoPath = Path.Combine(outputPath, "podinfo");
     if (!Directory.Exists(podinfoPath))
@@ -45,7 +45,7 @@ class HelmReleaseGenerator
     await GeneratePodInfoHelmRepository(podinfoPath, cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GeneratePodInfoKustomization(string podinfoPath, CancellationToken cancellationToken)
+  async Task GeneratePodInfoKustomization(string podinfoPath, CancellationToken cancellationToken = default)
   {
     string podinfoKustomizationPath = Path.Combine(podinfoPath, "kustomization.yaml");
     if (File.Exists(podinfoKustomizationPath))
@@ -66,7 +66,7 @@ class HelmReleaseGenerator
     await _kustomizationGenerator.GenerateAsync(kustomization, podinfoKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GeneratePodInfoNamespace(string podinfoPath, CancellationToken cancellationToken)
+  async Task GeneratePodInfoNamespace(string podinfoPath, CancellationToken cancellationToken = default)
   {
     string podinfoNamespacePath = Path.Combine(podinfoPath, "namespace.yaml");
     if (File.Exists(podinfoNamespacePath))
@@ -87,7 +87,7 @@ class HelmReleaseGenerator
     await _namespaceGenerator.GenerateAsync(@namespace, podinfoNamespacePath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GeneratePodInfoHelmRelease(string podinfoPath, CancellationToken cancellationToken)
+  async Task GeneratePodInfoHelmRelease(string podinfoPath, CancellationToken cancellationToken = default)
   {
     string podinfoHelmReleasePath = Path.Combine(podinfoPath, "helm-release.yaml");
     if (File.Exists(podinfoHelmReleasePath))
@@ -123,7 +123,7 @@ class HelmReleaseGenerator
     await _helmReleaseGenerator.GenerateAsync(helmRelease, podinfoHelmReleasePath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GeneratePodInfoHelmRepository(string podinfoPath, CancellationToken cancellationToken)
+  async Task GeneratePodInfoHelmRepository(string podinfoPath, CancellationToken cancellationToken = default)
   {
     string podinfoHelmRepositoryPath = Path.Combine(podinfoPath, "helm-repository.yaml");
     if (File.Exists(podinfoHelmRepositoryPath))
@@ -150,7 +150,7 @@ class HelmReleaseGenerator
   }
 
 
-  async Task GenerateCertManager(string outputPath, CancellationToken cancellationToken)
+  async Task GenerateCertManager(string outputPath, CancellationToken cancellationToken = default)
   {
     string certManagerPath = Path.Combine(outputPath, "cert-manager");
     if (!Directory.Exists(certManagerPath))
@@ -254,7 +254,7 @@ class HelmReleaseGenerator
     await _helmRepositoryGenerator.GenerateAsync(certManagerHelmRepository, certManagerHelmRepositoryPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateTraefik(string outputPath, CancellationToken cancellationToken)
+  async Task GenerateTraefik(string outputPath, CancellationToken cancellationToken = default)
   {
     string traefikPath = Path.Combine(outputPath, "traefik");
     if (!Directory.Exists(traefikPath))

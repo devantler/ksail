@@ -1,21 +1,22 @@
 using System.CommandLine;
 using KSail.Commands.Init.Handlers;
 using KSail.Commands.Init.Options;
-using KSail.Extensions;
 using KSail.Options;
+using KSail.Utils;
 using KSail.Validators;
 
 namespace KSail.Commands.Init;
 
 sealed class KSailInitCommand : Command
 {
+  readonly ComponentsOption _componentsOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly DeclarativeConfigOption _declarativeConfigOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly DistributionOption _distributionOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly GitOpsToolOption _gitOpsToolOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly HelmReleasesOption _helmReleasesOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly OutputDirectoryOption _outputDirectoryOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly SOPSOption _sopsOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly DistributionOption _distributionOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly GitOpsToolOption _gitOpsToolOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly ComponentsOption _componentsOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly HelmReleasesOption _helmReleasesOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly TemplateOption _templateOption = new() { Arity = ArgumentArity.ZeroOrOne };
 
   public KSailInitCommand() : base("init", "Initialize a cluster")
@@ -33,6 +34,7 @@ sealed class KSailInitCommand : Command
         config.UpdateConfig("Spec.Distribution", context.ParseResult.GetValueForOption(_distributionOption));
         config.UpdateConfig("Spec.GitOpsTool", context.ParseResult.GetValueForOption(_gitOpsToolOption));
         config.UpdateConfig("Spec.InitOptions.OutputDirectory", context.ParseResult.GetValueForOption(_outputDirectoryOption));
+        config.UpdateConfig("Spec.InitOptions.DeclarativeConfig", context.ParseResult.GetValueForOption(_declarativeConfigOption));
         config.UpdateConfig("Spec.InitOptions.Components", context.ParseResult.GetValueForOption(_componentsOption));
         config.UpdateConfig("Spec.InitOptions.HelmReleases", context.ParseResult.GetValueForOption(_helmReleasesOption));
         config.UpdateConfig("Spec.InitOptions.Template", context.ParseResult.GetValueForOption(_templateOption));
