@@ -1,5 +1,6 @@
 using System.CommandLine;
 using KSail.Commands.Stop.Handlers;
+using KSail.Extensions;
 using KSail.Options;
 
 namespace KSail.Commands.Stop;
@@ -14,7 +15,7 @@ sealed class KSailStopCommand : Command
 
     this.SetHandler(async (context) =>
     {
-      var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
+      var config = await KSailClusterConfigLoader.LoadAsync(name: context.ParseResult.GetValueForOption(_nameOption)).ConfigureAwait(false);
       config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
 
       var handler = new KSailStopCommandHandler(config);
