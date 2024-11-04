@@ -27,7 +27,7 @@ public class KSailClusterSpec
   /// <summary>
   /// The kube context.
   /// </summary>
-  public string Context { get; set; } = "default";
+  public string Context { get; set; }
 
   /// <summary>
   /// The timeout for operations (in seconds).
@@ -147,6 +147,7 @@ public class KSailClusterSpec
   /// </summary>
   public KSailClusterSpec()
   {
+    Context = $"{Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-kind-default";
     KustomizationDirectory = "";
     ConfigPath = $"{Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-config.yaml";
   }
@@ -157,6 +158,7 @@ public class KSailClusterSpec
   /// <param name="name"></param>
   public KSailClusterSpec(string name)
   {
+    Context = $"{Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-{name}";
     KustomizationDirectory = $"{ManifestsDirectory}/clusters/{name}/flux-system";
     ConfigPath = $"{Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-config.yaml";
   }
