@@ -14,8 +14,6 @@ class KSailInitCommandHandler(KSailCluster config)
 
   public async Task<int> HandleAsync(CancellationToken cancellationToken)
   {
-    Console.WriteLine($"📁 Initializing new cluster '{_config.Metadata.Name}' in '{_config.Spec.InitOptions.OutputDirectory}' with the '{_config.Spec.InitOptions.Template}' template.");
-
     await _ksailClusterConfigGenerator.GenerateAsync(
       _config,
       cancellationToken

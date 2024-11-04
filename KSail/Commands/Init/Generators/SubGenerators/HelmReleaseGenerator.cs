@@ -1,4 +1,3 @@
-using System.Globalization;
 using Devantler.KubernetesGenerator.Flux;
 using Devantler.KubernetesGenerator.Flux.Models;
 using Devantler.KubernetesGenerator.Flux.Models.Dependencies;
@@ -11,111 +10,145 @@ using KSail.Models;
 
 namespace KSail.Commands.Init.Generators.SubGenerators;
 
-class InfrastructureGenerator
+class HelmReleaseGenerator
 {
-  readonly KustomizeKustomizationGenerator _kustomizeKustomizationGenerator = new();
+  readonly KustomizeKustomizationGenerator _kustomizationGenerator = new();
   readonly NamespaceGenerator _namespaceGenerator = new();
   readonly FluxHelmReleaseGenerator _helmReleaseGenerator = new();
   readonly FluxHelmRepositoryGenerator _helmRepositoryGenerator = new();
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken)
   {
-    await GenerateClusterInfrastructure(config, cancellationToken).ConfigureAwait(false);
-    await GenerateDistributionInfrastructure(config, cancellationToken).ConfigureAwait(false);
-    await GenerateGlobalInfrastructure(config, cancellationToken).ConfigureAwait(false);
+    string appsPath = Path.Combine(config.Spec.ManifestsDirectory, "apps");
+    string infrastructurePath = Path.Combine(config.Spec.ManifestsDirectory, "infrastructure");
+    string infrastructureControllersPath = Path.Combine(infrastructurePath, "controllers");
+    if (!Directory.Exists(appsPath))
+      _ = Directory.CreateDirectory(appsPath);
+    if (!Directory.Exists(infrastructurePath))
+      _ = Directory.CreateDirectory(infrastructurePath);
+    if (!Directory.Exists(infrastructureControllersPath))
+      _ = Directory.CreateDirectory(infrastructureControllersPath);
+
+    await GeneratePodinfo(appsPath, cancellationToken).ConfigureAwait(false);
+    await GenerateCertManager(infrastructureControllersPath, cancellationToken).ConfigureAwait(false);
+    await GenerateTraefik(infrastructureControllersPath, cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateClusterInfrastructure(KSailCluster config, CancellationToken cancellationToken)
+  async Task GeneratePodinfo(string outputPath, CancellationToken cancellationToken)
   {
-    string clusterInfrastructurePath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "k8s", "clusters", config.Metadata.Name, "infrastructure");
-    if (!Directory.Exists(clusterInfrastructurePath))
-      _ = Directory.CreateDirectory(clusterInfrastructurePath);
-    await GenerateClusterInfrastructureKustomization(config.Spec.Distribution, clusterInfrastructurePath, cancellationToken).ConfigureAwait(false);
+    string podinfoPath = Path.Combine(outputPath, "podinfo");
+    if (!Directory.Exists(podinfoPath))
+      _ = Directory.CreateDirectory(podinfoPath);
+
+    await GeneratePodInfoKustomization(podinfoPath, cancellationToken).ConfigureAwait(false);
+    await GeneratePodInfoNamespace(podinfoPath, cancellationToken).ConfigureAwait(false);
+    await GeneratePodInfoHelmRelease(podinfoPath, cancellationToken).ConfigureAwait(false);
+    await GeneratePodInfoHelmRepository(podinfoPath, cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateClusterInfrastructureKustomization(KSailKubernetesDistribution distribution, string clusterInfrastructurePath, CancellationToken cancellationToken)
+  async Task GeneratePodInfoKustomization(string podinfoPath, CancellationToken cancellationToken)
   {
-    string clusterInfrastructureKustomizationPath = Path.Combine(clusterInfrastructurePath, "kustomization.yaml");
-    if (File.Exists(clusterInfrastructureKustomizationPath))
+    string podinfoKustomizationPath = Path.Combine(podinfoPath, "kustomization.yaml");
+    if (File.Exists(podinfoKustomizationPath))
     {
-      Console.WriteLine($"✔ Skipping '{clusterInfrastructureKustomizationPath}', as it already exists.");
+      Console.WriteLine($"✔ Skipping '{podinfoKustomizationPath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{clusterInfrastructureKustomizationPath}'");
-    var kustomization = new KustomizeKustomization()
+    Console.WriteLine($"✚ Generating '{podinfoKustomizationPath}'");
+    var kustomization = new KustomizeKustomization
     {
-      Resources = [
-        $"../../../distributions/{distribution.ToString().ToLower(CultureInfo.CurrentCulture)}/infrastructure"
-      ],
-      Components = [
-        "../../../components/helm-release-crds-label",
-        "../../../components/helm-release-remediation-label"
+      Resources =
+      [
+        "namespace.yaml",
+        "helm-release.yaml",
+        "helm-repository.yaml"
       ]
     };
-    await _kustomizeKustomizationGenerator.GenerateAsync(kustomization, clusterInfrastructureKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _kustomizationGenerator.GenerateAsync(kustomization, podinfoKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateDistributionInfrastructure(KSailCluster config, CancellationToken cancellationToken)
+  async Task GeneratePodInfoNamespace(string podinfoPath, CancellationToken cancellationToken)
   {
-    string distributionInfrastructurePath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "distributions", config.Spec.Distribution.ToString().ToLower(CultureInfo.CurrentCulture), "infrastructure");
-    if (!Directory.Exists(distributionInfrastructurePath))
-      _ = Directory.CreateDirectory(distributionInfrastructurePath);
-    await GenerateDistributionInfrastructureKustomization(distributionInfrastructurePath, cancellationToken).ConfigureAwait(false);
-  }
-
-  async Task GenerateDistributionInfrastructureKustomization(string outputPath, CancellationToken cancellationToken)
-  {
-    string distributionInfrastructureKustomizationPath = Path.Combine(outputPath, "kustomization.yaml");
-    if (File.Exists(distributionInfrastructureKustomizationPath))
+    string podinfoNamespacePath = Path.Combine(podinfoPath, "namespace.yaml");
+    if (File.Exists(podinfoNamespacePath))
     {
-      Console.WriteLine($"✔ Skipping '{distributionInfrastructureKustomizationPath}', as it already exists.");
+      Console.WriteLine($"✔ Skipping '{podinfoNamespacePath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{distributionInfrastructureKustomizationPath}'");
-    var kustomization = new KustomizeKustomization()
+    Console.WriteLine($"✚ Generating '{podinfoNamespacePath}'");
+    var @namespace = new V1Namespace
     {
-      Resources = [
-        "../../../infrastructure"
-      ],
-      Components = [
-        "../../../components/helm-release-crds-label",
-        "../../../components/helm-release-remediation-label"
-      ]
+      ApiVersion = "v1",
+      Kind = "Namespace",
+      Metadata = new V1ObjectMeta
+      {
+        Name = "podinfo"
+      }
     };
-    await _kustomizeKustomizationGenerator.GenerateAsync(kustomization, distributionInfrastructureKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _namespaceGenerator.GenerateAsync(@namespace, podinfoNamespacePath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateGlobalInfrastructure(KSailCluster config, CancellationToken cancellationToken)
+  async Task GeneratePodInfoHelmRelease(string podinfoPath, CancellationToken cancellationToken)
   {
-    string globalInfrastructurePath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "infrastructure");
-    if (!Directory.Exists(globalInfrastructurePath))
-      _ = Directory.CreateDirectory(globalInfrastructurePath);
-    await GenerateGlobalInfrastructureKustomization(globalInfrastructurePath, cancellationToken).ConfigureAwait(false);
-    await GenerateCertManager(globalInfrastructurePath, cancellationToken).ConfigureAwait(false);
-    await GenerateTraefik(globalInfrastructurePath, cancellationToken).ConfigureAwait(false);
-  }
-
-  async Task GenerateGlobalInfrastructureKustomization(string outputPath, CancellationToken cancellationToken)
-  {
-    string globalInfrastructureKustomizationPath = Path.Combine(outputPath, "kustomization.yaml");
-    if (File.Exists(globalInfrastructureKustomizationPath))
+    string podinfoHelmReleasePath = Path.Combine(podinfoPath, "helm-release.yaml");
+    if (File.Exists(podinfoHelmReleasePath))
     {
-      Console.WriteLine($"✔ Skipping '{globalInfrastructureKustomizationPath}', as it already exists.");
+      Console.WriteLine($"✔ Skipping '{podinfoHelmReleasePath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{globalInfrastructureKustomizationPath}'");
-    var kustomization = new KustomizeKustomization()
+    Console.WriteLine($"✚ Generating '{podinfoHelmReleasePath}'");
+    var helmRelease = new FluxHelmRelease
     {
-      Resources = [
-        "cert-manager",
-        "traefik"
-      ],
-      Components = [
-        "../components/helm-release-crds-label",
-        "../components/helm-release-remediation-label"
-      ]
+      Metadata = new V1ObjectMeta
+      {
+        Name = "podinfo",
+        NamespaceProperty = "podinfo"
+      },
+      Spec = new FluxHelmReleaseSpec
+      {
+        Interval = "10m",
+        Chart = new FluxHelmReleaseSpecChart
+        {
+          Spec = new FluxHelmReleaseSpecChartSpec
+          {
+            Chart = "podinfo",
+            SourceRef = new FluxSourceRef
+            {
+              Kind = FluxSource.HelmRepository,
+              Name = "podinfo"
+            }
+          }
+        }
+      }
     };
-    await _kustomizeKustomizationGenerator.GenerateAsync(kustomization, globalInfrastructureKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _helmReleaseGenerator.GenerateAsync(helmRelease, podinfoHelmReleasePath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
+
+  async Task GeneratePodInfoHelmRepository(string podinfoPath, CancellationToken cancellationToken)
+  {
+    string podinfoHelmRepositoryPath = Path.Combine(podinfoPath, "helm-repository.yaml");
+    if (File.Exists(podinfoHelmRepositoryPath))
+    {
+      Console.WriteLine($"✔ Skipping '{podinfoHelmRepositoryPath}', as it already exists.");
+      return;
+    }
+    Console.WriteLine($"✚ Generating '{podinfoHelmRepositoryPath}'");
+    var helmRepository = new FluxHelmRepository
+    {
+      Metadata = new V1ObjectMeta
+      {
+        Name = "podinfo",
+        NamespaceProperty = "podinfo"
+      },
+      Spec = new FluxHelmRepositorySpec
+      {
+        Interval = "10m",
+        Url = new Uri("oci://ghcr.io/stefanprodan/charts"),
+        Type = FluxHelmRepositorySpecType.OCI
+      }
+    };
+    await _helmRepositoryGenerator.GenerateAsync(helmRepository, podinfoHelmRepositoryPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+  }
+
 
   async Task GenerateCertManager(string outputPath, CancellationToken cancellationToken)
   {
@@ -138,7 +171,7 @@ class InfrastructureGenerator
         "helm-repository.yaml"
       ]
     };
-    await _kustomizeKustomizationGenerator.GenerateAsync(certManagerKustomization, certManagerKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _kustomizationGenerator.GenerateAsync(certManagerKustomization, certManagerKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
 
     string certManagerNamespacePath = Path.Combine(certManagerPath, "namespace.yaml");
     if (File.Exists(certManagerNamespacePath))
@@ -242,7 +275,7 @@ class InfrastructureGenerator
         "helm-repository.yaml"
       ]
     };
-    await _kustomizeKustomizationGenerator.GenerateAsync(traefikKustomization, traefikKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _kustomizationGenerator.GenerateAsync(traefikKustomization, traefikKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
 
     string traefikNamespacePath = Path.Combine(traefikPath, "namespace.yaml");
     if (File.Exists(traefikNamespacePath))
