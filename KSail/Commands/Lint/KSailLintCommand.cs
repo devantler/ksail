@@ -1,5 +1,6 @@
 using System.CommandLine;
 using KSail.Commands.Lint.Handlers;
+using KSail.Extensions;
 using KSail.Options;
 
 namespace KSail.Commands.Lint;
@@ -16,17 +17,20 @@ sealed class KSailLintCommand : Command
     AddOption(_manifestsPathOption);
     this.SetHandler(async (context) =>
     {
-      var config = await KSailClusterConfigLoader.LoadAsync(context.ParseResult.GetValueForOption(_manifestsPathOption), context.ParseResult.GetValueForOption(_nameOption)).ConfigureAwait(false);
-      config.UpdateConfig("Spec.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsPathOption));
       try
       {
+        var config = await KSailClusterConfigLoader.LoadAsync(context.ParseResult.GetValueForOption(_manifestsPathOption), context.ParseResult.GetValueForOption(_nameOption)).ConfigureAwait(false);
+        config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
+        config.UpdateConfig("Spec.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsPathOption));
+
         Console.WriteLine("🧹 Linting manifest files");
-        context.ExitCode = await KSailLintCommandHandler.HandleAsync(config, context.GetCancellationToken()).ConfigureAwait(false);
+        var handler = new KSailLintCommandHandler();
+        context.ExitCode = await handler.HandleAsync(config, context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;
         Console.WriteLine("");
       }
-      catch (OperationCanceledException)
+      catch (OperationCanceledException ex)
       {
-        Console.WriteLine("✕ Operation was canceled by the user.");
+        ExceptionHandler.HandleException(ex);
         context.ExitCode = 1;
       }
     });
