@@ -9,16 +9,18 @@ sealed class KSailListCommand : Command
   {
     this.SetHandler(async (context) =>
     {
-      var cancellationToken = context.GetCancellationToken();
-      var handler = new KSailListCommandHandler();
       try
       {
+        var cancellationToken = context.GetCancellationToken();
+        var handler = new KSailListCommandHandler();
+
         Console.WriteLine("📋 Listing active clusters");
-        var clusters = await handler.HandleAsync(cancellationToken).ConfigureAwait(false);
+        var clusters = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         Console.WriteLine();
       }
-      catch (OperationCanceledException)
+      catch (OperationCanceledException ex)
       {
+        ExceptionHandler.HandleException(ex);
         context.ExitCode = 1;
       }
     });
