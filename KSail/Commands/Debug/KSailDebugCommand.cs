@@ -1,8 +1,8 @@
 using System.CommandLine;
 using KSail.Commands.Debug.Handlers;
 using KSail.Commands.Debug.Options;
-using KSail.Extensions;
 using KSail.Options;
+using KSail.Utils;
 
 namespace KSail.Commands.Debug;
 
