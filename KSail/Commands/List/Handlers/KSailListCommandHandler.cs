@@ -8,7 +8,7 @@ sealed class KSailListCommandHandler()
   readonly K3dProvisioner _k3dProvisioner = new();
   readonly KindProvisioner _kindProvisioner = new();
 
-  internal async Task<IEnumerable<string>> HandleAsync(CancellationToken cancellationToken)
+  internal async Task<IEnumerable<string>> HandleAsync(CancellationToken cancellationToken = default)
   {
     var clusters = await _k3dProvisioner.ListAsync(cancellationToken).ConfigureAwait(false);
     clusters = clusters.Concat(await _kindProvisioner.ListAsync(cancellationToken).ConfigureAwait(false)).ToArray();
