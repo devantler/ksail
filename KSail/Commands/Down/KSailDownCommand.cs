@@ -1,6 +1,7 @@
 using System.CommandLine;
 using KSail.Commands.Down.Handlers;
 using KSail.Commands.Down.Options;
+using KSail.Extensions;
 using KSail.Options;
 
 namespace KSail.Commands.Down;
@@ -18,21 +19,21 @@ sealed class KSailDownCommand : Command
 
     this.SetHandler(async (context) =>
     {
-      var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
-      config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
-      config.UpdateConfig("Spec.Distribution", context.ParseResult.GetValueForOption(_distributionOption));
-      config.UpdateConfig("Spec.DownOptions.Registries", context.ParseResult.GetValueForOption(_registriesOption));
-
-      var handler = new KSailDownCommandHandler(config);
       try
       {
+        var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
+        config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
+        config.UpdateConfig("Spec.Distribution", context.ParseResult.GetValueForOption(_distributionOption));
+        config.UpdateConfig("Spec.DownOptions.Registries", context.ParseResult.GetValueForOption(_registriesOption));
+
+        var handler = new KSailDownCommandHandler(config);
         Console.WriteLine($"🔥 Destroying cluster '{config.Spec.Distribution}-{config.Metadata.Name}'");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         Console.WriteLine("");
       }
-      catch (OperationCanceledException)
+      catch (OperationCanceledException ex)
       {
-        Console.WriteLine("✕ Operation was canceled by the user.");
+        ExceptionHandler.HandleException(ex);
         context.ExitCode = 1;
       }
     });
