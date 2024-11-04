@@ -14,16 +14,16 @@ class KSailGenConfigK3dCommand : Command
     AddOption(_outputOption);
     this.SetHandler(async (context) =>
     {
-      string outputFile = context.ParseResult.RootCommandResult.GetValueForOption(_outputOption)!;
-      var handler = new KSailGenConfigK3dCommandHandler(outputFile);
       try
       {
+        string outputFile = context.ParseResult.RootCommandResult.GetValueForOption(_outputOption)!;
+        var handler = new KSailGenConfigK3dCommandHandler(outputFile);
         Console.WriteLine($"✚ Generating {outputFile}");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
       }
-      catch (OperationCanceledException)
+      catch (OperationCanceledException ex)
       {
-        Console.WriteLine("✕ Operation was canceled by the user.");
+        ExceptionHandler.HandleException(ex);
         context.ExitCode = 1;
       }
     });

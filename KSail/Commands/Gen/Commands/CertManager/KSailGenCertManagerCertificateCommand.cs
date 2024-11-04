@@ -14,15 +14,16 @@ class KSailGenCertManagerCertificateCommand : Command
 
     this.SetHandler(async (context) =>
       {
-        string outputFile = context.ParseResult.RootCommandResult.GetValueForOption(_outputOption)!;
-        var handler = new KSailGenCertManagerCertificateCommandHandler();
         try
         {
+          string outputFile = context.ParseResult.RootCommandResult.GetValueForOption(_outputOption)!;
+          var handler = new KSailGenCertManagerCertificateCommandHandler();
           Console.WriteLine($"✚ Generating {outputFile}");
           context.ExitCode = await handler.HandleAsync(outputFile, context.GetCancellationToken()).ConfigureAwait(false);
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException ex)
         {
+          ExceptionHandler.HandleException(ex);
           context.ExitCode = 1;
         }
       }

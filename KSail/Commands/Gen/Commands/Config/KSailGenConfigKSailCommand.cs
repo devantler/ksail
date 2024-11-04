@@ -14,15 +14,15 @@ class KSailGenConfigKSailCommand : Command
     AddOption(_fileOutputOption);
     this.SetHandler(async (context) =>
       {
-        string outputFile = context.ParseResult.GetValueForOption(_fileOutputOption)!;
         try
         {
+          string outputFile = context.ParseResult.GetValueForOption(_fileOutputOption)!;
           Console.WriteLine($"✚ Generating {outputFile}");
           context.ExitCode = await _handler.HandleAsync(outputFile, context.GetCancellationToken()).ConfigureAwait(false);
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException ex)
         {
-          Console.WriteLine("✕ Operation was canceled by the user.");
+          ExceptionHandler.HandleException(ex);
           context.ExitCode = 1;
         }
       }

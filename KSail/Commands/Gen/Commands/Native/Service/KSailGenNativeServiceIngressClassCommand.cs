@@ -20,9 +20,9 @@ class KSailGenNativeServiceIngressClassCommand : Command
           Console.WriteLine($"✚ Generating {outputFile}");
           context.ExitCode = await _handler.HandleAsync(outputFile, context.GetCancellationToken()).ConfigureAwait(false);
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException ex)
         {
-          Console.WriteLine("✕ Operation was canceled by the user.");
+          ExceptionHandler.HandleException(ex);
           context.ExitCode = 1;
         }
       }

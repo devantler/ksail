@@ -15,15 +15,15 @@ class KSailGenFluxHelmRepositoryCommand : Command
 
     this.SetHandler(async (context) =>
       {
-        string outputFile = context.ParseResult.GetValueForOption(_outputOption) ?? throw new ArgumentNullException(nameof(_outputOption));
         try
         {
+          string outputFile = context.ParseResult.GetValueForOption(_outputOption) ?? throw new ArgumentNullException(nameof(_outputOption));
           Console.WriteLine($"✚ Generating {outputFile}");
           context.ExitCode = await _handler.HandleAsync(outputFile, context.GetCancellationToken()).ConfigureAwait(false);
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException ex)
         {
-          Console.WriteLine("✕ Operation was canceled by the user.");
+          ExceptionHandler.HandleException(ex);
           context.ExitCode = 1;
         }
       }
