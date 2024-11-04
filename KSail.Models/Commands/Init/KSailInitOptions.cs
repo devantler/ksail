@@ -6,6 +6,10 @@ namespace KSail.Models.Commands.Init;
 public class KSailInitOptions
 {
   /// <summary>
+  /// Whether to generate a ksail-config.yaml file, to configure the KSail CLI declaratively.
+  /// </summary>
+  public bool DeclarativeConfig { get; set; }
+  /// <summary>
   /// Whether to include Kustomize components in the generated output.
   /// </summary>
   public bool Components { get; set; }
