@@ -10,6 +10,7 @@ using KSail.Commands.Root.Handlers;
 using KSail.Commands.Start;
 using KSail.Commands.Stop;
 using KSail.Commands.Update;
+using KSail.Utils;
 
 namespace KSail.Commands.Root;
 
