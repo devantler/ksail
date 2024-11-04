@@ -141,7 +141,6 @@ class KSailUpCommandHandler : IDisposable
         Name = "flux-system"
       }
     }, cancellationToken: cancellationToken).ConfigureAwait(false);
-    Console.WriteLine("");
 
     if (config.Spec.Sops)
     {
