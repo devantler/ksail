@@ -21,8 +21,16 @@ sealed class KSailRootCommand : RootCommand
 
     this.SetHandler(async (context) =>
       {
-        KSailRootCommandHandler.Handle(console);
-        context.ExitCode = await this.InvokeAsync("--help", console).ConfigureAwait(false);
+        try
+        {
+          KSailRootCommandHandler.Handle(console);
+          context.ExitCode = await this.InvokeAsync("--help", console).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException ex)
+        {
+          ExceptionHandler.HandleException(ex);
+          context.ExitCode = 1;
+        }
       }
     );
   }
