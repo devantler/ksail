@@ -1,8 +1,8 @@
 using System.CommandLine;
 using k8s.Exceptions;
 using KSail.Commands.Check.Handlers;
-using KSail.Extensions;
 using KSail.Options;
+using KSail.Utils;
 
 namespace KSail.Commands.Check;
 

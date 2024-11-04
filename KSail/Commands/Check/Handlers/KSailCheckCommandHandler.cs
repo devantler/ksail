@@ -23,7 +23,7 @@ class KSailCheckCommandHandler : IDisposable
     _resourceProvisioner = new KubernetesResourceProvisioner(_config.Spec.Context);
   }
 
-  internal async Task<bool> HandleAsync(CancellationToken cancellationToken)
+  internal async Task<bool> HandleAsync(CancellationToken cancellationToken = default)
   {
     var responseTask = _resourceProvisioner.ListKustomizationsWithHttpMessagesAsync();
     await foreach (
