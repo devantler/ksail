@@ -7,7 +7,7 @@
 // class KSailSOPSCommandHandler() : IDisposable
 // {
 //   readonly LocalAgeKeyManager _keyManager = new();
-//   internal async Task<int> HandleAsync(string clusterName, bool generateKey, bool showKey, bool showPublicKey, bool showPrivateKey, string encrypt, string decrypt, string import, string export, CancellationToken cancellationToken)
+//   internal async Task<int> HandleAsync(string clusterName, bool generateKey, bool showKey, bool showPublicKey, bool showPrivateKey, string encrypt, string decrypt, string import, string export, CancellationToken cancellationToken = default)
 //   {
 //     switch (generateKey, showKey, showPublicKey, showPrivateKey, encrypt, decrypt, import, export)
 //     {
@@ -33,7 +33,7 @@
 //     }
 //   }
 
-//   async Task HandleGenerateKey(KSailCluster config, CancellationToken cancellationToken)
+//   async Task HandleGenerateKey(KSailCluster config, CancellationToken cancellationToken = default)
 //   {
 //     var sopsConfig = await _keyManager.GetSOPSConfigAsync(config.Metadata.Name, cancellationToken).ConfigureAwait(false);
 //     var ageKey = await _keyManager.CreateKeyAsync(cancellationToken).ConfigureAwait(false);
@@ -46,9 +46,9 @@
 //     });
 //   }
 
-//   //static async Task<int> HandleShowKey(string clusterName, CancellationToken cancellationToken) => throw new NotImplementedException();
+//   //static async Task<int> HandleShowKey(string clusterName, CancellationToken cancellationToken = default) => throw new NotImplementedException();
 
-//   async Task<int> HandleShowPrivateKey(string clusterName, CancellationToken cancellationToken)
+//   async Task<int> HandleShowPrivateKey(string clusterName, CancellationToken cancellationToken = default)
 //   {
 //     var (exitCode, privateKey) = await _keyManager.GetPrivateKeyAsync(KeyType.Age, name, cancellationToken).ConfigureAwait(false);
 //     if (exitCode != 0)
@@ -59,7 +59,7 @@
 //     return 0;
 //   }
 
-//   async Task<int> HandleShowPublicKey(string clusterName, CancellationToken cancellationToken)
+//   async Task<int> HandleShowPublicKey(string clusterName, CancellationToken cancellationToken = default)
 //   {
 //     var (exitCode, publicKey) = await _LocalProvisioner.GetPublicKeyAsync(KeyType.Age, clusterName, cancellationToken).ConfigureAwait(false);
 //     if (exitCode != 0)
@@ -70,12 +70,12 @@
 //     return 0;
 //   }
 
-//   static async Task<int> HandleDecrypt(string decrypt, string clusterName, CancellationToken cancellationToken)
+//   static async Task<int> HandleDecrypt(string decrypt, string clusterName, CancellationToken cancellationToken = default)
 //   {
 
 //   }
 
-//   static async Task HandleEncrypt(string encrypt, string clusterName, CancellationToken cancellationToken)
+//   static async Task HandleEncrypt(string encrypt, string clusterName, CancellationToken cancellationToken = default)
 //   {
 // #pragma warning disable CA1308 // Normalize strings to uppercase
 //     clusterName = clusterName.ToLowerInvariant();
@@ -89,7 +89,7 @@
 //     Console.WriteLine($"✔ '{encrypt}' encrypted");
 //   }
 
-//   static async Task<int> HandleImport(string clusterName, string import, CancellationToken cancellationToken)
+//   static async Task<int> HandleImport(string clusterName, string import, CancellationToken cancellationToken = default)
 //   {
 // #pragma warning disable CA1308 // Normalize strings to uppercase
 //     clusterName = clusterName.ToLowerInvariant();
@@ -114,7 +114,7 @@
 //     return 0;
 //   }
 
-//   static async Task<int> HandleExport(string clusterName, string export, CancellationToken cancellationToken)
+//   static async Task<int> HandleExport(string clusterName, string export, CancellationToken cancellationToken = default)
 //   {
 // #pragma warning disable CA1308 // Normalize strings to uppercase
 //     clusterName = clusterName.ToLowerInvariant();
