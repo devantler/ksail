@@ -8,6 +8,7 @@ class KSailUpdateCommandHandler
 {
   readonly FluxProvisioner _gitOpsProvisioner;
   readonly KSailCluster _config;
+  readonly KSailLintCommandHandler _kSailLintCommandHandler = new();
 
   internal KSailUpdateCommandHandler(KSailCluster config)
   {
@@ -24,7 +25,7 @@ class KSailUpdateCommandHandler
   {
     if (_config.Spec.UpdateOptions.Lint)
     {
-      _ = await KSailLintCommandHandler.HandleAsync(_config, cancellationToken).ConfigureAwait(false);
+      _ = await _kSailLintCommandHandler.HandleAsync(_config, cancellationToken).ConfigureAwait(false);
     };
 
     var ksailRegistryUri = new Uri($"oci://localhost:{_config.Spec.Registries.First().HostPort}/{_config.Metadata.Name}");
