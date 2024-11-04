@@ -8,7 +8,7 @@ class KSailGenCertManagerClusterIssuerCommandHandler
 {
   readonly CertManagerClusterIssuerGenerator _generator = new();
 
-  internal async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken)
+  internal async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken = default)
   {
     var clusterIssuer = new CertManagerClusterIssuer
     {

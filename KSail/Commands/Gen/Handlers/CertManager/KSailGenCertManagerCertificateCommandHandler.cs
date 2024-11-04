@@ -9,7 +9,7 @@ class KSailGenCertManagerCertificateCommandHandler
 {
   readonly CertManagerCertificateGenerator _generator = new();
 
-  internal async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken)
+  internal async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken = default)
   {
     var certificate = new CertManagerCertificate
     {

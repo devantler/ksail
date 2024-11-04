@@ -7,7 +7,7 @@ namespace KSail.Commands.Gen.Handlers.Native.Cluster;
 class KSailGenNativeClusterAPIServiceCommandHandler
 {
   readonly APIServiceGenerator _generator = new();
-  internal async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken)
+  internal async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken = default)
   {
     var model = new V1APIService()
     {

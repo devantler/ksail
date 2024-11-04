@@ -2,6 +2,7 @@
 using System.CommandLine;
 using KSail.Commands.Gen.Handlers.Flux;
 using KSail.Commands.Gen.Options;
+using KSail.Utils;
 
 namespace KSail.Commands.Gen.Commands.Flux;
 
