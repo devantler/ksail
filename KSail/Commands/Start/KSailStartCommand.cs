@@ -1,5 +1,6 @@
 using System.CommandLine;
 using KSail.Commands.Start.Handlers;
+using KSail.Extensions;
 using KSail.Options;
 
 namespace KSail.Commands.Start;
@@ -14,16 +15,17 @@ sealed class KSailStartCommand : Command
 
     this.SetHandler(async (context) =>
     {
-      var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
-      config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
-
-      var handler = new KSailStartCommandHandler(config);
       try
       {
+        var config = await KSailClusterConfigLoader.LoadAsync(name: context.ParseResult.GetValueForOption(_nameOption)).ConfigureAwait(false);
+        config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
+
+        var handler = new KSailStartCommandHandler(config);
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
       }
-      catch (OperationCanceledException)
+      catch (OperationCanceledException ex)
       {
+        ExceptionHandler.HandleException(ex);
         context.ExitCode = 1;
       }
     });
