@@ -1,6 +1,6 @@
 using KSail.Models;
 
-namespace KSail.Extensions;
+namespace KSail.Utils;
 
 /// <summary>
 /// Extension methods for the <see cref="KSailCluster"/> class.
