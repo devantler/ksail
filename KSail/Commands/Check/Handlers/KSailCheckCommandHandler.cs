@@ -23,7 +23,7 @@ class KSailCheckCommandHandler : IDisposable
     _resourceProvisioner = new KubernetesResourceProvisioner(_config.Spec.Context);
   }
 
-  internal async Task<int> HandleAsync(CancellationToken cancellationToken)
+  internal async Task<bool> HandleAsync(CancellationToken cancellationToken)
   {
     var responseTask = _resourceProvisioner.ListKustomizationsWithHttpMessagesAsync();
     await foreach (
@@ -43,7 +43,7 @@ class KSailCheckCommandHandler : IDisposable
         if (_successfulKustomizations.Count == _kustomizations.Count)
         {
           HandleSuccesfulKustomizations();
-          return 0;
+          return true;
         }
         else if (_successfulKustomizations.Contains(kustomizationName))
         {
@@ -61,7 +61,7 @@ class KSailCheckCommandHandler : IDisposable
             Console.WriteLine(message);
             Console.WriteLine();
           }
-          return 1;
+          return false;
         }
       }
 
@@ -77,7 +77,7 @@ class KSailCheckCommandHandler : IDisposable
           case "Stalled":
           case "Failed" when IsCritical(statusCondition):
             HandleFailedStatus(statusCondition, kustomizationName);
-            return 1;
+            return false;
           case "Ready":
           case "Healthy":
             break;
@@ -96,7 +96,8 @@ class KSailCheckCommandHandler : IDisposable
       }
     }
 
-    return 0;
+
+    return true;
   }
 
   static bool IsCritical(V1CustomResourceDefinitionCondition statusCondition) =>

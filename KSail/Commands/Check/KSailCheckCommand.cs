@@ -1,5 +1,7 @@
 using System.CommandLine;
+using k8s.Exceptions;
 using KSail.Commands.Check.Handlers;
+using KSail.Extensions;
 using KSail.Options;
 
 namespace KSail.Commands.Check;
@@ -12,36 +14,47 @@ sealed class KSailCheckCommand : Command
 
   internal KSailCheckCommand() : base("check", "Check the status of a cluster")
   {
-    AddOption(_kubeconfigOption);
-    AddOption(_contextOption);
-    AddOption(_timeoutOption);
+    AddOptions();
     AddValidator(result =>
     {
-      string? kubeconfig = result.GetValueForOption(_kubeconfigOption);
-      if (string.IsNullOrWhiteSpace(kubeconfig) || !File.Exists(kubeconfig))
+      string? kubeconfigPath = result.GetValueForOption(_kubeconfigOption);
+      if (string.IsNullOrWhiteSpace(kubeconfigPath) || !File.Exists(kubeconfigPath))
       {
-        result.ErrorMessage = $"Kubeconfig file '{kubeconfig}' does not exist";
+        result.ErrorMessage = $"Kubeconfig file '{kubeconfigPath}' does not exist";
       }
     });
+
     this.SetHandler(async (context) =>
     {
-      var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
-      config.UpdateConfig("Spec.Kubeconfig", context.ParseResult.GetValueForOption(_kubeconfigOption));
-      config.UpdateConfig("Spec.Context", context.ParseResult.GetValueForOption(_contextOption));
-      config.UpdateConfig("Spec.Timeout", context.ParseResult.GetValueForOption(_timeoutOption));
-
-      var handler = new KSailCheckCommandHandler(config);
       try
       {
+        var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
+        config.UpdateConfig("Spec.Kubeconfig", context.ParseResult.GetValueForOption(_kubeconfigOption));
+        config.UpdateConfig("Spec.Context", context.ParseResult.GetValueForOption(_contextOption));
+        config.UpdateConfig("Spec.Timeout", context.ParseResult.GetValueForOption(_timeoutOption));
+
         Console.WriteLine("🔍 Checking cluster status");
-        context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
+        var handler = new KSailCheckCommandHandler(config);
+        context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;
         Console.WriteLine("");
       }
-      catch (OperationCanceledException)
+      catch (OperationCanceledException ex)
       {
-        Console.WriteLine("✕ Operation was canceled by the user.");
+        ExceptionHandler.HandleException(ex);
+        context.ExitCode = 1;
+      }
+      catch (KubeConfigException ex)
+      {
+        ExceptionHandler.HandleException(ex);
         context.ExitCode = 1;
       }
     });
+  }
+
+  void AddOptions()
+  {
+    AddOption(_kubeconfigOption);
+    AddOption(_contextOption);
+    AddOption(_timeoutOption);
   }
 }
