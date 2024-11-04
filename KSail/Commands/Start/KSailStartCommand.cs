@@ -1,7 +1,7 @@
 using System.CommandLine;
 using KSail.Commands.Start.Handlers;
-using KSail.Extensions;
 using KSail.Options;
+using KSail.Utils;
 
 namespace KSail.Commands.Start;
 

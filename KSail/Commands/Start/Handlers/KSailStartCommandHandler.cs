@@ -21,7 +21,7 @@ class KSailStartCommandHandler
     };
   }
 
-  internal async Task<int> HandleAsync(CancellationToken cancellationToken)
+  internal async Task<int> HandleAsync(CancellationToken cancellationToken = default)
   {
     await _clusterProvisioner.StartAsync(_config.Metadata.Name, cancellationToken).ConfigureAwait(false);
     return 0;
