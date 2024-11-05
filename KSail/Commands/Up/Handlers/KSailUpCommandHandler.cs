@@ -9,7 +9,6 @@ using k8s.Models;
 using KSail.Commands.Check.Handlers;
 using KSail.Commands.Down.Handlers;
 using KSail.Commands.Lint.Handlers;
-using KSail.Commands.Update.Handlers;
 using KSail.Models;
 
 namespace KSail.Commands.Up.Handlers;
@@ -23,7 +22,6 @@ class KSailUpCommandHandler : IDisposable
   readonly KSailCheckCommandHandler _ksailCheckCommandHandler;
   readonly KSailDownCommandHandler _ksailDownCommandHandler;
   readonly KSailLintCommandHandler _ksailLintCommandHandler = new();
-  readonly KSailUpdateCommandHandler _ksailUpdateCommandHandler;
   //readonly LocalAgeKeyManager _keyManager = new();
 
   internal KSailUpCommandHandler(KSailCluster config)
@@ -46,7 +44,6 @@ class KSailUpCommandHandler : IDisposable
     };
     _ksailCheckCommandHandler = new KSailCheckCommandHandler(config);
     _ksailDownCommandHandler = new KSailDownCommandHandler(config);
-    _ksailUpdateCommandHandler = new KSailUpdateCommandHandler(config);
     _config = config;
   }
 
@@ -73,8 +70,7 @@ class KSailUpCommandHandler : IDisposable
     await ProvisionCluster(cancellationToken).ConfigureAwait(false);
 
     await InstallGitOps(_config, cancellationToken).ConfigureAwait(false);
-
-    return !await UpdateCluster(cancellationToken).ConfigureAwait(false) ? 1 : 0;
+    return 0;
   }
 
   async Task<bool> DestroyExistingCluster(CancellationToken cancellationToken)
@@ -142,9 +138,6 @@ class KSailUpCommandHandler : IDisposable
     return true;
   }
 
-  async Task<bool> UpdateCluster(CancellationToken cancellationToken = default) =>
-    await _ksailUpdateCommandHandler.HandleAsync(cancellationToken).ConfigureAwait(false);
-
   async Task ProvisionCluster(CancellationToken cancellationToken = default)
   {
     Console.WriteLine($"🚀 Provisioning cluster '{_config.Metadata.Name}'");
@@ -185,14 +178,14 @@ class KSailUpCommandHandler : IDisposable
       // Console.WriteLine(ResourceManager.GetString("flux-install-sops-provision-success", CultureInfo.InvariantCulture));
       // Console.WriteLine("");
     }
-    string ociUrlOnHost = $"oci://localhost:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/ksail-registry";
+    string ociUrlOnHost = $"oci://localhost:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/{_config.Metadata.Name}";
     Console.WriteLine($"► Pushing '{config.Spec.ManifestsDirectory}' as an OCI Artifact to '{ociUrlOnHost}'");
     await _gitOpsProvisioner.PushManifestsAsync(new Uri(ociUrlOnHost), config.Spec.ManifestsDirectory, cancellationToken: cancellationToken).ConfigureAwait(false);
     string kustomizationDirectoryInOCI = config.Spec.KustomizationDirectory.Replace("k8s/", "", StringComparison.OrdinalIgnoreCase);
     string ociUrlInDocker = _config.Spec.Distribution switch
     {
-      KSailKubernetesDistribution.K3d => $"oci://host.k3d.internal:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/ksail-registry",
-      KSailKubernetesDistribution.Kind => $"oci://host.docker.internal:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/ksail-registry",
+      KSailKubernetesDistribution.K3d => $"oci://host.k3d.internal:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/{_config.Metadata.Name}",
+      KSailKubernetesDistribution.Kind => $"oci://host.docker.internal:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/{_config.Metadata.Name}",
       _ => throw new NotSupportedException($"The distribution '{_config.Spec.Distribution}' is not supported.")
     };
     await _gitOpsProvisioner.BootstrapAsync(new Uri(ociUrlInDocker), kustomizationDirectoryInOCI, cancellationToken).ConfigureAwait(false);
