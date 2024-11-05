@@ -147,7 +147,7 @@ class KSailUpCommandHandler
 
   async Task InstallGitOps(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    Console.WriteLine("🔼 Bootstrapping GitOps tooling");
+    Console.WriteLine($"🔼 Bootstrapping GitOps with {config.Spec.GitOpsTool}");
     Console.WriteLine("► Creating 'flux-system' namespace");
     using var resourceProvisioner = new KubernetesResourceProvisioner(config.Spec.Context);
     _ = await resourceProvisioner.CreateNamespaceAsync(new V1Namespace
@@ -188,7 +188,7 @@ class KSailUpCommandHandler
       KSailKubernetesDistribution.Kind => $"oci://host.docker.internal:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/{_config.Metadata.Name}",
       _ => throw new NotSupportedException($"The distribution '{_config.Spec.Distribution}' is not supported.")
     };
-    await _gitOpsProvisioner.BootstrapAsync(new Uri(ociUrlInDocker), kustomizationDirectoryInOCI, cancellationToken).ConfigureAwait(false);
+    await _gitOpsProvisioner.BootstrapAsync(new Uri(ociUrlInDocker), kustomizationDirectoryInOCI, true, cancellationToken).ConfigureAwait(false);
     Console.WriteLine("");
 
     if (config.Spec.UpOptions.Reconcile)

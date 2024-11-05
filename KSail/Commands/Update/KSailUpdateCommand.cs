@@ -23,7 +23,7 @@ sealed class KSailUpdateCommand : Command
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadAsync(context.ParseResult.GetValueForOption(_nameOption)).ConfigureAwait(false);
+        var config = await KSailClusterConfigLoader.LoadAsync(name: context.ParseResult.GetValueForOption(_nameOption)).ConfigureAwait(false);
         config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
         config.UpdateConfig("Spec.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsPathOption));
         config.UpdateConfig("Spec.UpdateOptions.Lint", context.ParseResult.GetValueForOption(_lintOption));
