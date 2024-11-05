@@ -28,7 +28,7 @@
 //       case (false, false, false, false, "", "", "", not null):
 //         return await HandleExport(clusterName, export, cancellationToken).ConfigureAwait(false);
 //       default:
-//         Console.WriteLine("✕ More than one option specified");
+//         Console.WriteLine("✗ More than one option specified");
 //         return 1;
 //     }
 //   }
@@ -122,7 +122,7 @@
 //     Console.WriteLine($"🔐 Exporting SOPS key to '{export}'");
 //     if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", $"{clusterName}.agekey")))
 //     {
-//       Console.WriteLine("✕ SOPS key not found");
+//       Console.WriteLine("✗ SOPS key not found");
 //       return 1;
 //     }
 //     string contents = await File.ReadAllTextAsync(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", $"{clusterName}.agekey"), cancellationToken).ConfigureAwait(false);

@@ -48,7 +48,7 @@ class KSailCheckCommandHandler : IDisposable
         else if (_stopwatch.Elapsed.TotalSeconds >= _config.Spec.Timeout)
         {
           Console.WriteLine(
-            $"✕ Kustomization '{kustomizationName}' did not become ready within the specified time limit of" +
+            $"✗ Kustomization '{kustomizationName}' did not become ready within the specified time limit of" +
             $"{_config.Spec.Timeout} seconds."
           );
           foreach (var statusCondition in statusConditions)
@@ -137,7 +137,7 @@ class KSailCheckCommandHandler : IDisposable
   static void HandleFailedStatus(V1CustomResourceDefinitionCondition statusCondition, string kustomizationName)
   {
     string? message = statusCondition.Message;
-    Console.WriteLine($"✕ Kustomization '{kustomizationName}' failed with message: {message}");
+    Console.WriteLine($"✗ Kustomization '{kustomizationName}' failed with message: {message}");
   }
 
   public void Dispose()

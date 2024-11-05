@@ -24,7 +24,7 @@ public static class ExceptionHandler
     {
       if (ex is null)
         return;
-      Console.WriteLine($"✕ {ex.Message}");
+      Console.WriteLine($"✗ {ex.Message}");
       if (ex.InnerException is not null)
         Console.WriteLine($"  {ex.InnerException.Message}");
     }

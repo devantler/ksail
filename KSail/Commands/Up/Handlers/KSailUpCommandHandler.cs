@@ -85,7 +85,7 @@ class KSailUpCommandHandler : IDisposable
     }
     else
     {
-      Console.WriteLine($"✕ {_config.Spec.ContainerEngine} is not running");
+      Console.WriteLine($"✗ {_config.Spec.ContainerEngine} is not running");
       Console.WriteLine("");
       return false;
     }
@@ -147,7 +147,7 @@ class KSailUpCommandHandler : IDisposable
       // //TODO: Check that a .sops.yaml file exists in the current directory or a parent directory.
       // Console.WriteLine("► Searching for a '.sops.yaml' file in the current directory or a parent directory");
 
-      // Console.WriteLine("✕ '.sops.yaml' file not found");
+      // Console.WriteLine("✗ '.sops.yaml' file not found");
       // //TODO: Read the public key from the .sops.yaml file, for the specified cluster. The path_regex should contain the cluster name.
       // Console.WriteLine("► Creating 'sops-age' secret");
       // Console.WriteLine("");
