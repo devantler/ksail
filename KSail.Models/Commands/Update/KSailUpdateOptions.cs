@@ -8,10 +8,10 @@ public class KSailUpdateOptions
   /// <summary>
   /// Whether to lint the manifests before applying them.
   /// </summary>
-  public bool Lint { get; set; }
+  public bool Lint { get; set; } = true;
 
   /// <summary>
   /// Whether to wait for reconciliation to succeed.
   /// </summary>
-  public bool Reconcile { get; set; }
+  public bool Reconcile { get; set; } = true;
 }
