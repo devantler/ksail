@@ -6,7 +6,6 @@ using Devantler.KubernetesProvisioner.GitOps.Flux;
 using Devantler.KubernetesProvisioner.Resources.Native;
 using k8s;
 using k8s.Models;
-using KSail.Commands.Check.Handlers;
 using KSail.Commands.Down.Handlers;
 using KSail.Commands.Lint.Handlers;
 using KSail.Models;
@@ -19,7 +18,6 @@ class KSailUpCommandHandler
   readonly DockerProvisioner _containerEngineProvisioner;
   readonly IKubernetesClusterProvisioner _clusterProvisioner;
   readonly FluxProvisioner _gitOpsProvisioner;
-  readonly KSailCheckCommandHandler _ksailCheckCommandHandler;
   readonly KSailDownCommandHandler _ksailDownCommandHandler;
   readonly KSailLintCommandHandler _ksailLintCommandHandler = new();
   //readonly LocalAgeKeyManager _keyManager = new();
@@ -42,7 +40,6 @@ class KSailUpCommandHandler
       KSailGitOpsTool.Flux => new FluxProvisioner(config.Spec.Context),
       _ => throw new NotSupportedException($"The GitOps tool '{config.Spec.GitOpsTool}' is not supported.")
     };
-    _ksailCheckCommandHandler = new KSailCheckCommandHandler(config);
     _ksailDownCommandHandler = new KSailDownCommandHandler(config);
     _config = config;
   }
@@ -194,7 +191,7 @@ class KSailUpCommandHandler
     if (config.Spec.UpOptions.Reconcile)
     {
       Console.WriteLine("🔄 Reconciling kustomizations");
-      _ = await _ksailCheckCommandHandler.HandleAsync(cancellationToken).ConfigureAwait(false);
+      await _gitOpsProvisioner.ReconcileAsync(cancellationToken).ConfigureAwait(false);
       Console.WriteLine("");
     }
   }

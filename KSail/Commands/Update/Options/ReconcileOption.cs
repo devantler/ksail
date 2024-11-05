@@ -6,7 +6,7 @@ class ReconcileOption : Option<bool>
 {
   internal ReconcileOption() : base(
     ["--reconcile", "-r"],
-    () => false,
+    () => true,
     "Reconcile manifests after pushing an update"
   )
   {
