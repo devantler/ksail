@@ -30,7 +30,11 @@ sealed class KSailCheckCommand : Command
       {
         var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
         config.UpdateConfig("Spec.Kubeconfig", context.ParseResult.GetValueForOption(_kubeconfigOption));
-        config.UpdateConfig("Spec.Context", context.ParseResult.GetValueForOption(_contextOption));
+        string? kubeContext = context.ParseResult.GetValueForOption(_contextOption);
+        if (kubeContext != null && !string.IsNullOrWhiteSpace(kubeContext) && !kubeContext.Equals("default", StringComparison.OrdinalIgnoreCase))
+        {
+          config.UpdateConfig("Spec.Context", context.ParseResult.GetValueForOption(_contextOption));
+        }
         config.UpdateConfig("Spec.Timeout", context.ParseResult.GetValueForOption(_timeoutOption));
 
         Console.WriteLine("🔍 Checking cluster status");

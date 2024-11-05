@@ -13,7 +13,7 @@ using KSail.Models;
 
 namespace KSail.Commands.Up.Handlers;
 
-class KSailUpCommandHandler : IDisposable
+class KSailUpCommandHandler
 {
   readonly KSailCluster _config;
   readonly DockerProvisioner _containerEngineProvisioner;
@@ -198,6 +198,4 @@ class KSailUpCommandHandler : IDisposable
       Console.WriteLine("");
     }
   }
-
-  public void Dispose() => _ksailCheckCommandHandler.Dispose();
 }

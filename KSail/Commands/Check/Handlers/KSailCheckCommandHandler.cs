@@ -7,23 +7,30 @@ using KSail.Models;
 
 namespace KSail.Commands.Check.Handlers;
 
-class KSailCheckCommandHandler : IDisposable
+class KSailCheckCommandHandler
 {
   readonly KSailCluster _config;
-  readonly HashSet<string> _kustomizations = [];
   readonly HashSet<string> _successfulKustomizations = [];
-  readonly Stopwatch _stopwatch = Stopwatch.StartNew();
-  readonly Stopwatch _stopwatchTotal = Stopwatch.StartNew();
   string _lastPrintedMessage = "";
 
   internal KSailCheckCommandHandler(KSailCluster config) => _config = config;
 
   internal async Task<bool> HandleAsync(CancellationToken cancellationToken = default)
   {
+    var stopWatch = Stopwatch.StartNew();
+    var stopWatchTotal = Stopwatch.StartNew();
     using var resourceProvisioner = new KubernetesResourceProvisioner(_config.Spec.Context);
     var responseTask = resourceProvisioner.ListKustomizationsWithHttpMessagesAsync();
+    var kustomizations = await resourceProvisioner.ListNamespacedCustomObjectAsync<V1CustomResourceDefinitionList>(
+      "kustomize.toolkit.fluxcd.io",
+      "v1",
+      "flux-system",
+      "kustomizations",
+      cancellationToken: cancellationToken
+    ).ConfigureAwait(false);
+    int kustomizationsCount = kustomizations.Items.Count;
     await foreach (
-      var (_, kustomization) in
+      var (watchEventType, kustomization) in
         responseTask.WatchAsync<V1CustomResourceDefinition, object>(cancellationToken: cancellationToken)
     )
     {
@@ -31,35 +38,33 @@ class KSailCheckCommandHandler : IDisposable
       var statusConditions = kustomization.Status.Conditions;
       if (statusConditions is null)
       {
-        _ = _kustomizations.Remove(kustomizationName);
         continue;
       }
-      if (!_kustomizations.Add(kustomizationName))
+
+      if (_successfulKustomizations.Count == kustomizationsCount)
       {
-        if (_successfulKustomizations.Count == _kustomizations.Count)
-        {
-          HandleSuccesfulKustomizations();
-          return true;
-        }
-        else if (_successfulKustomizations.Contains(kustomizationName))
-        {
-          continue;
-        }
-        else if (_stopwatch.Elapsed.TotalSeconds >= _config.Spec.Timeout)
-        {
-          Console.WriteLine(
-            $"✗ Kustomization '{kustomizationName}' did not become ready within the specified time limit of" +
-            $"{_config.Spec.Timeout} seconds."
-          );
-          foreach (var statusCondition in statusConditions)
-          {
-            string? message = statusCondition.Message;
-            Console.WriteLine(message);
-            Console.WriteLine();
-          }
-          return false;
-        }
+        HandleSuccesfulKustomizations(stopWatchTotal);
+        return true;
       }
+      else if (_successfulKustomizations.Contains(kustomizationName))
+      {
+        continue;
+      }
+      else if (stopWatch.Elapsed.TotalSeconds >= _config.Spec.Timeout)
+      {
+        Console.WriteLine(
+          $"✗ Kustomization '{kustomizationName}' did not become ready within the specified time limit of" +
+          $"{_config.Spec.Timeout} seconds."
+        );
+        foreach (var statusCondition in statusConditions)
+        {
+          string? message = statusCondition.Message;
+          Console.WriteLine(message);
+          Console.WriteLine();
+        }
+        return false;
+      }
+
 
       if (HasDependencies(statusConditions))
       {
@@ -84,15 +89,21 @@ class KSailCheckCommandHandler : IDisposable
       }
       if (isReady)
       {
-        HandleReadyStatus(kustomizationName);
+        HandleReadyStatus(kustomizationName, stopWatch);
+        if (_successfulKustomizations.Count == kustomizationsCount)
+        {
+          HandleSuccesfulKustomizations(stopWatchTotal);
+          return true;
+        }
       }
       else
       {
-        HandleOtherStatus(kustomizationName);
+        HandleOtherStatus(kustomizationName, stopWatch);
       }
     }
 
-
+    stopWatch.Stop();
+    stopWatchTotal.Stop();
     return true;
   }
 
@@ -103,17 +114,17 @@ class KSailCheckCommandHandler : IDisposable
   static bool HasDependencies(IList<V1CustomResourceDefinitionCondition> statusConditions) =>
     statusConditions.FirstOrDefault()?.Reason.Equals("DependencyNotReady", StringComparison.Ordinal) ?? false;
 
-  void HandleSuccesfulKustomizations()
+  static void HandleSuccesfulKustomizations(Stopwatch stopWatchTotal)
   {
-    var totalTimeElapsed = _stopwatchTotal.Elapsed;
+    var totalTimeElapsed = stopWatchTotal.Elapsed;
     int minutes = totalTimeElapsed.Minutes;
     int seconds = totalTimeElapsed.Seconds;
     Console.WriteLine($"✔ All kustomizations are ready! ({minutes}m {seconds}s)");
   }
 
-  void HandleOtherStatus(string kustomizationName)
+  void HandleOtherStatus(string kustomizationName, Stopwatch stopWatch)
   {
-    var timeElapsed = _stopwatch.Elapsed;
+    var timeElapsed = stopWatch.Elapsed;
     int minutes = timeElapsed.Minutes;
     int seconds = timeElapsed.Seconds;
     string message = $"◎ Waiting for kustomization '{kustomizationName}' to become ready ({minutes}m {seconds}s)";
@@ -124,25 +135,19 @@ class KSailCheckCommandHandler : IDisposable
     }
   }
 
-  void HandleReadyStatus(string kustomizationName)
+  void HandleReadyStatus(string kustomizationName, Stopwatch stopWatch)
   {
-    var timeElapsed = _stopwatch.Elapsed;
+    var timeElapsed = stopWatch.Elapsed;
     Console.WriteLine(
       $"✔ Kustomization '{kustomizationName}' is ready! ({timeElapsed.Minutes}m {timeElapsed.Seconds}s)"
     );
     _ = _successfulKustomizations.Add(kustomizationName);
-    _stopwatch.Restart();
+    stopWatch.Restart();
   }
 
   static void HandleFailedStatus(V1CustomResourceDefinitionCondition statusCondition, string kustomizationName)
   {
     string? message = statusCondition.Message;
     Console.WriteLine($"✗ Kustomization '{kustomizationName}' failed with message: {message}");
-  }
-
-  public void Dispose()
-  {
-    _stopwatch.Stop();
-    _stopwatchTotal.Stop();
   }
 }
