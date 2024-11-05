@@ -172,7 +172,7 @@ Manually:
 2. Make the binary executable: `chmod +x ksail`.
 3. Move the binary to a directory in yer `$PATH`: `mv ksail /usr/local/bin/ksail`.
 
-### Usage
+### 📝 Usage
 
 Gettin' started with KSail be as easy as plunderin' treasure. Here be a few commands to get ye goin':
 

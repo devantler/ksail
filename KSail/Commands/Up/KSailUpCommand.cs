@@ -1,4 +1,5 @@
 using System.CommandLine;
+using Devantler.FluxCLI;
 using Devantler.KindCLI;
 using KSail.Commands.Up.Handlers;
 using KSail.Commands.Up.Options;
@@ -46,11 +47,17 @@ sealed class KSailUpCommand : Command
       {
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
       }
-      catch (OperationCanceledException)
+      catch (OperationCanceledException ex)
       {
+        ExceptionHandler.HandleException(ex);
         context.ExitCode = 1;
       }
       catch (KindException ex)
+      {
+        ExceptionHandler.HandleException(ex);
+        context.ExitCode = 1;
+      }
+      catch (FluxException ex)
       {
         ExceptionHandler.HandleException(ex);
         context.ExitCode = 1;
