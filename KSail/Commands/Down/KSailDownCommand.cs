@@ -28,7 +28,7 @@ sealed class KSailDownCommand : Command
 
         var handler = new KSailDownCommandHandler(config);
         Console.WriteLine($"🔥 Destroying cluster '{config.Spec.Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-{config.Metadata.Name}'");
-        context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
+        context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;
         Console.WriteLine("");
       }
       catch (OperationCanceledException ex)

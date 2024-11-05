@@ -28,7 +28,7 @@ class KSailDownCommandHandler
     };
   }
 
-  internal async Task<int> HandleAsync(CancellationToken cancellationToken = default)
+  internal async Task<bool> HandleAsync(CancellationToken cancellationToken = default)
   {
     await _kubernetesDistributionProvisioner.DeprovisionAsync(_config.Metadata.Name, cancellationToken).ConfigureAwait(false);
     if (_config.Spec.DownOptions.Registries)
@@ -36,7 +36,7 @@ class KSailDownCommandHandler
       Console.WriteLine("⏵ Deleting registries...");
       await DeleteRegistriesAsync(cancellationToken).ConfigureAwait(false);
     }
-    return 0;
+    return true;
   }
 
   async Task DeleteRegistriesAsync(CancellationToken cancellationToken = default)
