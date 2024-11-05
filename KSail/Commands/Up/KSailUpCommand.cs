@@ -11,6 +11,7 @@ namespace KSail.Commands.Up;
 sealed class KSailUpCommand : Command
 {
   readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly DestroyOption _destroyOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly ConfigOption _configOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly PathOption _manifestsPathOption = new("./k8s", " Path to the manifests directory") { Arity = ArgumentArity.ZeroOrOne };
   readonly PathOption _kustomizationDirectoryOption = new("default", " Path to the root kustomization directory", ["--kustomization-path", "-kp"]) { Arity = ArgumentArity.ZeroOrOne };
@@ -19,13 +20,7 @@ sealed class KSailUpCommand : Command
   readonly LintOption _lintOption = new() { Arity = ArgumentArity.ZeroOrOne };
   internal KSailUpCommand() : base("up", "Provision a cluster")
   {
-    AddOption(_nameOption);
-    AddOption(_configOption);
-    AddOption(_manifestsPathOption);
-    AddOption(_kustomizationDirectoryOption);
-    AddOption(_timeoutOption);
-    AddOption(_sopsOption);
-    AddOption(_lintOption);
+    AddOptions();
 
     this.SetHandler(async (context) =>
     {
@@ -40,6 +35,7 @@ sealed class KSailUpCommand : Command
 
       config.UpdateConfig("Spec.Timeout", context.ParseResult.GetValueForOption(_timeoutOption));
       config.UpdateConfig("Spec.Sops", context.ParseResult.GetValueForOption(_sopsOption));
+      config.UpdateConfig("Spec.UpOptions.Destroy", context.ParseResult.GetValueForOption(_destroyOption));
       config.UpdateConfig("Spec.UpOptions.Lint", context.ParseResult.GetValueForOption(_lintOption));
 
       var handler = new KSailUpCommandHandler(config);
@@ -63,5 +59,17 @@ sealed class KSailUpCommand : Command
         context.ExitCode = 1;
       }
     });
+  }
+
+  void AddOptions()
+  {
+    AddOption(_nameOption);
+    AddOption(_destroyOption);
+    AddOption(_configOption);
+    AddOption(_manifestsPathOption);
+    AddOption(_kustomizationDirectoryOption);
+    AddOption(_timeoutOption);
+    AddOption(_sopsOption);
+    AddOption(_lintOption);
   }
 }
