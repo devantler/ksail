@@ -162,14 +162,18 @@ class KSailUpCommandHandler : IDisposable
       // Console.WriteLine(ResourceManager.GetString("flux-install-sops-provision-success", CultureInfo.InvariantCulture));
       // Console.WriteLine("");
     }
-    string ociUrl = _config.Spec.Distribution switch
+    string ociUrlInDocker = _config.Spec.Distribution switch
     {
-      KSailKubernetesDistribution.K3d => $"oci://host.k3d.internal:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/{_config.Metadata.Name}",
-      KSailKubernetesDistribution.Kind => $"oci://host.docker.internal:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/{_config.Metadata.Name}",
+      KSailKubernetesDistribution.K3d => $"oci://host.k3d.internal:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/ksail-registry",
+      KSailKubernetesDistribution.Kind => $"oci://host.docker.internal:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/ksail-registry",
       _ => throw new NotSupportedException($"The distribution '{_config.Spec.Distribution}' is not supported.")
     };
 
-    await _gitOpsProvisioner.BootstrapAsync(new Uri(ociUrl), config.Spec.KustomizationDirectory, cancellationToken).ConfigureAwait(false);
+    string ociUrlOnHost = $"oci://localhost:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/ksail-registry/";
+    Console.WriteLine($"► Pushing '{config.Spec.ManifestsDirectory}' as an OCI Artifact to '{ociUrlOnHost}'");
+    await _gitOpsProvisioner.PushManifestsAsync(new Uri(ociUrlOnHost), config.Spec.ManifestsDirectory, cancellationToken: cancellationToken).ConfigureAwait(false);
+    string kustomizationDirectoryInOCI = config.Spec.KustomizationDirectory.Replace("k8s/", "", StringComparison.OrdinalIgnoreCase);
+    await _gitOpsProvisioner.BootstrapAsync(new Uri(ociUrlInDocker), kustomizationDirectoryInOCI, cancellationToken).ConfigureAwait(false);
 
     if (config.Spec.UpOptions.Reconcile)
     {

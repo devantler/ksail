@@ -35,8 +35,8 @@ sealed class KSailUpCommand : Command
       config.UpdateConfig("Spec.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsPathOption));
 
       string? kustomizationDirectory = context.ParseResult.GetValueForOption(_kustomizationDirectoryOption);
-      if (!string.IsNullOrEmpty(kustomizationDirectory) || kustomizationDirectory == "default")
-        config.UpdateConfig("Spec.KustomizationDirectory", context.ParseResult.GetValueForOption(_kustomizationDirectoryOption));
+      if (kustomizationDirectory != null && !string.IsNullOrEmpty(kustomizationDirectory) && !kustomizationDirectory.Equals("default", StringComparison.OrdinalIgnoreCase))
+        config.UpdateConfig("Spec.KustomizationDirectory", kustomizationDirectory);
 
       config.UpdateConfig("Spec.Timeout", context.ParseResult.GetValueForOption(_timeoutOption));
       config.UpdateConfig("Spec.Sops", context.ParseResult.GetValueForOption(_sopsOption));
