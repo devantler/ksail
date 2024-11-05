@@ -1,3 +1,6 @@
+using Devantler.KubernetesGenerator.CertManager;
+using Devantler.KubernetesGenerator.CertManager.Models;
+using Devantler.KubernetesGenerator.CertManager.Models.IssuerRef;
 using Devantler.KubernetesGenerator.Flux;
 using Devantler.KubernetesGenerator.Flux.Models;
 using Devantler.KubernetesGenerator.Flux.Models.Dependencies;
@@ -14,8 +17,11 @@ class HelmReleaseGenerator
 {
   readonly KustomizeKustomizationGenerator _kustomizationGenerator = new();
   readonly NamespaceGenerator _namespaceGenerator = new();
+  readonly CertManagerCertificateGenerator _certificateGenerator = new();
+  readonly CertManagerClusterIssuerGenerator _clusterIssuerGenerator = new();
   readonly FluxHelmReleaseGenerator _helmReleaseGenerator = new();
   readonly FluxHelmRepositoryGenerator _helmRepositoryGenerator = new();
+
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
     string appsPath = Path.Combine(config.Spec.ManifestsDirectory, "apps");
@@ -31,6 +37,121 @@ class HelmReleaseGenerator
     await GeneratePodinfo(appsPath, cancellationToken).ConfigureAwait(false);
     await GenerateCertManager(infrastructureControllersPath, cancellationToken).ConfigureAwait(false);
     await GenerateTraefik(infrastructureControllersPath, cancellationToken).ConfigureAwait(false);
+    await GenerateClusterIssuers(infrastructurePath, cancellationToken).ConfigureAwait(false);
+    await GenerateCertificates(infrastructurePath, cancellationToken).ConfigureAwait(false);
+  }
+
+  async Task GenerateCertificates(string infrastructurePath, CancellationToken cancellationToken)
+  {
+    string certificatesPath = Path.Combine(infrastructurePath, "certificates");
+    if (!Directory.Exists(certificatesPath))
+      _ = Directory.CreateDirectory(certificatesPath);
+
+    await GenerateCertificatesKustomization(certificatesPath, cancellationToken).ConfigureAwait(false);
+    await GenerateClusterIssuerCertificate(certificatesPath, cancellationToken).ConfigureAwait(false);
+  }
+
+  async Task GenerateClusterIssuerCertificate(string certificatesPath, CancellationToken cancellationToken)
+  {
+    string clusterIssuerCertificatePath = Path.Combine(certificatesPath, "cluster-issuer-certificate.yaml");
+    if (File.Exists(clusterIssuerCertificatePath))
+    {
+      Console.WriteLine($"✔ Skipping '{clusterIssuerCertificatePath}', as it already exists.");
+      return;
+    }
+    Console.WriteLine($"✚ Generating '{clusterIssuerCertificatePath}'");
+    var clusterIssuerCertificate = new CertManagerCertificate
+    {
+      Metadata = new V1ObjectMeta
+      {
+        Name = "cluster-issuer-certificate",
+        NamespaceProperty = "traefik"
+      },
+      Spec = new CertManagerCertificateSpec
+      {
+        SecretName = "cluster-issuer-certificate-tls",
+        DnsNames = ["k8s.local", "*.k8s.local"],
+        IssuerRef = new CertManagerIssuerRef()
+        {
+          Name = "selfsigned-cluster-issuer",
+          Kind = "ClusterIssuer"
+        }
+      }
+    };
+    await _certificateGenerator.GenerateAsync(clusterIssuerCertificate, clusterIssuerCertificatePath, cancellationToken: cancellationToken).ConfigureAwait(false);
+  }
+
+  async Task GenerateCertificatesKustomization(string certificatesPath, CancellationToken cancellationToken)
+  {
+    string certificatesKustomizationPath = Path.Combine(certificatesPath, "kustomization.yaml");
+    if (File.Exists(certificatesKustomizationPath))
+    {
+      Console.WriteLine($"✔ Skipping '{certificatesKustomizationPath}', as it already exists.");
+      return;
+    }
+    Console.WriteLine($"✚ Generating '{certificatesKustomizationPath}'");
+    var kustomization = new KustomizeKustomization
+    {
+      Resources =
+      [
+        "cluster-issuer-certificate.yaml"
+      ]
+    };
+    await _kustomizationGenerator.GenerateAsync(kustomization, certificatesKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+  }
+
+  async Task GenerateClusterIssuers(string infrastructurePath, CancellationToken cancellationToken)
+  {
+    string ClusterIssuersPath = Path.Combine(infrastructurePath, "cluster-issuers");
+    if (!Directory.Exists(ClusterIssuersPath))
+      _ = Directory.CreateDirectory(ClusterIssuersPath);
+
+    await GenerateClusterIssuersKustomization(ClusterIssuersPath, cancellationToken).ConfigureAwait(false);
+    await GenerateSelfSignedClusterIssuer(ClusterIssuersPath, cancellationToken).ConfigureAwait(false);
+
+  }
+
+  async Task GenerateSelfSignedClusterIssuer(string clusterIssuersPath, CancellationToken cancellationToken)
+  {
+    string selfSignedClusterIssuerPath = Path.Combine(clusterIssuersPath, "selfsigned-cluster-issuer.yaml");
+    if (File.Exists(selfSignedClusterIssuerPath))
+    {
+      Console.WriteLine($"✔ Skipping '{selfSignedClusterIssuerPath}', as it already exists.");
+      return;
+    }
+    Console.WriteLine($"✚ Generating '{selfSignedClusterIssuerPath}'");
+    var selfSignedClusterIssuer = new CertManagerClusterIssuer
+    {
+      Metadata = new V1ObjectMeta
+      {
+        Name = "selfsigned-cluster-issuer",
+        NamespaceProperty = "cert-manager"
+      },
+      Spec = new CertManagerClusterIssuerSpec
+      {
+        SelfSigned = new()
+      }
+    };
+    await _clusterIssuerGenerator.GenerateAsync(selfSignedClusterIssuer, selfSignedClusterIssuerPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+  }
+
+  async Task GenerateClusterIssuersKustomization(string selfSignedClusterIssuerPath, CancellationToken cancellationToken)
+  {
+    string selfSignedClusterIssuerKustomizationPath = Path.Combine(selfSignedClusterIssuerPath, "kustomization.yaml");
+    if (File.Exists(selfSignedClusterIssuerKustomizationPath))
+    {
+      Console.WriteLine($"✔ Skipping '{selfSignedClusterIssuerKustomizationPath}', as it already exists.");
+      return;
+    }
+    Console.WriteLine($"✚ Generating '{selfSignedClusterIssuerKustomizationPath}'");
+    var kustomization = new KustomizeKustomization
+    {
+      Resources =
+      [
+        "selfsigned-cluster-issuer.yaml",
+      ]
+    };
+    await _kustomizationGenerator.GenerateAsync(kustomization, selfSignedClusterIssuerKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
   async Task GeneratePodinfo(string outputPath, CancellationToken cancellationToken = default)
@@ -334,6 +455,10 @@ class HelmReleaseGenerator
         },
         Values = new Dictionary<string, object>
         {
+          ["service"] = new Dictionary<string, object>
+          {
+            ["type"] = "ClusterIP"
+          },
           ["tlsStore"] = new Dictionary<string, object>
           {
             ["default"] = new Dictionary<string, object>

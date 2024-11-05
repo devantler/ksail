@@ -41,7 +41,8 @@ class KustomizeFlowGenerator
     {
       Resources = currentHook == config.Spec.InitOptions.KustomizeHooks.Last() ?
         config.Spec.InitOptions.HelmReleases && currentFlow == "infrastructure/controllers" ? ["cert-manager", "traefik"] :
-          config.Spec.InitOptions.HelmReleases && currentFlow == "apps" ? ["podinfo"] : [] :
+          config.Spec.InitOptions.HelmReleases && currentFlow == "infrastructure" ? ["certificates", "cluster-issuers"] :
+            config.Spec.InitOptions.HelmReleases && currentFlow == "apps" ? ["podinfo"] : [] :
         [Path.Combine(relativeRoot, $"{config.Spec.InitOptions.KustomizeHooks.ElementAt(Array.IndexOf(config.Spec.InitOptions.KustomizeHooks.ToArray(), currentHook) + 1)}{currentFlow}")],
       Components = config.Spec.InitOptions.Components ?
         [
