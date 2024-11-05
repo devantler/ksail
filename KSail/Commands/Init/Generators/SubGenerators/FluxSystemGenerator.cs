@@ -84,7 +84,7 @@ class FluxSystemGenerator
         RetryInterval = "2m",
         DependsOn = config.Spec.InitOptions.PostBuildVariables && !config.Spec.InitOptions.KustomizeFlows.IsNullOrEmpty() && config.Spec.InitOptions.KustomizeFlows.First() == flow ?
           config.Spec.InitOptions.KustomizeHooks.Select(hook => new FluxDependsOn { Name = string.IsNullOrEmpty(hook) ? "variables" : $"variables-{hook}" }).ToList() :
-          config.Spec.InitOptions.KustomizeFlows.TakeWhile(f => f != flow).Select(f => new FluxDependsOn { Name = f.Replace('/', '-') }).ToList(),
+          config.Spec.InitOptions.KustomizeFlows.Reverse().TakeWhile(f => f != flow).Select(f => new FluxDependsOn { Name = f.Replace('/', '-') }).TakeLast(1).ToList(),
         SourceRef = new FluxKustomizationSpecSourceRef
         {
           Kind = FluxSource.OCIRepository,
