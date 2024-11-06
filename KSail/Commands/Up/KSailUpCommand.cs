@@ -13,8 +13,8 @@ sealed class KSailUpCommand : Command
   readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly DestroyOption _destroyOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly ConfigOption _configOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly PathOption _manifestsPathOption = new("./k8s", " Path to the manifests directory") { Arity = ArgumentArity.ZeroOrOne };
-  readonly PathOption _kustomizationDirectoryOption = new("default", " Path to the root kustomization directory", ["--kustomization-path", "-kp"]) { Arity = ArgumentArity.ZeroOrOne };
+  readonly PathOption _manifestsPathOption = new("Path to the manifests directory") { Arity = ArgumentArity.ZeroOrOne };
+  readonly PathOption _kustomizationDirectoryOption = new("Path to the root kustomization directory", ["--kustomization-path", "-kp"]) { Arity = ArgumentArity.ZeroOrOne };
   readonly TimeoutOption _timeoutOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly SOPSOption _sopsOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly LintOption _lintOption = new() { Arity = ArgumentArity.ZeroOrOne };

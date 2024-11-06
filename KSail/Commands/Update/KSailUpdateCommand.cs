@@ -9,9 +9,10 @@ namespace KSail.Commands.Update;
 sealed class KSailUpdateCommand : Command
 {
   readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly PathOption _manifestsPathOption = new("./k8s", "Path to the manifests directory") { Arity = ArgumentArity.ZeroOrOne };
+  readonly PathOption _manifestsPathOption = new("Path to the manifests directory") { Arity = ArgumentArity.ZeroOrOne };
   readonly LintOption _lintOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly ReconcileOption _reconcileOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly TimeoutOption _timeoutOption = new() { Arity = ArgumentArity.ZeroOrOne };
   internal KSailUpdateCommand() : base(
     "update",
     "Update a cluster"
@@ -26,6 +27,7 @@ sealed class KSailUpdateCommand : Command
         var config = await KSailClusterConfigLoader.LoadAsync(name: context.ParseResult.GetValueForOption(_nameOption)).ConfigureAwait(false);
         config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
         config.UpdateConfig("Spec.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsPathOption));
+        config.UpdateConfig("Spec.Timeout", context.ParseResult.GetValueForOption(_timeoutOption));
         config.UpdateConfig("Spec.UpdateOptions.Lint", context.ParseResult.GetValueForOption(_lintOption));
         config.UpdateConfig("Spec.UpdateOptions.Reconcile", context.ParseResult.GetValueForOption(_reconcileOption));
 
@@ -46,5 +48,6 @@ sealed class KSailUpdateCommand : Command
     AddOption(_manifestsPathOption);
     AddOption(_lintOption);
     AddOption(_reconcileOption);
+    AddOption(_timeoutOption);
   }
 }

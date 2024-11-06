@@ -191,7 +191,7 @@ class KSailUpCommandHandler
     if (config.Spec.UpOptions.Reconcile)
     {
       Console.WriteLine("🔄 Reconciling kustomizations");
-      await _gitOpsProvisioner.ReconcileAsync(cancellationToken).ConfigureAwait(false);
+      await _gitOpsProvisioner.ReconcileAsync(_config.Spec.Timeout, cancellationToken).ConfigureAwait(false);
       Console.WriteLine("");
     }
   }

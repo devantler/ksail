@@ -3,12 +3,10 @@ using KSail.Models.Commands.Init;
 
 namespace KSail.Commands.Init.Options;
 
-class TemplateOption : Option<KSailInitTemplate>
+class TemplateOption() : Option<KSailInitTemplate?>
+(
+  ["-t", "--template"],
+  "The template to use for the initialized cluster."
+)
 {
-  public TemplateOption() : base(
-    ["-t", "--template"],
-    () => KSailInitTemplate.Simple,
-    "The template to use for the initialized cluster.")
-  {
-  }
 }

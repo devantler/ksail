@@ -8,7 +8,7 @@ namespace KSail.Commands.Lint;
 sealed class KSailLintCommand : Command
 {
   readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly PathOption _manifestsPathOption = new("./k8s", " Path to the manifests directory") { Arity = ArgumentArity.ZeroOrOne };
+  readonly PathOption _manifestsPathOption = new(" Path to the manifests directory") { Arity = ArgumentArity.ZeroOrOne };
   internal KSailLintCommand() : base(
    "lint", "Lint manifests for a cluster"
   )
@@ -19,6 +19,7 @@ sealed class KSailLintCommand : Command
     {
       try
       {
+        string? manifestsPath = context.ParseResult.GetValueForOption(_manifestsPathOption);
         var config = await KSailClusterConfigLoader.LoadAsync(context.ParseResult.GetValueForOption(_manifestsPathOption), context.ParseResult.GetValueForOption(_nameOption)).ConfigureAwait(false);
         config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
         config.UpdateConfig("Spec.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsPathOption));

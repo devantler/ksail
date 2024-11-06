@@ -36,7 +36,7 @@ class KSailUpdateCommandHandler
     if (_config.Spec.UpdateOptions.Reconcile)
     {
       Console.WriteLine("🔄 Reconciling changes");
-      await _gitOpsProvisioner.ReconcileAsync(cancellationToken).ConfigureAwait(false);
+      await _gitOpsProvisioner.ReconcileAsync(_config.Spec.Timeout, cancellationToken).ConfigureAwait(false);
     }
     Console.WriteLine("");
     return true;
