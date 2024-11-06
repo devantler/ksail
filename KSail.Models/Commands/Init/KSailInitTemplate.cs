@@ -11,11 +11,5 @@ public enum KSailInitTemplate
   /// The simple template for initializing a KSail cluster with a minimal Kustomize setup.
   /// </summary>
   [EnumMember(Value = "simple")]
-  Simple,
-
-  /// <summary>
-  /// An advanced template for initializing a KSail cluster with a scalable Kustomize setup.
-  /// </summary>
-  [EnumMember(Value = "advanced")]
-  Advanced,
+  Simple
 }

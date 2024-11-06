@@ -8,7 +8,7 @@ public class KSailInitOptions
   /// <summary>
   /// Whether to generate a ksail-config.yaml file, to configure the KSail CLI declaratively.
   /// </summary>
-  public bool DeclarativeConfig { get; set; }
+  public bool DeclarativeConfig { get; set; } = true;
 
   /// <summary>
   /// Whether to include Kustomize components in the generated output.
