@@ -1,4 +1,5 @@
 using System.CommandLine;
+using Devantler.FluxCLI;
 using KSail.Commands.Update.Handlers;
 using KSail.Commands.Update.Options;
 using KSail.Options;
@@ -35,6 +36,11 @@ sealed class KSailUpdateCommand : Command
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;
       }
       catch (OperationCanceledException ex)
+      {
+        ExceptionHandler.HandleException(ex);
+        context.ExitCode = 1;
+      }
+      catch (FluxException ex)
       {
         ExceptionHandler.HandleException(ex);
         context.ExitCode = 1;
