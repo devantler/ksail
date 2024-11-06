@@ -32,7 +32,7 @@ public class KSailClusterSpec
   /// <summary>
   /// The timeout for operations (in seconds).
   /// </summary>
-  public int Timeout { get; set; } = 300;
+  public string Timeout { get; set; } = "5m";
 
   /// <summary>
   /// The path to the directory that contains the manifests.
