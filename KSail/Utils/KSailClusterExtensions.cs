@@ -35,7 +35,7 @@ public static class KSailClusterExtensions
         object? currentValue = property.GetValue(currentObject);
         object? defaultValue = defaultProperty.GetValue(defaultObject);
         // if currentValue is not value and value is different from the value it is set to at initialization
-        if (!Equals(currentValue, value) && !Equals(value, defaultValue))
+        if (value != null && !Equals(currentValue, value) && !Equals(value, defaultValue))
           property.SetValue(currentObject, value);
       }
       else

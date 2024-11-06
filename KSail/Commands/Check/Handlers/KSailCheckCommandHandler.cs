@@ -4,6 +4,7 @@ using k8s;
 using k8s.Models;
 using KSail.Commands.Check.Extensions;
 using KSail.Models;
+using KSail.Utils;
 
 namespace KSail.Commands.Check.Handlers;
 
@@ -50,7 +51,7 @@ class KSailCheckCommandHandler
       {
         continue;
       }
-      else if (stopWatch.Elapsed.TotalSeconds >= _config.Spec.Timeout)
+      else if (stopWatch.Elapsed.TotalSeconds >= TimeSpanHelper.ParseDuration(_config.Spec.Timeout).Seconds)
       {
         Console.WriteLine(
           $"✗ Kustomization '{kustomizationName}' did not become ready within the specified time limit of" +

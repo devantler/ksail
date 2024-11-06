@@ -3,7 +3,6 @@ using KSail.Commands.Init.Handlers;
 using KSail.Commands.Init.Options;
 using KSail.Options;
 using KSail.Utils;
-using KSail.Validators;
 
 namespace KSail.Commands.Init;
 
@@ -22,7 +21,6 @@ sealed class KSailInitCommand : Command
   public KSailInitCommand() : base("init", "Initialize a cluster")
   {
     AddOptions();
-    AddValidators();
 
     this.SetHandler(async (context) =>
     {
@@ -62,11 +60,5 @@ sealed class KSailInitCommand : Command
     AddOption(_outputDirectoryOption);
     AddOption(_sopsOption);
     AddOption(_templateOption);
-  }
-
-  void AddValidators()
-  {
-    AddValidator(new NameOptionValidator(_nameOption).Validate);
-    AddValidator(new DistributionOptionValidator(_distributionOption).Validate);
   }
 }
