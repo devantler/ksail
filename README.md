@@ -1,29 +1,8 @@
-> [!NOTE]
-> Ahoy, matey! Gather 'round and lend an ear, for a grand overhaul be on the horizon! All them embedded binaries be set to sail into their own .NET project, makin' it smoother fer me to keep 'em shipshape. But beware, this mighty endeavor means KSail won't be seein' any bug fixes or new features 'til the midst of November, as this here voyage will take a few moons to chart right.
->
-> Keep yer spyglass fixed on the progress at:
->
-> - [ ] [devantler/dotnet-sops-cli](https://github.com/devantler/dotnet-sops-cli)
-> - [x] [devantler/dotnet-age-cli](https://github.com/devantler/dotnet-age-cli)
-> - [x] [devantler/dotnet-cli-runner](https://github.com/devantler/dotnet-cli-runner)
-> - [x] [devantler/dotnet-container-engine-provisioner](https://github.com/devantler/dotnet-container-engine-provisioner)
-> - [x] [devantler/dotnet-flux-cli](https://github.com/devantler/dotnet-flux-cli)
-> - [x] [devantler/dotnet-k3d-cli](https://github.com/devantler/dotnet-k3d-cli)
-> - [x] [devantler/dotnet-k9s-cli](https://github.com/devantler/dotnet-k9s-cli)
-> - [x] [devantler/dotnet-key-manager](https://github.com/devantler/dotnet-sops-manager)
-> - [x] [devantler/dotnet-keys](https://github.com/devantler/dotnet-keys)
-> - [x] [devantler/dotnet-kind-cli](https://github.com/devantler/dotnet-kind-cli)
-> - [x] [devantler/dotnet-kubeconform-cli](https://github.com/devantler/dotnet-kubeconform-cli)
-> - [x] [devantler/dotnet-kubernetes-generator](https://github.com/devantler/dotnet-kubernetes-generator)
-> - [x] [devantler/dotnet-kubernetes-provisioner](https://github.com/devantler/dotnet-kubernetes-provisioner)
-> - [x] [devantler/dotnet-kustomize-cli](https://github.com/devantler/dotnet-kustomize-cli)
-> - [x] [devantler/dotnet-template-engine](https://github.com/devantler/dotnet-template-engine)
-
 <div align="center">
-  <img width="400px" alt="ksail" align="center" src="./wiki/images/ksail-logo.png" />
+  <img width="400px" alt="ksail" align="center" src="./docs/images/ksail-logo.png" />
 </div>
 
-# 🛥️🐳 KSail
+# KSail
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Test](https://github.com/devantler/ksail/actions/workflows/test.yaml/badge.svg?branch=main)](https://github.com/devantler/ksail/actions/workflows/test.yaml)
@@ -99,7 +78,7 @@
 │       │   ├── K3d
 │       │   ├── KSail
 │       │   ├── Kubernetes
-│       │   │   └── FluxKustomization
+│       │   │   └��─ FluxKustomization
 │       │   └── SOPS
 │       ├── Options
 │       ├── Provisioners
@@ -140,22 +119,20 @@
 ### Prerequisites
 
 > [!NOTE]
-> On MacOS (darwin), ye need to "Allow the default Docker socket to be used (requires password)" in Docker Desktop settings.
+> On MacOS, you need to "Allow the default Docker socket to be used (requires password)" in Docker Desktop settings.
 >
-> <details><summary>Show me how, ye scallywag!</summary>
+> <details><summary>Show me how</summary>
 >
 > ![Enable Docker Socket in Docker Desktop](docs/images/enable-docker-socket-in-docker-desktop.png)
 >
 > </details>
 
-KSail supports MacOS and Linux on the followin' platforms:
+KSail supports all major operating systems:
 
-- darwin-amd64 
-- darwin-arm64 
-- linux-amd64 🐧
-- linux-arm64 🐧
-
-If ye be usin' Windows, ye can use WSL2 to run KSail.
+- MacOS (x64 and arm64)
+- Linux (x64 and arm64)
+- Windows (x64 and partially arm64)
+  - Or WSL2
 
 ### Installation
 
@@ -168,67 +145,64 @@ brew install ksail
 
 Manually:
 
-1. Download the latest release from the [releases page](https://github.com/devantler/ksail/releases).
+1. Download the latest release for your OS from the [releases page](https://github.com/devantler/ksail/releases).
 2. Make the binary executable: `chmod +x ksail`.
-3. Move the binary to a directory in yer `$PATH`: `mv ksail /usr/local/bin/ksail`.
+3. Move the binary to a directory in your `$PATH`: `mv ksail /usr/local/bin/ksail`.
 
-### 📝 Usage
+### Usage
 
-Gettin' started with KSail be as easy as plunderin' treasure. Here be a few commands to get ye goin':
+Getting started with KSail is easy. Here are a few commands to get you going:
 
-> `ksail init <name-of-cluster>` - To initialize yer cluster.
->
-> `ksail up <name-of-cluster>` - To provision yer cluster.
+`ksail init` - To initialize a new cluster with the default configuration.
 
-From there, ye can make some changes to yer manifest files, and when ye be ready to apply 'em, ye can run:
+`ksail up` - To provision your new cluster.
 
-> `ksail update <name-of-cluster>` - To update yer cluster.
+From there, you can make some changes to your manifest files, and when you are ready to apply them, you can run:
 
-At some point, ye might encounter an issue and wonder what be goin' on. In that case, ye can run:
+`ksail update` - To update your cluster.
 
-> `ksail check` - To check the status of yer cluster reconciliations.
+At some point, you might encounter an issue and wonder what is going on. In that case, you can run:
 
-And for more advanced debuggin', ye can run:
+`ksail check` - To check the status of your cluster reconciliations.
 
-> `ksail debug` - To debug yer cluster with the K9s tool.
+And for more advanced debugging, you can run:
 
-Finally, when ye be done workin' with yer cluster, ye can run:
+`ksail debug` - To debug your cluster with the K9s tool.
 
-> `ksail stop <name-of-cluster>` - To stop yer cluster, so ye can continue workin' on it later.
+Finally, when you are done working with your cluster, you can run:
 
-Or if ye really want to get rid of it for now, ye can run:
+`ksail stop <name-of-cluster>` - To stop your cluster, so you can continue working on it later.
 
-> `ksail down <name-of-cluster>` - To dismantle yer cluster and remove its resources.
+Or if you really want to get rid of it for now, you can run:
+
+`ksail down <name-of-cluster>` - To dismantle your cluster and remove its resources.
 
 ## Documentation
 
-> [!NOTE]
-> The documentation be a work in progress. When it be more mature, it will be made available on <ksail.devantler.com> and on the Wiki.
-> For now, it includes the information that was originally available in this README with a few additions.
-
-- [Overview](./wiki/0-overview.md)
-- [Getting Started](./wiki/1-getting-started.md)
-- [Configuration](./wiki/2-configuration.md)
-- [Structure](./wiki/3-structure.md)
-- [CI](./wiki/4-ci.md)
-- [KSail CLI](./wiki/5-ksail-cli.md)
-- [Supported Tooling](./wiki/6-supported-tooling.md)
-- [FAQ](./wiki/7-faq.md)
-- [Roadmap](./wiki/8-roadmap.md)
+- [Overview](./docs/0-overview.md)
+- [Configuration](./docs/1-configuration.md)
+- [Structure](./docs/2-structure.md)
+- [CI](./docs/3-ci.md)
+- [KSail CLI](./docs/4-ksail-cli.md)
+- [Supported Tooling](./docs/5-supported-tooling.md)
+- [FAQ](./docs/6-faq.md)
+- [Roadmap](./docs/7-roadmap.md)
 
 ## Sub-projects
 
+KSail is part of a larger ecosystem of projects that I maintain. These projects are designed to provide important functionality to KSail with high confidence, and without bloating the main repository. Most the projects provide extensible frameworks, so you can build your own tools on top of them, or make contributions to make KSail even more powerful.
+
 - **[devantler/dotnet-age-cli](https://github.com/devantler/dotnet-age-cli)** - A library that embeds and provides an API for the Age CLI.
-- **[devantler/dotnet-cli-runner](https://github.com/devantler/dotnet-cli-runner)** - An implementation atop CLI Wrap to support runnin' different binaries from C# code.
+- **[devantler/dotnet-cli-runner](https://github.com/devantler/dotnet-cli-runner)** - An implementation atop CLI Wrap to support running different binaries from C# code.
 - **[devantler/dotnet-container-engine-provisioner](https://github.com/devantler/dotnet-container-engine-provisioner)** - Provisioners to provision resources in container engines like Docker or Podman.
 - **[devantler/dotnet-flux-cli](https://github.com/devantler/dotnet-flux-cli)** - A library that embeds and provides an API for the Flux CLI.
 - **[devantler/dotnet-k3d-cli](https://github.com/devantler/dotnet-k3d-cli)** - A library that embeds and provides an API for the K3d CLI.
 - **[devantler/dotnet-k9s-cli](https://github.com/devantler/dotnet-k9s-cli)** - A library that embeds and provides an API for the K9s CLI.
-- **[devantler/dotnet-key-manager](https://github.com/devantler/dotnet-key-manager)** - A key manager to guard yer local Age keys.
+- **[devantler/dotnet-key-manager](https://github.com/devantler/dotnet-key-manager)** - A key manager to guard your local Age keys.
 - **[devantler/dotnet-keys](https://github.com/devantler/dotnet-keys)** - A library with key models, like the Age key model.
 - **[devantler/dotnet-kind-cli](https://github.com/devantler/dotnet-kind-cli)** - A library that embeds and provides an API for the Kind CLI.
 - **[devantler/dotnet-kubeconform-cli](https://github.com/devantler/dotnet-kubeconform-cli)** - A library that embeds and provides an API for the Kubeconform CLI.
-- **[devantler/dotnet-kubernetes-generator](https://github.com/devantler/dotnet-kubernetes-generator)** - Generators to conjure Kubernetes resources with `ksail init` and `ksail gen`.
+- **[devantler/dotnet-kubernetes-generator](https://github.com/devantler/dotnet-kubernetes-generator)** - Generators to create Kubernetes resources with `ksail init` and `ksail gen`.
 - **[devantler/dotnet-kubernetes-provisioner](https://github.com/devantler/dotnet-kubernetes-provisioner)** - Provisioners to provision Kubernetes clusters and resources.
 - **[devantler/dotnet-kubernetes-validator](https://github.com/devantler/dotnet-kubernetes-validator)** - A library that validates Kubernetes resources client-side or at runtime.
 - **[devantler/dotnet-kustomize-cli](https://github.com/devantler/dotnet-kustomize-cli)** - A library that embeds and provides an API for the Kustomize CLI.
@@ -237,7 +211,13 @@ Or if ye really want to get rid of it for now, ye can run:
 
 ## Related Projects
 
+KSail is a powerful tool that can be used in many different ways. Here are some projects that use KSail in their setup:
+
 - **[devantler/homelab](https://github.com/devantler/homelab)** - My personal homelab setup, including an example of how I use KSail.
+
+## Presentations
+
+- **[KSail - a Kubernetes SDK for local GitOps development and CI]()** - A presentation on KSail at KCD2024. Link missing.
 
 ## Star History
 
