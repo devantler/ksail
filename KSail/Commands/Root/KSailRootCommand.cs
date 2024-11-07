@@ -1,5 +1,4 @@
 using System.CommandLine;
-using KSail.Commands.Check;
 using KSail.Commands.Debug;
 using KSail.Commands.Down;
 using KSail.Commands.Gen;
@@ -40,7 +39,6 @@ sealed class KSailRootCommand : RootCommand
   void AddCommands(IConsole? console)
   {
     //AddCommand(new KSailSOPSCommand());
-    AddCommand(new KSailCheckCommand());
     AddCommand(new KSailDebugCommand());
     AddCommand(new KSailDownCommand());
     AddCommand(new KSailGenCommand(console));
