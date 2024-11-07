@@ -14,13 +14,14 @@ namespace KSail.Commands.Up.Handlers;
 
 class KSailUpCommandHandler
 {
-  readonly KSailCluster _config;
+  //TODO: readonly CiliumProvisioner _cniProvisioner = new();
+  //TODO: readonly LocalAgeKeyManager _keyManager = new();
   readonly DockerProvisioner _containerEngineProvisioner;
-  readonly IKubernetesClusterProvisioner _clusterProvisioner;
   readonly FluxProvisioner _gitOpsProvisioner;
+  readonly IKubernetesClusterProvisioner _clusterProvisioner;
+  readonly KSailCluster _config;
   readonly KSailDownCommandHandler _ksailDownCommandHandler;
   readonly KSailLintCommandHandler _ksailLintCommandHandler = new();
-  //readonly LocalAgeKeyManager _keyManager = new();
 
   internal KSailUpCommandHandler(KSailCluster config)
   {
