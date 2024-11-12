@@ -11,10 +11,10 @@ class KSailClusterConfigGenerator
     string ksailConfigPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "ksail-config.yaml");
     if (File.Exists(ksailConfigPath))
     {
-      Console.WriteLine($"✔ Skipping '{ksailConfigPath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{ksailConfigPath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{ksailConfigPath}'");
+    Console.WriteLine($"✚ generating '{ksailConfigPath}'");
     await _ksailClusterGenerator.GenerateAsync(config, ksailConfigPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 }

@@ -21,7 +21,7 @@ class DistributionConfigFileGenerator
     string distributionConfigPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, $"{config.Spec.Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-config.yaml");
     if (File.Exists(distributionConfigPath))
     {
-      Console.WriteLine($"✔ Skipping '{distributionConfigPath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{distributionConfigPath}', as it already exists.");
       return;
     }
     switch (config.Spec.Distribution)
@@ -39,7 +39,7 @@ class DistributionConfigFileGenerator
 
   async Task GenerateKindConfigFile(KSailCluster config, string outputPath, CancellationToken cancellationToken = default)
   {
-    Console.WriteLine($"✚ Generating '{outputPath}'");
+    Console.WriteLine($"✚ generating '{outputPath}'");
     var kindConfig = new KindConfig
     {
       Name = config.Metadata.Name
@@ -50,7 +50,7 @@ class DistributionConfigFileGenerator
 
   async Task GenerateK3DConfigFile(KSailCluster config, string outputPath, CancellationToken cancellationToken = default)
   {
-    Console.WriteLine($"✚ Generating '{outputPath}'");
+    Console.WriteLine($"✚ generating '{outputPath}'");
     var mirrors = new StringBuilder();
     mirrors = mirrors.AppendLine("mirrors:");
     foreach (var registry in config.Spec.Registries.Where(x => !x.IsGitOpsOCISource))

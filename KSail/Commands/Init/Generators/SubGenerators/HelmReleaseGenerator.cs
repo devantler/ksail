@@ -24,8 +24,8 @@ class HelmReleaseGenerator
 
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    string appsPath = Path.Combine(config.Spec.ManifestsDirectory, "apps");
-    string infrastructurePath = Path.Combine(config.Spec.ManifestsDirectory, "infrastructure");
+    string appsPath = Path.Combine(config.Spec.ManifestsDirectory, config.Spec.InitOptions.KustomizeHooks.Last(), "apps");
+    string infrastructurePath = Path.Combine(config.Spec.ManifestsDirectory, config.Spec.InitOptions.KustomizeHooks.Last(), "infrastructure");
     string infrastructureControllersPath = Path.Combine(infrastructurePath, "controllers");
     if (!Directory.Exists(appsPath))
       _ = Directory.CreateDirectory(appsPath);
@@ -56,10 +56,10 @@ class HelmReleaseGenerator
     string clusterIssuerCertificatePath = Path.Combine(certificatesPath, "cluster-issuer-certificate.yaml");
     if (File.Exists(clusterIssuerCertificatePath))
     {
-      Console.WriteLine($"✔ Skipping '{clusterIssuerCertificatePath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{clusterIssuerCertificatePath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{clusterIssuerCertificatePath}'");
+    Console.WriteLine($"✚ generating '{clusterIssuerCertificatePath}'");
     var clusterIssuerCertificate = new CertManagerCertificate
     {
       Metadata = new V1ObjectMeta
@@ -86,10 +86,10 @@ class HelmReleaseGenerator
     string certificatesKustomizationPath = Path.Combine(certificatesPath, "kustomization.yaml");
     if (File.Exists(certificatesKustomizationPath))
     {
-      Console.WriteLine($"✔ Skipping '{certificatesKustomizationPath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{certificatesKustomizationPath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{certificatesKustomizationPath}'");
+    Console.WriteLine($"✚ generating '{certificatesKustomizationPath}'");
     var kustomization = new KustomizeKustomization
     {
       Resources =
@@ -116,10 +116,10 @@ class HelmReleaseGenerator
     string selfSignedClusterIssuerPath = Path.Combine(clusterIssuersPath, "selfsigned-cluster-issuer.yaml");
     if (File.Exists(selfSignedClusterIssuerPath))
     {
-      Console.WriteLine($"✔ Skipping '{selfSignedClusterIssuerPath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{selfSignedClusterIssuerPath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{selfSignedClusterIssuerPath}'");
+    Console.WriteLine($"✚ generating '{selfSignedClusterIssuerPath}'");
     var selfSignedClusterIssuer = new CertManagerClusterIssuer
     {
       Metadata = new V1ObjectMeta
@@ -140,10 +140,10 @@ class HelmReleaseGenerator
     string selfSignedClusterIssuerKustomizationPath = Path.Combine(selfSignedClusterIssuerPath, "kustomization.yaml");
     if (File.Exists(selfSignedClusterIssuerKustomizationPath))
     {
-      Console.WriteLine($"✔ Skipping '{selfSignedClusterIssuerKustomizationPath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{selfSignedClusterIssuerKustomizationPath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{selfSignedClusterIssuerKustomizationPath}'");
+    Console.WriteLine($"✚ generating '{selfSignedClusterIssuerKustomizationPath}'");
     var kustomization = new KustomizeKustomization
     {
       Resources =
@@ -171,10 +171,10 @@ class HelmReleaseGenerator
     string podinfoKustomizationPath = Path.Combine(podinfoPath, "kustomization.yaml");
     if (File.Exists(podinfoKustomizationPath))
     {
-      Console.WriteLine($"✔ Skipping '{podinfoKustomizationPath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{podinfoKustomizationPath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{podinfoKustomizationPath}'");
+    Console.WriteLine($"✚ generating '{podinfoKustomizationPath}'");
     var kustomization = new KustomizeKustomization
     {
       Resources =
@@ -192,10 +192,10 @@ class HelmReleaseGenerator
     string podinfoNamespacePath = Path.Combine(podinfoPath, "namespace.yaml");
     if (File.Exists(podinfoNamespacePath))
     {
-      Console.WriteLine($"✔ Skipping '{podinfoNamespacePath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{podinfoNamespacePath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{podinfoNamespacePath}'");
+    Console.WriteLine($"✚ generating '{podinfoNamespacePath}'");
     var @namespace = new V1Namespace
     {
       ApiVersion = "v1",
@@ -213,10 +213,10 @@ class HelmReleaseGenerator
     string podinfoHelmReleasePath = Path.Combine(podinfoPath, "helm-release.yaml");
     if (File.Exists(podinfoHelmReleasePath))
     {
-      Console.WriteLine($"✔ Skipping '{podinfoHelmReleasePath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{podinfoHelmReleasePath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{podinfoHelmReleasePath}'");
+    Console.WriteLine($"✚ generating '{podinfoHelmReleasePath}'");
     var helmRelease = new FluxHelmRelease
     {
       Metadata = new V1ObjectMeta
@@ -249,10 +249,10 @@ class HelmReleaseGenerator
     string podinfoHelmRepositoryPath = Path.Combine(podinfoPath, "helm-repository.yaml");
     if (File.Exists(podinfoHelmRepositoryPath))
     {
-      Console.WriteLine($"✔ Skipping '{podinfoHelmRepositoryPath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{podinfoHelmRepositoryPath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{podinfoHelmRepositoryPath}'");
+    Console.WriteLine($"✚ generating '{podinfoHelmRepositoryPath}'");
     var helmRepository = new FluxHelmRepository
     {
       Metadata = new V1ObjectMeta
@@ -280,10 +280,10 @@ class HelmReleaseGenerator
     string certManagerKustomizationPath = Path.Combine(certManagerPath, "kustomization.yaml");
     if (File.Exists(certManagerKustomizationPath))
     {
-      Console.WriteLine($"✔ Skipping '{certManagerKustomizationPath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{certManagerKustomizationPath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{certManagerKustomizationPath}'");
+    Console.WriteLine($"✚ generating '{certManagerKustomizationPath}'");
     var certManagerKustomization = new KustomizeKustomization()
     {
       Resources = [
@@ -297,10 +297,10 @@ class HelmReleaseGenerator
     string certManagerNamespacePath = Path.Combine(certManagerPath, "namespace.yaml");
     if (File.Exists(certManagerNamespacePath))
     {
-      Console.WriteLine($"✔ Skipping '{certManagerNamespacePath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{certManagerNamespacePath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{certManagerNamespacePath}'");
+    Console.WriteLine($"✚ generating '{certManagerNamespacePath}'");
     var certManagerNamespace = new V1Namespace
     {
       ApiVersion = "v1",
@@ -315,10 +315,10 @@ class HelmReleaseGenerator
     string certManagerHelmReleasePath = Path.Combine(certManagerPath, "helm-release.yaml");
     if (File.Exists(certManagerHelmReleasePath))
     {
-      Console.WriteLine($"✔ Skipping '{certManagerHelmReleasePath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{certManagerHelmReleasePath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{certManagerHelmReleasePath}'");
+    Console.WriteLine($"✚ generating '{certManagerHelmReleasePath}'");
     var certManagerHelmRelease = new FluxHelmRelease()
     {
       Metadata = new V1ObjectMeta
@@ -356,10 +356,10 @@ class HelmReleaseGenerator
     string certManagerHelmRepositoryPath = Path.Combine(certManagerPath, "helm-repository.yaml");
     if (File.Exists(certManagerHelmRepositoryPath))
     {
-      Console.WriteLine($"✔ Skipping '{certManagerHelmRepositoryPath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{certManagerHelmRepositoryPath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{certManagerHelmRepositoryPath}'");
+    Console.WriteLine($"✚ generating '{certManagerHelmRepositoryPath}'");
     var certManagerHelmRepository = new FluxHelmRepository()
     {
       Metadata = new V1ObjectMeta
@@ -384,10 +384,10 @@ class HelmReleaseGenerator
     string traefikKustomizationPath = Path.Combine(traefikPath, "kustomization.yaml");
     if (File.Exists(traefikKustomizationPath))
     {
-      Console.WriteLine($"✔ Skipping '{traefikKustomizationPath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{traefikKustomizationPath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{traefikKustomizationPath}'");
+    Console.WriteLine($"✚ generating '{traefikKustomizationPath}'");
     var traefikKustomization = new KustomizeKustomization()
     {
       Resources = [
@@ -401,10 +401,10 @@ class HelmReleaseGenerator
     string traefikNamespacePath = Path.Combine(traefikPath, "namespace.yaml");
     if (File.Exists(traefikNamespacePath))
     {
-      Console.WriteLine($"✔ Skipping '{traefikNamespacePath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{traefikNamespacePath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{traefikNamespacePath}'");
+    Console.WriteLine($"✚ generating '{traefikNamespacePath}'");
     var traefikNamespace = new V1Namespace
     {
       ApiVersion = "v1",
@@ -419,10 +419,10 @@ class HelmReleaseGenerator
     string traefikHelmReleasePath = Path.Combine(traefikPath, "helm-release.yaml");
     if (File.Exists(traefikHelmReleasePath))
     {
-      Console.WriteLine($"✔ Skipping '{traefikHelmReleasePath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{traefikHelmReleasePath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{traefikHelmReleasePath}'");
+    Console.WriteLine($"✚ generating '{traefikHelmReleasePath}'");
     var traefikHelmRelease = new FluxHelmRelease()
     {
       Metadata = new V1ObjectMeta
@@ -477,10 +477,10 @@ class HelmReleaseGenerator
     string traefikHelmRepositoryPath = Path.Combine(traefikPath, "helm-repository.yaml");
     if (File.Exists(traefikHelmRepositoryPath))
     {
-      Console.WriteLine($"✔ Skipping '{traefikHelmRepositoryPath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{traefikHelmRepositoryPath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{traefikHelmRepositoryPath}'");
+    Console.WriteLine($"✚ generating '{traefikHelmRepositoryPath}'");
     var traefikHelmRepository = new FluxHelmRepository()
     {
       Metadata = new V1ObjectMeta

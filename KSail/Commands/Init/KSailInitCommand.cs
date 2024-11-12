@@ -40,9 +40,14 @@ sealed class KSailInitCommand : Command
         var handler = new KSailInitCommandHandler(config);
         Console.WriteLine($"📁 Initializing new cluster '{config.Metadata.Name}' in '{config.Spec.InitOptions.OutputDirectory}' with the '{config.Spec.InitOptions.Template}' template.");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
-        Console.WriteLine("");
+        Console.WriteLine();
       }
       catch (OperationCanceledException ex)
+      {
+        ExceptionHandler.HandleException(ex);
+        context.ExitCode = 1;
+      }
+      catch (NullReferenceException ex)
       {
         ExceptionHandler.HandleException(ex);
         context.ExitCode = 1;

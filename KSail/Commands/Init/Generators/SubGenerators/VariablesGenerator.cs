@@ -48,10 +48,10 @@ class VariablesGenerator
     string variablesConfigMapPath = Path.Combine(outputPath, "variables.yaml");
     if (File.Exists(variablesConfigMapPath))
     {
-      Console.WriteLine($"✔ Skipping '{variablesConfigMapPath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{variablesConfigMapPath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{variablesConfigMapPath}'");
+    Console.WriteLine($"✚ generating '{variablesConfigMapPath}'");
     var configMap = new V1ConfigMap
     {
       ApiVersion = "v1",
@@ -71,10 +71,10 @@ class VariablesGenerator
     string variablesSensitiveSecretPath = Path.Combine(outputPath, "variables-sensitive.sops.yaml");
     if (File.Exists(variablesSensitiveSecretPath))
     {
-      Console.WriteLine($"✔ Skipping '{variablesSensitiveSecretPath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{variablesSensitiveSecretPath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{variablesSensitiveSecretPath}'");
+    Console.WriteLine($"✚ generating '{variablesSensitiveSecretPath}'");
     var secret = new V1Secret
     {
       ApiVersion = "v1",

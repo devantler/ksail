@@ -10,7 +10,7 @@ class KSailInitCommandHandler(KSailCluster config)
   readonly SOPSConfigFileGenerator _sopsConfigFileGenerator = new();
   readonly KSailClusterConfigGenerator _ksailClusterConfigGenerator = new();
   readonly DistributionConfigFileGenerator _distributionConfigFileGenerator = new();
-  readonly ProjectGenerator _templateGenerator = new();
+  readonly ProjectGenerator _projectGenerator = new();
 
   public async Task<int> HandleAsync(CancellationToken cancellationToken = default)
   {
@@ -35,7 +35,7 @@ class KSailInitCommandHandler(KSailCluster config)
       ).ConfigureAwait(false);
     }
 
-    await _templateGenerator.GenerateAsync(_config, cancellationToken).ConfigureAwait(false);
+    await _projectGenerator.GenerateAsync(_config, cancellationToken).ConfigureAwait(false);
 
     return 0;
   }

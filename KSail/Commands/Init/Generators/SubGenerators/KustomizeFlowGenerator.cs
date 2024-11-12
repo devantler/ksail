@@ -32,10 +32,10 @@ class KustomizeFlowGenerator
     string outputDirectory = Path.Combine(outputPath, "kustomization.yaml");
     if (File.Exists(outputDirectory))
     {
-      Console.WriteLine($"✔ Skipping '{outputDirectory}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{outputDirectory}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{outputDirectory}'");
+    Console.WriteLine($"✚ generating '{outputDirectory}'");
     string relativeRoot = string.Join("/", Enumerable.Repeat("..", Path.Combine(currentHook, currentFlow).Split('/').Length));
     var kustomization = new KustomizeKustomization
     {
@@ -43,7 +43,7 @@ class KustomizeFlowGenerator
         config.Spec.InitOptions.HelmReleases && currentFlow == "infrastructure/controllers" ? ["cert-manager", "traefik"] :
           config.Spec.InitOptions.HelmReleases && currentFlow == "infrastructure" ? ["certificates", "cluster-issuers"] :
             config.Spec.InitOptions.HelmReleases && currentFlow == "apps" ? ["podinfo"] : [] :
-        [Path.Combine(relativeRoot, $"{config.Spec.InitOptions.KustomizeHooks.ElementAt(Array.IndexOf(config.Spec.InitOptions.KustomizeHooks.ToArray(), currentHook) + 1)}{currentFlow}")],
+        [Path.Combine(relativeRoot, $"{config.Spec.InitOptions.KustomizeHooks.ElementAt(Array.IndexOf(config.Spec.InitOptions.KustomizeHooks.ToArray(), currentHook) + 1)}/{currentFlow}")],
       Components = config.Spec.InitOptions.Components ?
         [
           Path.Combine(relativeRoot, "components/helm-release-crds-label"),

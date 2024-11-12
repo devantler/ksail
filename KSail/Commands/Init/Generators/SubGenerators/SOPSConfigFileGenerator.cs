@@ -11,21 +11,24 @@ class SOPSConfigFileGenerator
 
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    var ageKey = await LocalAgeKeyManager.CreateKeyAsync(cancellationToken).ConfigureAwait(false);
     string sopsConfigPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, ".sops.yaml");
     if (!File.Exists(sopsConfigPath) || string.IsNullOrEmpty(await File.ReadAllTextAsync(sopsConfigPath, cancellationToken).ConfigureAwait(false)))
     {
+      var ageKey = await LocalAgeKeyManager.CreateKeyAsync(cancellationToken).ConfigureAwait(false);
       await GenerateNewSOPSConfigFile(sopsConfigPath, config.Metadata.Name, ageKey, cancellationToken).ConfigureAwait(false);
     }
     else
     {
+      var sopsConfig = await LocalAgeKeyManager.GetSOPSConfigAsync(sopsConfigPath, cancellationToken).ConfigureAwait(false);
+      string publicKey = sopsConfig.CreationRules.First(cr => cr.PathRegex.Contains(config.Metadata.Name, StringComparison.OrdinalIgnoreCase)).Age;
+      var ageKey = await LocalAgeKeyManager.GetKeyAsync(publicKey, cancellationToken).ConfigureAwait(false);
       await GenerateUpdatedSOPSConfigFile(sopsConfigPath, config.Metadata.Name, ageKey, cancellationToken).ConfigureAwait(false);
     }
   }
 
   async Task GenerateNewSOPSConfigFile(string path, string clusterName, AgeKey ageKey, CancellationToken cancellationToken = default)
   {
-    Console.WriteLine($"✚ Generating '{path}'");
+    Console.WriteLine($"✚ generating '{path}'");
     var sopsConfig = new SOPSConfig()
     {
       CreationRules =
@@ -47,7 +50,7 @@ class SOPSConfigFileGenerator
 
   async Task GenerateUpdatedSOPSConfigFile(string path, string clusterName, AgeKey ageKey, CancellationToken cancellationToken = default)
   {
-    Console.WriteLine($"✚ Generating and overwriting '{path}'");
+    Console.WriteLine($"✚ generating and overwriting '{path}'");
     var sopsConfig = await LocalAgeKeyManager.GetSOPSConfigAsync(path, cancellationToken: cancellationToken).ConfigureAwait(false);
 
     // Check if the creation rule already exists

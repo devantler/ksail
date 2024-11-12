@@ -10,22 +10,25 @@ class ComponentsGenerator
 {
   readonly KustomizeComponentGenerator _kustomizeComponentKubernetesGenerator = new();
 
-  internal async Task GenerateAsync(KSailCluster config)
+  internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    string componentsPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "components");
+    string componentsPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "k8s/components");
     if (!Directory.Exists(componentsPath))
       _ = Directory.CreateDirectory(componentsPath);
     if (config.Spec.InitOptions.Template == KSailInitTemplate.Simple)
     {
-      await GenerateFluxKustomizationPostBuildVariablesLabelComponent(componentsPath).ConfigureAwait(false);
-      await GenerateHelmReleaseCRDSLabelComponent(componentsPath).ConfigureAwait(false);
-      await GenerateHelmReleaseRemediationLabelComponent(componentsPath).ConfigureAwait(false);
+      if (config.Spec.InitOptions.PostBuildVariables)
+      {
+        await GenerateFluxKustomizationPostBuildVariablesLabelComponent(config, componentsPath, cancellationToken).ConfigureAwait(false);
+      }
+      await GenerateHelmReleaseCRDSLabelComponent(componentsPath, cancellationToken).ConfigureAwait(false);
+      await GenerateHelmReleaseRemediationLabelComponent(componentsPath, cancellationToken).ConfigureAwait(false);
     }
     if (config.Spec.Sops)
-      await GenerateFluxKustomizationSOPSLabelComponent(componentsPath).ConfigureAwait(false);
+      await GenerateFluxKustomizationSOPSLabelComponent(componentsPath, cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateFluxKustomizationPostBuildVariablesLabelComponent(string outputPath)
+  async Task GenerateFluxKustomizationPostBuildVariablesLabelComponent(KSailCluster config, string outputPath, CancellationToken cancellationToken = default)
   {
     string fluxKustomizationPostBuildVariablesLabelComponentPath = Path.Combine(outputPath, "flux-kustomization-post-build-variables-label");
     if (!Directory.Exists(fluxKustomizationPostBuildVariablesLabelComponentPath))
@@ -33,10 +36,10 @@ class ComponentsGenerator
     string fluxKustomizationPostBuildVariablesLabelComponentKustomizationPath = Path.Combine(fluxKustomizationPostBuildVariablesLabelComponentPath, "kustomization.yaml");
     if (File.Exists(fluxKustomizationPostBuildVariablesLabelComponentKustomizationPath))
     {
-      Console.WriteLine($"✔ Skipping '{fluxKustomizationPostBuildVariablesLabelComponentKustomizationPath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{fluxKustomizationPostBuildVariablesLabelComponentKustomizationPath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{fluxKustomizationPostBuildVariablesLabelComponentKustomizationPath}'");
+    Console.WriteLine($"✚ generating '{fluxKustomizationPostBuildVariablesLabelComponentKustomizationPath}'");
     var fluxKustomizationPostBuildVariablesLabelComponent = new KustomizeComponent
     {
       Patches =
@@ -60,22 +63,21 @@ class ComponentsGenerator
                 name: variables-cluster
               - kind: Secret
                 name: variables-sensitive-cluster
-              - kind: ConfigMap
-                name: variables-distribution
-              - kind: Secret
-                name: variables-sensitive-distribution
-              - kind: ConfigMap
-                name: variables-shared
-              - kind: Secret
-                name: variables-sensitive-shared
           """
         }
       ]
     };
-    await _kustomizeComponentKubernetesGenerator.GenerateAsync(fluxKustomizationPostBuildVariablesLabelComponent, fluxKustomizationPostBuildVariablesLabelComponentKustomizationPath).ConfigureAwait(false);
+    foreach (string hook in config.Spec.InitOptions.KustomizeHooks.Skip(1))
+    {
+      fluxKustomizationPostBuildVariablesLabelComponent.Patches.First().Patch += $"{Environment.NewLine}    - kind: ConfigMap";
+      fluxKustomizationPostBuildVariablesLabelComponent.Patches.First().Patch += $"{Environment.NewLine}      name: variables-{hook}-cluster";
+      fluxKustomizationPostBuildVariablesLabelComponent.Patches.First().Patch += $"{Environment.NewLine}    - kind: Secret";
+      fluxKustomizationPostBuildVariablesLabelComponent.Patches.First().Patch += $"{Environment.NewLine}      name: variables-sensitive-{hook}-cluster";
+    }
+    await _kustomizeComponentKubernetesGenerator.GenerateAsync(fluxKustomizationPostBuildVariablesLabelComponent, fluxKustomizationPostBuildVariablesLabelComponentKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateFluxKustomizationSOPSLabelComponent(string outputPath)
+  async Task GenerateFluxKustomizationSOPSLabelComponent(string outputPath, CancellationToken cancellationToken = default)
   {
     string fluxKustomizationSOPSLabelComponentPath = Path.Combine(outputPath, "flux-kustomization-sops-label");
     if (!Directory.Exists(fluxKustomizationSOPSLabelComponentPath))
@@ -83,10 +85,10 @@ class ComponentsGenerator
     string fluxKustomizationSOPSLabelComponentKustomizationPath = Path.Combine(fluxKustomizationSOPSLabelComponentPath, "kustomization.yaml");
     if (File.Exists(fluxKustomizationSOPSLabelComponentKustomizationPath))
     {
-      Console.WriteLine($"✔ Skipping '{fluxKustomizationSOPSLabelComponentKustomizationPath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{fluxKustomizationSOPSLabelComponentKustomizationPath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{fluxKustomizationSOPSLabelComponentKustomizationPath}'");
+    Console.WriteLine($"✚ generating '{fluxKustomizationSOPSLabelComponentKustomizationPath}'");
     var fluxKustomizationSOPSLabelComponent = new KustomizeComponent
     {
       Patches =
@@ -112,10 +114,10 @@ class ComponentsGenerator
         }
       ]
     };
-    await _kustomizeComponentKubernetesGenerator.GenerateAsync(fluxKustomizationSOPSLabelComponent, fluxKustomizationSOPSLabelComponentKustomizationPath).ConfigureAwait(false);
+    await _kustomizeComponentKubernetesGenerator.GenerateAsync(fluxKustomizationSOPSLabelComponent, fluxKustomizationSOPSLabelComponentKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateHelmReleaseCRDSLabelComponent(string outputPath)
+  async Task GenerateHelmReleaseCRDSLabelComponent(string outputPath, CancellationToken cancellationToken = default)
   {
     string helmReleaseCRDSLabelComponentPath = Path.Combine(outputPath, "helm-release-crds-label");
     if (!Directory.Exists(helmReleaseCRDSLabelComponentPath))
@@ -123,10 +125,10 @@ class ComponentsGenerator
     string helmReleaseCRDSLabelComponentKustomizationPath = Path.Combine(helmReleaseCRDSLabelComponentPath, "kustomization.yaml");
     if (File.Exists(helmReleaseCRDSLabelComponentKustomizationPath))
     {
-      Console.WriteLine($"✔ Skipping '{helmReleaseCRDSLabelComponentKustomizationPath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{helmReleaseCRDSLabelComponentKustomizationPath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{helmReleaseCRDSLabelComponentKustomizationPath}'");
+    Console.WriteLine($"✚ generating '{helmReleaseCRDSLabelComponentKustomizationPath}'");
     var helmReleaseCRDSLabelComponent = new KustomizeComponent
     {
       Patches =
@@ -152,10 +154,10 @@ class ComponentsGenerator
         }
       ]
     };
-    await _kustomizeComponentKubernetesGenerator.GenerateAsync(helmReleaseCRDSLabelComponent, helmReleaseCRDSLabelComponentKustomizationPath).ConfigureAwait(false);
+    await _kustomizeComponentKubernetesGenerator.GenerateAsync(helmReleaseCRDSLabelComponent, helmReleaseCRDSLabelComponentKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateHelmReleaseRemediationLabelComponent(string outputPath)
+  async Task GenerateHelmReleaseRemediationLabelComponent(string outputPath, CancellationToken cancellationToken = default)
   {
     string helmReleaseRemediationLabelComponentPath = Path.Combine(outputPath, "helm-release-remediation-label");
     if (!Directory.Exists(helmReleaseRemediationLabelComponentPath))
@@ -163,10 +165,10 @@ class ComponentsGenerator
     string helmReleaseRemediationLabelComponentKustomizationPath = Path.Combine(helmReleaseRemediationLabelComponentPath, "kustomization.yaml");
     if (File.Exists(helmReleaseRemediationLabelComponentKustomizationPath))
     {
-      Console.WriteLine($"✔ Skipping '{helmReleaseRemediationLabelComponentKustomizationPath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{helmReleaseRemediationLabelComponentKustomizationPath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{helmReleaseRemediationLabelComponentKustomizationPath}'");
+    Console.WriteLine($"✚ generating '{helmReleaseRemediationLabelComponentKustomizationPath}'");
     var helmReleaseRemediationLabelComponent = new KustomizeComponent
     {
       Patches =
@@ -194,6 +196,6 @@ class ComponentsGenerator
         }
       ]
     };
-    await _kustomizeComponentKubernetesGenerator.GenerateAsync(helmReleaseRemediationLabelComponent, helmReleaseRemediationLabelComponentKustomizationPath).ConfigureAwait(false);
+    await _kustomizeComponentKubernetesGenerator.GenerateAsync(helmReleaseRemediationLabelComponent, helmReleaseRemediationLabelComponentKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 }

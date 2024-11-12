@@ -35,10 +35,10 @@ class CustomResourcesGenerator
     string clusterCustomResourcesKustomizationPath = Path.Combine(clusterCustomResourcesPath, "kustomization.yaml");
     if (File.Exists(clusterCustomResourcesKustomizationPath))
     {
-      Console.WriteLine($"✔ Skipping '{clusterCustomResourcesKustomizationPath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{clusterCustomResourcesKustomizationPath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{clusterCustomResourcesKustomizationPath}'");
+    Console.WriteLine($"✚ generating '{clusterCustomResourcesKustomizationPath}'");
     var kustomization = new KustomizeKustomization
     {
       Resources =
@@ -62,10 +62,10 @@ class CustomResourcesGenerator
     string distributionCustomResourcesKustomizationPath = Path.Combine(outputPath, "kustomization.yaml");
     if (File.Exists(distributionCustomResourcesKustomizationPath))
     {
-      Console.WriteLine($"✔ Skipping '{distributionCustomResourcesKustomizationPath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{distributionCustomResourcesKustomizationPath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{distributionCustomResourcesKustomizationPath}'");
+    Console.WriteLine($"✚ generating '{distributionCustomResourcesKustomizationPath}'");
     var kustomization = new KustomizeKustomization
     {
       Resources =
@@ -90,10 +90,10 @@ class CustomResourcesGenerator
     string globalCustomResourcesKustomizationPath = Path.Combine(outputPath, "kustomization.yaml");
     if (File.Exists(globalCustomResourcesKustomizationPath))
     {
-      Console.WriteLine($"✔ Skipping '{globalCustomResourcesKustomizationPath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{globalCustomResourcesKustomizationPath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{globalCustomResourcesKustomizationPath}'");
+    Console.WriteLine($"✚ generating '{globalCustomResourcesKustomizationPath}'");
     var kustomization = new KustomizeKustomization
     {
       Resources =
@@ -113,10 +113,10 @@ class CustomResourcesGenerator
     string selfSignedClusterIssuerKustomizationPath = Path.Combine(selfSignedClusterIssuerPath, "kustomization.yaml");
     if (File.Exists(selfSignedClusterIssuerKustomizationPath))
     {
-      Console.WriteLine($"✔ Skipping '{selfSignedClusterIssuerKustomizationPath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{selfSignedClusterIssuerKustomizationPath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{selfSignedClusterIssuerKustomizationPath}'");
+    Console.WriteLine($"✚ generating '{selfSignedClusterIssuerKustomizationPath}'");
     var selfSignedClusterIssuerKustomization = new KustomizeKustomization
     {
       Resources =
@@ -130,10 +130,10 @@ class CustomResourcesGenerator
     string selfSignedClusterIssuerCertificatePath = Path.Combine(selfSignedClusterIssuerPath, "certificate.yaml");
     if (File.Exists(selfSignedClusterIssuerCertificatePath))
     {
-      Console.WriteLine($"✔ Skipping '{selfSignedClusterIssuerCertificatePath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{selfSignedClusterIssuerCertificatePath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{selfSignedClusterIssuerCertificatePath}'");
+    Console.WriteLine($"✚ generating '{selfSignedClusterIssuerCertificatePath}'");
     var certificate = new CertManagerCertificate
     {
       Metadata = new V1ObjectMeta
@@ -161,10 +161,10 @@ class CustomResourcesGenerator
     string selfSignedClusterIssuerClusterIssuerPath = Path.Combine(selfSignedClusterIssuerPath, "cluster-issuer.yaml");
     if (File.Exists(selfSignedClusterIssuerClusterIssuerPath))
     {
-      Console.WriteLine($"✔ Skipping '{selfSignedClusterIssuerClusterIssuerPath}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{selfSignedClusterIssuerClusterIssuerPath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{selfSignedClusterIssuerClusterIssuerPath}'");
+    Console.WriteLine($"✚ generating '{selfSignedClusterIssuerClusterIssuerPath}'");
     var clusterIssuer = new CertManagerClusterIssuer
     {
       Metadata = new V1ObjectMeta

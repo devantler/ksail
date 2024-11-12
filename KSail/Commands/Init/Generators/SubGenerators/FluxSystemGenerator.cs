@@ -1,6 +1,7 @@
 using Devantler.KubernetesGenerator.Flux;
 using Devantler.KubernetesGenerator.Flux.Models;
 using Devantler.KubernetesGenerator.Flux.Models.Dependencies;
+using Devantler.KubernetesGenerator.Flux.Models.SecretRef;
 using Devantler.KubernetesGenerator.Flux.Models.Sources;
 using Devantler.KubernetesGenerator.Kustomize;
 using Devantler.KubernetesGenerator.Kustomize.Models;
@@ -22,14 +23,19 @@ class FluxSystemGenerator
     await GenerateFluxSystemKustomization(config, outputDirectory, cancellationToken).ConfigureAwait(false);
     foreach (string flow in config.Spec.InitOptions.KustomizeFlows)
     {
-      await GenerateFluxSystemFluxKustomization(config, outputDirectory, flow, cancellationToken).ConfigureAwait(false);
+      List<FluxDependsOn> dependsOn = [];
+      if (config.Spec.InitOptions.PostBuildVariables && !config.Spec.InitOptions.KustomizeFlows.IsNullOrEmpty())
+      {
+        dependsOn = config.Spec.InitOptions.KustomizeFlows.Last() == flow
+          ? ([new FluxDependsOn { Name = "variables" }])
+          : config.Spec.InitOptions.KustomizeFlows.Reverse().TakeWhile(f => f != flow).Select(f => new FluxDependsOn { Name = f.Replace('/', '-') }).TakeLast(1).ToList();
+      }
+
+      await GenerateFluxSystemFluxKustomization(config, outputDirectory, flow, dependsOn, cancellationToken).ConfigureAwait(false);
     }
     if (config.Spec.InitOptions.PostBuildVariables)
     {
-      foreach (string hook in config.Spec.InitOptions.KustomizeHooks)
-      {
-        await GenerateFluxSystemFluxKustomization(config, outputDirectory, hook, cancellationToken).ConfigureAwait(false);
-      }
+      await GenerateFluxSystemFluxKustomization(config, outputDirectory, "variables", [], cancellationToken).ConfigureAwait(false);
     }
   }
 
@@ -38,10 +44,10 @@ class FluxSystemGenerator
     outputDirectory = Path.Combine(outputDirectory, "kustomization.yaml");
     if (File.Exists(outputDirectory))
     {
-      Console.WriteLine($"✔ Skipping '{outputDirectory}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{outputDirectory}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{outputDirectory}'");
+    Console.WriteLine($"✚ generating '{outputDirectory}'");
     var kustomization = new KustomizeKustomization
     {
       Resources = config.Spec.InitOptions.KustomizeFlows.Select(flow => $"{flow.Replace('/', '-')}.yaml").ToList(),
@@ -55,15 +61,15 @@ class FluxSystemGenerator
     await _kustomizeKustomizationGenerator.GenerateAsync(kustomization, outputDirectory, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateFluxSystemFluxKustomization(KSailCluster config, string outputDirectory, string flow, CancellationToken cancellationToken = default)
+  async Task GenerateFluxSystemFluxKustomization(KSailCluster config, string outputDirectory, string flow, IEnumerable<FluxDependsOn> dependsOn, CancellationToken cancellationToken = default)
   {
     outputDirectory = Path.Combine(outputDirectory, $"{flow.Replace('/', '-')}.yaml");
     if (File.Exists(outputDirectory))
     {
-      Console.WriteLine($"✔ Skipping '{outputDirectory}', as it already exists.");
+      Console.WriteLine($"✔ skipping '{outputDirectory}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ Generating '{outputDirectory}'");
+    Console.WriteLine($"✚ generating '{outputDirectory}'");
     var fluxKustomization = new FluxKustomization
     {
       Metadata = new V1ObjectMeta
@@ -82,9 +88,7 @@ class FluxSystemGenerator
         Interval = "60m",
         Timeout = "3m",
         RetryInterval = "2m",
-        DependsOn = config.Spec.InitOptions.PostBuildVariables && !config.Spec.InitOptions.KustomizeFlows.IsNullOrEmpty() && config.Spec.InitOptions.KustomizeFlows.First() == flow ?
-          config.Spec.InitOptions.KustomizeHooks.Select(hook => new FluxDependsOn { Name = string.IsNullOrEmpty(hook) ? "variables" : $"variables-{hook}" }).ToList() :
-          config.Spec.InitOptions.KustomizeFlows.Reverse().TakeWhile(f => f != flow).Select(f => new FluxDependsOn { Name = f.Replace('/', '-') }).TakeLast(1).ToList(),
+        DependsOn = dependsOn,
         SourceRef = new FluxKustomizationSpecSourceRef
         {
           Kind = FluxSource.OCIRepository,
@@ -92,7 +96,18 @@ class FluxSystemGenerator
         },
         Path = config.Spec.InitOptions.KustomizeHooks.IsNullOrEmpty() ? flow : $"{config.Spec.InitOptions.KustomizeHooks.First()}/{flow}",
         Prune = true,
-        Wait = true
+        Wait = true,
+        Decryption = config.Spec.Sops && !config.Spec.InitOptions.Components ?
+          new FluxKustomizationSpecDecryption
+          {
+            Provider = FluxKustomizationSpecDecryptionProvider.SOPS,
+            SecretRef = new FluxSecretRef
+            {
+              Name = "sops-age",
+              Key = "sops.agekey"
+            }
+          } :
+          null
       }
     };
     await _fluxKustomizationGenerator.GenerateAsync(fluxKustomization, outputDirectory, cancellationToken: cancellationToken).ConfigureAwait(false);
