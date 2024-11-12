@@ -39,7 +39,7 @@ Usage:
 Options:
   -k, --kubeconfig <kubeconfig> (REQUIRED)  Path to kubeconfig file [default: /Users/nikolaiemildamm/.kube/config]
   -c, --context <context>                   The Kubernetes context to use
-  -t, --timeout <timeout>                   The timeout in seconds to wait for each kustomization to become ready. Defaults to 600 seconds. [default:
+  -t, --timeout <timeout>                   The timeout in seconds to wait for each Kustomization to become ready. Defaults to 600 seconds. [default:
                                             600]
   -?, -h, --help                            Show help and usage information
 ```
@@ -194,8 +194,8 @@ Arguments:
 Options:
   -c, --config <config> (REQUIRED)       Path to the cluster configuration file [default: k3d-config.yaml]
   -m, --manifests <manifests>            Path to the manifests directory [default: ./k8s]
-  -k, --kustomizations <kustomizations>  Path to the flux kustomization directory [default: ./k8s/clusters/<clusterName>/flux-system]
-  -t, --timeout <timeout>                The timeout in seconds to wait for each kustomization to become ready. Defaults to 600 seconds. [default: 600]
+  -k, --Kustomizations <Kustomizations>  Path to the flux Kustomization directory [default: ./k8s/clusters/<clusterName>/flux-system]
+  -t, --timeout <timeout>                The timeout in seconds to wait for each Kustomization to become ready. Defaults to 600 seconds. [default: 600]
   -ns, --no-sops                         Disable SOPS [default: False]
   -sl, --skip-linting                    Skip linting of manifests [default: False]
   -?, -h, --help                         Show help and usage information

@@ -30,8 +30,8 @@ spec:
   timeout: 5m
   # The directory where the manifests are stored
   manifestsDirectory: ./k8s
-  # The directory where the root kustomization is stored
-  kustomizationDirectory: ./k8s/clusters/ksail-default/flux-system
+  # The directory where the root Kustomization is stored
+  KustomizationDirectory: ./k8s/clusters/ksail-default/flux-system
   # The path to the kubernetes distribution's config file
   configPath: kind-config.yaml
   # The kubernetes distribution to use
