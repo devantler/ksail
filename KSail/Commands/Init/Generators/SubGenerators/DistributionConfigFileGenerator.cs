@@ -58,9 +58,10 @@ class DistributionConfigFileGenerator
       string mirror = $"""
       "{registry.Name}":
         endpoint:
-          - {registry.Proxy}
+          - http://host.k3d.internal:{registry.HostPort}
       """;
-      mirrors = mirrors.AppendLine("    " + mirror);
+      mirror = string.Join(Environment.NewLine, mirror.Split(Environment.NewLine).Select(line => "    " + line));
+      mirrors = mirrors.AppendLine(mirror);
     }
     var k3dConfig = new K3dConfig
     {
