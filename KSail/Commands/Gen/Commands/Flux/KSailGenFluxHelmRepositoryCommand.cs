@@ -19,7 +19,7 @@ class KSailGenFluxHelmRepositoryCommand : Command
         try
         {
           string outputFile = context.ParseResult.GetValueForOption(_outputOption) ?? throw new ArgumentNullException(nameof(_outputOption));
-          Console.WriteLine($"✚ Generating {outputFile}");
+          Console.WriteLine($"✚ generating {outputFile}");
           context.ExitCode = await _handler.HandleAsync(outputFile, context.GetCancellationToken()).ConfigureAwait(false);
         }
         catch (OperationCanceledException ex)

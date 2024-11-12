@@ -19,7 +19,7 @@ class KSailGenNativeMetadataLimitRangeCommand : Command
         string outputFile = context.ParseResult.GetValueForOption(_outputOption) ?? throw new ArgumentNullException(nameof(_outputOption));
         try
         {
-          Console.WriteLine($"✚ Generating {outputFile}");
+          Console.WriteLine($"✚ generating {outputFile}");
           context.ExitCode = await _handler.HandleAsync(outputFile, context.GetCancellationToken()).ConfigureAwait(false);
         }
         catch (OperationCanceledException ex)

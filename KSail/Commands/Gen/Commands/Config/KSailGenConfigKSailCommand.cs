@@ -18,7 +18,7 @@ class KSailGenConfigKSailCommand : Command
         try
         {
           string outputFile = context.ParseResult.GetValueForOption(_fileOutputOption)!;
-          Console.WriteLine($"✚ Generating {outputFile}");
+          Console.WriteLine($"✚ generating {outputFile}");
           context.ExitCode = await _handler.HandleAsync(outputFile, context.GetCancellationToken()).ConfigureAwait(false);
         }
         catch (OperationCanceledException ex)

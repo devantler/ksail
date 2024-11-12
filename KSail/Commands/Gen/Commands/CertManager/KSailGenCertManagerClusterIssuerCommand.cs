@@ -20,7 +20,7 @@ class KSailGenCertManagerClusterIssuerCommand : Command
         {
           string outputFile = context.ParseResult.RootCommandResult.GetValueForOption(_outputOption)!;
           var handler = new KSailGenCertManagerClusterIssuerCommandHandler();
-          Console.WriteLine($"✚ Generating {outputFile}");
+          Console.WriteLine($"✚ generating {outputFile}");
           context.ExitCode = await handler.HandleAsync(outputFile, context.GetCancellationToken()).ConfigureAwait(false);
         }
         catch (OperationCanceledException ex)
