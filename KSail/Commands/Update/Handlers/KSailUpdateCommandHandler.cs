@@ -31,14 +31,14 @@ class KSailUpdateCommandHandler
     var ksailRegistryUri = new Uri($"oci://localhost:{_config.Spec.Registries.First().HostPort}/{_config.Metadata.Name}");
     Console.WriteLine($"📥 Pushing manifests to {_config.Spec.Registries.First().Name} on '{ksailRegistryUri}'");
     await _gitOpsProvisioner.PushManifestsAsync(ksailRegistryUri, _config.Spec.ManifestsDirectory, cancellationToken: cancellationToken).ConfigureAwait(false);
-    Console.WriteLine("");
+    Console.WriteLine();
 
     if (_config.Spec.UpdateOptions.Reconcile)
     {
       Console.WriteLine("🔄 Reconciling changes");
       await _gitOpsProvisioner.ReconcileAsync(_config.Spec.Timeout, cancellationToken).ConfigureAwait(false);
     }
-    Console.WriteLine("");
+    Console.WriteLine();
     return true;
   }
 
@@ -48,7 +48,7 @@ class KSailUpdateCommandHandler
     {
       Console.WriteLine("🔍 Linting manifests");
       bool success = await _ksailLintCommandHandler.HandleAsync(config, cancellationToken).ConfigureAwait(false);
-      Console.WriteLine("");
+      Console.WriteLine();
       return success;
     }
     return true;
