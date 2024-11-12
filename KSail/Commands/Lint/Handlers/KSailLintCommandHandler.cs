@@ -16,15 +16,17 @@ class KSailLintCommandHandler()
     {
       if (!Directory.Exists(config.Spec.ManifestsDirectory) || Directory.GetFiles(config.Spec.ManifestsDirectory, "*.yaml", SearchOption.AllDirectories).Length == 0)
       {
-        Console.WriteLine($"✔ Skipping, as '{config.Spec.ManifestsDirectory}' directory does not exist or is empty");
+        Console.WriteLine($"✔ skipping, as '{config.Spec.ManifestsDirectory}' directory does not exist or is empty");
         return true;
       }
 
-      Console.WriteLine("⏵ Validating YAML syntax");
+      Console.WriteLine("► validating yaml syntax");
       bool yamlIsValid = await _yamlSyntaxValidator.ValidateAsync(config.Spec.ManifestsDirectory, cancellationToken).ConfigureAwait(false);
+      Console.WriteLine("✔ yaml syntax is valid");
 
-      Console.WriteLine("⏵ Validating Kubernetes schemas");
+      Console.WriteLine("► validating schemas");
       bool schemasAreValid = await _schemaValidator.ValidateAsync(config.Spec.ManifestsDirectory, cancellationToken).ConfigureAwait(false);
+      Console.WriteLine("✔ schemas are valid");
       return yamlIsValid && schemasAreValid;
     }
     catch (YamlSyntaxValidatorException ex)
