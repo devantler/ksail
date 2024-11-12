@@ -48,6 +48,11 @@ sealed class KSailUpCommand : Command
         ExceptionHandler.HandleException(ex);
         context.ExitCode = 1;
       }
+      catch (KSailException ex)
+      {
+        ExceptionHandler.HandleException(ex);
+        context.ExitCode = 1;
+      }
       catch (KindException ex)
       {
         ExceptionHandler.HandleException(ex);

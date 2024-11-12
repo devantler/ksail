@@ -1,4 +1,6 @@
+using System.Text;
 using Devantler.ContainerEngineProvisioner.Docker;
+using Devantler.KeyManager.Local.Age;
 using Devantler.KubernetesProvisioner.Cluster.Core;
 using Devantler.KubernetesProvisioner.Cluster.K3d;
 using Devantler.KubernetesProvisioner.Cluster.Kind;
@@ -15,7 +17,7 @@ namespace KSail.Commands.Up.Handlers;
 class KSailUpCommandHandler
 {
   //TODO: readonly CiliumProvisioner _cniProvisioner = new();
-  //TODO: readonly LocalAgeKeyManager _keyManager = new();
+  readonly LocalAgeKeyManager _keyManager = new();
   readonly DockerProvisioner _containerEngineProvisioner;
   readonly FluxProvisioner _gitOpsProvisioner;
   readonly IKubernetesClusterProvisioner _clusterProvisioner;
@@ -77,7 +79,7 @@ class KSailUpCommandHandler
     {
       Console.WriteLine($"🔥 Destroying existing cluster '{_config.Metadata.Name}'");
       bool success = await _ksailDownCommandHandler.HandleAsync(cancellationToken).ConfigureAwait(false);
-      Console.WriteLine("");
+      Console.WriteLine();
       return success;
     }
     return true;
@@ -89,13 +91,13 @@ class KSailUpCommandHandler
     if (await _containerEngineProvisioner.CheckReadyAsync(cancellationToken).ConfigureAwait(false))
     {
       Console.WriteLine($"✔ {_config.Spec.ContainerEngine} is running");
-      Console.WriteLine("");
+      Console.WriteLine();
       return true;
     }
     else
     {
       Console.WriteLine($"✗ {_config.Spec.ContainerEngine} is not running");
-      Console.WriteLine("");
+      Console.WriteLine();
       return false;
     }
   }
@@ -107,21 +109,21 @@ class KSailUpCommandHandler
     {
       if (registry.IsGitOpsOCISource)
       {
-        Console.WriteLine($"► Creating registry '{registry.Name}' on port '{registry.HostPort}' for GitOps OCI source");
+        Console.WriteLine($"► creating registry '{registry.Name}' on port '{registry.HostPort}' for GitOps OCI source");
       }
       else if (registry.Proxy is null)
       {
-        Console.WriteLine($"► Creating registry '{registry.Name}' on port '{registry.HostPort}'");
+        Console.WriteLine($"► creating registry '{registry.Name}' on port '{registry.HostPort}'");
       }
       else
       {
-        Console.WriteLine($"► Creating mirror registry '{registry.Name}' on port '{registry.HostPort}' for '{registry?.Proxy?.Url}'");
+        Console.WriteLine($"► creating mirror registry '{registry.Name}' on port '{registry.HostPort}' for '{registry?.Proxy?.Url}'");
       }
       var proxyUrl = registry?.Proxy?.Url;
       await _containerEngineProvisioner
        .CreateRegistryAsync(registry!.Name, registry.HostPort, proxyUrl, cancellationToken).ConfigureAwait(false);
     }
-    Console.WriteLine("");
+    Console.WriteLine();
   }
 
   async Task<bool> Lint(KSailCluster config, CancellationToken cancellationToken = default)
@@ -130,7 +132,7 @@ class KSailUpCommandHandler
     {
       Console.WriteLine("🔍 Linting manifests");
       bool success = await _ksailLintCommandHandler.HandleAsync(config, cancellationToken).ConfigureAwait(false);
-      Console.WriteLine("");
+      Console.WriteLine();
       return success;
     }
     return true;
@@ -140,13 +142,13 @@ class KSailUpCommandHandler
   {
     Console.WriteLine($"🚀 Provisioning cluster '{_config.Metadata.Name}'");
     await _clusterProvisioner.ProvisionAsync(_config.Metadata.Name, _config.Spec.ConfigPath, cancellationToken).ConfigureAwait(false);
-    Console.WriteLine("");
+    Console.WriteLine();
   }
 
   async Task InstallGitOps(KSailCluster config, CancellationToken cancellationToken = default)
   {
     Console.WriteLine($"🔼 Bootstrapping GitOps with {config.Spec.GitOpsTool}");
-    Console.WriteLine("► Creating 'flux-system' namespace");
+    Console.WriteLine("► creating 'flux-system' namespace");
     using var resourceProvisioner = new KubernetesResourceProvisioner(config.Spec.Context);
     _ = await resourceProvisioner.CreateNamespaceAsync(new V1Namespace
     {
@@ -156,28 +158,8 @@ class KSailUpCommandHandler
       }
     }, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-    if (config.Spec.Sops)
-    {
-      // //TODO: Check that a .sops.yaml file exists in the current directory or a parent directory.
-      // Console.WriteLine("► Searching for a '.sops.yaml' file in the current directory or a parent directory");
-
-      // Console.WriteLine("✗ '.sops.yaml' file not found");
-      // //TODO: Read the public key from the .sops.yaml file, for the specified cluster. The path_regex should contain the cluster name.
-      // Console.WriteLine("► Creating 'sops-age' secret");
-      // Console.WriteLine("");
-      // //TODO: Get public key from the .sops.yaml file.
-      // var key = _keyManager.GetKeyAsync("public-key", cancellationToken);
-      // using var sopsProvisioner = new LocalProvisioner();
-      // if (await sopsProvisioner.ProvisionAsync(KeyType.Age, clusterName, context, cancellationToken).ConfigureAwait(false) != 0)
-      // {
-      //   Console.WriteLine(ResourceManager.GetString("flux-install-sops-provision-failed", CultureInfo.InvariantCulture));
-      //   return 1;
-      // }
-      // Console.WriteLine(ResourceManager.GetString("flux-install-sops-provision-success", CultureInfo.InvariantCulture));
-      // Console.WriteLine("");
-    }
+    await InitializeSopsAgeSecret(config, resourceProvisioner, cancellationToken).ConfigureAwait(false);
     string ociUrlOnHost = $"oci://localhost:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/{_config.Metadata.Name}";
-    Console.WriteLine($"► Pushing '{config.Spec.ManifestsDirectory}' as an OCI Artifact to '{ociUrlOnHost}'");
     await _gitOpsProvisioner.PushManifestsAsync(new Uri(ociUrlOnHost), config.Spec.ManifestsDirectory, cancellationToken: cancellationToken).ConfigureAwait(false);
     string kustomizationDirectoryInOCI = config.Spec.KustomizationDirectory.Replace("k8s/", "", StringComparison.OrdinalIgnoreCase);
     string ociUrlInDocker = _config.Spec.Distribution switch
@@ -187,13 +169,61 @@ class KSailUpCommandHandler
       _ => throw new NotSupportedException($"The distribution '{_config.Spec.Distribution}' is not supported.")
     };
     await _gitOpsProvisioner.BootstrapAsync(new Uri(ociUrlInDocker), kustomizationDirectoryInOCI, true, cancellationToken).ConfigureAwait(false);
-    Console.WriteLine("");
+    Console.WriteLine();
 
     if (config.Spec.UpOptions.Reconcile)
     {
       Console.WriteLine("🔄 Reconciling kustomizations");
       await _gitOpsProvisioner.ReconcileAsync(_config.Spec.Timeout, cancellationToken).ConfigureAwait(false);
-      Console.WriteLine("");
+      Console.WriteLine();
+    }
+  }
+
+  async Task InitializeSopsAgeSecret(KSailCluster config, KubernetesResourceProvisioner resourceProvisioner, CancellationToken cancellationToken)
+  {
+    if (config.Spec.Sops)
+    {
+      Console.WriteLine("► searching for a '.sops.yaml' file");
+      string directory = Directory.GetCurrentDirectory();
+      string sopsConfigPath = string.Empty;
+      while (!string.IsNullOrEmpty(directory))
+      {
+        if (File.Exists(Path.Combine(directory, ".sops.yaml")))
+        {
+          sopsConfigPath = Path.Combine(directory, ".sops.yaml");
+          Console.WriteLine($"✔ found '{sopsConfigPath}'");
+          break;
+        }
+        directory = Directory.GetParent(directory)?.FullName ?? string.Empty;
+      }
+      if (string.IsNullOrEmpty(sopsConfigPath))
+      {
+        Console.WriteLine("✗ '.sops.yaml' file not found");
+        throw new KSailException("No '.sops.yaml' file found in the current or parent directories");
+      }
+
+      Console.WriteLine("► reading public key from '.sops.yaml' file");
+      var sopsConfig = await _keyManager.GetSOPSConfigAsync(sopsConfigPath, cancellationToken).ConfigureAwait(false);
+      string publicKey = sopsConfig.CreationRules.First(x => x.PathRegex.Contains(config.Metadata.Name, StringComparison.OrdinalIgnoreCase)).Age.Split(',')[0].Trim();
+
+      Console.WriteLine("► getting private key from SOPS_AGE_KEY_FILE or default location");
+      var ageKey = await _keyManager.GetKeyAsync(publicKey, cancellationToken).ConfigureAwait(false);
+
+      Console.WriteLine("► creating 'sops-age' secret in 'flux-system' namespace");
+      var secret = new V1Secret
+      {
+        Metadata = new V1ObjectMeta
+        {
+          Name = "sops-age",
+          NamespaceProperty = "flux-system"
+        },
+        Type = "Generic",
+        Data = new Dictionary<string, byte[]>
+        {
+          { "sops.agekey", Encoding.UTF8.GetBytes(ageKey.PrivateKey) }
+        }
+      };
+      _ = await resourceProvisioner.CreateNamespacedSecretAsync(secret, secret.Metadata.NamespaceProperty, cancellationToken: cancellationToken).ConfigureAwait(false);
     }
   }
 }
