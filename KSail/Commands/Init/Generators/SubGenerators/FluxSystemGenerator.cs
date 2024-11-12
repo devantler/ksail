@@ -58,6 +58,10 @@ class FluxSystemGenerator
         ] :
         null,
     };
+    if (config.Spec.InitOptions.PostBuildVariables)
+    {
+      kustomization.Resources = kustomization.Resources.Append("variables.yaml");
+    }
     await _kustomizeKustomizationGenerator.GenerateAsync(kustomization, outputDirectory, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 

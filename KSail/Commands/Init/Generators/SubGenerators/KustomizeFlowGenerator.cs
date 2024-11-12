@@ -22,6 +22,13 @@ class KustomizeFlowGenerator
         await GenerateKustomizeFlowHook(config, currentHook, currentFlow, cancellationToken).ConfigureAwait(false);
       }
     }
+    if (config.Spec.InitOptions.PostBuildVariables)
+    {
+      foreach (string hook in config.Spec.InitOptions.KustomizeHooks)
+      {
+        await GenerateKustomizeFlowHook(config, hook, "variables", cancellationToken).ConfigureAwait(false);
+      }
+    }
   }
 
   async Task GenerateKustomizeFlowHook(KSailCluster config, string currentHook, string currentFlow, CancellationToken cancellationToken = default)
@@ -37,19 +44,57 @@ class KustomizeFlowGenerator
     }
     Console.WriteLine($"✚ generating '{outputDirectory}'");
     string relativeRoot = string.Join("/", Enumerable.Repeat("..", Path.Combine(currentHook, currentFlow).Split('/').Length));
-    var kustomization = new KustomizeKustomization
+    KustomizeKustomization? kustomization;
+    if (currentFlow == "variables")
     {
-      Resources = currentHook == config.Spec.InitOptions.KustomizeHooks.Last() ?
-        config.Spec.InitOptions.HelmReleases && currentFlow == "infrastructure/controllers" ? ["cert-manager", "traefik"] :
-          config.Spec.InitOptions.HelmReleases && currentFlow == "infrastructure" ? ["certificates", "cluster-issuers"] :
-            config.Spec.InitOptions.HelmReleases && currentFlow == "apps" ? ["podinfo"] : [] :
-        [Path.Combine(relativeRoot, $"{config.Spec.InitOptions.KustomizeHooks.ElementAt(Array.IndexOf(config.Spec.InitOptions.KustomizeHooks.ToArray(), currentHook) + 1)}/{currentFlow}")],
-      Components = config.Spec.InitOptions.Components ?
+      string pathToNextFlow = currentHook == config.Spec.InitOptions.KustomizeHooks.Last() ?
+        "" :
+        Path.Combine(
+          relativeRoot,
+          $"{config.Spec.InitOptions.KustomizeHooks.ElementAt(
+            Array.IndexOf(config.Spec.InitOptions.KustomizeHooks.ToArray(), currentHook) + 1
+          )}/{currentFlow}"
+        );
+      kustomization = new KustomizeKustomization
+      {
+        Resources = [
+          Path.Combine($"variables.yaml"),
+          Path.Combine($"variables-sensitive.sops.yaml")
+        ],
+        Components = config.Spec.InitOptions.Components ?
         [
           Path.Combine(relativeRoot, "components/helm-release-crds-label"),
           Path.Combine(relativeRoot, "components/helm-release-remediation-label")
         ] : null
-    };
+      };
+      if (!string.IsNullOrEmpty(pathToNextFlow))
+        kustomization.Resources = kustomization.Resources.Prepend(pathToNextFlow);
+    }
+    else
+    {
+      kustomization = currentHook == config.Spec.InitOptions.KustomizeHooks.Last()
+        ? new KustomizeKustomization
+        {
+          Resources = config.Spec.InitOptions.HelmReleases && currentFlow == "infrastructure/controllers" ? ["cert-manager", "traefik"] :
+                config.Spec.InitOptions.HelmReleases && currentFlow == "infrastructure" ? ["certificates", "cluster-issuers"] :
+                  config.Spec.InitOptions.HelmReleases && currentFlow == "apps" ? ["podinfo"] : [],
+          Components = config.Spec.InitOptions.Components ?
+              [
+                Path.Combine(relativeRoot, "components/helm-release-crds-label"),
+          Path.Combine(relativeRoot, "components/helm-release-remediation-label")
+              ] : null
+        }
+        : new KustomizeKustomization
+        {
+          Resources = [Path.Combine(relativeRoot, $"{config.Spec.InitOptions.KustomizeHooks.ElementAt(Array.IndexOf(config.Spec.InitOptions.KustomizeHooks.ToArray(), currentHook) + 1)}/{currentFlow}")],
+          Components = config.Spec.InitOptions.Components ?
+              [
+                Path.Combine(relativeRoot, "components/helm-release-crds-label"),
+          Path.Combine(relativeRoot, "components/helm-release-remediation-label")
+              ] : null
+        };
+    }
+
     await _kustomizationGenerator.GenerateAsync(kustomization, outputDirectory, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 }

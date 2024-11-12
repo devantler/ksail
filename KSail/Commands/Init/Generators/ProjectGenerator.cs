@@ -9,6 +9,7 @@ class ProjectGenerator
   readonly KustomizeFlowGenerator _kustomizeFlowGenerator = new();
   readonly HelmReleaseGenerator _helmReleaseGenerator = new();
   readonly ComponentsGenerator _componentsGenerator = new();
+  readonly VariablesGenerator _variablesGenerator = new();
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
     await _fluxSystemGenerator.GenerateAsync(config, cancellationToken).ConfigureAwait(false);
@@ -17,5 +18,7 @@ class ProjectGenerator
       await _helmReleaseGenerator.GenerateAsync(config, cancellationToken).ConfigureAwait(false);
     if (config.Spec.InitOptions.Components)
       await _componentsGenerator.GenerateAsync(config, cancellationToken).ConfigureAwait(false);
+    if (config.Spec.InitOptions.PostBuildVariables)
+      await _variablesGenerator.GenerateAsync(config, cancellationToken).ConfigureAwait(false);
   }
 }
