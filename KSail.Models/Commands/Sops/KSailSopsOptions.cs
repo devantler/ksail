@@ -8,5 +8,5 @@ public class KSailSopsOptions
   /// <summary>
   /// The options to use for the 'list' command.
   /// </summary>
-  public KSailSopsListOptions ListOptions { get; set; } = new KSailSopsListOptions();
+  public KSailSopsListOptions ListOptions { get; set; } = new();
 }
