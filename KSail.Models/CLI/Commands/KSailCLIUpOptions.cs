@@ -1,10 +1,14 @@
-namespace KSail.Models.Commands.Update;
+namespace KSail.Models.CLI.Commands;
 
 /// <summary>
-/// The options to use for the 'update' command.
+/// The options to use for the 'up' command.
 /// </summary>
-public class KSailUpdateOptions
+public class KSailCLIUpOptions
 {
+  /// <summary>
+  /// Whether to destroy any existing cluster before creating a new one.
+  /// </summary>
+  public bool Destroy { get; set; }
   /// <summary>
   /// Whether to lint the manifests before applying them.
   /// </summary>

@@ -1,0 +1,126 @@
+﻿{
+  ApiVersion: ksail.io/v1alpha1,
+  Kind: Cluster,
+  Metadata: {
+    Name: ksail-default
+  },
+  Spec: {
+    Connection: {
+      Kubeconfig: ~/.kube/config,
+      Context: kind-ksail-default,
+      Timeout: 5m
+    },
+    Project: {
+      ManifestsDirectory: ./k8s,
+      KustomizationDirectory: ./k8s/clusters/ksail-default/flux-system,
+      ConfigPath: kind-config.yaml,
+      Distribution: kind,
+      Sops: false
+    },
+    Registries: [
+      {
+        Name: ksail-registry,
+        HostPort: 5555,
+        IsGitOpsOCISource: true
+      },
+      {
+        Name: registry.k8s.io,
+        HostPort: 5556,
+        IsGitOpsOCISource: false,
+        Proxy: {
+          Url: https://registry.k8s.io,
+          Insecure: false
+        }
+      },
+      {
+        Name: docker.io,
+        HostPort: 5557,
+        IsGitOpsOCISource: false,
+        Proxy: {
+          Url: https://registry-1.docker.io,
+          Insecure: false
+        }
+      },
+      {
+        Name: ghcr.io,
+        HostPort: 5558,
+        IsGitOpsOCISource: false,
+        Proxy: {
+          Url: https://ghcr.io,
+          Insecure: false
+        }
+      },
+      {
+        Name: gcr.io,
+        HostPort: 5559,
+        IsGitOpsOCISource: false,
+        Proxy: {
+          Url: https://gcr.io,
+          Insecure: false
+        }
+      },
+      {
+        Name: mcr.microsoft.com,
+        HostPort: 5560,
+        IsGitOpsOCISource: false,
+        Proxy: {
+          Url: https://mcr.microsoft.com,
+          Insecure: false
+        }
+      },
+      {
+        Name: quay.io,
+        HostPort: 5561,
+        IsGitOpsOCISource: false,
+        Proxy: {
+          Url: https://quay.io,
+          Insecure: false
+        }
+      }
+    ],
+    CLIOptions: {
+      CheckOptions: {},
+      DebugOptions: {},
+      DownOptions: {
+        Registries: false
+      },
+      GenOptions: {},
+      InitOptions: {
+        DeclarativeConfig: true,
+        Components: false,
+        HelmReleases: false,
+        PostBuildVariables: false,
+        OutputDirectory: ./,
+        KustomizeFlows: [
+          apps,
+          infrastructure,
+          infrastructure/controllers
+        ]
+      },
+      LintOptions: {},
+      ListOptions: {
+        All: false
+      },
+      SopsOptions: {
+        ListOptions: {
+          ShowPublicKey: true,
+          ShowPrivateKey: true
+        },
+        EditOptions: {},
+        EncryptOptions: {},
+        DecryptOptions: {}
+      },
+      StartOptions: {},
+      StopOptions: {},
+      UpOptions: {
+        Destroy: false,
+        Lint: true,
+        Reconcile: true
+      },
+      UpdateOptions: {
+        Lint: true,
+        Reconcile: true
+      }
+    }
+  }
+}

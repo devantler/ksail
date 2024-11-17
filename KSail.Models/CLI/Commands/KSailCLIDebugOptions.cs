@@ -1,11 +1,11 @@
 using Devantler.K9sCLI;
 
-namespace KSail.Models.Commands.Debug;
+namespace KSail.Models.CLI.Commands;
 
 /// <summary>
 /// The options to use for the 'debug' command.
 /// </summary>
-public class KSailDebugOptions
+public class KSailCLIDebugOptions
 {
   /// <summary>
   /// The editor to use for viewing files while debugging.

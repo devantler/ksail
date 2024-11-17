@@ -1,8 +1,8 @@
-namespace KSail.Models.Commands.Gen;
+namespace KSail.Models.CLI.Commands;
 
 /// <summary>
 /// The options to use for the 'gen' command.
 /// </summary>
-public class KSailGenOptions
+public class KSailCLIGenOptions
 {
 }
