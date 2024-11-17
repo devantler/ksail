@@ -28,18 +28,16 @@ sealed class KSailUpCommand : Command
     {
       var config = await KSailClusterConfigLoader.LoadAsync(context.ParseResult.GetValueForOption(_manifestsPathOption), context.ParseResult.GetValueForOption(_nameOption)).ConfigureAwait(false);
       config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
-      config.UpdateConfig("Spec.ConfigPath", context.ParseResult.GetValueForOption(_configOption));
-      config.UpdateConfig("Spec.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsPathOption));
-      config.UpdateConfig("Spec.Distribution", context.ParseResult.GetValueForOption(_distributionOption));
-
+      config.UpdateConfig("Spec.Connection.Timeout", context.ParseResult.GetValueForOption(_timeoutOption));
+      config.UpdateConfig("Spec.Project.ConfigPath", context.ParseResult.GetValueForOption(_configOption));
+      config.UpdateConfig("Spec.Project.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsPathOption));
+      config.UpdateConfig("Spec.Project.Distribution", context.ParseResult.GetValueForOption(_distributionOption));
+      config.UpdateConfig("Spec.Project.Sops", context.ParseResult.GetValueForOption(_sopsOption));
       string? kustomizationDirectory = context.ParseResult.GetValueForOption(_kustomizationDirectoryOption);
       if (kustomizationDirectory != null && !string.IsNullOrEmpty(kustomizationDirectory) && !kustomizationDirectory.Equals("default", StringComparison.OrdinalIgnoreCase))
-        config.UpdateConfig("Spec.KustomizationDirectory", kustomizationDirectory);
-
-      config.UpdateConfig("Spec.Timeout", context.ParseResult.GetValueForOption(_timeoutOption));
-      config.UpdateConfig("Spec.Sops", context.ParseResult.GetValueForOption(_sopsOption));
-      config.UpdateConfig("Spec.UpOptions.Destroy", context.ParseResult.GetValueForOption(_destroyOption));
-      config.UpdateConfig("Spec.UpOptions.Lint", context.ParseResult.GetValueForOption(_lintOption));
+        config.UpdateConfig("Spec.Project.KustomizationDirectory", kustomizationDirectory);
+      config.UpdateConfig("Spec.CLI.UpOptions.Destroy", context.ParseResult.GetValueForOption(_destroyOption));
+      config.UpdateConfig("Spec.CLI.UpOptions.Lint", context.ParseResult.GetValueForOption(_lintOption));
 
       var handler = new KSailUpCommandHandler(config);
       try

@@ -16,7 +16,7 @@ sealed class KSailListCommand : Command
       try
       {
         var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
-        config.UpdateConfig("Spec.ListOptions.All", context.ParseResult.GetValueForOption(_allOption));
+        config.UpdateConfig("Spec.CLI.ListOptions.All", context.ParseResult.GetValueForOption(_allOption));
         var cancellationToken = context.GetCancellationToken();
         var handler = new KSailListCommandHandler(config);
 

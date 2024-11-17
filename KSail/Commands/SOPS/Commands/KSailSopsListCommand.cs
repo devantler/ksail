@@ -18,8 +18,8 @@ sealed class KSailSOPSListCommand : Command
       try
       {
         var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
-        config.UpdateConfig("Spec.SopsOptions.ListOptions.ShowPublicKey", context.ParseResult.GetValueForOption(_showPublicKeyOption));
-        config.UpdateConfig("Spec.SopsOptions.ListOptions.ShowPrivateKey", context.ParseResult.GetValueForOption(_showPrivateKeyOption));
+        config.UpdateConfig("Spec.CLI.SopsOptions.ListOptions.ShowPublicKey", context.ParseResult.GetValueForOption(_showPublicKeyOption));
+        config.UpdateConfig("Spec.CLI.SopsOptions.ListOptions.ShowPrivateKey", context.ParseResult.GetValueForOption(_showPrivateKeyOption));
 
         var cancellationToken = context.GetCancellationToken();
         //var handler = new KSailSOPSListCommandHandler(config);

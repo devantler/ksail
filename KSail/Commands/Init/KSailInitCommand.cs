@@ -29,15 +29,15 @@ sealed class KSailInitCommand : Command
       {
         var config = await KSailClusterConfigLoader.LoadAsync(name: context.ParseResult.GetValueForOption(_nameOption)).ConfigureAwait(false);
         config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
-        config.UpdateConfig("Spec.Sops", context.ParseResult.GetValueForOption(_sopsOption));
-        config.UpdateConfig("Spec.Distribution", context.ParseResult.GetValueForOption(_distributionOption));
-        config.UpdateConfig("Spec.GitOpsTool", context.ParseResult.GetValueForOption(_gitOpsToolOption));
-        config.UpdateConfig("Spec.InitOptions.OutputDirectory", context.ParseResult.GetValueForOption(_outputDirectoryOption));
-        config.UpdateConfig("Spec.InitOptions.DeclarativeConfig", context.ParseResult.GetValueForOption(_declarativeConfigOption));
-        config.UpdateConfig("Spec.InitOptions.PostBuildVariables", context.ParseResult.GetValueForOption(_postBuildVariablesOption));
-        config.UpdateConfig("Spec.InitOptions.Components", context.ParseResult.GetValueForOption(_componentsOption));
-        config.UpdateConfig("Spec.InitOptions.HelmReleases", context.ParseResult.GetValueForOption(_helmReleasesOption));
-        config.UpdateConfig("Spec.InitOptions.Template", context.ParseResult.GetValueForOption(_templateOption));
+        config.UpdateConfig("Spec.Project.Sops", context.ParseResult.GetValueForOption(_sopsOption));
+        config.UpdateConfig("Spec.Project.Distribution", context.ParseResult.GetValueForOption(_distributionOption));
+        config.UpdateConfig("Spec.Project.GitOpsTool", context.ParseResult.GetValueForOption(_gitOpsToolOption));
+        config.UpdateConfig("Spec.CLI.InitOptions.OutputDirectory", context.ParseResult.GetValueForOption(_outputDirectoryOption));
+        config.UpdateConfig("Spec.CLI.InitOptions.DeclarativeConfig", context.ParseResult.GetValueForOption(_declarativeConfigOption));
+        config.UpdateConfig("Spec.CLI.InitOptions.PostBuildVariables", context.ParseResult.GetValueForOption(_postBuildVariablesOption));
+        config.UpdateConfig("Spec.CLI.InitOptions.Components", context.ParseResult.GetValueForOption(_componentsOption));
+        config.UpdateConfig("Spec.CLI.InitOptions.HelmReleases", context.ParseResult.GetValueForOption(_helmReleasesOption));
+        config.UpdateConfig("Spec.CLI.InitOptions.Template", context.ParseResult.GetValueForOption(_templateOption));
 
         var handler = new KSailInitCommandHandler(config);
         Console.WriteLine($"📁 Initializing new cluster '{config.Metadata.Name}' in '{config.Spec.InitOptions.OutputDirectory}' with the '{config.Spec.InitOptions.Template}' template.");

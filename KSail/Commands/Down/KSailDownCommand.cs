@@ -23,8 +23,8 @@ sealed class KSailDownCommand : Command
       {
         var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
         config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
-        config.UpdateConfig("Spec.Distribution", context.ParseResult.GetValueForOption(_distributionOption));
-        config.UpdateConfig("Spec.DownOptions.Registries", context.ParseResult.GetValueForOption(_registriesOption));
+        config.UpdateConfig("Spec.Project.Distribution", context.ParseResult.GetValueForOption(_distributionOption));
+        config.UpdateConfig("Spec.CLI.DownOptions.Registries", context.ParseResult.GetValueForOption(_registriesOption));
 
         var handler = new KSailDownCommandHandler(config);
         Console.WriteLine($"🔥 Destroying cluster '{config.Spec.Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-{config.Metadata.Name}'");

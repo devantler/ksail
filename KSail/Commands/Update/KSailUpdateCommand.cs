@@ -27,10 +27,10 @@ sealed class KSailUpdateCommand : Command
       {
         var config = await KSailClusterConfigLoader.LoadAsync(name: context.ParseResult.GetValueForOption(_nameOption)).ConfigureAwait(false);
         config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
-        config.UpdateConfig("Spec.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsPathOption));
-        config.UpdateConfig("Spec.Timeout", context.ParseResult.GetValueForOption(_timeoutOption));
-        config.UpdateConfig("Spec.UpdateOptions.Lint", context.ParseResult.GetValueForOption(_lintOption));
-        config.UpdateConfig("Spec.UpdateOptions.Reconcile", context.ParseResult.GetValueForOption(_reconcileOption));
+        config.UpdateConfig("Spec.Connection.Timeout", context.ParseResult.GetValueForOption(_timeoutOption));
+        config.UpdateConfig("Spec.Project.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsPathOption));
+        config.UpdateConfig("Spec.CLI.UpdateOptions.Lint", context.ParseResult.GetValueForOption(_lintOption));
+        config.UpdateConfig("Spec.CLI.UpdateOptions.Reconcile", context.ParseResult.GetValueForOption(_reconcileOption));
 
         var handler = new KSailUpdateCommandHandler(config);
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;

@@ -22,7 +22,7 @@ sealed class KSailLintCommand : Command
         string? manifestsPath = context.ParseResult.GetValueForOption(_manifestsPathOption);
         var config = await KSailClusterConfigLoader.LoadAsync(context.ParseResult.GetValueForOption(_manifestsPathOption), context.ParseResult.GetValueForOption(_nameOption)).ConfigureAwait(false);
         config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
-        config.UpdateConfig("Spec.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsPathOption));
+        config.UpdateConfig("Spec.Project.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsPathOption));
 
         Console.WriteLine("🧹 Linting manifest files");
         var handler = new KSailLintCommandHandler();
