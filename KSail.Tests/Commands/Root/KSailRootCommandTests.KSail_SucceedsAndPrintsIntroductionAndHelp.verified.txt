@@ -17,14 +17,15 @@ Options:
   -?, -h, --help  Show help and usage information
 
 Commands:
-  init    Initialize a cluster
-  gen     Generate a resource.
-  check   Check the status of a cluster
   debug   Debug a cluster (❤️ K9s)
   down    Destroy a cluster
+  gen     Generate a resource.
+  init    Initialize a cluster
   lint    Lint manifests for a cluster
   list    List active clusters
+  sops    Manage secrets in Git
   start   Start a cluster
   stop    Stop a cluster
+  up      Provision a cluster
   update  Update a cluster
 

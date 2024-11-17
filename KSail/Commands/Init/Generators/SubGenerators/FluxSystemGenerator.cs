@@ -24,12 +24,11 @@ class FluxSystemGenerator
     foreach (string flow in config.Spec.InitOptions.KustomizeFlows)
     {
       List<FluxDependsOn> dependsOn = [];
-      if (config.Spec.InitOptions.PostBuildVariables && !config.Spec.InitOptions.KustomizeFlows.IsNullOrEmpty())
-      {
-        dependsOn = config.Spec.InitOptions.KustomizeFlows.Last() == flow
+      dependsOn = config.Spec.InitOptions.PostBuildVariables && !config.Spec.InitOptions.KustomizeFlows.IsNullOrEmpty()
+        ? config.Spec.InitOptions.KustomizeFlows.Last() == flow
           ? ([new FluxDependsOn { Name = "variables" }])
-          : config.Spec.InitOptions.KustomizeFlows.Reverse().TakeWhile(f => f != flow).Select(f => new FluxDependsOn { Name = f.Replace('/', '-') }).TakeLast(1).ToList();
-      }
+          : config.Spec.InitOptions.KustomizeFlows.Reverse().TakeWhile(f => f != flow).Select(f => new FluxDependsOn { Name = f.Replace('/', '-') }).TakeLast(1).ToList()
+        : config.Spec.InitOptions.KustomizeFlows.Reverse().TakeWhile(f => f != flow).Select(f => new FluxDependsOn { Name = f.Replace('/', '-') }).TakeLast(1).ToList();
 
       await GenerateFluxSystemFluxKustomization(config, outputDirectory, flow, dependsOn, cancellationToken).ConfigureAwait(false);
     }

@@ -16,7 +16,8 @@ spec:
   interval: 60m
   retryInterval: 2m
   timeout: 3m
-  dependsOn: []
+  dependsOn:
+  - name: infrastructure
   sourceRef:
     kind: OCIRepository
     name: flux-system
@@ -35,8 +36,7 @@ spec:
   interval: 60m
   retryInterval: 2m
   timeout: 3m
-  dependsOn:
-  - name: infrastructure
+  dependsOn: []
   sourceRef:
     kind: OCIRepository
     name: flux-system
@@ -56,7 +56,7 @@ spec:
   retryInterval: 2m
   timeout: 3m
   dependsOn:
-  - name: apps
+  - name: infrastructure-controllers
   sourceRef:
     kind: OCIRepository
     name: flux-system
@@ -103,8 +103,8 @@ metadata:
   name: test-cluster
 spec:
   kubeconfig: ~/.kube/config
-  context: default
-  timeout: 300
+  context: kind-test-cluster
+  timeout: 5m
   manifestsDirectory: ./k8s
   kustomizationDirectory: ./k8s/clusters/test-cluster/flux-system
   configPath: kind-config.yaml
@@ -166,6 +166,7 @@ spec:
     registries: false
   genOptions: {}
   initOptions:
+    declarativeConfig: true
     components: false
     helmReleases: false
     postBuildVariables: false
@@ -179,7 +180,10 @@ spec:
   lintOptions: {}
   listOptions:
     all: false
-  sopsOptions: {}
+  sopsOptions:
+    listOptions:
+      showPublicKey: true
+      showPrivateKey: true
   startOptions: {}
   stopOptions: {}
   upOptions:
@@ -187,7 +191,7 @@ spec:
     lint: true
     reconcile: true
   updateOptions:
-    lint: false
-    reconcile: false
+    lint: true
+    reconcile: true
 
 }

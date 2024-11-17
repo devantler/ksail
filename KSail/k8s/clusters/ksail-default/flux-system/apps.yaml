@@ -1,0 +1,18 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: apps
+  namespace: flux-system
+spec:
+  interval: 60m
+  retryInterval: 2m
+  timeout: 3m
+  dependsOn:
+  - name: infrastructure
+  sourceRef:
+    kind: OCIRepository
+    name: flux-system
+  path: apps
+  prune: true
+  wait: true

@@ -1,4 +1,4 @@
-﻿---
+---
 apiVersion: ksail.io/v1alpha1
 kind: Cluster
 metadata:
