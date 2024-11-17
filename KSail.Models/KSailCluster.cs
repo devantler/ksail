@@ -39,4 +39,22 @@ public class KSailCluster
     Metadata.Name = name;
     Spec = new KSailClusterSpec(name);
   }
+
+  /// <summary>
+  /// Initializes a new instance of the <see cref="KSailCluster"/> class with the specified distribution.
+  /// </summary>
+  /// <param name="distribution"></param>
+  public KSailCluster(KSailKubernetesDistribution distribution) =>
+    Spec = new KSailClusterSpec(Metadata.Name, distribution);
+
+  /// <summary>
+  /// Initializes a new instance of the <see cref="KSailCluster"/> class with the specified name and distribution.
+  /// </summary>
+  /// <param name="name"></param>
+  /// <param name="distribution"></param>
+  public KSailCluster(string name, KSailKubernetesDistribution distribution)
+  {
+    Metadata.Name = name;
+    Spec = new KSailClusterSpec(name, distribution);
+  }
 }
