@@ -2,9 +2,9 @@
 // using Devantler.KeyManager.Local.Age;
 // using KSail.Models;
 
-// namespace KSail.Commands.Sops.Handlers;
+// namespace KSail.Commands.SOPS.Handlers;
 
-// class KSailSopsCommandHandler() : IDisposable
+// class KSailSOPSCommandHandler() : IDisposable
 // {
 //   readonly LocalAgeKeyManager _keyManager = new();
 //   internal async Task<int> HandleAsync(string clusterName, bool generateKey, bool showKey, bool showPublicKey, bool showPrivateKey, string encrypt, string decrypt, string import, string export, CancellationToken cancellationToken = default)
@@ -53,7 +53,7 @@
 //     var (exitCode, privateKey) = await _keyManager.GetPrivateKeyAsync(KeyType.Age, name, cancellationToken).ConfigureAwait(false);
 //     if (exitCode != 0)
 //     {
-//       throw new KSailException("Private Sops key not found");
+//       throw new KSailException("Private SOPS key not found");
 //     }
 //     Console.WriteLine(privateKey);
 //     return 0;
@@ -64,7 +64,7 @@
 //     var (exitCode, publicKey) = await _LocalProvisioner.GetPublicKeyAsync(KeyType.Age, clusterName, cancellationToken).ConfigureAwait(false);
 //     if (exitCode != 0)
 //     {
-//       throw new KSailException("Public Sops key not found");
+//       throw new KSailException("Public SOPS key not found");
 //     }
 //     Console.WriteLine(publicKey);
 //     return 0;
@@ -82,9 +82,9 @@
 // #pragma warning restore CA1308 // Normalize strings to uppercase
 //     Console.WriteLine($"🔐 Encrypting '{encrypt}'");
 //     string masterKeyPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", $"{clusterName}.agekey");
-//     if (await SopsCLIWrapper.EncryptAsync(encrypt, masterKeyPath, cancellationToken).ConfigureAwait(false) != 0)
+//     if (await SOPSCLIWrapper.EncryptAsync(encrypt, masterKeyPath, cancellationToken).ConfigureAwait(false) != 0)
 //     {
-//       throw new KSailException("Sops encryption failed");
+//       throw new KSailException("SOPS encryption failed");
 //     }
 //     Console.WriteLine($"✔ '{encrypt}' encrypted");
 //   }
@@ -97,12 +97,12 @@
 //     string? contents;
 //     if (File.Exists(import))
 //     {
-//       Console.WriteLine($"🔐 Importing Sops key from '{import}'");
+//       Console.WriteLine($"🔐 Importing SOPS key from '{import}'");
 //       contents = await File.ReadAllTextAsync(import, cancellationToken).ConfigureAwait(false);
 //     }
 //     else
 //     {
-//       Console.WriteLine("🔐 Importing Sops key from stdin");
+//       Console.WriteLine("🔐 Importing SOPS key from stdin");
 //       contents = import;
 //     }
 //     if (!Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", $"{clusterName}.agekey")))
@@ -110,7 +110,7 @@
 //       _ = Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age"));
 //     }
 //     await File.WriteAllTextAsync(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", $"{clusterName}.agekey"), contents, cancellationToken).ConfigureAwait(false);
-//     Console.WriteLine($"✔ Sops key imported to '{Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", $"{clusterName}.agekey")}'");
+//     Console.WriteLine($"✔ SOPS key imported to '{Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", $"{clusterName}.agekey")}'");
 //     return 0;
 //   }
 
@@ -119,15 +119,15 @@
 // #pragma warning disable CA1308 // Normalize strings to uppercase
 //     clusterName = clusterName.ToLowerInvariant();
 // #pragma warning restore CA1308 // Normalize strings to uppercase
-//     Console.WriteLine($"🔐 Exporting Sops key to '{export}'");
+//     Console.WriteLine($"🔐 Exporting SOPS key to '{export}'");
 //     if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", $"{clusterName}.agekey")))
 //     {
-//       Console.WriteLine("✗ Sops key not found");
+//       Console.WriteLine("✗ SOPS key not found");
 //       return 1;
 //     }
 //     string contents = await File.ReadAllTextAsync(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".ksail", "age", $"{clusterName}.agekey"), cancellationToken).ConfigureAwait(false);
 //     await File.WriteAllTextAsync($"{export}/{clusterName}.agekey", contents, cancellationToken).ConfigureAwait(false);
-//     Console.WriteLine($"✔ Sops key exported to '{export}'");
+//     Console.WriteLine($"✔ SOPS key exported to '{export}'");
 //     return 0;
 //   }
 

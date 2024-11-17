@@ -5,7 +5,7 @@ using KSail.Models.Commands.Gen;
 using KSail.Models.Commands.Init;
 using KSail.Models.Commands.Lint;
 using KSail.Models.Commands.List;
-using KSail.Models.Commands.Sops;
+using KSail.Models.Commands.SOPS;
 using KSail.Models.Commands.Start;
 using KSail.Models.Commands.Stop;
 using KSail.Models.Commands.Up;
@@ -67,7 +67,7 @@ public class KSailClusterSpec
   /// <summary>
   /// Whether to enable SOPS support.
   /// </summary>
-  public bool Sops { get; set; }
+  public bool SOPS { get; set; }
 
   /// <summary>
   /// The registries to create for the KSail cluster to reconcile flux artifacts, and to proxy and cache images.
@@ -120,7 +120,7 @@ public class KSailClusterSpec
   /// <summary>
   /// The options to use for the 'sops' command.
   /// </summary>
-  public KSailSopsOptions SopsOptions { get; set; } = new();
+  public KSailSOPSOptions SOPSOptions { get; set; } = new();
 
   /// <summary>
   /// The options to use for the 'start' command.

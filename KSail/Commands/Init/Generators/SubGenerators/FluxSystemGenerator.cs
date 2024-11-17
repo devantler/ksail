@@ -80,7 +80,7 @@ class FluxSystemGenerator
       {
         Name = flow.Replace('/', '-'),
         NamespaceProperty = "flux-system",
-        Labels = config.Spec.Sops && config.Spec.InitOptions.Components ?
+        Labels = config.Spec.SOPS && config.Spec.InitOptions.Components ?
           new Dictionary<string, string>
           {
             { "kustomize.toolkit.fluxcd.io/sops", "enabled" }
@@ -101,7 +101,7 @@ class FluxSystemGenerator
         Path = config.Spec.InitOptions.KustomizeHooks.IsNullOrEmpty() ? flow : $"{config.Spec.InitOptions.KustomizeHooks.First()}/{flow}",
         Prune = true,
         Wait = true,
-        Decryption = config.Spec.Sops && !config.Spec.InitOptions.Components ?
+        Decryption = config.Spec.SOPS && !config.Spec.InitOptions.Components ?
           new FluxKustomizationSpecDecryption
           {
             Provider = FluxKustomizationSpecDecryptionProvider.SOPS,

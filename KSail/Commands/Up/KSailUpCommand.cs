@@ -17,7 +17,7 @@ sealed class KSailUpCommand : Command
   readonly PathOption _manifestsPathOption = new("Path to the manifests directory") { Arity = ArgumentArity.ZeroOrOne };
   readonly PathOption _kustomizationDirectoryOption = new("Path to the root kustomization directory", ["--kustomization-path", "-kp"]) { Arity = ArgumentArity.ZeroOrOne };
   readonly TimeoutOption _timeoutOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly SopsOption _sopsOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly SOPSOption _sopsOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly LintOption _lintOption = new() { Arity = ArgumentArity.ZeroOrOne };
   internal KSailUpCommand() : base("up", "Provision a cluster")
   {
@@ -35,7 +35,7 @@ sealed class KSailUpCommand : Command
         config.UpdateConfig("Spec.KustomizationDirectory", kustomizationDirectory);
 
       config.UpdateConfig("Spec.Timeout", context.ParseResult.GetValueForOption(_timeoutOption));
-      config.UpdateConfig("Spec.Sops", context.ParseResult.GetValueForOption(_sopsOption));
+      config.UpdateConfig("Spec.SOPS", context.ParseResult.GetValueForOption(_sopsOption));
       config.UpdateConfig("Spec.UpOptions.Destroy", context.ParseResult.GetValueForOption(_destroyOption));
       config.UpdateConfig("Spec.UpOptions.Lint", context.ParseResult.GetValueForOption(_lintOption));
 

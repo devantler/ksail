@@ -27,7 +27,7 @@ class KSailInitCommandHandler(KSailCluster config)
       cancellationToken
     ).ConfigureAwait(false);
 
-    if (_config.Spec.Sops)
+    if (_config.Spec.SOPS)
     {
       await _sopsConfigFileGenerator.GenerateAsync(
         _config,

@@ -15,7 +15,7 @@ sealed class KSailInitCommand : Command
   readonly HelmReleasesOption _helmReleasesOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly OutputDirectoryOption _outputDirectoryOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly SopsOption _sopsOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly SOPSOption _sopsOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly TemplateOption _templateOption = new() { Arity = ArgumentArity.ZeroOrOne };
 
   public KSailInitCommand() : base("init", "Initialize a cluster")
@@ -28,7 +28,7 @@ sealed class KSailInitCommand : Command
       {
         var config = await KSailClusterConfigLoader.LoadAsync(name: context.ParseResult.GetValueForOption(_nameOption)).ConfigureAwait(false);
         config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
-        config.UpdateConfig("Spec.Sops", context.ParseResult.GetValueForOption(_sopsOption));
+        config.UpdateConfig("Spec.SOPS", context.ParseResult.GetValueForOption(_sopsOption));
         config.UpdateConfig("Spec.Distribution", context.ParseResult.GetValueForOption(_distributionOption));
         config.UpdateConfig("Spec.GitOpsTool", context.ParseResult.GetValueForOption(_gitOpsToolOption));
         config.UpdateConfig("Spec.InitOptions.OutputDirectory", context.ParseResult.GetValueForOption(_outputDirectoryOption));

@@ -2,12 +2,12 @@ using System.CommandLine;
 using KSail.Options;
 using KSail.Utils;
 
-namespace KSail.Commands.Sops.Commands;
+namespace KSail.Commands.SOPS.Commands;
 
-sealed class KSailSopsImportCommand : Command
+sealed class KSailSOPSImportCommand : Command
 {
   readonly PathOption _pathOption = new("Path to import key from");
-  internal KSailSopsImportCommand() : base("import", "Import a key")
+  internal KSailSOPSImportCommand() : base("import", "Import a key")
   {
     AddOption(_pathOption);
 
@@ -18,7 +18,7 @@ sealed class KSailSopsImportCommand : Command
         var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
 
         var cancellationToken = context.GetCancellationToken();
-        //var handler = new KSailSopsListCommandHandler(config);
+        //var handler = new KSailSOPSListCommandHandler(config);
 
         //_ = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
       }

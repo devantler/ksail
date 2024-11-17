@@ -1,11 +1,11 @@
 using System.CommandLine;
-using KSail.Commands.Sops.Commands;
+using KSail.Commands.SOPS.Commands;
 
-namespace KSail.Commands.Sops;
+namespace KSail.Commands.SOPS;
 
-sealed class KSailSopsCommand : Command
+sealed class KSailSOPSCommand : Command
 {
-  internal KSailSopsCommand() : base("sops", "Manage secrets in Git")
+  internal KSailSOPSCommand() : base("sops", "Manage secrets in Git")
   {
     AddCommands();
 
@@ -18,12 +18,12 @@ sealed class KSailSopsCommand : Command
 
   void AddCommands()
   {
-    AddCommand(new KSailSopsGenCommand());
-    AddCommand(new KSailSopsListCommand());
-    AddCommand(new KSailSopsEditCommand());
-    AddCommand(new KSailSopsEncryptCommand());
-    AddCommand(new KSailSopsDecryptCommand());
-    AddCommand(new KSailSopsImportCommand());
-    AddCommand(new KSailSopsExportCommand());
+    AddCommand(new KSailSOPSGenCommand());
+    AddCommand(new KSailSOPSListCommand());
+    AddCommand(new KSailSOPSEditCommand());
+    AddCommand(new KSailSOPSEncryptCommand());
+    AddCommand(new KSailSOPSDecryptCommand());
+    AddCommand(new KSailSOPSImportCommand());
+    AddCommand(new KSailSOPSExportCommand());
   }
 }

@@ -1,11 +1,11 @@
 using System.CommandLine;
 using KSail.Utils;
 
-namespace KSail.Commands.Sops.Commands;
+namespace KSail.Commands.SOPS.Commands;
 
-sealed class KSailSopsGenCommand : Command
+sealed class KSailSOPSGenCommand : Command
 {
-  internal KSailSopsGenCommand() : base("gen", "Generate a key")
+  internal KSailSOPSGenCommand() : base("gen", "Generate a key")
   {
     this.SetHandler(async (context) =>
     {
@@ -14,7 +14,7 @@ sealed class KSailSopsGenCommand : Command
         var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
 
         var cancellationToken = context.GetCancellationToken();
-        //var handler = new KSailSopsListCommandHandler(config);
+        //var handler = new KSailSOPSListCommandHandler(config);
 
         //_ = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
       }

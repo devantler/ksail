@@ -6,11 +6,11 @@ using KSail.Utils;
 
 namespace KSail.Commands.Gen.Commands.Config;
 
-class KSailGenConfigSopsCommand : Command
+class KSailGenConfigSOPSCommand : Command
 {
   readonly FileOutputOption _outputOption = new("./.sops.yaml");
-  readonly KSailGenConfigSopsCommandHandler _handler = new();
-  public KSailGenConfigSopsCommand() : base("sops", "Generate a Sops configuration file.")
+  readonly KSailGenConfigSOPSCommandHandler _handler = new();
+  public KSailGenConfigSOPSCommand() : base("sops", "Generate a SOPS configuration file.")
   {
     AddOption(_outputOption);
     this.SetHandler(async (context) =>

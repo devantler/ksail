@@ -2,12 +2,12 @@ using System.CommandLine;
 using KSail.Options;
 using KSail.Utils;
 
-namespace KSail.Commands.Sops.Commands;
+namespace KSail.Commands.SOPS.Commands;
 
-sealed class KSailSopsExportCommand : Command
+sealed class KSailSOPSExportCommand : Command
 {
   readonly PathOption _pathOption = new("Path to export key to");
-  internal KSailSopsExportCommand() : base("export", "Export a key")
+  internal KSailSOPSExportCommand() : base("export", "Export a key")
   {
     AddOption(_pathOption);
 
@@ -18,7 +18,7 @@ sealed class KSailSopsExportCommand : Command
         var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
 
         var cancellationToken = context.GetCancellationToken();
-        //var handler = new KSailSopsListCommandHandler(config);
+        //var handler = new KSailSOPSListCommandHandler(config);
 
         //_ = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
       }

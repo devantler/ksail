@@ -158,7 +158,7 @@ class KSailUpCommandHandler
       }
     }, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-    await InitializeSopsAgeSecret(config, resourceProvisioner, cancellationToken).ConfigureAwait(false);
+    await InitializeSOPSAgeSecret(config, resourceProvisioner, cancellationToken).ConfigureAwait(false);
     string ociUrlOnHost = $"oci://localhost:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/{_config.Metadata.Name}";
     await _gitOpsProvisioner.PushManifestsAsync(new Uri(ociUrlOnHost), config.Spec.ManifestsDirectory, cancellationToken: cancellationToken).ConfigureAwait(false);
     string kustomizationDirectoryInOCI = config.Spec.KustomizationDirectory.Replace("k8s/", "", StringComparison.OrdinalIgnoreCase);
@@ -179,9 +179,9 @@ class KSailUpCommandHandler
     }
   }
 
-  async Task InitializeSopsAgeSecret(KSailCluster config, KubernetesResourceProvisioner resourceProvisioner, CancellationToken cancellationToken)
+  async Task InitializeSOPSAgeSecret(KSailCluster config, KubernetesResourceProvisioner resourceProvisioner, CancellationToken cancellationToken)
   {
-    if (config.Spec.Sops)
+    if (config.Spec.SOPS)
     {
       Console.WriteLine("► searching for a '.sops.yaml' file");
       string directory = Directory.GetCurrentDirectory();
@@ -206,7 +206,7 @@ class KSailUpCommandHandler
       var sopsConfig = await _keyManager.GetSOPSConfigAsync(sopsConfigPath, cancellationToken).ConfigureAwait(false);
       string publicKey = sopsConfig.CreationRules.First(x => x.PathRegex.Contains(config.Metadata.Name, StringComparison.OrdinalIgnoreCase)).Age.Split(',')[0].Trim();
 
-      Console.WriteLine("► getting private key from Sops_AGE_KEY_FILE or default location");
+      Console.WriteLine("► getting private key from SOPS_AGE_KEY_FILE or default location");
       var ageKey = await _keyManager.GetKeyAsync(publicKey, cancellationToken).ConfigureAwait(false);
 
       Console.WriteLine("► creating 'sops-age' secret in 'flux-system' namespace");

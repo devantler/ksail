@@ -1,16 +1,16 @@
 // using System.CommandLine;
-// using KSail.Commands.Sops.Options;
+// using KSail.Commands.SOPS.Options;
 // using KSail.Options;
 
-// namespace KSail.Commands.Sops;
+// namespace KSail.Commands.SOPS;
 
-// sealed class KSailSopsCommand : Command
+// sealed class KSailSOPSCommand : Command
 // {
 //   readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
 //   readonly GenerateKeyOption _generateKeyOption = new() { Arity = ArgumentArity.ZeroOrOne };
 //   readonly EncryptOption _encryptOption = new() { Arity = ArgumentArity.ZeroOrOne };
 //   readonly DecryptOption _decryptOption = new() { Arity = ArgumentArity.ZeroOrOne };
-//   internal KSailSopsCommand() : base("sops", "Manage secrets with Sops")
+//   internal KSailSOPSCommand() : base("sops", "Manage secrets with SOPS")
 //   {
 //     AddArgument(_generateKeyOption);
 
@@ -40,7 +40,7 @@
 //       var cancellationToken = context.GetCancellationToken();
 //       try
 //       {
-//         var handler = new KSailSopsCommandHandler();
+//         var handler = new KSailSOPSCommandHandler();
 //         context.ExitCode = await handler.HandleAsync(clusterName, generateKey, showKey, showPublicKey, showPrivateKey, encrypt, decrypt, import, export, cancellationToken).ConfigureAwait(false);
 //       }
 //       catch (OperationCanceledException)

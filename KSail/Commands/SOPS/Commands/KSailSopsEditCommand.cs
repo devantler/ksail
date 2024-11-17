@@ -2,12 +2,12 @@ using System.CommandLine;
 using KSail.Options;
 using KSail.Utils;
 
-namespace KSail.Commands.Sops.Commands;
+namespace KSail.Commands.SOPS.Commands;
 
-sealed class KSailSopsEditCommand : Command
+sealed class KSailSOPSEditCommand : Command
 {
   readonly PathOption _pathOption = new("Path to the encrypted file");
-  internal KSailSopsEditCommand() : base("edit", "Edit an encrypted file")
+  internal KSailSOPSEditCommand() : base("edit", "Edit an encrypted file")
   {
     AddOption(_pathOption);
 
@@ -18,7 +18,7 @@ sealed class KSailSopsEditCommand : Command
         var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
 
         var cancellationToken = context.GetCancellationToken();
-        //var handler = new KSailSopsListCommandHandler(config);
+        //var handler = new KSailSOPSListCommandHandler(config);
 
         //_ = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
       }

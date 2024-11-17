@@ -1,6 +1,6 @@
 using System.CommandLine;
 
-namespace KSail.Commands.Sops.Options;
+namespace KSail.Commands.SOPS.Options;
 
 sealed class EncryptOption() : Option<string>(
   ["--encrypt", "-e"],
