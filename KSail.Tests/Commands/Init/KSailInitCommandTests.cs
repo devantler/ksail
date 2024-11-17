@@ -34,10 +34,10 @@ public class KSailInitCommandTests : IAsyncLifetime
   }
 
   /// <summary>
-  /// Tests that the 'ksail init * --output * --template simple' command generates a new cluster configuration in the specified output directory.
+  /// Tests that the 'ksail init' command with the default options succeeds and generates a KSail project.
   /// </summary>
   [Fact]
-  public async Task KSailInitTemplateSimple_SucceedsAndGeneratesClusterConfiguration()
+  public async Task KSailInit_WithDefaultOptions_SucceedsAndGeneratesKSailProject()
   {
     //Arrange
     var ksailCommand = new KSailInitCommand();
@@ -49,7 +49,7 @@ public class KSailInitCommandTests : IAsyncLifetime
     _ = Directory.CreateDirectory(outputPath);
 
     //Act
-    int exitCode = await ksailCommand.InvokeAsync($"--name test-cluster --output {outputPath} --template simple");
+    int exitCode = await ksailCommand.InvokeAsync($"--output {outputPath}");
 
     //Assert
     Assert.Equal(0, exitCode);
@@ -57,6 +57,45 @@ public class KSailInitCommandTests : IAsyncLifetime
     Dictionary<string, string> files = [];
     foreach (string file in Directory.GetFiles(outputPath, "*", SearchOption.AllDirectories))
     {
+      string relativefilePath = file.Replace(outputPath, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
+      relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, '/');
+      files[relativefilePath] = await File.ReadAllTextAsync(file);
+    }
+    _ = await Verify(files);
+
+    //Cleanup
+    Directory.Delete(outputPath, true);
+  }
+
+  /// <summary>
+  /// Tests that the 'ksail init' command advanced options succeeds and generates a KSail project.
+  /// </summary>
+  [Fact]
+  public async Task KSailInit_WithAdvancedOptions_SucceedsAndGeneratesKSailProject()
+  {
+    //Arrange
+    var ksailCommand = new KSailInitCommand();
+    string outputPath = Path.Combine(Path.GetTempPath(), "ksail-init-advanced");
+    if (Directory.Exists(outputPath))
+    {
+      Directory.Delete(outputPath, true);
+    }
+    _ = Directory.CreateDirectory(outputPath);
+
+    //Act
+    int exitCode = await ksailCommand.InvokeAsync($"--output {outputPath} --components --post-build-variables --sops --helm-releases");
+
+    //Assert
+    Assert.Equal(0, exitCode);
+    Assert.True(Directory.Exists(outputPath));
+    Dictionary<string, string> files = [];
+    foreach (string file in Directory.GetFiles(outputPath, "*", SearchOption.AllDirectories))
+    {
+      string fileName = Path.GetFileName(file);
+      if (fileName == ".sops.yaml")
+      {
+        continue;
+      }
       string relativefilePath = file.Replace(outputPath, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
       relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, '/');
       files[relativefilePath] = await File.ReadAllTextAsync(file);

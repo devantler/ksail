@@ -5,7 +5,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources: []
 ,
-  k8s/clusters/test-cluster/flux-system/apps.yaml:
+  k8s/clusters/ksail-default/flux-system/apps.yaml:
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -25,7 +25,7 @@ spec:
   prune: true
   wait: true
 ,
-  k8s/clusters/test-cluster/flux-system/infrastructure-controllers.yaml:
+  k8s/clusters/ksail-default/flux-system/infrastructure-controllers.yaml:
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -44,7 +44,7 @@ spec:
   prune: true
   wait: true
 ,
-  k8s/clusters/test-cluster/flux-system/infrastructure.yaml:
+  k8s/clusters/ksail-default/flux-system/infrastructure.yaml:
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -64,7 +64,7 @@ spec:
   prune: true
   wait: true
 ,
-  k8s/clusters/test-cluster/flux-system/kustomization.yaml:
+  k8s/clusters/ksail-default/flux-system/kustomization.yaml:
 ---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
@@ -89,7 +89,7 @@ resources: []
 ---
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
-name: test-cluster
+name: ksail-default
 containerdConfigPatches:
 - >-
   [plugins."io.containerd.grpc.v1.cri".registry]
@@ -100,13 +100,13 @@ containerdConfigPatches:
 apiVersion: ksail.io/v1alpha1
 kind: Cluster
 metadata:
-  name: test-cluster
+  name: ksail-default
 spec:
   kubeconfig: ~/.kube/config
-  context: kind-test-cluster
+  context: kind-ksail-default
   timeout: 5m
   manifestsDirectory: ./k8s
-  kustomizationDirectory: ./k8s/clusters/test-cluster/flux-system
+  kustomizationDirectory: ./k8s/clusters/ksail-default/flux-system
   configPath: kind-config.yaml
   distribution: kind
   gitOpsTool: flux
