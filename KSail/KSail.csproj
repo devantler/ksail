@@ -23,7 +23,7 @@
   <ItemGroup>
     <PackageReference Include="Devantler.ContainerEngineProvisioner.Docker" Version="0.0.5" />
     <PackageReference Include="Devantler.K9sCLI" Version="0.0.5" />
-    <PackageReference Include="Devantler.KeyManager.Local.Age" Version="1.1.17" />
+    <PackageReference Include="Devantler.KeyManager.Local.Age" Version="1.1.18" />
     <PackageReference Include="Devantler.KubernetesGenerator.CertManager" Version="0.1.7" />
     <PackageReference Include="Devantler.KubernetesGenerator.Flux" Version="0.1.7" />
     <PackageReference Include="Devantler.KubernetesGenerator.K3d" Version="0.1.7" />

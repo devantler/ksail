@@ -1,0 +1,97 @@
+﻿---
+apiVersion: ksail.io/v1alpha1
+kind: Cluster
+metadata:
+  name: ksail-default
+spec:
+  kubeconfig: ~/.kube/config
+  context: kind-ksail-default
+  timeout: 5m
+  manifestsDirectory: ./k8s
+  kustomizationDirectory: ./k8s/clusters/ksail-default/flux-system
+  configPath: kind-config.yaml
+  distribution: kind
+  gitOpsTool: flux
+  containerEngine: docker
+  sops: true
+  registries:
+  - name: ksail-registry
+    hostPort: 5555
+    isGitOpsOCISource: true
+    provider: docker
+  - name: registry.k8s.io
+    hostPort: 5556
+    isGitOpsOCISource: false
+    proxy:
+      url: https://registry.k8s.io/
+      insecure: false
+    provider: docker
+  - name: docker.io
+    hostPort: 5557
+    isGitOpsOCISource: false
+    proxy:
+      url: https://registry-1.docker.io/
+      insecure: false
+    provider: docker
+  - name: ghcr.io
+    hostPort: 5558
+    isGitOpsOCISource: false
+    proxy:
+      url: https://ghcr.io/
+      insecure: false
+    provider: docker
+  - name: gcr.io
+    hostPort: 5559
+    isGitOpsOCISource: false
+    proxy:
+      url: https://gcr.io/
+      insecure: false
+    provider: docker
+  - name: mcr.microsoft.com
+    hostPort: 5560
+    isGitOpsOCISource: false
+    proxy:
+      url: https://mcr.microsoft.com/
+      insecure: false
+    provider: docker
+  - name: quay.io
+    hostPort: 5561
+    isGitOpsOCISource: false
+    proxy:
+      url: https://quay.io/
+      insecure: false
+    provider: docker
+  checkOptions: {}
+  debugOptions:
+    editor: nano
+  downOptions:
+    registries: false
+  genOptions: {}
+  initOptions:
+    declarativeConfig: true
+    components: true
+    helmReleases: true
+    postBuildVariables: true
+    outputDirectory: {TempPath}ksail-init-advanced
+    template: simple
+    kustomizeFlows:
+    - apps
+    - infrastructure
+    - infrastructure/controllers
+    kustomizeHooks: []
+  lintOptions: {}
+  listOptions:
+    all: false
+  sopsOptions:
+    listOptions:
+      showPublicKey: true
+      showPrivateKey: true
+  startOptions: {}
+  stopOptions: {}
+  upOptions:
+    destroy: false
+    lint: true
+    reconcile: true
+  updateOptions:
+    lint: true
+    reconcile: true

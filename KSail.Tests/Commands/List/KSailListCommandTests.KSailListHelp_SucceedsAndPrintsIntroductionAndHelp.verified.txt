@@ -1,0 +1,12 @@
+﻿Description:
+  List active clusters
+
+Usage:
+  list [options]
+
+Options:
+  -a, --all       List clusters from all distributions
+  --version       Show version information
+  -?, -h, --help  Show help and usage information
+
+

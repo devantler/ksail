@@ -54,14 +54,14 @@ public class KSailInitCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(0, exitCode);
     Assert.True(Directory.Exists(outputPath));
-    Dictionary<string, string> files = [];
     foreach (string file in Directory.GetFiles(outputPath, "*", SearchOption.AllDirectories))
     {
+      string fileName = Path.GetFileName(file);
       string relativefilePath = file.Replace(outputPath, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
       relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, '/');
-      files[relativefilePath] = await File.ReadAllTextAsync(file);
+      string? directoryPath = Path.GetDirectoryName(relativefilePath);
+      _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml").UseDirectory(Path.Combine("simple", directoryPath!)).UseFileName(fileName);
     }
-    _ = await Verify(files);
 
     //Cleanup
     Directory.Delete(outputPath, true);
@@ -88,7 +88,6 @@ public class KSailInitCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(0, exitCode);
     Assert.True(Directory.Exists(outputPath));
-    Dictionary<string, string> files = [];
     foreach (string file in Directory.GetFiles(outputPath, "*", SearchOption.AllDirectories))
     {
       string fileName = Path.GetFileName(file);
@@ -98,9 +97,9 @@ public class KSailInitCommandTests : IAsyncLifetime
       }
       string relativefilePath = file.Replace(outputPath, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
       relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, '/');
-      files[relativefilePath] = await File.ReadAllTextAsync(file);
+      string? directoryPath = Path.GetDirectoryName(relativefilePath);
+      _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml").UseDirectory(Path.Combine("advanced", directoryPath!)).UseFileName(fileName);
     }
-    _ = await Verify(files);
 
     //Cleanup
     Directory.Delete(outputPath, true);

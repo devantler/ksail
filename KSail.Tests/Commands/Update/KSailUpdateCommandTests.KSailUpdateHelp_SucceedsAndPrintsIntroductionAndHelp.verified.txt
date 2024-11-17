@@ -1,0 +1,16 @@
+﻿Description:
+  Update a cluster
+
+Usage:
+  update [options]
+
+Options:
+  -n, --name <name>        The name of the cluster.
+  -p, --path <path>        Path to the manifests directory
+  -l, --lint               Lint manifests before pushing an update
+  -r, --reconcile          Reconcile manifests after pushing an update
+  -t, --timeout <timeout>  The time to wait for each kustomization to become ready.
+  --version                Show version information
+  -?, -h, --help           Show help and usage information
+
+

@@ -1,0 +1,19 @@
+﻿Description:
+  Provision a cluster
+
+Usage:
+  up [options]
+
+Options:
+  -n, --name <name>                               The name of the cluster.
+  -d, --destroy                                   Destroy any existing cluster before provisioning
+  -c, --config <config>                           Path to the cluster configuration file
+  -p, --path <path>                               Path to the manifests directory
+  -kp, --kustomization-path <kustomization-path>  Path to the root kustomization directory
+  -t, --timeout <timeout>                         The time to wait for each kustomization to become ready.
+  -s, --sops                                      Enable SOPS support.
+  -l, --lint                                      Lint manifests before pushing an update
+  --version                                       Show version information
+  -?, -h, --help                                  Show help and usage information
+
+
