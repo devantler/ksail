@@ -41,6 +41,12 @@ public class KSailUpCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailUp_WithDefaultOptions_SucceedsAndCreatesDefaultCluster()
   {
+    //Cleanup
+    if (Directory.Exists("k8s"))
+      Directory.Delete("k8s", true);
+    File.Delete("kind-config.yaml");
+    File.Delete("ksail-config.yaml");
+
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();
@@ -68,6 +74,12 @@ public class KSailUpCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailUp_WithDefaultKindCluster_SucceedsAndCreatesKindCluster()
   {
+    //Cleanup
+    if (Directory.Exists("k8s"))
+      Directory.Delete("k8s", true);
+    File.Delete("kind-config.yaml");
+    File.Delete("ksail-config.yaml");
+
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();
@@ -95,6 +107,13 @@ public class KSailUpCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailUp_WithAdvancedKindCluster_SucceedsAndCreatesAdvancedKindCluster()
   {
+    //Cleanup
+    if (Directory.Exists("k8s"))
+      Directory.Delete("k8s", true);
+    File.Delete("kind-config.yaml");
+    File.Delete("ksail-config.yaml");
+    File.Delete(".sops.yaml");
+
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();
@@ -111,9 +130,10 @@ public class KSailUpCommandTests : IAsyncLifetime
     Assert.Equal(0, downExitCode);
 
     //Cleanup
-    Directory.Delete("k8s-kind", true);
+    Directory.Delete("k8s", true);
     File.Delete("kind-config.yaml");
     File.Delete("ksail-config.yaml");
+    File.Delete(".sops.yaml");
   }
 
   /// <summary>
@@ -122,6 +142,12 @@ public class KSailUpCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailUp_WithDefaultK3dCluster_SucceedsAndCreatesK3dCluster()
   {
+    //Cleanup
+    if (Directory.Exists("k8s"))
+      Directory.Delete("k8s", true);
+    File.Delete("k3d-config.yaml");
+    File.Delete("ksail-config.yaml");
+
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();
@@ -149,6 +175,13 @@ public class KSailUpCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailUp_WithAdvancedK3dCluster_SucceedsAndCreatesAdvancedK3dCluster()
   {
+    //Cleanup
+    if (Directory.Exists("k8s"))
+      Directory.Delete("k8s", true);
+    File.Delete("k3d-config.yaml");
+    File.Delete("ksail-config.yaml");
+    File.Delete(".sops.yaml");
+
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();
@@ -165,8 +198,9 @@ public class KSailUpCommandTests : IAsyncLifetime
     Assert.Equal(0, downExitCode);
 
     //Cleanup
-    Directory.Delete("k8s-k3d", true);
+    Directory.Delete("k8s", true);
     File.Delete("k3d-config.yaml");
     File.Delete("ksail-config.yaml");
+    File.Delete(".sops.yaml");
   }
 }
