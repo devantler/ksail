@@ -78,7 +78,7 @@
         }
       }
     ],
-    CLIOptions: {
+    CLI: {
       CheckOptions: {},
       DebugOptions: {},
       DownOptions: {

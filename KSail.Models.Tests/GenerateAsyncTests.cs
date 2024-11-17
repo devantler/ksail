@@ -117,7 +117,7 @@ public class KSailClusterInitialization
             HostPort = 5005
           }
         ],
-        CLIOptions = new KSailCLIOptions
+        CLI = new KSailCLIOptions
         {
           CheckOptions = new KSailCLICheckOptions
           {
