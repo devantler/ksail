@@ -52,4 +52,15 @@ public class KSailClusterSpec
     };
     Project.KustomizationDirectory = $"{Project.ManifestsDirectory}/clusters/{name}/flux-system";
   }
+
+  /// <summary>
+  /// Initializes a new instance of the <see cref="KSailClusterSpec"/> class with the specified distribution.
+  /// </summary>
+  /// <param name="name"></param>
+  /// <param name="distribution"></param>
+  public KSailClusterSpec(string name, KSailKubernetesDistribution distribution) : this(name)
+  {
+    Project.Distribution = distribution;
+    Project.ConfigPath = $"./{distribution}-config.yaml";
+  }
 }
