@@ -1,9 +1,9 @@
-namespace KSail.Models.Commands.SOPS;
+namespace KSail.Models.CLI.Commands.Sops;
 
 /// <summary>
 /// The options to use for the 'list' command.
 /// </summary>
-public class KSailSOPSListOptions
+public class KSailCLISopsListOptions
 {
   /// <summary>
   /// Whether to show the public key in the listed keys.

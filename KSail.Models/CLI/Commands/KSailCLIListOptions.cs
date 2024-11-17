@@ -1,9 +1,9 @@
-namespace KSail.Models.Commands.List;
+namespace KSail.Models.CLI.Commands;
 
 /// <summary>
 /// The options to use for the 'list' command.
 /// </summary>
-public class KSailListOptions
+public class KSailCLIListOptions
 {
   /// <summary>
   /// Whether to list clusters from all supported distributions.

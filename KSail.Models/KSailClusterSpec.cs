@@ -1,15 +1,4 @@
-using KSail.Models.Commands.Check;
-using KSail.Models.Commands.Debug;
-using KSail.Models.Commands.Down;
-using KSail.Models.Commands.Gen;
-using KSail.Models.Commands.Init;
-using KSail.Models.Commands.Lint;
-using KSail.Models.Commands.List;
-using KSail.Models.Commands.SOPS;
-using KSail.Models.Commands.Start;
-using KSail.Models.Commands.Stop;
-using KSail.Models.Commands.Up;
-using KSail.Models.Commands.Update;
+using KSail.Models.CLI;
 using KSail.Models.Registry;
 
 namespace KSail.Models;
@@ -20,54 +9,14 @@ namespace KSail.Models;
 public class KSailClusterSpec
 {
   /// <summary>
-  /// The path to the kubeconfig file.
+  /// The options for connecting to the KSail cluster.
   /// </summary>
-  public string Kubeconfig { get; set; } = $"~/.kube/config";
+  public KSailConnectionOptions Connection { get; set; }
 
   /// <summary>
-  /// The kube context.
+  /// The options for the KSail project.
   /// </summary>
-  public string Context { get; set; }
-
-  /// <summary>
-  /// The timeout for operations (in seconds).
-  /// </summary>
-  public string Timeout { get; set; } = "5m";
-
-  /// <summary>
-  /// The path to the directory that contains the manifests.
-  /// </summary>
-  public string ManifestsDirectory { get; set; } = "./k8s";
-
-  /// <summary>
-  /// The relative path to the directory that contains the root kustomization file.
-  /// </summary>
-  public string KustomizationDirectory { get; set; }
-
-  /// <summary>
-  /// The path to the distribution configuration file.
-  /// </summary>
-  public string ConfigPath { get; set; }
-
-  /// <summary>
-  /// The Kubernetes distribution to use.
-  /// </summary>
-  public KSailKubernetesDistribution Distribution { get; set; } = KSailKubernetesDistribution.Kind;
-
-  /// <summary>
-  /// The GitOps tool to use.
-  /// </summary>
-  public KSailGitOpsTool GitOpsTool { get; set; } = KSailGitOpsTool.Flux;
-
-  /// <summary>
-  /// The container engine to use.
-  /// </summary>
-  public KSailContainerEngine ContainerEngine { get; set; } = KSailContainerEngine.Docker;
-
-  /// <summary>
-  /// Whether to enable SOPS support.
-  /// </summary>
-  public bool SOPS { get; set; }
+  public KSailProjectOptions Project { get; set; } = new();
 
   /// <summary>
   /// The registries to create for the KSail cluster to reconcile flux artifacts, and to proxy and cache images.
@@ -83,74 +32,9 @@ public class KSailClusterSpec
   ];
 
   /// <summary>
-  /// The options to use for the 'check' command.
+  /// The CLI options.
   /// </summary>
-  public KSailCheckOptions CheckOptions { get; set; } = new();
-
-  /// <summary>
-  /// The options to use for the 'debug' command.
-  /// </summary>
-  public KSailDebugOptions DebugOptions { get; set; } = new();
-
-  /// <summary>
-  /// The options to use for the 'down' command.
-  /// </summary>
-  public KSailDownOptions DownOptions { get; set; } = new();
-
-  /// <summary>
-  /// The options to use for the 'gen' command.
-  /// </summary>
-  public KSailGenOptions GenOptions { get; set; } = new();
-
-  /// <summary>
-  /// The options to use for the 'init' command.
-  /// </summary>
-  public KSailInitOptions InitOptions { get; set; } = new();
-
-  /// <summary>
-  /// The options to use for the 'lint' command.
-  /// </summary>
-  public KSailLintOptions LintOptions { get; set; } = new();
-
-  /// <summary>
-  /// The options to use for the 'list' command.
-  /// </summary>
-  public KSailListOptions ListOptions { get; set; } = new();
-
-  /// <summary>
-  /// The options to use for the 'sops' command.
-  /// </summary>
-  public KSailSOPSOptions SOPSOptions { get; set; } = new();
-
-  /// <summary>
-  /// The options to use for the 'start' command.
-  /// </summary>
-  public KSailStartOptions StartOptions { get; set; } = new();
-
-  /// <summary>
-  /// The options to use for the 'stop' command.
-  /// </summary>
-  public KSailStopOptions StopOptions { get; set; } = new();
-
-  /// <summary>
-  /// The options to use for the 'up' command.
-  /// </summary>
-  public KSailUpOptions UpOptions { get; set; } = new();
-
-  /// <summary>
-  /// The options to use for the 'update' command.
-  /// </summary>
-  public KSailUpdateOptions UpdateOptions { get; set; } = new();
-
-  /// <summary>
-  /// Initializes a new instance of the <see cref="KSailClusterSpec"/> class.
-  /// </summary>
-  public KSailClusterSpec()
-  {
-    Context = $"{Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-kind-default";
-    KustomizationDirectory = "";
-    ConfigPath = $"{Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-config.yaml";
-  }
+  public KSailCLIOptions CLIOptions { get; set; } = new();
 
   /// <summary>
   /// Initializes a new instance of the <see cref="KSailClusterSpec"/> class.
@@ -158,8 +42,14 @@ public class KSailClusterSpec
   /// <param name="name"></param>
   public KSailClusterSpec(string name)
   {
-    Context = $"{Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-{name}";
-    KustomizationDirectory = $"{ManifestsDirectory}/clusters/{name}/flux-system";
-    ConfigPath = $"{Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-config.yaml";
+    Connection = new KSailConnectionOptions
+    {
+      Context = $"kind-{name}"
+    };
+    Project = new KSailProjectOptions
+    {
+      KustomizationDirectory = $"./k8s/clusters/{name}/flux-system",
+    };
+    Project.KustomizationDirectory = $"{Project.ManifestsDirectory}/clusters/{name}/flux-system";
   }
 }

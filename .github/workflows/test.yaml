@@ -30,7 +30,7 @@ jobs:
       - name: 🧪 Test
         run: dotnet test --collect:"XPlat Code Coverage"
       - name: 📄 Upload Code Coverage to CodeCov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           files: '**/coverage.cobertura.xml'
           fail_ci_if_error: true
