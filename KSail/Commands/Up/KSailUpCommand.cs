@@ -35,7 +35,7 @@ sealed class KSailUpCommand : Command
         config.UpdateConfig("Spec.KustomizationDirectory", kustomizationDirectory);
 
       config.UpdateConfig("Spec.Timeout", context.ParseResult.GetValueForOption(_timeoutOption));
-      config.UpdateConfig("Spec.SOPS", context.ParseResult.GetValueForOption(_sopsOption));
+      config.UpdateConfig("Spec.Sops", context.ParseResult.GetValueForOption(_sopsOption));
       config.UpdateConfig("Spec.UpOptions.Destroy", context.ParseResult.GetValueForOption(_destroyOption));
       config.UpdateConfig("Spec.UpOptions.Lint", context.ParseResult.GetValueForOption(_lintOption));
 

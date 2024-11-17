@@ -181,7 +181,7 @@ class KSailUpCommandHandler
 
   async Task InitializeSOPSAgeSecret(KSailCluster config, KubernetesResourceProvisioner resourceProvisioner, CancellationToken cancellationToken)
   {
-    if (config.Spec.SOPS)
+    if (config.Spec.Sops)
     {
       Console.WriteLine("► searching for a '.sops.yaml' file");
       string directory = Directory.GetCurrentDirectory();

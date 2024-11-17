@@ -24,7 +24,7 @@ class ComponentsGenerator
       await GenerateHelmReleaseCRDSLabelComponent(componentsPath, cancellationToken).ConfigureAwait(false);
       await GenerateHelmReleaseRemediationLabelComponent(componentsPath, cancellationToken).ConfigureAwait(false);
     }
-    if (config.Spec.SOPS)
+    if (config.Spec.Sops)
       await GenerateFluxKustomizationSOPSLabelComponent(componentsPath, cancellationToken).ConfigureAwait(false);
   }
 
@@ -51,7 +51,7 @@ class ComponentsGenerator
             Kind = "Kustomization",
             LabelSelector = "kustomize.toolkit.fluxcd.io/post-build-variables=enabled"
           },
-          Patch = """
+          Patch = $"""
           apiVersion: kustomize.toolkit.fluxcd.io/v1
           kind: Kustomization
           metadata:
@@ -70,9 +70,9 @@ class ComponentsGenerator
     foreach (string hook in config.Spec.InitOptions.KustomizeHooks.Skip(1))
     {
       fluxKustomizationPostBuildVariablesLabelComponent.Patches.First().Patch += $"{Environment.NewLine}    - kind: ConfigMap";
-      fluxKustomizationPostBuildVariablesLabelComponent.Patches.First().Patch += $"{Environment.NewLine}      name: variables-{hook}-cluster";
+      fluxKustomizationPostBuildVariablesLabelComponent.Patches.First().Patch += $"{Environment.NewLine}      name: variables-{hook}";
       fluxKustomizationPostBuildVariablesLabelComponent.Patches.First().Patch += $"{Environment.NewLine}    - kind: Secret";
-      fluxKustomizationPostBuildVariablesLabelComponent.Patches.First().Patch += $"{Environment.NewLine}      name: variables-sensitive-{hook}-cluster";
+      fluxKustomizationPostBuildVariablesLabelComponent.Patches.First().Patch += $"{Environment.NewLine}      name: variables-sensitive-{hook}";
     }
     await _kustomizeComponentKubernetesGenerator.GenerateAsync(fluxKustomizationPostBuildVariablesLabelComponent, fluxKustomizationPostBuildVariablesLabelComponentKustomizationPath, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
@@ -98,7 +98,7 @@ class ComponentsGenerator
           Target = new KustomizeTarget
           {
             Kind = "Kustomization",
-            LabelSelector = "kustomize.toolkit.fluxcd.io=enabled"
+            LabelSelector = "sops=enabled"
           },
           Patch = """
           apiVersion: kustomize.toolkit.fluxcd.io/v1

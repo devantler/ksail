@@ -22,6 +22,7 @@ class SOPSConfigFileGenerator
       var sopsConfig = await LocalAgeKeyManager.GetSOPSConfigAsync(sopsConfigPath, cancellationToken).ConfigureAwait(false);
       string publicKey = sopsConfig.CreationRules.First(cr => cr.PathRegex.Contains(config.Metadata.Name, StringComparison.OrdinalIgnoreCase)).Age;
       var ageKey = await LocalAgeKeyManager.GetKeyAsync(publicKey, cancellationToken).ConfigureAwait(false);
+      Console.WriteLine(ageKey.CreatedAt);
       await GenerateUpdatedSOPSConfigFile(sopsConfigPath, config.Metadata.Name, ageKey, cancellationToken).ConfigureAwait(false);
     }
   }

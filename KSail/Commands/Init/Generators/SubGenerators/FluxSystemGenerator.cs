@@ -80,10 +80,19 @@ class FluxSystemGenerator
       {
         Name = flow.Replace('/', '-'),
         NamespaceProperty = "flux-system",
-        Labels = config.Spec.SOPS && config.Spec.InitOptions.Components ?
+        Labels = config.Spec.Sops && config.Spec.InitOptions.PostBuildVariables && config.Spec.InitOptions.Components && !flow.Equals("variables") ?
           new Dictionary<string, string>
           {
-            { "kustomize.toolkit.fluxcd.io/sops", "enabled" }
+            { "sops", "enabled" },
+            { "post-build-variables", "enabled" }
+          } : config.Spec.InitOptions.PostBuildVariables && config.Spec.InitOptions.Components && !flow.Equals("variables") ?
+          new Dictionary<string, string>
+          {
+            { "post-build-variables", "enabled" }
+          } : config.Spec.Sops && config.Spec.InitOptions.Components ?
+          new Dictionary<string, string>
+          {
+            { "sops", "enabled" }
           } :
           null
       },
@@ -101,7 +110,7 @@ class FluxSystemGenerator
         Path = config.Spec.InitOptions.KustomizeHooks.IsNullOrEmpty() ? flow : $"{config.Spec.InitOptions.KustomizeHooks.First()}/{flow}",
         Prune = true,
         Wait = true,
-        Decryption = config.Spec.SOPS && !config.Spec.InitOptions.Components ?
+        Decryption = config.Spec.Sops && !config.Spec.InitOptions.Components ?
           new FluxKustomizationSpecDecryption
           {
             Provider = FluxKustomizationSpecDecryptionProvider.SOPS,
@@ -111,9 +120,44 @@ class FluxSystemGenerator
               Key = "sops.agekey"
             }
           } :
+          null,
+        PostBuild = config.Spec.InitOptions.PostBuildVariables && !config.Spec.InitOptions.Components ?
+          new FluxKustomizationSpecPostBuild
+          {
+            SubstituteFrom = GetSubstituteFroms(config)
+          } :
           null
       }
     };
     await _fluxKustomizationGenerator.GenerateAsync(fluxKustomization, outputDirectory, cancellationToken: cancellationToken).ConfigureAwait(false);
+  }
+
+  IEnumerable<FluxKustomizationSpecPostBuildSubstituteFrom> GetSubstituteFroms(KSailCluster config)
+  {
+    var substituteList = new List<FluxKustomizationSpecPostBuildSubstituteFrom>
+    {
+      new() {
+        Kind = FluxKustomizationSpecPostBuildSubstituteFromKind.ConfigMap,
+        Name = $"variables-cluster"
+      },
+      new() {
+        Kind = FluxKustomizationSpecPostBuildSubstituteFromKind.Secret,
+        Name = $"variables-sensitive-cluster"
+      }
+    };
+    foreach (string hook in config.Spec.InitOptions.KustomizeHooks)
+    {
+      substituteList.Add(new FluxKustomizationSpecPostBuildSubstituteFrom
+      {
+        Kind = FluxKustomizationSpecPostBuildSubstituteFromKind.ConfigMap,
+        Name = $"variables-{hook}"
+      });
+      substituteList.Add(new FluxKustomizationSpecPostBuildSubstituteFrom
+      {
+        Kind = FluxKustomizationSpecPostBuildSubstituteFromKind.Secret,
+        Name = $"variables-sensitive-{hook}"
+      });
+    }
+    return substituteList;
   }
 }

@@ -16,6 +16,7 @@ sealed class KSailInitCommand : Command
   readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly OutputDirectoryOption _outputDirectoryOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly SOPSOption _sopsOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly PostBuildVariablesOption _postBuildVariablesOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly TemplateOption _templateOption = new() { Arity = ArgumentArity.ZeroOrOne };
 
   public KSailInitCommand() : base("init", "Initialize a cluster")
@@ -28,11 +29,12 @@ sealed class KSailInitCommand : Command
       {
         var config = await KSailClusterConfigLoader.LoadAsync(name: context.ParseResult.GetValueForOption(_nameOption)).ConfigureAwait(false);
         config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
-        config.UpdateConfig("Spec.SOPS", context.ParseResult.GetValueForOption(_sopsOption));
+        config.UpdateConfig("Spec.Sops", context.ParseResult.GetValueForOption(_sopsOption));
         config.UpdateConfig("Spec.Distribution", context.ParseResult.GetValueForOption(_distributionOption));
         config.UpdateConfig("Spec.GitOpsTool", context.ParseResult.GetValueForOption(_gitOpsToolOption));
         config.UpdateConfig("Spec.InitOptions.OutputDirectory", context.ParseResult.GetValueForOption(_outputDirectoryOption));
         config.UpdateConfig("Spec.InitOptions.DeclarativeConfig", context.ParseResult.GetValueForOption(_declarativeConfigOption));
+        config.UpdateConfig("Spec.InitOptions.PostBuildVariables", context.ParseResult.GetValueForOption(_postBuildVariablesOption));
         config.UpdateConfig("Spec.InitOptions.Components", context.ParseResult.GetValueForOption(_componentsOption));
         config.UpdateConfig("Spec.InitOptions.HelmReleases", context.ParseResult.GetValueForOption(_helmReleasesOption));
         config.UpdateConfig("Spec.InitOptions.Template", context.ParseResult.GetValueForOption(_templateOption));
@@ -59,6 +61,7 @@ sealed class KSailInitCommand : Command
   {
     AddOption(_nameOption);
     AddOption(_declarativeConfigOption);
+    AddOption(_postBuildVariablesOption);
     AddOption(_componentsOption);
     AddOption(_distributionOption);
     AddOption(_helmReleasesOption);
