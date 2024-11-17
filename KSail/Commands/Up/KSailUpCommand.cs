@@ -14,6 +14,7 @@ sealed class KSailUpCommand : Command
   readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly DestroyOption _destroyOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly ConfigOption _configOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly DistributionOption _distributionOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly PathOption _manifestsPathOption = new("Path to the manifests directory") { Arity = ArgumentArity.ZeroOrOne };
   readonly PathOption _kustomizationDirectoryOption = new("Path to the root kustomization directory", ["--kustomization-path", "-kp"]) { Arity = ArgumentArity.ZeroOrOne };
   readonly TimeoutOption _timeoutOption = new() { Arity = ArgumentArity.ZeroOrOne };
@@ -29,6 +30,7 @@ sealed class KSailUpCommand : Command
       config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
       config.UpdateConfig("Spec.ConfigPath", context.ParseResult.GetValueForOption(_configOption));
       config.UpdateConfig("Spec.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsPathOption));
+      config.UpdateConfig("Spec.Distribution", context.ParseResult.GetValueForOption(_distributionOption));
 
       string? kustomizationDirectory = context.ParseResult.GetValueForOption(_kustomizationDirectoryOption);
       if (kustomizationDirectory != null && !string.IsNullOrEmpty(kustomizationDirectory) && !kustomizationDirectory.Equals("default", StringComparison.OrdinalIgnoreCase))
@@ -77,6 +79,7 @@ sealed class KSailUpCommand : Command
     AddOption(_nameOption);
     AddOption(_destroyOption);
     AddOption(_configOption);
+    AddOption(_distributionOption);
     AddOption(_manifestsPathOption);
     AddOption(_kustomizationDirectoryOption);
     AddOption(_timeoutOption);
