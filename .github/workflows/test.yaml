@@ -17,7 +17,7 @@ jobs:
   test:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest] # windows-latest, macos-latest does not work with dind yet
     runs-on: ${{ matrix.os }}
     if: github.event.pull_request.draft == false
     steps:
