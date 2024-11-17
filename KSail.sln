@@ -3,14 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{737EA98F-8AB0-4EEE-8320-01D93A8BF9FC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KSail.Tests.Integration", "tests\KSail.Tests.Integration\KSail.Tests.Integration.csproj", "{955221A5-99F3-44E9-812A-0A408FD4ECCE}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{606592A7-58CE-44F5-8F95-38E86BE07D66}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KSail", "src\KSail\KSail.csproj", "{0C8DB86F-03E5-4F85-A657-32E96F4B35D1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KSail.Models", "KSail.Models\KSail.Models.csproj", "{FA417BA4-06F8-4DB7-A276-D76CF8499432}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KSail.Models.Tests", "KSail.Models.Tests\KSail.Models.Tests.csproj", "{6E6524EA-C96F-40E0-920F-7C46813C7245}"
@@ -20,18 +12,7 @@ Global
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{955221A5-99F3-44E9-812A-0A408FD4ECCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{955221A5-99F3-44E9-812A-0A408FD4ECCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{955221A5-99F3-44E9-812A-0A408FD4ECCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{955221A5-99F3-44E9-812A-0A408FD4ECCE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0C8DB86F-03E5-4F85-A657-32E96F4B35D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0C8DB86F-03E5-4F85-A657-32E96F4B35D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0C8DB86F-03E5-4F85-A657-32E96F4B35D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0C8DB86F-03E5-4F85-A657-32E96F4B35D1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FA417BA4-06F8-4DB7-A276-D76CF8499432}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FA417BA4-06F8-4DB7-A276-D76CF8499432}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA417BA4-06F8-4DB7-A276-D76CF8499432}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -41,8 +22,7 @@ Global
 		{6E6524EA-C96F-40E0-920F-7C46813C7245}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E6524EA-C96F-40E0-920F-7C46813C7245}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{955221A5-99F3-44E9-812A-0A408FD4ECCE} = {737EA98F-8AB0-4EEE-8320-01D93A8BF9FC}
-		{0C8DB86F-03E5-4F85-A657-32E96F4B35D1} = {606592A7-58CE-44F5-8F95-38E86BE07D66}
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
