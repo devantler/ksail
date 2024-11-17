@@ -101,7 +101,7 @@ public class KSailUpCommandTests : IAsyncLifetime
     var ksailDownCommand = new KSailDownCommand();
 
     //Act
-    int initExitCode = await ksailInitCommand.InvokeAsync("--name ksail-advanced-kind --distribution kind --components --sops --post-build-variables");
+    int initExitCode = await ksailInitCommand.InvokeAsync("--name ksail-advanced-kind --distribution kind --components --sops --post-build-variables --helm-releases");
     int upExitCode = await ksailUpCommand.InvokeAsync("");
     int downExitCode = await ksailDownCommand.InvokeAsync("--registries");
 
@@ -139,7 +139,7 @@ public class KSailUpCommandTests : IAsyncLifetime
 
     //Cleanup
     Directory.Delete("k8s", true);
-    File.Delete("kind-config.yaml");
+    File.Delete("k3d-config.yaml");
     File.Delete("ksail-config.yaml");
   }
 
@@ -155,7 +155,7 @@ public class KSailUpCommandTests : IAsyncLifetime
     var ksailDownCommand = new KSailDownCommand();
 
     //Act
-    int initExitCode = await ksailInitCommand.InvokeAsync("--name ksail-advanced-k3d --distribution k3d --components --sops --post-build-variables");
+    int initExitCode = await ksailInitCommand.InvokeAsync("--name ksail-advanced-k3d --distribution k3d --components --sops --post-build-variables --helm-releases");
     int upExitCode = await ksailUpCommand.InvokeAsync("");
     int downExitCode = await ksailDownCommand.InvokeAsync("--registries");
 
@@ -166,7 +166,7 @@ public class KSailUpCommandTests : IAsyncLifetime
 
     //Cleanup
     Directory.Delete("k8s-k3d", true);
-    File.Delete("kind-config.yaml");
+    File.Delete("k3d-config.yaml");
     File.Delete("ksail-config.yaml");
   }
 }
