@@ -1,8 +1,8 @@
-namespace KSail.Models.Commands.Check;
+namespace KSail.Models.CLI.Commands;
 
 /// <summary>
 /// The options to use for the 'check' command.
 /// </summary>
-public class KSailCheckOptions
+public class KSailCLICheckOptions
 {
 }

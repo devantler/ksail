@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KSail", "src\KSail\KSail.cs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KSail.Models", "KSail.Models\KSail.Models.csproj", "{FA417BA4-06F8-4DB7-A276-D76CF8499432}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KSail.Models.Tests", "KSail.Models.Tests\KSail.Models.Tests.csproj", "{6E6524EA-C96F-40E0-920F-7C46813C7245}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +36,10 @@ Global
 		{FA417BA4-06F8-4DB7-A276-D76CF8499432}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA417BA4-06F8-4DB7-A276-D76CF8499432}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA417BA4-06F8-4DB7-A276-D76CF8499432}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E6524EA-C96F-40E0-920F-7C46813C7245}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E6524EA-C96F-40E0-920F-7C46813C7245}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E6524EA-C96F-40E0-920F-7C46813C7245}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E6524EA-C96F-40E0-920F-7C46813C7245}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{955221A5-99F3-44E9-812A-0A408FD4ECCE} = {737EA98F-8AB0-4EEE-8320-01D93A8BF9FC}

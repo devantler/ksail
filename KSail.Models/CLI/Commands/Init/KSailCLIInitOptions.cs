@@ -1,9 +1,9 @@
-namespace KSail.Models.Commands.Init;
+namespace KSail.Models.CLI.Commands.Init;
 
 /// <summary>
 /// The options to use for the 'init' command.
 /// </summary>
-public class KSailInitOptions
+public class KSailCLIInitOptions
 {
   /// <summary>
   /// Whether to generate a ksail-config.yaml file, to configure the KSail CLI declaratively.
@@ -33,7 +33,7 @@ public class KSailInitOptions
   /// <summary>
   /// The template to use for the generated output.
   /// </summary>
-  public KSailInitTemplate Template { get; set; } = KSailInitTemplate.Simple;
+  public KSailCLIInitTemplate Template { get; set; } = KSailCLIInitTemplate.Simple;
 
   /// <summary>
   /// The different Kustomizations to generate. First depends on the second, and so on.
