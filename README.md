@@ -41,20 +41,12 @@
 │   └── workflows
 ├── .vscode
 ├── KSail.Models
-│   ├── Commands
-│   │   ├── Check
-│   │   ├── Debug
-│   │   ├── Down
-│   │   ├── Gen
-│   │   ├── Init
-│   │   ├── Lint
-│   │   ├── List
-│   │   ├── Sops
-│   │   ├── Start
-│   │   ├── Stop
-│   │   ├── Up
-│   │   └── Update
+│   ├── CLI
+│   │   └── Commands
+│   │       ├── Init
+│   │       └── Sops
 │   └── Registry
+├── KSail.Models.Tests
 ├── docs
 │   └── images
 ├── scripts
@@ -127,7 +119,7 @@
         │   └── Update
         └── TestUtils
 
-89 directories
+81 directories
 ```
 <!-- readme-tree end -->
 
