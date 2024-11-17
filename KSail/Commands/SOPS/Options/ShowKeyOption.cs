@@ -1,6 +1,6 @@
 using System.CommandLine;
 
-namespace KSail.Commands.SOPS.Options;
+namespace KSail.Commands.Sops.Options;
 
 sealed class ShowKeyOption() : Option<bool?>(
   ["--show-key"],

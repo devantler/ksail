@@ -206,7 +206,7 @@ class KSailUpCommandHandler
       var sopsConfig = await _keyManager.GetSOPSConfigAsync(sopsConfigPath, cancellationToken).ConfigureAwait(false);
       string publicKey = sopsConfig.CreationRules.First(x => x.PathRegex.Contains(config.Metadata.Name, StringComparison.OrdinalIgnoreCase)).Age.Split(',')[0].Trim();
 
-      Console.WriteLine("► getting private key from SOPS_AGE_KEY_FILE or default location");
+      Console.WriteLine("► getting private key from Sops_AGE_KEY_FILE or default location");
       var ageKey = await _keyManager.GetKeyAsync(publicKey, cancellationToken).ConfigureAwait(false);
 
       Console.WriteLine("► creating 'sops-age' secret in 'flux-system' namespace");

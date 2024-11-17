@@ -2,9 +2,9 @@ using System.CommandLine;
 
 namespace KSail.Options;
 
-class SOPSOption() : Option<bool?>(
+class SopsOption() : Option<bool?>(
   ["-s", "--sops"],
-  "Enable SOPS support."
+  "Enable Sops support."
 )
 {
 }

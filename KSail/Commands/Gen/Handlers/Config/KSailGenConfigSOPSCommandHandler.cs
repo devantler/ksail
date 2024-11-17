@@ -3,7 +3,7 @@ using Devantler.KeyManager.Local.Age;
 
 namespace KSail.Commands.Gen.Handlers.Config;
 
-class KSailGenConfigSOPSCommandHandler
+class KSailGenConfigSopsCommandHandler
 {
   readonly LocalAgeKeyManager _keyManager = new();
   internal async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken = default)

@@ -19,7 +19,7 @@ class KSailGenConfigCommand : Command
   {
     AddCommand(new KSailGenConfigK3dCommand());
     AddCommand(new KSailGenConfigKSailCommand());
-    AddCommand(new KSailGenConfigSOPSCommand());
+    AddCommand(new KSailGenConfigSopsCommand());
   }
 }
 

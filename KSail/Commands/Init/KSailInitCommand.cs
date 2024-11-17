@@ -15,7 +15,7 @@ sealed class KSailInitCommand : Command
   readonly HelmReleasesOption _helmReleasesOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly OutputDirectoryOption _outputDirectoryOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly SOPSOption _sopsOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly SopsOption _sopsOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly TemplateOption _templateOption = new() { Arity = ArgumentArity.ZeroOrOne };
 
   public KSailInitCommand() : base("init", "Initialize a cluster")

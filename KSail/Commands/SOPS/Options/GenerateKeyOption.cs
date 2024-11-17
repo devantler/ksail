@@ -1,6 +1,6 @@
 using System.CommandLine;
 
-namespace KSail.Commands.SOPS.Options;
+namespace KSail.Commands.Sops.Options;
 
 sealed class GenerateKeyOption() : Option<bool?>(
   ["--generate-key", "-g"],

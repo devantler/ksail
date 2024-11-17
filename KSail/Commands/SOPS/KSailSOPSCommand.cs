@@ -1,57 +1,29 @@
 using System.CommandLine;
-using KSail.Commands.SOPS.Options;
-using KSail.Options;
+using KSail.Commands.Sops.Commands;
 
-namespace KSail.Commands.SOPS;
+namespace KSail.Commands.Sops;
 
-sealed class KSailSOPSCommand : Command
+sealed class KSailSopsCommand : Command
 {
-  readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly GenerateKeyOption _generateKeyOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly ShowKeyOption _showKeyOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly ShowPublicKeyOption _showPublicKeyOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly ShowPrivateKeyOption _showPrivateKeyOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly EncryptOption _encryptOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly DecryptOption _decryptOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly ImportOption _importOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly ExportOption _exportOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  internal KSailSOPSCommand() : base("sops", "Manage secrets with SOPS")
+  internal KSailSopsCommand() : base("sops", "Manage secrets in Git")
   {
-    AddArgument(_generateKeyOption);
-
-    AddArgument(_showKeyOption);
-    AddOption(_showPublicKeyOption);
-    AddOption(_showPrivateKeyOption);
-    AddOption(_nameOption);
-
-    AddArgument(_editOption);
-    AddArgument(_encryptOption);
-    AddArgument(_decryptOption);
-    AddArgument(_importOption);
-    AddArgument(_exportOption);
+    AddCommands();
 
     this.SetHandler(async (context) =>
-    {
-      string clusterName = context.ParseResult.GetValueForOption(_nameOption)!;
-      bool generateKey = context.ParseResult.GetValueForOption(_generateKeyOption);
-      bool showKey = context.ParseResult.GetValueForOption(_showKeyOption);
-      bool showPublicKey = context.ParseResult.GetValueForOption(_showPublicKeyOption);
-      bool showPrivateKey = context.ParseResult.GetValueForOption(_showPrivateKeyOption);
-      string encrypt = context.ParseResult.GetValueForOption(_encryptOption) ?? "";
-      string decrypt = context.ParseResult.GetValueForOption(_decryptOption) ?? "";
-      string import = context.ParseResult.GetValueForOption(_importOption) ?? "";
-      string export = context.ParseResult.GetValueForOption(_exportOption) ?? "";
+      {
+        context.ExitCode = await this.InvokeAsync("--help").ConfigureAwait(false);
+      }
+    );
+  }
 
-      var cancellationToken = context.GetCancellationToken();
-      try
-      {
-        var handler = new KSailSOPSCommandHandler();
-        context.ExitCode = await handler.HandleAsync(clusterName, generateKey, showKey, showPublicKey, showPrivateKey, encrypt, decrypt, import, export, cancellationToken).ConfigureAwait(false);
-      }
-      catch (OperationCanceledException)
-      {
-        context.ExitCode = 1;
-      }
-    });
+  void AddCommands()
+  {
+    AddCommand(new KSailSopsGenCommand());
+    AddCommand(new KSailSopsListCommand());
+    AddCommand(new KSailSopsEditCommand());
+    AddCommand(new KSailSopsEncryptCommand());
+    AddCommand(new KSailSopsDecryptCommand());
+    AddCommand(new KSailSopsImportCommand());
+    AddCommand(new KSailSopsExportCommand());
   }
 }
