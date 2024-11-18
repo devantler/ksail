@@ -63,7 +63,7 @@ spec:
       url: https://quay.io/
       insecure: false
     provider: docker
-  cLI:
+  cli:
     checkOptions: {}
     debugOptions:
       editor: nano
