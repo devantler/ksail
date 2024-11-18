@@ -24,13 +24,13 @@
     <PackageReference Include="Devantler.ContainerEngineProvisioner.Docker" Version="0.0.6" />
     <PackageReference Include="Devantler.K9sCLI" Version="0.0.6" />
     <PackageReference Include="Devantler.KeyManager.Local.Age" Version="1.1.19" />
-    <PackageReference Include="Devantler.KubernetesGenerator.CertManager" Version="0.1.8" />
-    <PackageReference Include="Devantler.KubernetesGenerator.Flux" Version="0.1.8" />
-    <PackageReference Include="Devantler.KubernetesGenerator.K3d" Version="0.1.8" />
-    <PackageReference Include="Devantler.KubernetesGenerator.Kind" Version="0.1.8" />
-    <PackageReference Include="Devantler.KubernetesGenerator.KSail" Version="0.1.8" />
-    <PackageReference Include="Devantler.KubernetesGenerator.Kustomize" Version="0.1.8" />
-    <PackageReference Include="Devantler.KubernetesGenerator.Native" Version="0.1.8" />
+    <PackageReference Include="Devantler.KubernetesGenerator.CertManager" Version="0.1.9" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Flux" Version="0.1.9" />
+    <PackageReference Include="Devantler.KubernetesGenerator.K3d" Version="0.1.9" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Kind" Version="0.1.9" />
+    <PackageReference Include="Devantler.KubernetesGenerator.KSail" Version="0.1.9" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Kustomize" Version="0.1.9" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Native" Version="0.1.9" />
     <PackageReference Include="Devantler.KubernetesProvisioner.Cluster.K3d" Version="0.0.20" />
     <PackageReference Include="Devantler.KubernetesProvisioner.Cluster.Kind" Version="0.0.20" />
     <PackageReference Include="Devantler.KubernetesProvisioner.GitOps.Flux" Version="0.0.20" />
