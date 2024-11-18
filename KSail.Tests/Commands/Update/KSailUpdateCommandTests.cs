@@ -1,5 +1,8 @@
 using System.CommandLine;
 using System.CommandLine.IO;
+using KSail.Commands.Down;
+using KSail.Commands.Init;
+using KSail.Commands.Up;
 using KSail.Commands.Update;
 
 namespace KSail.Tests.Commands.Update;
@@ -31,5 +34,41 @@ public class KSailUpdateCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(0, exitCode);
     _ = await Verify(console.Error.ToString() + console.Out);
+  }
+
+  /// <summary>
+  /// Tests that a default kind cluster is created, and the 'ksail up' command is executed successfully.
+  /// </summary>
+  [Fact]
+  public async Task KSailUpdate_WithDefaultKindCluster_SucceedsAndCreatesAndUpdatesKindCluster()
+  {
+    //Cleanup
+    if (Directory.Exists("k8s"))
+      Directory.Delete("k8s", true);
+    File.Delete("kind-config.yaml");
+    File.Delete("ksail-config.yaml");
+
+    //Arrange
+    var ksailInitCommand = new KSailInitCommand();
+    var ksailUpCommand = new KSailUpCommand();
+    var ksailUpdateCommand = new KSailUpdateCommand();
+    var ksailDownCommand = new KSailDownCommand();
+
+    //Act
+    int initExitCode = await ksailInitCommand.InvokeAsync("-d kind");
+    int upExitCode = await ksailUpCommand.InvokeAsync("--destroy");
+    int updateExitCode = await ksailUpdateCommand.InvokeAsync("");
+    int downExitCode = await ksailDownCommand.InvokeAsync("--registries");
+
+    //Assert
+    Assert.Equal(0, initExitCode);
+    Assert.Equal(0, upExitCode);
+    Assert.Equal(0, updateExitCode);
+    Assert.Equal(0, downExitCode);
+
+    //Cleanup
+    Directory.Delete("k8s", true);
+    File.Delete("kind-config.yaml");
+    File.Delete("ksail-config.yaml");
   }
 }

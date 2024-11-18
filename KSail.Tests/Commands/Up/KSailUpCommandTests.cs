@@ -87,8 +87,8 @@ public class KSailUpCommandTests : IAsyncLifetime
 
     //Act
     int initExitCode = await ksailInitCommand.InvokeAsync("-d kind");
-    int upExitCode = await ksailUpCommand.InvokeAsync("-d kind --destroy");
-    int downExitCode = await ksailDownCommand.InvokeAsync("-d kind --registries");
+    int upExitCode = await ksailUpCommand.InvokeAsync("--destroy");
+    int downExitCode = await ksailDownCommand.InvokeAsync("--registries");
 
     //Assert
     Assert.Equal(0, initExitCode);
@@ -155,8 +155,8 @@ public class KSailUpCommandTests : IAsyncLifetime
 
     //Act
     int initExitCode = await ksailInitCommand.InvokeAsync("-d k3d");
-    int upExitCode = await ksailUpCommand.InvokeAsync("-d k3d --destroy");
-    int downExitCode = await ksailDownCommand.InvokeAsync("-d k3d --registries");
+    int upExitCode = await ksailUpCommand.InvokeAsync("---destroy");
+    int downExitCode = await ksailDownCommand.InvokeAsync("--registries");
 
     //Assert
     Assert.Equal(0, initExitCode);
