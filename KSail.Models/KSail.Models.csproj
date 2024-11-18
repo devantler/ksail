@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="KubernetesClient" Version="15.0.1" />
-    <PackageReference Include="Devantler.K9sCLI" Version="0.0.6" />
+    <PackageReference Include="Devantler.K9sCLI" Version="0.0.7" />
   </ItemGroup>
 
 </Project>
