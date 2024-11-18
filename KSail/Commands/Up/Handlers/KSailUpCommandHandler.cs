@@ -11,6 +11,7 @@ using k8s.Models;
 using KSail.Commands.Down.Handlers;
 using KSail.Commands.Lint.Handlers;
 using KSail.Models;
+using KSail.Models.Project;
 
 namespace KSail.Commands.Up.Handlers;
 

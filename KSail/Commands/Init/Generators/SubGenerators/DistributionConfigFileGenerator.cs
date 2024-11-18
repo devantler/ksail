@@ -8,6 +8,7 @@ using Devantler.KubernetesGenerator.Kind;
 using Devantler.KubernetesGenerator.Kind.Models;
 using k8s.Models;
 using KSail.Models;
+using KSail.Models.Project;
 
 namespace KSail.Commands.Init.Generators.SubGenerators;
 

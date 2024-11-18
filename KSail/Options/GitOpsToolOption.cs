@@ -1,5 +1,5 @@
 using System.CommandLine;
-using KSail.Models;
+using KSail.Models.Project;
 
 namespace KSail.Options;
 

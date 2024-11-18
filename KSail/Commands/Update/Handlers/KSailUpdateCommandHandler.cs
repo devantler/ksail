@@ -1,6 +1,7 @@
 using Devantler.KubernetesProvisioner.GitOps.Flux;
 using KSail.Commands.Lint.Handlers;
 using KSail.Models;
+using KSail.Models.Project;
 
 namespace KSail.Commands.Update.Handlers;
 

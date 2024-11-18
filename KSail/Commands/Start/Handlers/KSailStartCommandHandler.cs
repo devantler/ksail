@@ -2,6 +2,7 @@ using Devantler.KubernetesProvisioner.Cluster.Core;
 using Devantler.KubernetesProvisioner.Cluster.K3d;
 using Devantler.KubernetesProvisioner.Cluster.Kind;
 using KSail.Models;
+using KSail.Models.Project;
 
 namespace KSail.Commands.Start.Handlers;
 

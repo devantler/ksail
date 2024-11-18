@@ -26,7 +26,7 @@ sealed class KSailUpCommand : Command
 
     this.SetHandler(async (context) =>
     {
-      var config = await KSailClusterConfigLoader.LoadAsync(context.ParseResult.GetValueForOption(_manifestsPathOption), context.ParseResult.GetValueForOption(_nameOption)).ConfigureAwait(false);
+      var config = await KSailClusterConfigLoader.LoadAsync(context.ParseResult.GetValueForOption(_manifestsPathOption), context.ParseResult.GetValueForOption(_nameOption), context.ParseResult.GetValueForOption(_distributionOption) ?? Models.Project.KSailKubernetesDistribution.Kind).ConfigureAwait(false);
       config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
       config.UpdateConfig("Spec.Connection.Timeout", context.ParseResult.GetValueForOption(_timeoutOption));
       config.UpdateConfig("Spec.Project.ConfigPath", context.ParseResult.GetValueForOption(_configOption));
