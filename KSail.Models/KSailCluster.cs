@@ -23,7 +23,7 @@ public class KSailCluster
   /// <summary>
   /// The spec of the KSail Cluster object.
   /// </summary>
-  public KSailClusterSpec Spec { get; set; }
+  public KSailClusterSpec Spec { get; set; } = new();
 
   /// <summary>
   /// Initializes a new instance of the <see cref="KSailCluster"/> class.

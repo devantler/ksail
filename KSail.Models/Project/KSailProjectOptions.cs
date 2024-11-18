@@ -13,7 +13,7 @@ public class KSailProjectOptions
   /// <summary>
   /// The relative path to the directory that contains the root kustomization file.
   /// </summary>
-  public string KustomizationDirectory { get; set; } = "";
+  public string KustomizationDirectory { get; set; } = "./k8s/clusters/ksail-default/flux-system";
 
   /// <summary>
   /// The path to the distribution configuration file.

@@ -13,7 +13,7 @@ public class KSailClusterSpec
   /// <summary>
   /// The options for connecting to the KSail cluster.
   /// </summary>
-  public KSailConnectionOptions Connection { get; set; }
+  public KSailConnectionOptions Connection { get; set; } = new();
 
   /// <summary>
   /// The options for the KSail project.
@@ -38,6 +38,15 @@ public class KSailClusterSpec
   /// </summary>
   [YamlMember(Alias = "cli")]
   public KSailCLIOptions CLI { get; set; } = new();
+
+  /// <summary>
+  /// Initializes a new instance of the <see cref="KSailClusterSpec"/> class.
+  /// </summary>
+  public KSailClusterSpec()
+  {
+    Connection = new KSailConnectionOptions();
+    Project = new KSailProjectOptions();
+  }
 
   /// <summary>
   /// Initializes a new instance of the <see cref="KSailClusterSpec"/> class.
