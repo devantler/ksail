@@ -34,7 +34,7 @@ public class KSailClusterSpec
   /// <summary>
   /// The CLI options.
   /// </summary>
-  public KSailCLIOptions CLIOptions { get; set; } = new();
+  public KSailCLIOptions CLI { get; set; } = new();
 
   /// <summary>
   /// Initializes a new instance of the <see cref="KSailClusterSpec"/> class.

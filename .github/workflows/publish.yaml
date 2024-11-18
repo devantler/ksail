@@ -54,7 +54,7 @@ jobs:
       - name: ⚙️ Setup Homebrew
         uses: Homebrew/actions/setup-homebrew@master
       - name: ⚙️ Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v4.0.0
         with:
           dotnet-version: 9
       - name: 🔑 Add Cert to Keychain
