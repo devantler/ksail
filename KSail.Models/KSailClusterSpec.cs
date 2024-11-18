@@ -74,5 +74,6 @@ public class KSailClusterSpec
   {
     Project.Distribution = distribution;
     Project.ConfigPath = $"./{distribution}-config.yaml";
+    Connection.Context = $"{distribution}-{name}";
   }
 }
