@@ -54,7 +54,7 @@ public class KSailUpCommandTests : IAsyncLifetime
 
     //Act
     int initExitCode = await ksailInitCommand.InvokeAsync("");
-    int upExitCode = await ksailUpCommand.InvokeAsync("");
+    int upExitCode = await ksailUpCommand.InvokeAsync("--destroy");
     int downExitCode = await ksailDownCommand.InvokeAsync("--registries");
 
     //Assert
@@ -87,7 +87,7 @@ public class KSailUpCommandTests : IAsyncLifetime
 
     //Act
     int initExitCode = await ksailInitCommand.InvokeAsync("-d kind");
-    int upExitCode = await ksailUpCommand.InvokeAsync("-d kind");
+    int upExitCode = await ksailUpCommand.InvokeAsync("-d kind --destroy");
     int downExitCode = await ksailDownCommand.InvokeAsync("-d kind --registries");
 
     //Assert
@@ -121,7 +121,7 @@ public class KSailUpCommandTests : IAsyncLifetime
 
     //Act
     int initExitCode = await ksailInitCommand.InvokeAsync("--name ksail-advanced-kind --distribution kind --components --sops --post-build-variables --helm-releases");
-    int upExitCode = await ksailUpCommand.InvokeAsync("");
+    int upExitCode = await ksailUpCommand.InvokeAsync("--destroy");
     int downExitCode = await ksailDownCommand.InvokeAsync("--registries");
 
     //Assert
@@ -155,7 +155,7 @@ public class KSailUpCommandTests : IAsyncLifetime
 
     //Act
     int initExitCode = await ksailInitCommand.InvokeAsync("-d k3d");
-    int upExitCode = await ksailUpCommand.InvokeAsync("-d k3d");
+    int upExitCode = await ksailUpCommand.InvokeAsync("-d k3d --destroy");
     int downExitCode = await ksailDownCommand.InvokeAsync("-d k3d --registries");
 
     //Assert
@@ -189,7 +189,7 @@ public class KSailUpCommandTests : IAsyncLifetime
 
     //Act
     int initExitCode = await ksailInitCommand.InvokeAsync("--name ksail-advanced-k3d --distribution k3d --components --sops --post-build-variables --helm-releases");
-    int upExitCode = await ksailUpCommand.InvokeAsync("");
+    int upExitCode = await ksailUpCommand.InvokeAsync("--destroy");
     int downExitCode = await ksailDownCommand.InvokeAsync("--registries");
 
     //Assert

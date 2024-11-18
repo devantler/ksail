@@ -10,9 +10,9 @@ namespace KSail.Utils;
 static class KSailClusterConfigLoader
 {
 
-  internal static async Task<KSailCluster> LoadAsync(string? directory = default, string? name = default)
+  internal static async Task<KSailCluster> LoadAsync(string? directory = default, string? name = default, KSailKubernetesDistribution distribution = KSailKubernetesDistribution.Kind)
   {
-    var ksailClusterConfig = name != null ? new KSailCluster(name) : new KSailCluster();
+    var ksailClusterConfig = name != null ? new KSailCluster(name, distribution: distribution) : new KSailCluster();
     directory ??= Directory.GetCurrentDirectory();
     string[] possibleFiles = [
       "ksail-cluster.yaml",
