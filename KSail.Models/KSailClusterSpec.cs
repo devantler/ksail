@@ -73,7 +73,7 @@ public class KSailClusterSpec
   public KSailClusterSpec(string name, KSailKubernetesDistribution distribution) : this(name)
   {
     Project.Distribution = distribution;
-    Project.ConfigPath = $"./{distribution}-config.yaml";
-    Connection.Context = $"{distribution}-{name}";
+    Project.ConfigPath = $"./{distribution.ToString().ToLower()}-config.yaml";
+    Connection.Context = $"{distribution.ToString().ToLower()}-{name}";
   }
 }
