@@ -1,4 +1,4 @@
-namespace KSail.Models;
+namespace KSail.Models.Project;
 
 /// <summary>
 /// The options for the KSail project.

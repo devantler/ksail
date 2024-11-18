@@ -1,5 +1,7 @@
 using KSail.Models.CLI;
+using KSail.Models.Project;
 using KSail.Models.Registry;
+using YamlDotNet.Serialization;
 
 namespace KSail.Models;
 
@@ -34,6 +36,7 @@ public class KSailClusterSpec
   /// <summary>
   /// The CLI options.
   /// </summary>
+  [YamlMember(Alias = "cli")]
   public KSailCLIOptions CLI { get; set; } = new();
 
   /// <summary>

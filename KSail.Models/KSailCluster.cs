@@ -1,4 +1,5 @@
 using k8s.Models;
+using KSail.Models.Project;
 
 namespace KSail.Models;
 

@@ -1,6 +1,6 @@
 using System.Runtime.Serialization;
 
-namespace KSail.Models;
+namespace KSail.Models.Project;
 
 /// <summary>
 /// The Kubernetes distribution to use for the KSail cluster.
