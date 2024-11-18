@@ -39,9 +39,16 @@ public class KSailInitCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailInit_WithDefaultOptions_SucceedsAndGeneratesKSailProject()
   {
+    //Cleanup
+    string outputPath = Path.Combine(Path.GetTempPath(), "ksail-init-simple");
+    if (Directory.Exists(outputPath))
+    {
+      Directory.Delete(outputPath, true);
+    }
+    File.Delete("ksail-config.yaml");
+
     //Arrange
     var ksailCommand = new KSailInitCommand();
-    string outputPath = Path.Combine(Path.GetTempPath(), "ksail-init-simple");
     if (Directory.Exists(outputPath))
     {
       Directory.Delete(outputPath, true);
@@ -73,9 +80,16 @@ public class KSailInitCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailInit_WithAdvancedOptions_SucceedsAndGeneratesKSailProject()
   {
+    //Cleanup
+    string outputPath = Path.Combine(Path.GetTempPath(), "ksail-init-advanced");
+    if (Directory.Exists(outputPath))
+    {
+      Directory.Delete(outputPath, true);
+    }
+    File.Delete("ksail-config.yaml");
+
     //Arrange
     var ksailCommand = new KSailInitCommand();
-    string outputPath = Path.Combine(Path.GetTempPath(), "ksail-init-advanced");
     if (Directory.Exists(outputPath))
     {
       Directory.Delete(outputPath, true);

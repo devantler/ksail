@@ -2,7 +2,10 @@ using System.CommandLine;
 using System.CommandLine.IO;
 using KSail.Commands.Down;
 using KSail.Commands.Init;
+using KSail.Commands.Start;
+using KSail.Commands.Stop;
 using KSail.Commands.Up;
+using KSail.Commands.Update;
 
 namespace KSail.Tests.Commands.Up;
 
@@ -50,16 +53,25 @@ public class KSailUpCommandTests : IAsyncLifetime
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();
+    var ksailStopCommand = new KSailStopCommand();
+    var ksailStartCommand = new KSailStartCommand();
+    var ksailUpdateCommand = new KSailUpdateCommand();
     var ksailDownCommand = new KSailDownCommand();
 
     //Act
     int initExitCode = await ksailInitCommand.InvokeAsync("");
     int upExitCode = await ksailUpCommand.InvokeAsync("--destroy");
+    int stopExitCode = await ksailStopCommand.InvokeAsync("");
+    int startExitCode = await ksailStartCommand.InvokeAsync("");
+    int updateExitCode = await ksailUpdateCommand.InvokeAsync("");
     int downExitCode = await ksailDownCommand.InvokeAsync("--registries");
 
     //Assert
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, upExitCode);
+    Assert.Equal(0, stopExitCode);
+    Assert.Equal(0, startExitCode);
+    Assert.Equal(0, updateExitCode);
     Assert.Equal(0, downExitCode);
 
     //Cleanup
@@ -83,16 +95,25 @@ public class KSailUpCommandTests : IAsyncLifetime
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();
+    var ksailStopCommand = new KSailStopCommand();
+    var ksailStartCommand = new KSailStartCommand();
+    var ksailUpdateCommand = new KSailUpdateCommand();
     var ksailDownCommand = new KSailDownCommand();
 
     //Act
     int initExitCode = await ksailInitCommand.InvokeAsync("-d kind");
     int upExitCode = await ksailUpCommand.InvokeAsync("--destroy");
+    int stopExitCode = await ksailStopCommand.InvokeAsync("");
+    int startExitCode = await ksailStartCommand.InvokeAsync("");
+    int updateExitCode = await ksailUpdateCommand.InvokeAsync("");
     int downExitCode = await ksailDownCommand.InvokeAsync("--registries");
 
     //Assert
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, upExitCode);
+    Assert.Equal(0, stopExitCode);
+    Assert.Equal(0, startExitCode);
+    Assert.Equal(0, updateExitCode);
     Assert.Equal(0, downExitCode);
 
     //Cleanup
@@ -117,16 +138,25 @@ public class KSailUpCommandTests : IAsyncLifetime
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();
+    var ksailStopCommand = new KSailStopCommand();
+    var ksailStartCommand = new KSailStartCommand();
+    var ksailUpdateCommand = new KSailUpdateCommand();
     var ksailDownCommand = new KSailDownCommand();
 
     //Act
     int initExitCode = await ksailInitCommand.InvokeAsync("--name ksail-advanced-kind --distribution kind --components --sops --post-build-variables --helm-releases");
     int upExitCode = await ksailUpCommand.InvokeAsync("--destroy");
+    int stopExitCode = await ksailStopCommand.InvokeAsync("");
+    int startExitCode = await ksailStartCommand.InvokeAsync("");
+    int updateExitCode = await ksailUpdateCommand.InvokeAsync("");
     int downExitCode = await ksailDownCommand.InvokeAsync("--registries");
 
     //Assert
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, upExitCode);
+    Assert.Equal(0, stopExitCode);
+    Assert.Equal(0, startExitCode);
+    Assert.Equal(0, updateExitCode);
     Assert.Equal(0, downExitCode);
 
     //Cleanup
@@ -151,16 +181,25 @@ public class KSailUpCommandTests : IAsyncLifetime
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();
+    var ksailStopCommand = new KSailStopCommand();
+    var ksailStartCommand = new KSailStartCommand();
+    var ksailUpdateCommand = new KSailUpdateCommand();
     var ksailDownCommand = new KSailDownCommand();
 
     //Act
     int initExitCode = await ksailInitCommand.InvokeAsync("-d k3d");
-    int upExitCode = await ksailUpCommand.InvokeAsync("---destroy");
+    int upExitCode = await ksailUpCommand.InvokeAsync("--destroy");
+    int stopExitCode = await ksailStopCommand.InvokeAsync("");
+    int startExitCode = await ksailStartCommand.InvokeAsync("");
+    int updateExitCode = await ksailUpdateCommand.InvokeAsync("");
     int downExitCode = await ksailDownCommand.InvokeAsync("--registries");
 
     //Assert
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, upExitCode);
+    Assert.Equal(0, stopExitCode);
+    Assert.Equal(0, startExitCode);
+    Assert.Equal(0, updateExitCode);
     Assert.Equal(0, downExitCode);
 
     //Cleanup
@@ -185,16 +224,25 @@ public class KSailUpCommandTests : IAsyncLifetime
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();
+    var ksailStopCommand = new KSailStopCommand();
+    var ksailStartCommand = new KSailStartCommand();
+    var ksailUpdateCommand = new KSailUpdateCommand();
     var ksailDownCommand = new KSailDownCommand();
 
     //Act
     int initExitCode = await ksailInitCommand.InvokeAsync("--name ksail-advanced-k3d --distribution k3d --components --sops --post-build-variables --helm-releases");
     int upExitCode = await ksailUpCommand.InvokeAsync("--destroy");
+    int stopExitCode = await ksailStopCommand.InvokeAsync("");
+    int startExitCode = await ksailStartCommand.InvokeAsync("");
+    int updateExitCode = await ksailUpdateCommand.InvokeAsync("");
     int downExitCode = await ksailDownCommand.InvokeAsync("--registries");
 
     //Assert
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, upExitCode);
+    Assert.Equal(0, stopExitCode);
+    Assert.Equal(0, startExitCode);
+    Assert.Equal(0, updateExitCode);
     Assert.Equal(0, downExitCode);
 
     //Cleanup
