@@ -12,11 +12,11 @@ class KSailUpdateCommandHandler
 
   internal KSailUpdateCommandHandler(KSailCluster config)
   {
-    string context = $"{config.Spec.Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-{config.Metadata.Name}";
-    _gitOpsProvisioner = config.Spec.GitOpsTool switch
+    string context = $"{config.Spec.Project.Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-{config.Metadata.Name}";
+    _gitOpsProvisioner = config.Spec.Project.GitOpsTool switch
     {
       KSailGitOpsTool.Flux => new FluxProvisioner(context),
-      _ => throw new NotSupportedException($"The GitOps tool '{config.Spec.GitOpsTool}' is not supported.")
+      _ => throw new NotSupportedException($"The GitOps tool '{config.Spec.Project.GitOpsTool}' is not supported.")
     };
     _config = config;
   }
@@ -30,13 +30,13 @@ class KSailUpdateCommandHandler
 
     var ksailRegistryUri = new Uri($"oci://localhost:{_config.Spec.Registries.First().HostPort}/{_config.Metadata.Name}");
     Console.WriteLine($"📥 Pushing manifests to {_config.Spec.Registries.First().Name} on '{ksailRegistryUri}'");
-    await _gitOpsProvisioner.PushManifestsAsync(ksailRegistryUri, _config.Spec.ManifestsDirectory, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _gitOpsProvisioner.PushManifestsAsync(ksailRegistryUri, _config.Spec.Project.ManifestsDirectory, cancellationToken: cancellationToken).ConfigureAwait(false);
     Console.WriteLine();
 
-    if (_config.Spec.UpdateOptions.Reconcile)
+    if (_config.Spec.CLI.UpdateOptions.Reconcile)
     {
       Console.WriteLine("🔄 Reconciling changes");
-      await _gitOpsProvisioner.ReconcileAsync(_config.Spec.Timeout, cancellationToken).ConfigureAwait(false);
+      await _gitOpsProvisioner.ReconcileAsync(_config.Spec.Connection.Timeout, cancellationToken).ConfigureAwait(false);
     }
     Console.WriteLine();
     return true;
@@ -44,7 +44,7 @@ class KSailUpdateCommandHandler
 
   async Task<bool> Lint(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    if (config.Spec.UpdateOptions.Lint)
+    if (config.Spec.CLI.UpdateOptions.Lint)
     {
       Console.WriteLine("🔍 Linting manifests");
       bool success = await _ksailLintCommandHandler.HandleAsync(config, cancellationToken).ConfigureAwait(false);

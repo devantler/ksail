@@ -17,22 +17,22 @@ class FluxSystemGenerator
   readonly FluxKustomizationGenerator _fluxKustomizationGenerator = new();
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    string outputDirectory = Path.Combine(config.Spec.InitOptions.OutputDirectory, "k8s", "clusters", config.Metadata.Name, "flux-system");
+    string outputDirectory = Path.Combine(config.Spec.CLI.InitOptions.OutputDirectory, "k8s", "clusters", config.Metadata.Name, "flux-system");
     if (!Directory.Exists(outputDirectory))
       _ = Directory.CreateDirectory(outputDirectory);
     await GenerateFluxSystemKustomization(config, outputDirectory, cancellationToken).ConfigureAwait(false);
-    foreach (string flow in config.Spec.InitOptions.KustomizeFlows)
+    foreach (string flow in config.Spec.CLI.InitOptions.KustomizeFlows)
     {
       List<FluxDependsOn> dependsOn = [];
-      dependsOn = config.Spec.InitOptions.PostBuildVariables && !config.Spec.InitOptions.KustomizeFlows.IsNullOrEmpty()
-        ? config.Spec.InitOptions.KustomizeFlows.Last() == flow
+      dependsOn = config.Spec.CLI.InitOptions.PostBuildVariables && !config.Spec.CLI.InitOptions.KustomizeFlows.IsNullOrEmpty()
+        ? config.Spec.CLI.InitOptions.KustomizeFlows.Last() == flow
           ? ([new FluxDependsOn { Name = "variables" }])
-          : config.Spec.InitOptions.KustomizeFlows.Reverse().TakeWhile(f => f != flow).Select(f => new FluxDependsOn { Name = f.Replace('/', '-') }).TakeLast(1).ToList()
-        : config.Spec.InitOptions.KustomizeFlows.Reverse().TakeWhile(f => f != flow).Select(f => new FluxDependsOn { Name = f.Replace('/', '-') }).TakeLast(1).ToList();
+          : config.Spec.CLI.InitOptions.KustomizeFlows.Reverse().TakeWhile(f => f != flow).Select(f => new FluxDependsOn { Name = f.Replace('/', '-') }).TakeLast(1).ToList()
+        : config.Spec.CLI.InitOptions.KustomizeFlows.Reverse().TakeWhile(f => f != flow).Select(f => new FluxDependsOn { Name = f.Replace('/', '-') }).TakeLast(1).ToList();
 
       await GenerateFluxSystemFluxKustomization(config, outputDirectory, flow, dependsOn, cancellationToken).ConfigureAwait(false);
     }
-    if (config.Spec.InitOptions.PostBuildVariables)
+    if (config.Spec.CLI.InitOptions.PostBuildVariables)
     {
       await GenerateFluxSystemFluxKustomization(config, outputDirectory, "variables", [], cancellationToken).ConfigureAwait(false);
     }
@@ -49,15 +49,15 @@ class FluxSystemGenerator
     Console.WriteLine($"✚ generating '{outputDirectory}'");
     var kustomization = new KustomizeKustomization
     {
-      Resources = config.Spec.InitOptions.KustomizeFlows.Select(flow => $"{flow.Replace('/', '-')}.yaml").ToList(),
-      Components = config.Spec.InitOptions.Components ?
+      Resources = config.Spec.CLI.InitOptions.KustomizeFlows.Select(flow => $"{flow.Replace('/', '-')}.yaml").ToList(),
+      Components = config.Spec.CLI.InitOptions.Components ?
         [
           "../../../components/flux-kustomization-post-build-variables-label",
           "../../../components/flux-kustomization-sops-label"
         ] :
         null,
     };
-    if (config.Spec.InitOptions.PostBuildVariables)
+    if (config.Spec.CLI.InitOptions.PostBuildVariables)
     {
       kustomization.Resources = kustomization.Resources.Append("variables.yaml");
     }
@@ -79,16 +79,16 @@ class FluxSystemGenerator
       {
         Name = flow.Replace('/', '-'),
         NamespaceProperty = "flux-system",
-        Labels = config.Spec.Sops && config.Spec.InitOptions.PostBuildVariables && config.Spec.InitOptions.Components && !flow.Equals("variables") ?
+        Labels = config.Spec.Project.Sops && config.Spec.CLI.InitOptions.PostBuildVariables && config.Spec.CLI.InitOptions.Components && !flow.Equals("variables") ?
           new Dictionary<string, string>
           {
             { "sops", "enabled" },
             { "post-build-variables", "enabled" }
-          } : config.Spec.InitOptions.PostBuildVariables && config.Spec.InitOptions.Components && !flow.Equals("variables") ?
+          } : config.Spec.CLI.InitOptions.PostBuildVariables && config.Spec.CLI.InitOptions.Components && !flow.Equals("variables") ?
           new Dictionary<string, string>
           {
             { "post-build-variables", "enabled" }
-          } : config.Spec.Sops && config.Spec.InitOptions.Components ?
+          } : config.Spec.Project.Sops && config.Spec.CLI.InitOptions.Components ?
           new Dictionary<string, string>
           {
             { "sops", "enabled" }
@@ -106,10 +106,10 @@ class FluxSystemGenerator
           Kind = FluxSource.OCIRepository,
           Name = "flux-system"
         },
-        Path = config.Spec.InitOptions.KustomizeHooks.IsNullOrEmpty() ? flow : $"{config.Spec.InitOptions.KustomizeHooks.First()}/{flow}",
+        Path = config.Spec.CLI.InitOptions.KustomizeHooks.IsNullOrEmpty() ? flow : $"{config.Spec.CLI.InitOptions.KustomizeHooks.First()}/{flow}",
         Prune = true,
         Wait = true,
-        Decryption = config.Spec.Sops && !config.Spec.InitOptions.Components ?
+        Decryption = config.Spec.Project.Sops && !config.Spec.CLI.InitOptions.Components ?
           new FluxKustomizationSpecDecryption
           {
             Provider = FluxKustomizationSpecDecryptionProvider.SOPS,
@@ -120,7 +120,7 @@ class FluxSystemGenerator
             }
           } :
           null,
-        PostBuild = config.Spec.InitOptions.PostBuildVariables && !config.Spec.InitOptions.Components ?
+        PostBuild = config.Spec.CLI.InitOptions.PostBuildVariables && !config.Spec.CLI.InitOptions.Components ?
           new FluxKustomizationSpecPostBuild
           {
             SubstituteFrom = GetSubstituteFroms(config)
@@ -144,7 +144,7 @@ class FluxSystemGenerator
         Name = $"variables-sensitive-cluster"
       }
     };
-    foreach (string hook in config.Spec.InitOptions.KustomizeHooks)
+    foreach (string hook in config.Spec.CLI.InitOptions.KustomizeHooks)
     {
       substituteList.Add(new FluxKustomizationSpecPostBuildSubstituteFrom
       {

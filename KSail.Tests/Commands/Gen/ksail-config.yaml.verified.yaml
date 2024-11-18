@@ -4,16 +4,18 @@ kind: Cluster
 metadata:
   name: ksail-default
 spec:
-  kubeconfig: ~/.kube/config
-  context: kind-ksail-default
-  timeout: 5m
-  manifestsDirectory: ./k8s
-  kustomizationDirectory: ./k8s/clusters/ksail-default/flux-system
-  configPath: kind-config.yaml
-  distribution: kind
-  gitOpsTool: flux
-  containerEngine: docker
-  sops: false
+  connection:
+    kubeconfig: ~/.kube/config
+    context: kind-ksail-default
+    timeout: 5m
+  project:
+    manifestsDirectory: ./k8s
+    kustomizationDirectory: ./k8s/clusters/ksail-default/flux-system
+    configPath: kind-config.yaml
+    distribution: kind
+    gitOpsTool: flux
+    containerEngine: docker
+    sops: false
   registries:
   - name: ksail-registry
     hostPort: 5555
@@ -61,37 +63,41 @@ spec:
       url: https://quay.io/
       insecure: false
     provider: docker
-  checkOptions: {}
-  debugOptions:
-    editor: nano
-  downOptions:
-    registries: false
-  genOptions: {}
-  initOptions:
-    declarativeConfig: true
-    components: false
-    helmReleases: false
-    postBuildVariables: false
-    outputDirectory: ./
-    template: simple
-    kustomizeFlows:
-    - apps
-    - infrastructure
-    - infrastructure/controllers
-    kustomizeHooks: []
-  lintOptions: {}
-  listOptions:
-    all: false
-  sopsOptions:
+  cLI:
+    checkOptions: {}
+    debugOptions:
+      editor: nano
+    downOptions:
+      registries: false
+    genOptions: {}
+    initOptions:
+      declarativeConfig: true
+      components: false
+      helmReleases: false
+      postBuildVariables: false
+      outputDirectory: ./
+      template: simple
+      kustomizeFlows:
+      - apps
+      - infrastructure
+      - infrastructure/controllers
+      kustomizeHooks: []
+    lintOptions: {}
     listOptions:
-      showPublicKey: true
-      showPrivateKey: true
-  startOptions: {}
-  stopOptions: {}
-  upOptions:
-    destroy: false
-    lint: true
-    reconcile: true
-  updateOptions:
-    lint: true
-    reconcile: true
+      all: false
+    sopsOptions:
+      listOptions:
+        showPublicKey: true
+        showPrivateKey: true
+      editOptions: {}
+      encryptOptions: {}
+      decryptOptions: {}
+    startOptions: {}
+    stopOptions: {}
+    upOptions:
+      destroy: false
+      lint: true
+      reconcile: true
+    updateOptions:
+      lint: true
+      reconcile: true

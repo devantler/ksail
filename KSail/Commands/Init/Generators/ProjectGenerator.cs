@@ -14,11 +14,11 @@ class ProjectGenerator
   {
     await _fluxSystemGenerator.GenerateAsync(config, cancellationToken).ConfigureAwait(false);
     await _kustomizeFlowGenerator.GenerateAsync(config, cancellationToken).ConfigureAwait(false);
-    if (config.Spec.InitOptions.HelmReleases)
+    if (config.Spec.CLI.InitOptions.HelmReleases)
       await _helmReleaseGenerator.GenerateAsync(config, cancellationToken).ConfigureAwait(false);
-    if (config.Spec.InitOptions.Components)
+    if (config.Spec.CLI.InitOptions.Components)
       await _componentsGenerator.GenerateAsync(config, cancellationToken).ConfigureAwait(false);
-    if (config.Spec.InitOptions.PostBuildVariables)
+    if (config.Spec.CLI.InitOptions.PostBuildVariables)
       await _variablesGenerator.GenerateAsync(config, cancellationToken).ConfigureAwait(false);
   }
 }

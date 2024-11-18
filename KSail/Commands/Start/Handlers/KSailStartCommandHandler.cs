@@ -13,11 +13,11 @@ class KSailStartCommandHandler
   internal KSailStartCommandHandler(KSailCluster config)
   {
     _config = config;
-    _clusterProvisioner = _config.Spec.Distribution switch
+    _clusterProvisioner = _config.Spec.Project.Distribution switch
     {
       KSailKubernetesDistribution.K3d => new K3dProvisioner(),
       KSailKubernetesDistribution.Kind => new KindProvisioner(),
-      _ => throw new NotSupportedException($"The distribution '{_config.Spec.Distribution}' is not supported.")
+      _ => throw new NotSupportedException($"The distribution '{_config.Spec.Project.Distribution}' is not supported.")
     };
   }
 

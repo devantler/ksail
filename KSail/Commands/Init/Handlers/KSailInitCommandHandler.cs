@@ -14,7 +14,7 @@ class KSailInitCommandHandler(KSailCluster config)
 
   public async Task<int> HandleAsync(CancellationToken cancellationToken = default)
   {
-    if (_config.Spec.InitOptions.DeclarativeConfig)
+    if (_config.Spec.CLI.InitOptions.DeclarativeConfig)
     {
       await _ksailClusterConfigGenerator.GenerateAsync(
         _config,
@@ -27,7 +27,7 @@ class KSailInitCommandHandler(KSailCluster config)
       cancellationToken
     ).ConfigureAwait(false);
 
-    if (_config.Spec.Sops)
+    if (_config.Spec.Project.Sops)
     {
       await _sopsConfigFileGenerator.GenerateAsync(
         _config,

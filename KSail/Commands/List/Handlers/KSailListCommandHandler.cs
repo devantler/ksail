@@ -12,7 +12,7 @@ sealed class KSailListCommandHandler(KSailCluster config)
 
   internal async Task<IEnumerable<string>> HandleAsync(CancellationToken cancellationToken = default)
   {
-    if (_config.Spec.ListOptions.All)
+    if (_config.Spec.CLI.ListOptions.All)
     {
       IEnumerable<string> clusters = [];
       Console.WriteLine("---- K3d ----");
@@ -26,11 +26,11 @@ sealed class KSailListCommandHandler(KSailCluster config)
     }
     else
     {
-      return _config.Spec.Distribution switch
+      return _config.Spec.Project.Distribution switch
       {
         KSailKubernetesDistribution.K3d => await _k3dProvisioner.ListAsync(cancellationToken).ConfigureAwait(false),
         KSailKubernetesDistribution.Kind => await _kindProvisioner.ListAsync(cancellationToken).ConfigureAwait(false),
-        _ => throw new NotSupportedException($"Distribution {_config.Spec.Distribution} is not supported."),
+        _ => throw new NotSupportedException($"Distribution {_config.Spec.Project.Distribution} is not supported."),
       };
     }
   }

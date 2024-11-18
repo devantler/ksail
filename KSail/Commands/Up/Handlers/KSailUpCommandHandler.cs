@@ -27,21 +27,21 @@ class KSailUpCommandHandler
 
   internal KSailUpCommandHandler(KSailCluster config)
   {
-    _containerEngineProvisioner = config.Spec.ContainerEngine switch
+    _containerEngineProvisioner = config.Spec.Project.ContainerEngine switch
     {
       KSailContainerEngine.Docker => new DockerProvisioner(),
-      _ => throw new NotSupportedException($"The container engine '{config.Spec.ContainerEngine}' is not supported.")
+      _ => throw new NotSupportedException($"The container engine '{config.Spec.Project.ContainerEngine}' is not supported.")
     };
-    _clusterProvisioner = config.Spec.Distribution switch
+    _clusterProvisioner = config.Spec.Project.Distribution switch
     {
       KSailKubernetesDistribution.K3d => new K3dProvisioner(),
       KSailKubernetesDistribution.Kind => new KindProvisioner(),
-      _ => throw new NotSupportedException($"The distribution '{config.Spec.Distribution}' is not supported.")
+      _ => throw new NotSupportedException($"The distribution '{config.Spec.Project.Distribution}' is not supported.")
     };
-    _gitOpsProvisioner = config.Spec.GitOpsTool switch
+    _gitOpsProvisioner = config.Spec.Project.GitOpsTool switch
     {
-      KSailGitOpsTool.Flux => new FluxProvisioner(config.Spec.Context),
-      _ => throw new NotSupportedException($"The GitOps tool '{config.Spec.GitOpsTool}' is not supported.")
+      KSailGitOpsTool.Flux => new FluxProvisioner(config.Spec.Connection.Context),
+      _ => throw new NotSupportedException($"The GitOps tool '{config.Spec.Project.GitOpsTool}' is not supported.")
     };
     _ksailDownCommandHandler = new KSailDownCommandHandler(config);
     _config = config;
@@ -75,7 +75,7 @@ class KSailUpCommandHandler
 
   async Task<bool> DestroyExistingCluster(CancellationToken cancellationToken)
   {
-    if (_config.Spec.UpOptions.Destroy)
+    if (_config.Spec.CLI.UpOptions.Destroy)
     {
       Console.WriteLine($"🔥 Destroying existing cluster '{_config.Metadata.Name}'");
       bool success = await _ksailDownCommandHandler.HandleAsync(cancellationToken).ConfigureAwait(false);
@@ -87,16 +87,16 @@ class KSailUpCommandHandler
 
   async Task<bool> CheckContainerEngineIsRunning(CancellationToken cancellationToken = default)
   {
-    Console.WriteLine($"🐳 Checking {_config.Spec.ContainerEngine} is running");
+    Console.WriteLine($"🐳 Checking {_config.Spec.Project.ContainerEngine} is running");
     if (await _containerEngineProvisioner.CheckReadyAsync(cancellationToken).ConfigureAwait(false))
     {
-      Console.WriteLine($"✔ {_config.Spec.ContainerEngine} is running");
+      Console.WriteLine($"✔ {_config.Spec.Project.ContainerEngine} is running");
       Console.WriteLine();
       return true;
     }
     else
     {
-      Console.WriteLine($"✗ {_config.Spec.ContainerEngine} is not running");
+      Console.WriteLine($"✗ {_config.Spec.Project.ContainerEngine} is not running");
       Console.WriteLine();
       return false;
     }
@@ -128,7 +128,7 @@ class KSailUpCommandHandler
 
   async Task<bool> Lint(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    if (config.Spec.UpOptions.Lint)
+    if (config.Spec.CLI.UpOptions.Lint)
     {
       Console.WriteLine("🔍 Linting manifests");
       bool success = await _ksailLintCommandHandler.HandleAsync(config, cancellationToken).ConfigureAwait(false);
@@ -141,15 +141,15 @@ class KSailUpCommandHandler
   async Task ProvisionCluster(CancellationToken cancellationToken = default)
   {
     Console.WriteLine($"🚀 Provisioning cluster '{_config.Metadata.Name}'");
-    await _clusterProvisioner.ProvisionAsync(_config.Metadata.Name, _config.Spec.ConfigPath, cancellationToken).ConfigureAwait(false);
+    await _clusterProvisioner.ProvisionAsync(_config.Metadata.Name, _config.Spec.Project.ConfigPath, cancellationToken).ConfigureAwait(false);
     Console.WriteLine();
   }
 
   async Task InstallGitOps(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    Console.WriteLine($"🔼 Bootstrapping GitOps with {config.Spec.GitOpsTool}");
+    Console.WriteLine($"🔼 Bootstrapping GitOps with {config.Spec.Project.GitOpsTool}");
     Console.WriteLine("► creating 'flux-system' namespace");
-    using var resourceProvisioner = new KubernetesResourceProvisioner(config.Spec.Context);
+    using var resourceProvisioner = new KubernetesResourceProvisioner(config.Spec.Connection.Context);
     _ = await resourceProvisioner.CreateNamespaceAsync(new V1Namespace
     {
       Metadata = new V1ObjectMeta
@@ -160,28 +160,28 @@ class KSailUpCommandHandler
 
     await InitializeSOPSAgeSecret(config, resourceProvisioner, cancellationToken).ConfigureAwait(false);
     string ociUrlOnHost = $"oci://localhost:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/{_config.Metadata.Name}";
-    await _gitOpsProvisioner.PushManifestsAsync(new Uri(ociUrlOnHost), config.Spec.ManifestsDirectory, cancellationToken: cancellationToken).ConfigureAwait(false);
-    string kustomizationDirectoryInOCI = config.Spec.KustomizationDirectory.Replace("k8s/", "", StringComparison.OrdinalIgnoreCase);
-    string ociUrlInDocker = _config.Spec.Distribution switch
+    await _gitOpsProvisioner.PushManifestsAsync(new Uri(ociUrlOnHost), config.Spec.Project.ManifestsDirectory, cancellationToken: cancellationToken).ConfigureAwait(false);
+    string kustomizationDirectoryInOCI = config.Spec.Project.KustomizationDirectory.Replace("k8s/", "", StringComparison.OrdinalIgnoreCase);
+    string ociUrlInDocker = _config.Spec.Project.Distribution switch
     {
       KSailKubernetesDistribution.K3d => $"oci://host.k3d.internal:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/{_config.Metadata.Name}",
       KSailKubernetesDistribution.Kind => $"oci://host.docker.internal:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/{_config.Metadata.Name}",
-      _ => throw new NotSupportedException($"The distribution '{_config.Spec.Distribution}' is not supported.")
+      _ => throw new NotSupportedException($"The distribution '{_config.Spec.Project.Distribution}' is not supported.")
     };
     await _gitOpsProvisioner.BootstrapAsync(new Uri(ociUrlInDocker), kustomizationDirectoryInOCI, true, cancellationToken).ConfigureAwait(false);
     Console.WriteLine();
 
-    if (config.Spec.UpOptions.Reconcile)
+    if (config.Spec.CLI.UpOptions.Reconcile)
     {
       Console.WriteLine("🔄 Reconciling kustomizations");
-      await _gitOpsProvisioner.ReconcileAsync(_config.Spec.Timeout, cancellationToken).ConfigureAwait(false);
+      await _gitOpsProvisioner.ReconcileAsync(_config.Spec.Connection.Timeout, cancellationToken).ConfigureAwait(false);
       Console.WriteLine();
     }
   }
 
   async Task InitializeSOPSAgeSecret(KSailCluster config, KubernetesResourceProvisioner resourceProvisioner, CancellationToken cancellationToken)
   {
-    if (config.Spec.Sops)
+    if (config.Spec.Project.Sops)
     {
       Console.WriteLine("► searching for a '.sops.yaml' file");
       string directory = Directory.GetCurrentDirectory();

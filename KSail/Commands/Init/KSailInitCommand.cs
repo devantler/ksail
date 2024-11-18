@@ -40,7 +40,7 @@ sealed class KSailInitCommand : Command
         config.UpdateConfig("Spec.CLI.InitOptions.Template", context.ParseResult.GetValueForOption(_templateOption));
 
         var handler = new KSailInitCommandHandler(config);
-        Console.WriteLine($"📁 Initializing new cluster '{config.Metadata.Name}' in '{config.Spec.InitOptions.OutputDirectory}' with the '{config.Spec.InitOptions.Template}' template.");
+        Console.WriteLine($"📁 Initializing new cluster '{config.Metadata.Name}' in '{config.Spec.CLI.InitOptions.OutputDirectory}' with the '{config.Spec.CLI.InitOptions.Template}' template.");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         Console.WriteLine();
       }

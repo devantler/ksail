@@ -15,23 +15,23 @@ class KSailDownCommandHandler
   internal KSailDownCommandHandler(KSailCluster config)
   {
     _config = config;
-    _containerEngineProvisioner = _config.Spec.ContainerEngine switch
+    _containerEngineProvisioner = _config.Spec.Project.ContainerEngine switch
     {
       KSailContainerEngine.Docker => new DockerProvisioner(),
-      _ => throw new NotSupportedException($"Container engine '{_config.Spec.ContainerEngine}' is not supported.")
+      _ => throw new NotSupportedException($"Container engine '{_config.Spec.Project.ContainerEngine}' is not supported.")
     };
-    _kubernetesDistributionProvisioner = _config.Spec.Distribution switch
+    _kubernetesDistributionProvisioner = _config.Spec.Project.Distribution switch
     {
       KSailKubernetesDistribution.K3d => new K3dProvisioner(),
       KSailKubernetesDistribution.Kind => new KindProvisioner(),
-      _ => throw new NotSupportedException($"Kubernetes distribution '{_config.Spec.ContainerEngine}' is not supported.")
+      _ => throw new NotSupportedException($"Kubernetes distribution '{_config.Spec.Project.ContainerEngine}' is not supported.")
     };
   }
 
   internal async Task<bool> HandleAsync(CancellationToken cancellationToken = default)
   {
     await _kubernetesDistributionProvisioner.DeprovisionAsync(_config.Metadata.Name, cancellationToken).ConfigureAwait(false);
-    if (_config.Spec.DownOptions.Registries)
+    if (_config.Spec.CLI.DownOptions.Registries)
     {
       Console.WriteLine("► deleting registries...");
       await DeleteRegistriesAsync(cancellationToken).ConfigureAwait(false);

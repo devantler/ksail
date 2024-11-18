@@ -14,18 +14,18 @@ class KSailLintCommandHandler()
   {
     try
     {
-      if (!Directory.Exists(config.Spec.ManifestsDirectory) || Directory.GetFiles(config.Spec.ManifestsDirectory, "*.yaml", SearchOption.AllDirectories).Length == 0)
+      if (!Directory.Exists(config.Spec.Project.ManifestsDirectory) || Directory.GetFiles(config.Spec.Project.ManifestsDirectory, "*.yaml", SearchOption.AllDirectories).Length == 0)
       {
-        Console.WriteLine($"✔ skipping, as '{config.Spec.ManifestsDirectory}' directory does not exist or is empty");
+        Console.WriteLine($"✔ skipping, as '{config.Spec.Project.ManifestsDirectory}' directory does not exist or is empty");
         return true;
       }
 
       Console.WriteLine("► validating yaml syntax");
-      bool yamlIsValid = await _yamlSyntaxValidator.ValidateAsync(config.Spec.ManifestsDirectory, cancellationToken).ConfigureAwait(false);
+      bool yamlIsValid = await _yamlSyntaxValidator.ValidateAsync(config.Spec.Project.ManifestsDirectory, cancellationToken).ConfigureAwait(false);
       Console.WriteLine("✔ yaml syntax is valid");
 
       Console.WriteLine("► validating schemas");
-      bool schemasAreValid = await _schemaValidator.ValidateAsync(config.Spec.ManifestsDirectory, cancellationToken).ConfigureAwait(false);
+      bool schemasAreValid = await _schemaValidator.ValidateAsync(config.Spec.Project.ManifestsDirectory, cancellationToken).ConfigureAwait(false);
       Console.WriteLine("✔ schemas are valid");
       return yamlIsValid && schemasAreValid;
     }

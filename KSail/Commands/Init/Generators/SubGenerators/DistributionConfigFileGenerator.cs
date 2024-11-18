@@ -18,13 +18,13 @@ class DistributionConfigFileGenerator
 
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    string distributionConfigPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, $"{config.Spec.Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-config.yaml");
+    string distributionConfigPath = Path.Combine(config.Spec.CLI.InitOptions.OutputDirectory, $"{config.Spec.Project.Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-config.yaml");
     if (File.Exists(distributionConfigPath))
     {
       Console.WriteLine($"✔ skipping '{distributionConfigPath}', as it already exists.");
       return;
     }
-    switch (config.Spec.Distribution)
+    switch (config.Spec.Project.Distribution)
     {
       case KSailKubernetesDistribution.Kind:
         await GenerateKindConfigFile(config, distributionConfigPath, cancellationToken).ConfigureAwait(false);
@@ -33,7 +33,7 @@ class DistributionConfigFileGenerator
         await GenerateK3DConfigFile(config, distributionConfigPath, cancellationToken).ConfigureAwait(false);
         break;
       default:
-        throw new NotSupportedException($"Distribution '{config.Spec.Distribution}' is not supported.");
+        throw new NotSupportedException($"Distribution '{config.Spec.Project.Distribution}' is not supported.");
     }
   }
 

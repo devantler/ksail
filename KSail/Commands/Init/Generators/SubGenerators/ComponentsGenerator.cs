@@ -2,7 +2,7 @@ using Devantler.KubernetesGenerator.Kustomize;
 using Devantler.KubernetesGenerator.Kustomize.Models;
 using Devantler.KubernetesGenerator.Kustomize.Models.Patches;
 using KSail.Models;
-using KSail.Models.Commands.Init;
+using KSail.Models.CLI.Commands.Init;
 
 namespace KSail.Commands.Init.Generators.SubGenerators;
 
@@ -12,19 +12,19 @@ class ComponentsGenerator
 
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    string componentsPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "k8s/components");
+    string componentsPath = Path.Combine(config.Spec.CLI.InitOptions.OutputDirectory, "k8s/components");
     if (!Directory.Exists(componentsPath))
       _ = Directory.CreateDirectory(componentsPath);
-    if (config.Spec.InitOptions.Template == KSailInitTemplate.Simple)
+    if (config.Spec.CLI.InitOptions.Template == KSailCLIInitTemplate.Simple)
     {
-      if (config.Spec.InitOptions.PostBuildVariables)
+      if (config.Spec.CLI.InitOptions.PostBuildVariables)
       {
         await GenerateFluxKustomizationPostBuildVariablesLabelComponent(config, componentsPath, cancellationToken).ConfigureAwait(false);
       }
       await GenerateHelmReleaseCRDSLabelComponent(componentsPath, cancellationToken).ConfigureAwait(false);
       await GenerateHelmReleaseRemediationLabelComponent(componentsPath, cancellationToken).ConfigureAwait(false);
     }
-    if (config.Spec.Sops)
+    if (config.Spec.Project.Sops)
       await GenerateFluxKustomizationSOPSLabelComponent(componentsPath, cancellationToken).ConfigureAwait(false);
   }
 
@@ -67,7 +67,7 @@ class ComponentsGenerator
         }
       ]
     };
-    foreach (string hook in config.Spec.InitOptions.KustomizeHooks.Skip(1))
+    foreach (string hook in config.Spec.CLI.InitOptions.KustomizeHooks.Skip(1))
     {
       fluxKustomizationPostBuildVariablesLabelComponent.Patches.First().Patch += $"{Environment.NewLine}    - kind: ConfigMap";
       fluxKustomizationPostBuildVariablesLabelComponent.Patches.First().Patch += $"{Environment.NewLine}      name: variables-{hook}";

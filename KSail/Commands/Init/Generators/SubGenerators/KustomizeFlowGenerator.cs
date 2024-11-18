@@ -11,20 +11,20 @@ class KustomizeFlowGenerator
   readonly KustomizeKustomizationGenerator _kustomizationGenerator = new();
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    if (config.Spec.InitOptions.KustomizeHooks.IsNullOrEmpty())
+    if (config.Spec.CLI.InitOptions.KustomizeHooks.IsNullOrEmpty())
     {
-      config.Spec.InitOptions.KustomizeHooks = [""];
+      config.Spec.CLI.InitOptions.KustomizeHooks = [""];
     }
-    foreach (string currentHook in config.Spec.InitOptions.KustomizeHooks)
+    foreach (string currentHook in config.Spec.CLI.InitOptions.KustomizeHooks)
     {
-      foreach (string currentFlow in config.Spec.InitOptions.KustomizeFlows)
+      foreach (string currentFlow in config.Spec.CLI.InitOptions.KustomizeFlows)
       {
         await GenerateKustomizeFlowHook(config, currentHook, currentFlow, cancellationToken).ConfigureAwait(false);
       }
     }
-    if (config.Spec.InitOptions.PostBuildVariables)
+    if (config.Spec.CLI.InitOptions.PostBuildVariables)
     {
-      foreach (string hook in config.Spec.InitOptions.KustomizeHooks)
+      foreach (string hook in config.Spec.CLI.InitOptions.KustomizeHooks)
       {
         await GenerateKustomizeFlowHook(config, hook, "variables", cancellationToken).ConfigureAwait(false);
       }
@@ -33,7 +33,7 @@ class KustomizeFlowGenerator
 
   async Task GenerateKustomizeFlowHook(KSailCluster config, string currentHook, string currentFlow, CancellationToken cancellationToken = default)
   {
-    string outputPath = Path.Combine(config.Spec.InitOptions.OutputDirectory, "k8s", currentHook, currentFlow);
+    string outputPath = Path.Combine(config.Spec.CLI.InitOptions.OutputDirectory, "k8s", currentHook, currentFlow);
     if (!Directory.Exists(outputPath))
       _ = Directory.CreateDirectory(outputPath);
     string outputDirectory = Path.Combine(outputPath, "kustomization.yaml");
@@ -47,12 +47,12 @@ class KustomizeFlowGenerator
     KustomizeKustomization? kustomization;
     if (currentFlow == "variables")
     {
-      string pathToNextFlow = currentHook == config.Spec.InitOptions.KustomizeHooks.Last() ?
+      string pathToNextFlow = currentHook == config.Spec.CLI.InitOptions.KustomizeHooks.Last() ?
         "" :
         Path.Combine(
           relativeRoot,
-          $"{config.Spec.InitOptions.KustomizeHooks.ElementAt(
-            Array.IndexOf(config.Spec.InitOptions.KustomizeHooks.ToArray(), currentHook) + 1
+          $"{config.Spec.CLI.InitOptions.KustomizeHooks.ElementAt(
+            Array.IndexOf(config.Spec.CLI.InitOptions.KustomizeHooks.ToArray(), currentHook) + 1
           )}/{currentFlow}"
         );
       kustomization = new KustomizeKustomization
@@ -61,7 +61,7 @@ class KustomizeFlowGenerator
           Path.Combine($"variables.yaml"),
           Path.Combine($"variables-sensitive.sops.yaml")
         ],
-        Components = config.Spec.InitOptions.Components ?
+        Components = config.Spec.CLI.InitOptions.Components ?
         [
           Path.Combine(relativeRoot, "components/helm-release-crds-label"),
           Path.Combine(relativeRoot, "components/helm-release-remediation-label")
@@ -72,13 +72,13 @@ class KustomizeFlowGenerator
     }
     else
     {
-      kustomization = currentHook == config.Spec.InitOptions.KustomizeHooks.Last()
+      kustomization = currentHook == config.Spec.CLI.InitOptions.KustomizeHooks.Last()
         ? new KustomizeKustomization
         {
-          Resources = config.Spec.InitOptions.HelmReleases && currentFlow == "infrastructure/controllers" ? ["cert-manager", "traefik"] :
-                config.Spec.InitOptions.HelmReleases && currentFlow == "infrastructure" ? ["certificates", "cluster-issuers"] :
-                  config.Spec.InitOptions.HelmReleases && currentFlow == "apps" ? ["podinfo"] : [],
-          Components = config.Spec.InitOptions.Components ?
+          Resources = config.Spec.CLI.InitOptions.HelmReleases && currentFlow == "infrastructure/controllers" ? ["cert-manager", "traefik"] :
+                config.Spec.CLI.InitOptions.HelmReleases && currentFlow == "infrastructure" ? ["certificates", "cluster-issuers"] :
+                  config.Spec.CLI.InitOptions.HelmReleases && currentFlow == "apps" ? ["podinfo"] : [],
+          Components = config.Spec.CLI.InitOptions.Components ?
               [
                 Path.Combine(relativeRoot, "components/helm-release-crds-label"),
           Path.Combine(relativeRoot, "components/helm-release-remediation-label")
@@ -86,8 +86,8 @@ class KustomizeFlowGenerator
         }
         : new KustomizeKustomization
         {
-          Resources = [Path.Combine(relativeRoot, $"{config.Spec.InitOptions.KustomizeHooks.ElementAt(Array.IndexOf(config.Spec.InitOptions.KustomizeHooks.ToArray(), currentHook) + 1)}/{currentFlow}")],
-          Components = config.Spec.InitOptions.Components ?
+          Resources = [Path.Combine(relativeRoot, $"{config.Spec.CLI.InitOptions.KustomizeHooks.ElementAt(Array.IndexOf(config.Spec.CLI.InitOptions.KustomizeHooks.ToArray(), currentHook) + 1)}/{currentFlow}")],
+          Components = config.Spec.CLI.InitOptions.Components ?
               [
                 Path.Combine(relativeRoot, "components/helm-release-crds-label"),
           Path.Combine(relativeRoot, "components/helm-release-remediation-label")
