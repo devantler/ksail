@@ -84,7 +84,7 @@ public class KSailUpCommandTests : IAsyncLifetime
   /// Tests that a default kind cluster is created, and the 'ksail up' command is executed successfully.
   /// </summary>
   [Fact]
-  public async Task KSailUp_WithDefaultKindCluster_SucceedsAndCreatesKindCluster()
+  public async Task KSailUp_WithSimpleKindCluster_SucceedsAndCreatesKindCluster()
   {
     //Cleanup
     if (Directory.Exists("k8s"))
@@ -170,7 +170,7 @@ public class KSailUpCommandTests : IAsyncLifetime
   /// Tests that a default k3d cluster is created, and the 'ksail up' command is executed successfully.
   /// </summary>
   [Fact]
-  public async Task KSailUp_WithDefaultK3dCluster_SucceedsAndCreatesK3dCluster()
+  public async Task KSailUp_WithSimpleK3dCluster_SucceedsAndCreatesK3dCluster()
   {
     //Cleanup
     if (Directory.Exists("k8s"))
