@@ -11,7 +11,7 @@ spec:
   project:
     manifestsDirectory: ./k8s
     kustomizationDirectory: ./k8s/clusters/ksail-default/flux-system
-    configPath: ./Kind-config.yaml
+    configPath: ./kind-config.yaml
     distribution: kind
     gitOpsTool: flux
     containerEngine: docker
