@@ -98,7 +98,7 @@ class ComponentsGenerator
           Target = new KustomizeTarget
           {
             Kind = "Kustomization",
-            LabelSelector = "sops=enabled"
+            LabelSelector = "kustomize.toolkit.fluxcd.io/sops=enabled"
           },
           Patch = """
           apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -107,9 +107,9 @@ class ComponentsGenerator
             name: all
           spec:
             decryption:
-            provider: sops
-            secretRef:
-              name: sops-age
+              provider: sops
+              secretRef:
+                name: sops-age
           """
         }
       ]
