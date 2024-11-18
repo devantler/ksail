@@ -3,6 +3,7 @@ using KSail.Models.CLI;
 using KSail.Models.CLI.Commands;
 using KSail.Models.CLI.Commands.Init;
 using KSail.Models.CLI.Commands.Sops;
+using KSail.Models.Project;
 using KSail.Models.Registry;
 
 namespace KSail.Models.Tests;
