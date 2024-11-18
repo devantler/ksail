@@ -40,17 +40,28 @@ public class KSailLintCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailLint_GivenValidPath_Succeeds()
   {
+    //Cleanup
+    string outputPath = Path.Combine(Path.GetTempPath(), "ksail-lint-test-cluster");
+    if (Directory.Exists(Path.Combine(outputPath, "k8s")))
+      Directory.Delete(Path.Combine(outputPath, "k8s"), true);
+    File.Delete(Path.Combine(outputPath, "kind-config.yaml"));
+    File.Delete(Path.Combine(outputPath, "ksail-config.yaml"));
+
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailLintCommand = new KSailLintCommand();
 
     //Act
-    string outputPath = Path.Combine(Path.GetTempPath(), "ksail-lint-test-cluster");
     int initExitCode = await ksailInitCommand.InvokeAsync($"--name test-cluster --output {outputPath} --template simple");
     int lintExitCode = await ksailLintCommand.InvokeAsync($"--path {outputPath}/k8s");
 
     //Assert
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, lintExitCode);
+
+    //Cleanup
+    Directory.Delete(Path.Combine(outputPath, "k8s"), true);
+    File.Delete(Path.Combine(outputPath, "kind-config.yaml"));
+    File.Delete(Path.Combine(outputPath, "ksail-config.yaml"));
   }
 }
