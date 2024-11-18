@@ -45,6 +45,7 @@
 │   │   └── Commands
 │   │       ├── Init
 │   │       └── Sops
+│   ├── Project
 │   └── Registry
 ├── KSail.Models.Tests
 ├── docs
@@ -119,7 +120,7 @@
         │   └── Update
         └── TestUtils
 
-81 directories
+82 directories
 ```
 <!-- readme-tree end -->
 
