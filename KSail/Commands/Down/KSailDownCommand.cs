@@ -1,4 +1,6 @@
 using System.CommandLine;
+using Devantler.K3dCLI;
+using Devantler.KindCLI;
 using KSail.Commands.Down.Handlers;
 using KSail.Commands.Down.Options;
 using KSail.Options;
@@ -32,6 +34,16 @@ sealed class KSailDownCommand : Command
         Console.WriteLine();
       }
       catch (OperationCanceledException ex)
+      {
+        ExceptionHandler.HandleException(ex);
+        context.ExitCode = 1;
+      }
+      catch (KindException ex)
+      {
+        ExceptionHandler.HandleException(ex);
+        context.ExitCode = 1;
+      }
+      catch (K3dException ex)
       {
         ExceptionHandler.HandleException(ex);
         context.ExitCode = 1;
