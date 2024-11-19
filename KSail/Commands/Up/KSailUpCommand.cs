@@ -20,6 +20,7 @@ sealed class KSailUpCommand : Command
   readonly TimeoutOption _timeoutOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly SOPSOption _sopsOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly LintOption _lintOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly ReconcileOption _reconcileOption = new() { Arity = ArgumentArity.ZeroOrOne };
   internal KSailUpCommand() : base("up", "Provision a cluster")
   {
     AddOptions();
@@ -38,6 +39,7 @@ sealed class KSailUpCommand : Command
         config.UpdateConfig("Spec.Project.KustomizationDirectory", kustomizationDirectory);
       config.UpdateConfig("Spec.CLI.UpOptions.Destroy", context.ParseResult.GetValueForOption(_destroyOption));
       config.UpdateConfig("Spec.CLI.UpOptions.Lint", context.ParseResult.GetValueForOption(_lintOption));
+      config.UpdateConfig("Spec.CLI.UpOptions.Reconcile", context.ParseResult.GetValueForOption(_reconcileOption));
 
       var handler = new KSailUpCommandHandler(config);
       try
@@ -83,5 +85,6 @@ sealed class KSailUpCommand : Command
     AddOption(_timeoutOption);
     AddOption(_sopsOption);
     AddOption(_lintOption);
+    AddOption(_reconcileOption);
   }
 }

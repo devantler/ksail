@@ -1,6 +1,6 @@
 using System.CommandLine;
 
-namespace KSail.Commands.Update.Options;
+namespace KSail.Options;
 
 class ReconcileOption() : Option<bool?>(
   ["--reconcile", "-r"],

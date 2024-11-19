@@ -1,7 +1,6 @@
 using System.CommandLine;
 using Devantler.FluxCLI;
 using KSail.Commands.Update.Handlers;
-using KSail.Commands.Update.Options;
 using KSail.Options;
 using KSail.Utils;
 

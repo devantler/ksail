@@ -71,6 +71,13 @@ class KSailUpCommandHandler
     await ProvisionCluster(cancellationToken).ConfigureAwait(false);
 
     await InstallGitOps(_config, cancellationToken).ConfigureAwait(false);
+
+    if (_config.Spec.CLI.UpOptions.Reconcile)
+    {
+      Console.WriteLine("🔄 Reconciling kustomizations");
+      await _gitOpsProvisioner.ReconcileAsync(_config.Spec.Connection.Timeout, cancellationToken).ConfigureAwait(false);
+      Console.WriteLine();
+    }
     return 0;
   }
 
@@ -171,13 +178,6 @@ class KSailUpCommandHandler
     };
     await _gitOpsProvisioner.BootstrapAsync(new Uri(ociUrlInDocker), kustomizationDirectoryInOCI, true, cancellationToken).ConfigureAwait(false);
     Console.WriteLine();
-
-    if (config.Spec.CLI.UpOptions.Reconcile)
-    {
-      Console.WriteLine("🔄 Reconciling kustomizations");
-      await _gitOpsProvisioner.ReconcileAsync(_config.Spec.Connection.Timeout, cancellationToken).ConfigureAwait(false);
-      Console.WriteLine();
-    }
   }
 
   async Task InitializeSOPSAgeSecret(KSailCluster config, KubernetesResourceProvisioner resourceProvisioner, CancellationToken cancellationToken)
