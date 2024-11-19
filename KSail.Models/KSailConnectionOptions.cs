@@ -8,7 +8,7 @@ public class KSailConnectionOptions
   /// <summary>
   /// The path to the kubeconfig file.
   /// </summary>
-  public string Kubeconfig { get; set; } = $"{Environment.SpecialFolder.UserProfile}/.kube/config";
+  public string Kubeconfig { get; set; } = "~/.kube/config";
 
   /// <summary>
   /// The kube context.
