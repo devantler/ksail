@@ -14,12 +14,70 @@
   <summary>Show/hide folder structure</summary>
 
 <!-- readme-tree start -->
-
 ```
 .
 ├── .github
 │   └── workflows
 ├── .vscode
+├── KSail
+│   ├── Commands
+│   │   ├── Debug
+│   │   │   ├── Handlers
+│   │   │   └── Options
+│   │   ├── Down
+│   │   │   ├── Handlers
+│   │   │   └── Options
+│   │   ├── Gen
+│   │   │   ├── Commands
+│   │   │   │   ├── CertManager
+│   │   │   │   ├── Config
+│   │   │   │   ├── Flux
+│   │   │   │   ├── Kustomize
+│   │   │   │   └── Native
+│   │   │   │       ├── Cluster
+│   │   │   │       ├── ConfigAndStorage
+│   │   │   │       ├── Metadata
+│   │   │   │       ├── Service
+│   │   │   │       └── Workloads
+│   │   │   ├── Handlers
+│   │   │   │   ├── CertManager
+│   │   │   │   ├── Config
+│   │   │   │   ├── Flux
+│   │   │   │   ├── Kustomize
+│   │   │   │   └── Native
+│   │   │   │       ├── Cluster
+│   │   │   │       ├── ConfigAndStorage
+│   │   │   │       ├── Metadata
+│   │   │   │       ├── Services
+│   │   │   │       └── Workloads
+│   │   │   └── Options
+│   │   ├── Init
+│   │   │   ├── Generators
+│   │   │   │   └── SubGenerators
+│   │   │   ├── Handlers
+│   │   │   └── Options
+│   │   ├── Lint
+│   │   │   └── Handlers
+│   │   ├── List
+│   │   │   ├── Handlers
+│   │   │   └── Options
+│   │   ├── Root
+│   │   │   └── Handlers
+│   │   ├── SOPS
+│   │   │   ├── Commands
+│   │   │   ├── Handlers
+│   │   │   └── Options
+│   │   ├── Start
+│   │   │   └── Handlers
+│   │   ├── Stop
+│   │   │   └── Handlers
+│   │   ├── Up
+│   │   │   ├── Handlers
+│   │   │   └── Options
+│   │   └── Update
+│   │       └── Handlers
+│   ├── Options
+│   └── Utils
 ├── KSail.Models
 │   ├── CLI
 │   │   └── Commands
@@ -28,81 +86,47 @@
 │   ├── Project
 │   └── Registry
 ├── KSail.Models.Tests
-├── docs
-│   └── images
-├── scripts
-├── src
-│   └── KSail
-│       ├── Arguments
-│       ├── CLIWrappers
-│       ├── Commands
-│       │   ├── Check
-│       │   │   └── Handlers
-│       │   ├── Debug
-│       │   │   └── Handlers
-│       │   ├── Down
-│       │   │   ├── Handlers
-│       │   │   └── Options
-│       │   ├── Init
-│       │   │   ├── Generators
-│       │   │   └── Handlers
-│       │   ├── Lint
-│       │   │   └── Handlers
-│       │   ├── List
-│       │   │   └── Handlers
-│       │   ├── Root
-│       │   │   └── Handlers
-│       │   ├── SOPS
-│       │   │   ├── Handlers
-│       │   │   └── Options
-│       │   ├── Start
-│       │   │   └── Handlers
-│       │   ├── Stop
-│       │   │   └── Handlers
-│       │   ├── Up
-│       │   │   ├── Handlers
-│       │   │   └── Options
-│       │   └── Update
-│       │       ├── Handlers
-│       │       └── Options
-│       ├── Enums
-│       ├── Extensions
-│       ├── Models
-│       │   ├── K3d
-│       │   ├── KSail
-│       │   ├── Kubernetes
-│       │   │   └��─ FluxKustomization
-│       │   └── SOPS
-│       ├── Options
-│       ├── Provisioners
-│       │   ├── ContainerEngine
-│       │   ├── ContainerOrchestrator
-│       │   ├── GitOps
-│       │   ├── KubernetesDistribution
-│       │   └── SecretManager
-│       └── assets
-│           ├── binaries
-│           └── templates
-│               ├── k3d
-│               ├── kubernetes
-│               └── sops
-└── tests
-    └── KSail.Tests
-        ├── Commands
-        │   ├── Check
-        │   ├── Debug
-        │   ├── Down
-        │   ├── Lint
-        │   ├── List
-        │   ├── Root
-        │   ├── SOPS
-        │   ├── Up
-        │   └── Update
-        └── TestUtils
+├── KSail.Tests
+│   └── Commands
+│       ├── Debug
+│       ├── Down
+│       ├── Gen
+│       ├── Init
+│       │   ├── advanced
+│       │   │   └── k8s
+│       │   │       ├── apps
+│       │   │       ├── clusters
+│       │   │       │   └── ksail-default
+│       │   │       │       └── flux-system
+│       │   │       ├── components
+│       │   │       │   ├── flux-kustomization-post-build-variables-label
+│       │   │       │   ├── flux-kustomization-sops-label
+│       │   │       │   ├── helm-release-crds-label
+│       │   │       │   └── helm-release-remediation-label
+│       │   │       ├── infrastructure
+│       │   │       │   └── controllers
+│       │   │       └── variables
+│       │   └── simple
+│       │       └── k8s
+│       │           ├── apps
+│       │           ├── clusters
+│       │           │   └── ksail-default
+│       │           │       └── flux-system
+│       │           └── infrastructure
+│       │               └── controllers
+│       ├── Lint
+│       ├── List
+│       ├── Root
+│       ├── SOPS
+│       ├── Start
+│       ├── Stop
+│       ├── Up
+│       └── Update
+└── docs
+    └── images
 
-82 directories
+108 directories
 ```
-
 <!-- readme-tree end -->
 
 </details>
