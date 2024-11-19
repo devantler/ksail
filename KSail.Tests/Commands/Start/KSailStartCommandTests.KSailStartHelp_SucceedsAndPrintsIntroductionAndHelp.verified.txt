@@ -1,0 +1,12 @@
+﻿Description:
+  Start a cluster
+
+Usage:
+  start [options]
+
+Options:
+  -n, --name <name>  The name of the cluster.
+  --version          Show version information
+  -?, -h, --help     Show help and usage information
+
+

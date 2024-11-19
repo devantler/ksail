@@ -19,11 +19,18 @@ jobs:
         uses: RavelloH/readme-tree@v1.1.0
         with:
           showdirectoryname: "yes"
+      - name: Generate GitHub App Token
+        uses: tibdex/github-app-token@v1
+        id: generate-token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v6
         with:
           branch: update-readme-tree
           commit-message: Update README Tree
           title: Update README Tree
           body: This PR includes new updates to the README Tree.
           labels: chore
+          token: ${{ steps.generate-token.outputs.token }}

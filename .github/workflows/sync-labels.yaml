@@ -16,5 +16,5 @@ jobs:
       - uses: actions/checkout@v4
       - uses: EndBug/label-sync@v2
         with:
-          config-file: "https://raw.githubusercontent.com/devantler/.github/main/.github/labels.yaml"
+          config-file: "https://raw.githubusercontent.com/devantler/.github/refs/heads/main/.github/labels.yaml"
           delete-other-labels: true

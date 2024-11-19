@@ -1,0 +1,19 @@
+﻿Description:
+  Manage secrets in Git
+
+Usage:
+  sops [command] [options]
+
+Options:
+  --version       Show version information
+  -?, -h, --help  Show help and usage information
+
+Commands:
+  gen      Generate a key
+  list     List keys
+  edit     Edit an encrypted file
+  encrypt  Encrypt a file
+  decrypt  Decrypt a file
+  import   Import a key
+  export   Export a key
+

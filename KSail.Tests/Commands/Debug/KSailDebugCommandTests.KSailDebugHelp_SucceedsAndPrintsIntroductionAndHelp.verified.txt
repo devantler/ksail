@@ -1,0 +1,14 @@
+﻿Description:
+  Debug a cluster (❤️ K9s)
+
+Usage:
+  debug [options]
+
+Options:
+  -k, --kubeconfig <kubeconfig>  Path to kubeconfig file
+  -c, --context <context>        The kubernetes context to use
+  -e, --editor <Nano|Vim>        Editor to use
+  --version                      Show version information
+  -?, -h, --help                 Show help and usage information
+
+

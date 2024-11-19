@@ -12,11 +12,13 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest] # windows-latest, macos-latest does not work with dind yet
+    runs-on: ${{ matrix.os }}
     if: github.event.pull_request.draft == false
     steps:
       - name: 📑 Checkout
@@ -30,7 +32,7 @@ jobs:
       - name: 📄 Upload Code Coverage to CodeCov
         uses: codecov/codecov-action@v5
         with:
-          files: tests/**/TestResults/**/coverage.cobertura.xml
+          files: '**/coverage.cobertura.xml'
           fail_ci_if_error: true
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

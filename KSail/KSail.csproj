@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AnalysisLevel>preview-all</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <UseCurrentRuntimeIdentifier>true</UseCurrentRuntimeIdentifier>
+
+    <OutputType>Exe</OutputType>
+    <AssemblyName>ksail</AssemblyName>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Devantler.ContainerEngineProvisioner.Docker" Version="0.0.6" />
+    <PackageReference Include="Devantler.K9sCLI" Version="0.0.8" />
+    <PackageReference Include="Devantler.KeyManager.Local.Age" Version="1.1.21" />
+    <PackageReference Include="Devantler.KubernetesGenerator.CertManager" Version="0.1.10" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Flux" Version="0.1.10" />
+    <PackageReference Include="Devantler.KubernetesGenerator.K3d" Version="0.1.10" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Kind" Version="0.1.10" />
+    <PackageReference Include="Devantler.KubernetesGenerator.KSail" Version="0.1.10" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Kustomize" Version="0.1.10" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Native" Version="0.1.10" />
+    <PackageReference Include="Devantler.KubernetesProvisioner.Cluster.K3d" Version="0.0.23" />
+    <PackageReference Include="Devantler.KubernetesProvisioner.Cluster.Kind" Version="0.0.23" />
+    <PackageReference Include="Devantler.KubernetesProvisioner.GitOps.Flux" Version="0.0.23" />
+    <PackageReference Include="Devantler.KubernetesValidator.ClientSide.Schemas" Version="0.0.5" />
+    <PackageReference Include="Devantler.KubernetesValidator.ClientSide.YamlSyntax" Version="0.0.5" />
+    <PackageReference Include="KSail.Models" Version="1.4.47" />
+    <PackageReference Include="Spectre.Console" Version="0.49.1" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="$(AssemblyName).Tests" />
+  </ItemGroup>
+</Project>

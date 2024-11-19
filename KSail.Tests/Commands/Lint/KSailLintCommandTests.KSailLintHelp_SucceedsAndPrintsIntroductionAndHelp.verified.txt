@@ -1,0 +1,13 @@
+﻿Description:
+  Lint manifests for a cluster
+
+Usage:
+  lint [options]
+
+Options:
+  -n, --name <name>  The name of the cluster.
+  -p, --path <path>  Path to the manifests directory
+  --version          Show version information
+  -?, -h, --help     Show help and usage information
+
+
