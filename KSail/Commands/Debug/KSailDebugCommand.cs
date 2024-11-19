@@ -17,14 +17,6 @@ sealed class KSailDebugCommand : Command
     AddOption(_kubeconfigOption);
     AddOption(_contextOption);
     AddOption(_editorOption);
-    AddValidator(result =>
-    {
-      string? kubeconfig = result.GetValueForOption(_kubeconfigOption);
-      if (string.IsNullOrWhiteSpace(kubeconfig) || !File.Exists(kubeconfig))
-      {
-        result.ErrorMessage = $"Kubeconfig file '{kubeconfig}' does not exist";
-      }
-    });
     this.SetHandler(async (context) =>
     {
       try
@@ -33,7 +25,6 @@ sealed class KSailDebugCommand : Command
         config.UpdateConfig("Spec.Connection.Kubeconfig", context.ParseResult.GetValueForOption(_kubeconfigOption));
         config.UpdateConfig("Spec.Connection.Context", context.ParseResult.GetValueForOption(_contextOption));
         config.UpdateConfig("Spec.CLI.DebugOptions.Editor", context.ParseResult.GetValueForOption(_editorOption));
-
         var handler = new KSailDebugCommandHandler(config);
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;
         Console.WriteLine();
