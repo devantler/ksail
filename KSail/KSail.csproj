@@ -22,21 +22,21 @@
 
   <ItemGroup>
     <PackageReference Include="Devantler.ContainerEngineProvisioner.Docker" Version="0.0.6" />
-    <PackageReference Include="Devantler.K9sCLI" Version="0.0.8" />
+    <PackageReference Include="Devantler.K9sCLI" Version="0.0.9" />
     <PackageReference Include="Devantler.KeyManager.Local.Age" Version="1.1.22" />
-    <PackageReference Include="Devantler.KubernetesGenerator.CertManager" Version="0.1.10" />
-    <PackageReference Include="Devantler.KubernetesGenerator.Flux" Version="0.1.10" />
-    <PackageReference Include="Devantler.KubernetesGenerator.K3d" Version="0.1.10" />
-    <PackageReference Include="Devantler.KubernetesGenerator.Kind" Version="0.1.10" />
-    <PackageReference Include="Devantler.KubernetesGenerator.KSail" Version="0.1.10" />
-    <PackageReference Include="Devantler.KubernetesGenerator.Kustomize" Version="0.1.10" />
-    <PackageReference Include="Devantler.KubernetesGenerator.Native" Version="0.1.10" />
+    <PackageReference Include="Devantler.KubernetesGenerator.CertManager" Version="0.1.11" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Flux" Version="0.1.11" />
+    <PackageReference Include="Devantler.KubernetesGenerator.K3d" Version="0.1.11" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Kind" Version="0.1.11" />
+    <PackageReference Include="Devantler.KubernetesGenerator.KSail" Version="0.1.11" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Kustomize" Version="0.1.11" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Native" Version="0.1.11" />
     <PackageReference Include="Devantler.KubernetesProvisioner.Cluster.K3d" Version="0.0.24" />
     <PackageReference Include="Devantler.KubernetesProvisioner.Cluster.Kind" Version="0.0.24" />
     <PackageReference Include="Devantler.KubernetesProvisioner.GitOps.Flux" Version="0.0.24" />
     <PackageReference Include="Devantler.KubernetesValidator.ClientSide.Schemas" Version="0.0.5" />
     <PackageReference Include="Devantler.KubernetesValidator.ClientSide.YamlSyntax" Version="0.0.5" />
-    <PackageReference Include="KSail.Models" Version="2.0.3" />
+    <PackageReference Include="KSail.Models" Version="2.0.4" />
     <PackageReference Include="Spectre.Console" Version="0.49.1" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
   </ItemGroup>
