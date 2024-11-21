@@ -1,4 +1,4 @@
-using Devantler.KubernetesGenerator.KSail;
+using KSail.Generator;
 using KSail.Models;
 
 namespace KSail.Commands.Init.Generators.SubGenerators;
