@@ -16,7 +16,7 @@ public class KSailConnectionOptions
   public string Context { get; set; } = "kind-default";
 
   /// <summary>
-  /// The timeout for operations (in seconds).
+  /// The timeout for operations (Golang time).
   /// </summary>
   public string Timeout { get; set; } = "5m";
 }
