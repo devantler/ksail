@@ -15,7 +15,6 @@ Commands:
   init    Initialize a cluster
   lint    Lint manifests for a cluster
   list    List active clusters
-  sops    Manage secrets in Git
   start   Start a cluster
   stop    Stop a cluster
   up      Provision a cluster

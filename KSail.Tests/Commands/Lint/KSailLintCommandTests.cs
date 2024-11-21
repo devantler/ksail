@@ -42,10 +42,8 @@ public class KSailLintCommandTests : IAsyncLifetime
   {
     //Cleanup
     string outputPath = Path.Combine(Path.GetTempPath(), "ksail-lint-test-cluster");
-    if (Directory.Exists(Path.Combine(outputPath, "k8s")))
-      Directory.Delete(Path.Combine(outputPath, "k8s"), true);
-    File.Delete(Path.Combine(outputPath, "kind-config.yaml"));
-    File.Delete(Path.Combine(outputPath, "ksail-config.yaml"));
+    if (Directory.Exists(outputPath))
+      Directory.Delete(outputPath, true);
 
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
@@ -60,8 +58,6 @@ public class KSailLintCommandTests : IAsyncLifetime
     Assert.Equal(0, lintExitCode);
 
     //Cleanup
-    Directory.Delete(Path.Combine(outputPath, "k8s"), true);
-    File.Delete(Path.Combine(outputPath, "kind-config.yaml"));
-    File.Delete(Path.Combine(outputPath, "ksail-config.yaml"));
+    Directory.Delete(outputPath, true);
   }
 }
