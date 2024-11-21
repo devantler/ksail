@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System.Text;
 using Devantler.ContainerEngineProvisioner.Docker;
 using Devantler.KeyManager.Local.Age;
@@ -173,7 +174,10 @@ class KSailUpCommandHandler
     string ociUrlInDocker = _config.Spec.Project.Distribution switch
     {
       KSailKubernetesDistribution.K3d => $"oci://host.k3d.internal:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/{_config.Metadata.Name}",
-      KSailKubernetesDistribution.Kind => $"oci://host.docker.internal:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/{_config.Metadata.Name}",
+      KSailKubernetesDistribution.Kind =>
+        RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ?
+          $"oci://172.17.0.1:5555/{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/{_config.Metadata.Name}" :
+          $"oci://host.docker.internal:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/{_config.Metadata.Name}",
       _ => throw new NotSupportedException($"The distribution '{_config.Spec.Project.Distribution}' is not supported.")
     };
     await _gitOpsProvisioner.BootstrapAsync(new Uri(ociUrlInDocker), kustomizationDirectoryInOCI, true, cancellationToken).ConfigureAwait(false);
