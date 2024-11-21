@@ -176,7 +176,7 @@ class KSailUpCommandHandler
       KSailKubernetesDistribution.K3d => $"oci://host.k3d.internal:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/{_config.Metadata.Name}",
       KSailKubernetesDistribution.Kind =>
         RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ?
-          $"oci://172.17.0.1:5555/{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/{_config.Metadata.Name}" :
+          $"oci://172.17.0.1:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/{_config.Metadata.Name}" :
           $"oci://host.docker.internal:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/{_config.Metadata.Name}",
       _ => throw new NotSupportedException($"The distribution '{_config.Spec.Project.Distribution}' is not supported.")
     };
