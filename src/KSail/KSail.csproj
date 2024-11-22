@@ -21,7 +21,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Devantler.ContainerEngineProvisioner.Docker" Version="0.0.6" />
+    <PackageReference Include="Devantler.ContainerEngineProvisioner.Docker" Version="1.0.0" />
     <PackageReference Include="Devantler.K9sCLI" Version="1.0.2" />
     <PackageReference Include="Devantler.KeyManager.Local.Age" Version="1.1.25" />
     <PackageReference Include="Devantler.KubernetesGenerator.CertManager" Version="0.1.12" />
