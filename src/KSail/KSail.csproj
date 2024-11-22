@@ -25,7 +25,7 @@
     <PackageReference Include="Devantler.K9sCLI" Version="1.0.2" />
     <PackageReference Include="Devantler.KeyManager.Local.Age" Version="1.1.25" />
     <PackageReference Include="Devantler.KubernetesGenerator.CertManager" Version="0.1.12" />
-    <PackageReference Include="Devantler.KubernetesGenerator.Flux" Version="0.1.11" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Flux" Version="0.1.12" />
     <PackageReference Include="Devantler.KubernetesGenerator.K3d" Version="0.1.11" />
     <PackageReference Include="Devantler.KubernetesGenerator.Kind" Version="0.1.12" />
     <PackageReference Include="Devantler.KubernetesGenerator.Kustomize" Version="0.1.12" />
