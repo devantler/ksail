@@ -20,7 +20,7 @@ jobs:
         with:
           showdirectoryname: "yes"
       - name: Generate GitHub App Token
-        uses: tibdex/github-app-token@v1
+        uses: tibdex/github-app-token@v2
         id: generate-token
         with:
           app_id: ${{ secrets.APP_ID }}
