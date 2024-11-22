@@ -1,0 +1,103 @@
+﻿---
+apiVersion: ksail.io/v1alpha1
+kind: Cluster
+metadata:
+  name: my-cluster
+spec:
+  connection:
+    kubeconfig: ./.kube/config
+    context: my-cluster
+    timeout: 5m
+  project:
+    manifestsDirectory: ./k8s
+    kustomizationDirectory: ./clusters/my-cluster/flux-system
+    configPath: ./k3d-config.yaml
+    distribution: k3d
+    gitOpsTool: flux
+    containerEngine: docker
+    sops: true
+  registries:
+  - name: ksail-registry
+    hostPort: 5000
+    isGitOpsOCISource: true
+    provider: docker
+  - name: mirror-docker.io
+    hostPort: 5001
+    isGitOpsOCISource: false
+    proxy:
+      url: https://registry-1.docker.io/
+      insecure: false
+    provider: docker
+  - name: mirror-registry.k8s.io
+    hostPort: 5002
+    isGitOpsOCISource: false
+    proxy:
+      url: https://registry.k8s.io/
+      insecure: false
+    provider: docker
+  - name: mirror-gcr.io
+    hostPort: 5002
+    isGitOpsOCISource: false
+    proxy:
+      url: https://gcr.io/
+      insecure: false
+    provider: docker
+  - name: mirror-ghcr.io
+    hostPort: 5003
+    isGitOpsOCISource: false
+    proxy:
+      url: https://ghcr.io/
+      insecure: false
+    provider: docker
+  - name: mirror-mcr.microsoft.com
+    hostPort: 5004
+    isGitOpsOCISource: false
+    proxy:
+      url: https://mcr.microsoft.com/
+      insecure: false
+    provider: docker
+  - name: mirror-quay.io
+    hostPort: 5005
+    isGitOpsOCISource: false
+    proxy:
+      url: https://quay.io/
+      insecure: false
+    provider: docker
+  cli:
+    checkOptions: {}
+    debugOptions:
+      editor: nano
+    downOptions:
+      registries: true
+    genOptions: {}
+    initOptions:
+      declarativeConfig: true
+      components: true
+      helmReleases: true
+      postBuildVariables: true
+      outputDirectory: ./
+      template: simple
+      kustomizeFlows:
+      - apps
+      - infrastructure
+      - infrastructure/controllers
+      kustomizeHooks: []
+    lintOptions: {}
+    listOptions:
+      all: false
+    sopsOptions:
+      listOptions:
+        showPublicKey: true
+        showPrivateKey: true
+      editOptions: {}
+      encryptOptions: {}
+      decryptOptions: {}
+    startOptions: {}
+    stopOptions: {}
+    upOptions:
+      destroy: false
+      lint: true
+      reconcile: true
+    updateOptions:
+      lint: true
+      reconcile: true
