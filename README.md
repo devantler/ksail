@@ -54,6 +54,7 @@ Getting started with KSail is easy. First, you need a Kubernetes Cluster configu
 From there, you probably want to ensure that your distribution and ksail is configured to your liking.
 
 `> ksail-config.yaml` - The configuration file for KSail.
+
 `> kind-config.yaml` - The configuration file for Kind.
 
 When you are ready to provision your cluster, you can run:
