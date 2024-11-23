@@ -94,10 +94,10 @@ Or if you really want to get rid of it for now, you can run:
 >
 > This requires building the following software:
 >
-> - Your CLI tool
-> - A CLI wrapper in C# that provides an API for your CLI tool
-> - An implementation in a KSail sub-project that makes use of the CLI wrapper (optional - but i prefer an abstraction layer if the CLI tool provides a functionality that is generic)
-> - An implementation in KSail that uses the sub-project
+> - Your CLI tool (You)
+> - A CLI wrapper in C# that provides an API for your CLI tool (You + Me)
+> - An implementation in a KSail sub-project that makes use of the CLI wrapper (optional - but i prefer an abstraction layer if the CLI tool provides a functionality that is generic) (Me)
+> - An implementation in KSail that uses the sub-project (Me)
 
 KSail is part of a larger ecosystem of projects that I maintain. These projects are designed to provide important functionality to KSail with high confidence, and without bloating the main repository. Most the projects provide extensible frameworks, so you can build your own tools on top of them, or make contributions to make KSail even more powerful.
 
