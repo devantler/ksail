@@ -7,7 +7,7 @@
 [bold blue]~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^[/]
 
 Description:
-  KSail is an SDK for GitOps enabled clusters.
+  KSail is an SDK for building GitOps enabled clusters.
 
 Usage:
   testhost [command] [options]

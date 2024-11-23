@@ -8,133 +8,7 @@
 [![Test](https://github.com/devantler/ksail/actions/workflows/test.yaml/badge.svg?branch=main)](https://github.com/devantler/ksail/actions/workflows/test.yaml)
 [![codecov](https://codecov.io/gh/devantler/ksail/graph/badge.svg?token=DNEO90PfNR)](https://codecov.io/gh/devantler/ksail)
 
-![image](https://github.com/devantler/ksail/assets/26203420/2c4596bd-68e5-438f-9a8b-0626bb44f353)
-
-<details>
-  <summary>Show/hide folder structure</summary>
-
-<!-- readme-tree start -->
-```
-.
-├── .github
-│   └── workflows
-├── .vscode
-├── docs
-│   └── images
-├── src
-│   ├── KSail
-│   │   ├── Commands
-│   │   │   ├── Debug
-│   │   │   │   ├── Handlers
-│   │   │   │   └── Options
-│   │   │   ├── Down
-│   │   │   │   ├── Handlers
-│   │   │   │   └── Options
-│   │   │   ├── Gen
-│   │   │   │   ├── Commands
-│   │   │   │   │   ├── CertManager
-│   │   │   │   │   ├── Config
-│   │   │   │   │   ├── Flux
-│   │   │   │   │   ├── Kustomize
-│   │   │   │   │   └── Native
-│   │   │   │   │       ├── Cluster
-│   │   │   │   │       ├── ConfigAndStorage
-│   │   │   │   │       ├── Metadata
-│   │   │   │   │       ├── Service
-│   │   │   │   │       └── Workloads
-│   │   │   │   ├── Handlers
-│   │   │   │   │   ├── CertManager
-│   │   │   │   │   ├── Config
-│   │   │   │   │   ├── Flux
-│   │   │   │   │   ├── Kustomize
-│   │   │   │   │   └── Native
-│   │   │   │   │       ├── Cluster
-│   │   │   │   │       ├── ConfigAndStorage
-│   │   │   │   │       ├── Metadata
-│   │   │   │   │       ├── Services
-│   │   │   │   │       └── Workloads
-│   │   │   │   └── Options
-│   │   │   ├── Init
-│   │   │   │   ├── Generators
-│   │   │   │   │   └── SubGenerators
-│   │   │   │   ├── Handlers
-│   │   │   │   └── Options
-│   │   │   ├── Lint
-│   │   │   │   └── Handlers
-│   │   │   ├── List
-│   │   │   │   ├── Handlers
-│   │   │   │   └── Options
-│   │   │   ├── Root
-│   │   │   │   └── Handlers
-│   │   │   ├── SOPS
-│   │   │   │   ├── Commands
-│   │   │   │   ├── Handlers
-│   │   │   │   └── Options
-│   │   │   ├── Start
-│   │   │   │   └── Handlers
-│   │   │   ├── Stop
-│   │   │   │   └── Handlers
-│   │   │   ├── Up
-│   │   │   │   ├── Handlers
-│   │   │   │   └── Options
-│   │   │   └── Update
-│   │   │       └── Handlers
-│   │   ├── Options
-│   │   └── Utils
-│   ├── KSail.Generator
-│   └── KSail.Models
-│       ├── CLI
-│       │   └── Commands
-│       │       ├── Init
-│       │       └── Sops
-│       ├── Project
-│       └── Registry
-└── tests
-    ├── KSail.Generator.Tests
-    │   └── KSailClusterGeneratorTests
-    ├── KSail.Models.Tests
-    └── KSail.Tests
-        └── Commands
-            ├── Debug
-            ├── Down
-            ├── Gen
-            ├── Init
-            │   ├── advanced
-            │   │   └── k8s
-            │   │       ├── apps
-            │   │       ├── clusters
-            │   │       │   └── ksail-default
-            │   │       │       └── flux-system
-            │   │       ├── components
-            │   │       │   ├── flux-kustomization-post-build-variables-label
-            │   │       │   ├── flux-kustomization-sops-label
-            │   │       │   ├── helm-release-crds-label
-            │   │       │   └── helm-release-remediation-label
-            │   │       ├── infrastructure
-            │   │       │   └── controllers
-            │   │       └── variables
-            │   └── simple
-            │       └── k8s
-            │           ├── apps
-            │           ├── clusters
-            │           │   └── ksail-default
-            │           │       └── flux-system
-            │           └── infrastructure
-            │               └── controllers
-            ├── Lint
-            ├── List
-            ├── Root
-            ├── SOPS
-            ├── Start
-            ├── Stop
-            ├── Up
-            └── Update
-
-113 directories
-```
-<!-- readme-tree end -->
-
-</details>
+![KSail CLI](docs/images/ksail-cli.png)
 
 ## Getting Started
 
@@ -173,31 +47,34 @@ Manually:
 
 ### Usage
 
-Getting started with KSail is easy. Here are a few commands to get you going:
+Getting started with KSail is easy. First, you need a Kubernetes Cluster configuration for your project.
 
-`ksail init` - To initialize a new cluster with the default configuration.
+`> ksail init` - To initialize a new cluster configuration with default configurations.
 
-`ksail up` - To provision your new cluster.
+From there, you probably want to ensure that your distribution and ksail is configured to your liking.
 
-From there, you can make some changes to your manifest files, and when you are ready to apply them, you can run:
+`> ksail-config.yaml` - The configuration file for KSail.
+`> kind-config.yaml` - The configuration file for Kind.
 
-`ksail update` - To update your cluster.
+When you are ready to provision your cluster, you can run:
 
-At some point, you might encounter an issue and wonder what is going on. In that case, you can run:
+`> ksail up` - To provision your new cluster.
 
-`ksail check` - To check the status of your cluster reconciliations.
+From there, you can make some changes to your manifest files,, and when you are ready to apply them, you can run:
+
+`> ksail update` - To update your cluster.
 
 And for more advanced debugging, you can run:
 
-`ksail debug` - To debug your cluster with the K9s tool.
+`> ksail debug` - To debug your cluster with the K9s tool.
 
 Finally, when you are done working with your cluster, you can run:
 
-`ksail stop <name-of-cluster>` - To stop your cluster, so you can continue working on it later.
+`> ksail stop` - To stop your cluster, so you can continue working on it later.
 
 Or if you really want to get rid of it for now, you can run:
 
-`ksail down <name-of-cluster>` - To dismantle your cluster and remove its resources.
+`> ksail down` - To dismantle your cluster and remove its resources.
 
 ## Documentation
 
@@ -212,26 +89,44 @@ Or if you really want to get rid of it for now, you can run:
 
 ## Sub-projects
 
+> [!NOTE]
+> If you do not prefer to write C# code, you can still contribute to KSail by building native binaries, that KSail can embed an interact with.
+>
+> This requires building the following software:
+>
+> - Your CLI tool
+> - A CLI wrapper in C# that provides an API for your CLI tool
+> - An implementation in a KSail sub-project that makes use of the CLI wrapper (optional - but i prefer an abstraction layer if the CLI tool provides a functionality that is generic)
+> - An implementation in KSail that uses the sub-project
+
 KSail is part of a larger ecosystem of projects that I maintain. These projects are designed to provide important functionality to KSail with high confidence, and without bloating the main repository. Most the projects provide extensible frameworks, so you can build your own tools on top of them, or make contributions to make KSail even more powerful.
 
-- **[devantler/dotnet-age-cli](https://github.com/devantler/dotnet-age-cli)** - A library that embeds and provides an API for the Age CLI.
 - **[devantler/dotnet-cli-runner](https://github.com/devantler/dotnet-cli-runner)** - An implementation atop CLI Wrap to support running different binaries from C# code.
 - **[devantler/dotnet-container-engine-provisioner](https://github.com/devantler/dotnet-container-engine-provisioner)** - Provisioners to provision resources in container engines like Docker or Podman.
-- **[devantler/dotnet-flux-cli](https://github.com/devantler/dotnet-flux-cli)** - A library that embeds and provides an API for the Flux CLI.
-- **[devantler/dotnet-k3d-cli](https://github.com/devantler/dotnet-k3d-cli)** - A library that embeds and provides an API for the K3d CLI.
-- **[devantler/dotnet-k9s-cli](https://github.com/devantler/dotnet-k9s-cli)** - A library that embeds and provides an API for the K9s CLI.
 - **[devantler/dotnet-key-manager](https://github.com/devantler/dotnet-key-manager)** - A key manager to guard your local Age keys.
 - **[devantler/dotnet-keys](https://github.com/devantler/dotnet-keys)** - A library with key models, like the Age key model.
-- **[devantler/dotnet-kind-cli](https://github.com/devantler/dotnet-kind-cli)** - A library that embeds and provides an API for the Kind CLI.
-- **[devantler/dotnet-kubeconform-cli](https://github.com/devantler/dotnet-kubeconform-cli)** - A library that embeds and provides an API for the Kubeconform CLI.
 - **[devantler/dotnet-kubernetes-generator](https://github.com/devantler/dotnet-kubernetes-generator)** - Generators to create Kubernetes resources with `ksail init` and `ksail gen`.
 - **[devantler/dotnet-kubernetes-provisioner](https://github.com/devantler/dotnet-kubernetes-provisioner)** - Provisioners to provision Kubernetes clusters and resources.
 - **[devantler/dotnet-kubernetes-validator](https://github.com/devantler/dotnet-kubernetes-validator)** - A library that validates Kubernetes resources client-side or at runtime.
-- **[devantler/dotnet-kustomize-cli](https://github.com/devantler/dotnet-kustomize-cli)** - A library that embeds and provides an API for the Kustomize CLI.
-- **[devantler/dotnet-sops-cli](https://github.com/devantler/dotnet-sops-cli)** - A library that embeds and provides an API for the SOPS CLI.
 - **[devantler/dotnet-template-engine](https://github.com/devantler/dotnet-template-engine)** - A template engine to support code generation of non-serializable content.
 
+### CLI Wrappers
+
+These projects are CLI wrappers that provide a C# API for the respective CLI tools. They are used in KSail to embed and interact with CLI tools in a type-safe manner.
+
+- **[devantler/dotnet-age-cli](https://github.com/devantler/dotnet-age-cli)** - A library that embeds and provides an API for the Age CLI.
+- **[devantler/dotnet-flux-cli](https://github.com/devantler/dotnet-flux-cli)** - A library that embeds and provides an API for the Flux CLI.
+- **[devantler/dotnet-k3d-cli](https://github.com/devantler/dotnet-k3d-cli)** - A library that embeds and provides an API for the K3d CLI.
+- **[devantler/dotnet-k9s-cli](https://github.com/devantler/dotnet-k9s-cli)** - A library that embeds and provides an API for the K9s CLI.
+- **[devantler/dotnet-kind-cli](https://github.com/devantler/dotnet-kind-cli)** - A library that embeds and provides an API for the Kind CLI.
+- **[devantler/dotnet-kubeconform-cli](https://github.com/devantler/dotnet-kubeconform-cli)** - A library that embeds and provides an API for the Kubeconform CLI.
+- **[devantler/dotnet-kustomize-cli](https://github.com/devantler/dotnet-kustomize-cli)** - A library that embeds and provides an API for the Kustomize CLI.
+- **[devantler/dotnet-sops-cli](https://github.com/devantler/dotnet-sops-cli)** - A library that embeds and provides an API for the SOPS CLI.
+
 ## Related Projects
+
+> [!NOTE]
+> If you use KSail in your project, feel free to open a PR to add it to the list, so others can see how you use KSail.
 
 KSail is a powerful tool that can be used in many different ways. Here are some projects that use KSail in their setup:
 

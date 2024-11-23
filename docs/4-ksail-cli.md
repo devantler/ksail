@@ -4,7 +4,7 @@
 
 ```txt
 Description:
-  KSail is a CLI tool for provisioning GitOps enabled clusters in Docker.
+  KSail is an SDK for building GitOps enabled clusters.
 
 Usage:
   ksail [command] [options]
@@ -14,34 +14,16 @@ Options:
   -?, -h, --help  Show help and usage information
 
 Commands:
-  check                 Check the status of a cluster
-  debug                 Debug a cluster (❤️ K9s)
-  down <clusterName>    Destroy a cluster
-  init <clusterName>    Initialize a cluster
-  lint <clusterName>    Lint manifests for a cluster
-  list                  List active clusters
-  sops <clusterName>    Manage secrets with SOPS
-  start <clusterName>   Start a cluster
-  stop <clusterName>    Stop a cluster
-  up <clusterName>      Provision a cluster
-  update <clusterName>  Update a cluster
-```
-
-## `ksail check`
-
-```txt
-Description:
-  Check the status of a cluster
-
-Usage:
-  ksail check [options]
-
-Options:
-  -k, --kubeconfig <kubeconfig> (REQUIRED)  Path to kubeconfig file [default: /Users/nikolaiemildamm/.kube/config]
-  -c, --context <context>                   The Kubernetes context to use
-  -t, --timeout <timeout>                   The timeout in seconds to wait for each Kustomization to become ready. Defaults to 600 seconds. [default:
-                                            600]
-  -?, -h, --help                            Show help and usage information
+  debug   Debug a cluster (❤️ K9s)
+  down    Destroy a cluster
+  gen     Generate a resource.
+  init    Initialize a cluster
+  lint    Lint manifests for a cluster
+  list    List active clusters
+  start   Start a cluster
+  stop    Stop a cluster
+  up      Provision a cluster
+  update  Update a cluster
 ```
 
 ## `ksail debug`
@@ -54,60 +36,83 @@ Usage:
   ksail debug [options]
 
 Options:
-  -k, --kubeconfig <kubeconfig> (REQUIRED)  Path to kubeconfig file [default: /Users/nikolaiemildamm/.kube/config]
-  -c, --context <context>                   The Kubernetes context to use
-  -?, -h, --help                            Show help and usage information
+  -k, --kubeconfig <kubeconfig>  Path to kubeconfig file
+  -c, --context <context>        The kubernetes context to use
+  -e, --editor <Nano|Vim>        Editor to use
+  -?, -h, --help                 Show help and usage information
 ```
 
-## `ksail down <name-of-cluster>`
+## `ksail down`
 
 ```txt
 Description:
   Destroy a cluster
 
 Usage:
-  ksail down <clusterName> [options]
-
-Arguments:
-  <clusterName>
+  ksail down [options]
 
 Options:
-  -d, --delete-pull-through-registries  Delete pull through registries [default: False]
-  -?, -h, --help                        Show help and usage information
+  -n, --name <name>              The name of the cluster.
+  -d, --distribution <K3d|Kind>  The distribution to use for the cluster.
+  -r, --registries               Delete registries
+  -?, -h, --help                 Show help and usage information
 ```
 
-## `ksail init <name-of-cluster>`
+## `ksail gen`
+
+```txt
+Description:
+  Generate a resource.
+
+Usage:
+  ksail gen [command] [options]
+
+Options:
+  -?, -h, --help  Show help and usage information
+
+Commands:
+  cert-manager  Generate a CertManager resource.
+  config        Generate a configuration file.
+  flux          Generate a Flux resource.
+  kustomize     Generate a Kustomize resource.
+  native        Generate a native Kubernetes resource from one of the available categories.
+```
+
+## `ksail init`
 
 ```txt
 Description:
   Initialize a cluster
 
 Usage:
-  ksail init <clusterName> [options]
-
-Arguments:
-  <clusterName>
+  ksail init [options]
 
 Options:
-  -m, --manifests <manifests> (REQUIRED)  Path to the manifests directory [default: ./k8s]
-  -?, -h, --help                          Show help and usage information
+  -n, --name <name>              The name of the cluster.
+  -dc, --declarative-config      Generate a ksail-config.yaml file, to configure the KSail CLI declaratively.
+  -pbv, --post-build-variables   Generate ConfigMaps and Secrets for flux post-build-variables.
+  -c, --components               Generate components to reduce duplication.
+  -d, --distribution <K3d|Kind>  The distribution to use for the cluster.
+  -hr, --helm-releases           Generate Helm releases for Traefik, Cert-Manager, and PodInfo.
+  -o, --output <output>          Location to place the generated cluster output.
+  -s, --sops                     Enable SOPS support.
+  -t, --template <Simple>        The template to use for the initialized cluster.
+  -?, -h, --help                 Show help and usage information
 ```
 
-## `ksail lint <name-of-cluster>`
+## `ksail lint`
 
 ```txt
 Description:
   Lint manifests for a cluster
 
 Usage:
-  ksail lint <clusterName> [options]
-
-Arguments:
-  <clusterName>
+  ksail lint [options]
 
 Options:
-  -m, --manifests <manifests> (REQUIRED)  Path to the manifests directory [default: ./k8s]
-  -?, -h, --help                          Show help and usage information
+  -n, --name <name>  The name of the cluster.
+  -p, --path <path>  Path to the manifests directory
+  -?, -h, --help     Show help and usage information
 ```
 
 ## `ksail list`
@@ -120,102 +125,75 @@ Usage:
   ksail list [options]
 
 Options:
+  -a, --all       List clusters from all distributions
   -?, -h, --help  Show help and usage information
 ```
 
-## `ksail sops <name-of-cluster>`
-
-```txt
-Description:
-  Manage secrets with SOPS
-
-Usage:
-  ksail sops <clusterName> [options]
-
-Arguments:
-  <clusterName>
-
-Options:
-  -g, --generate-key       Generate a new key
-  --show-key               Show the full key
-  --show-public-key        Show the public key
-  --show-private-key       Show the private key
-  -e, --encrypt <encrypt>  File to encrypt
-  -d, --decrypt <decrypt>  File to decrypt
-  --import <import>        Import a key
-  --export <export>        Export a key
-  -?, -h, --help           Show help and usage information
-```
-
-## `ksail start <name-of-cluster>`
+## `ksail start`
 
 ```txt
 Description:
   Start a cluster
 
 Usage:
-  ksail start <clusterName> [options]
-
-Arguments:
-  <clusterName>
+  ksail start [options]
 
 Options:
-  -?, -h, --help  Show help and usage information
+  -n, --name <name>  The name of the cluster.
+  -?, -h, --help     Show help and usage information
 ```
 
-## `ksail stop <name-of-cluster>`
+## `ksail stop`
 
 ```txt
 Description:
   Stop a cluster
 
 Usage:
-  ksail stop <clusterName> [options]
-
-Arguments:
-  <clusterName>
+  ksail stop [options]
 
 Options:
-  -?, -h, --help  Show help and usage information
+  -n, --name <name>  The name of the cluster.
+  -?, -h, --help     Show help and usage information
 ```
 
-## `ksail up <name-of-cluster>`
+## `ksail up`
 
 ```txt
 Description:
   Provision a cluster
 
 Usage:
-  ksail up <clusterName> [options]
-
-Arguments:
-  <clusterName>
+  ksail up [options]
 
 Options:
-  -c, --config <config> (REQUIRED)       Path to the cluster configuration file [default: k3d-config.yaml]
-  -m, --manifests <manifests>            Path to the manifests directory [default: ./k8s]
-  -k, --Kustomizations <Kustomizations>  Path to the flux Kustomization directory [default: ./k8s/clusters/<clusterName>/flux-system]
-  -t, --timeout <timeout>                The timeout in seconds to wait for each Kustomization to become ready. Defaults to 600 seconds. [default: 600]
-  -ns, --no-sops                         Disable SOPS [default: False]
-  -sl, --skip-linting                    Skip linting of manifests [default: False]
-  -?, -h, --help                         Show help and usage information
+  -n, --name <name>                               The name of the cluster.
+  --destroy                                       Destroy any existing cluster before provisioning
+  -c, --config <config>                           Path to the cluster configuration file
+  -d, --distribution <K3d|Kind>                   The distribution to use for the cluster.
+  -p, --path <path>                               Path to the manifests directory
+  -kp, --kustomization-path <kustomization-path>  Path to the root kustomization directory
+  -t, --timeout <timeout>                         The time to wait for each kustomization to become ready.
+  -s, --sops                                      Enable SOPS support.
+  -l, --lint                                      Lint manifests before pushing an update
+  -r, --reconcile                                 Reconcile manifests after pushing an update
+  -?, -h, --help                                  Show help and usage information
 ```
 
-## `ksail update <name-of-cluster>`
+## `ksail update`
 
 ```txt
 Description:
   Update a cluster
 
 Usage:
-  ksail update <clusterName> [options]
-
-Arguments:
-  <clusterName>
+  ksail update [options]
 
 Options:
-  -m, --manifests <manifests> (REQUIRED)  Path to the manifests directory [default: ./k8s]
-  -nl, --no-lint                          Skip linting manifests [default: False]
-  -nr, --no-reconcile                     Skip reconciling manifests [default: False]
-  -?, -h, --help                          Show help and usage information
+  -n, --name <name>        The name of the cluster.
+  -p, --path <path>        Path to the manifests directory
+  -l, --lint               Lint manifests before pushing an update
+  -r, --reconcile          Reconcile manifests after pushing an update
+  -t, --timeout <timeout>  The time to wait for each kustomization to become ready.
+  -?, -h, --help           Show help and usage information
 ```
