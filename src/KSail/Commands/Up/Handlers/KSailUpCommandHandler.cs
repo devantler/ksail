@@ -13,6 +13,7 @@ using KSail.Commands.Down.Handlers;
 using KSail.Commands.Lint.Handlers;
 using KSail.Models;
 using KSail.Models.Project;
+using KSail.Utils;
 
 namespace KSail.Commands.Up.Handlers;
 
@@ -188,27 +189,8 @@ class KSailUpCommandHandler
   {
     if (config.Spec.Project.Sops)
     {
-      Console.WriteLine("► searching for a '.sops.yaml' file");
-      string directory = Directory.GetCurrentDirectory();
-      string sopsConfigPath = string.Empty;
-      while (!string.IsNullOrEmpty(directory))
-      {
-        if (File.Exists(Path.Combine(directory, ".sops.yaml")))
-        {
-          sopsConfigPath = Path.Combine(directory, ".sops.yaml");
-          Console.WriteLine($"✔ found '{sopsConfigPath}'");
-          break;
-        }
-        directory = Directory.GetParent(directory)?.FullName ?? string.Empty;
-      }
-      if (string.IsNullOrEmpty(sopsConfigPath))
-      {
-        Console.WriteLine("✗ '.sops.yaml' file not found");
-        throw new KSailException("No '.sops.yaml' file found in the current or parent directories");
-      }
+      var sopsConfig = await SopsConfigLoader.LoadAsync(cancellationToken).ConfigureAwait(false);
 
-      Console.WriteLine("► reading public key from '.sops.yaml' file");
-      var sopsConfig = await _keyManager.GetSOPSConfigAsync(sopsConfigPath, cancellationToken).ConfigureAwait(false);
       string publicKey = sopsConfig.CreationRules.First(x => x.PathRegex.Contains(config.Metadata.Name, StringComparison.OrdinalIgnoreCase)).Age.Split(',')[0].Trim();
 
       Console.WriteLine("► getting private key from SOPS_AGE_KEY_FILE or default location");
