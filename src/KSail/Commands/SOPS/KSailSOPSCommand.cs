@@ -16,14 +16,5 @@ sealed class KSailSOPSCommand : Command
     );
   }
 
-  void AddCommands()
-  {
-    AddCommand(new KSailSOPSGenCommand());
-    AddCommand(new KSailSOPSListCommand());
-    AddCommand(new KSailSOPSEditCommand());
-    AddCommand(new KSailSOPSEncryptCommand());
-    AddCommand(new KSailSOPSDecryptCommand());
-    AddCommand(new KSailSOPSImportCommand());
-    AddCommand(new KSailSOPSExportCommand());
-  }
+  void AddCommands() => AddCommand(new KSailSOPSListCommand());// AddCommand(new KSailSOPSGenCommand());// AddCommand(new KSailSOPSEditCommand());// AddCommand(new KSailSOPSEncryptCommand());// AddCommand(new KSailSOPSDecryptCommand());// AddCommand(new KSailSOPSImportCommand());// AddCommand(new KSailSOPSExportCommand());
 }
