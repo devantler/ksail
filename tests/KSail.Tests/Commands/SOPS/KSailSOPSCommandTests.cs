@@ -37,7 +37,7 @@ public class KSailSOPSCommandTests : IAsyncLifetime
   /// Tests that the 'ksail sops list' command succeeds.
   /// </summary>
   [Fact]
-  public async Task KSailSOPSList_WithNoLocalAgeKeys_Succeeds()
+  public async Task KSailSOPSList_Succeeds()
   {
     //Arrange
     var console = new TestConsole();
