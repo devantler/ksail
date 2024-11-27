@@ -31,7 +31,7 @@
     <PackageReference Include="Devantler.KubernetesGenerator.Kustomize" Version="0.1.12" />
     <PackageReference Include="Devantler.KubernetesGenerator.Native" Version="0.1.12" />
     <PackageReference Include="Devantler.KubernetesProvisioner.Cluster.K3d" Version="1.0.6" />
-    <PackageReference Include="Devantler.KubernetesProvisioner.Cluster.Kind" Version="1.0.4" />
+    <PackageReference Include="Devantler.KubernetesProvisioner.Cluster.Kind" Version="1.0.7" />
     <PackageReference Include="Devantler.KubernetesProvisioner.GitOps.Flux" Version="1.0.6" />
     <PackageReference Include="Devantler.KubernetesValidator.ClientSide.Schemas" Version="1.0.2" />
     <PackageReference Include="Devantler.KubernetesValidator.ClientSide.YamlSyntax" Version="1.0.2" />
