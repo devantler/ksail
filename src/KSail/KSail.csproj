@@ -28,7 +28,7 @@
     <PackageReference Include="Devantler.KubernetesGenerator.Flux" Version="0.1.12" />
     <PackageReference Include="Devantler.KubernetesGenerator.K3d" Version="0.1.12" />
     <PackageReference Include="Devantler.KubernetesGenerator.Kind" Version="1.0.0" />
-    <PackageReference Include="Devantler.KubernetesGenerator.Kustomize" Version="0.1.12" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Kustomize" Version="1.0.0" />
     <PackageReference Include="Devantler.KubernetesGenerator.Native" Version="1.0.0" />
     <PackageReference Include="Devantler.KubernetesProvisioner.Cluster.K3d" Version="1.0.8" />
     <PackageReference Include="Devantler.KubernetesProvisioner.Cluster.Kind" Version="1.0.8" />
