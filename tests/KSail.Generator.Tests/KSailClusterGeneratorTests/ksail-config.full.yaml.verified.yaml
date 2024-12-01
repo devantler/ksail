@@ -12,6 +12,11 @@ spec:
     manifestsDirectory: ./k8s
     kustomizationDirectory: ./clusters/my-cluster/flux-system
     configPath: ./k3d-config.yaml
+    kustomizeFlows:
+    - apps
+    - infrastructure
+    - infrastructure/controllers
+    kustomizeHooks: []
     distribution: k3d
     gitOpsTool: flux
     containerEngine: docker
@@ -77,11 +82,6 @@ spec:
       postBuildVariables: true
       outputDirectory: ./
       template: simple
-      kustomizeFlows:
-      - apps
-      - infrastructure
-      - infrastructure/controllers
-      kustomizeHooks: []
     lintOptions: {}
     listOptions:
       all: false
