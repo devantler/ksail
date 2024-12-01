@@ -27,8 +27,6 @@ KSail supports all major operating systems:
 
 - MacOS (x64 and arm64)
 - Linux (x64 and arm64)
-- Windows (x64 and partially arm64)
-  - Or WSL2
 
 ### Installation
 

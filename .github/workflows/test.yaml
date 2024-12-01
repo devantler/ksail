@@ -18,12 +18,17 @@ jobs:
   test:
     strategy:
       matrix:
-        os: [ubuntu-latest] # windows-latest, macos-latest does not work with dind yet
+        # 'macos-latest' does not support nested virtualization yet.
+        # when it does the pipeline should be updated to use it.
+        os: [ubuntu-latest, macos-13]
     runs-on: ${{ matrix.os }}
     if: github.event.pull_request.draft == false
     steps:
       - name: 📑 Checkout
         uses: actions/checkout@v4
+      - name: 🐳 Setup Docker
+        uses: crazy-max/ghaction-setup-docker@v3
+        if: matrix.os == 'macos-13'
       - name: ⚙️ Setup .NET
         uses: actions/setup-dotnet@v4
         with:
