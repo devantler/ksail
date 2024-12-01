@@ -27,8 +27,9 @@ jobs:
       - name: 📑 Checkout
         uses: actions/checkout@v4
       - name: 🐳 Setup Docker
-        uses: docker-practice/actions-setup-docker@master
         if: matrix.os == 'macos-13'
+        uses: docker-practice/actions-setup-docker@master
+        timeout-minutes: 12
       - name: ⚙️ Setup .NET
         uses: actions/setup-dotnet@v4
         with:
