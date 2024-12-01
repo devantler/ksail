@@ -26,8 +26,8 @@ public static class ExceptionHandler
         return;
       Console.ForegroundColor = ConsoleColor.Red;
       Console.WriteLine($"✗ {ex.Message}");
-      if (ex.InnerException is not null)
-        Console.WriteLine($"  {ex.InnerException.Message}");
+      for (var inner = ex.InnerException; inner is not null; inner = inner.InnerException)
+        Console.WriteLine($"  {inner.Message}");
       Console.ResetColor();
     }
   }
