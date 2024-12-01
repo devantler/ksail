@@ -21,19 +21,24 @@ sealed class KSailStopCommand : Command
       var handler = new KSailStopCommandHandler(config);
       try
       {
-        Console.WriteLine("🛑 Stopping cluster");
+        Console.WriteLine($"🛑 Stopping cluster '{config.Spec.Project.Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-{config.Metadata.Name}'");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         if (context.ExitCode == 0)
         {
-          Console.WriteLine("👋 Cluster stopped");
+          Console.WriteLine("✔ Cluster stopped");
         }
         else
         {
-          Console.WriteLine("❌ Cluster could not be stopped");
+          throw new KSailException("Cluster could not be stopped");
         }
       }
       catch (OperationCanceledException)
       {
+        context.ExitCode = 1;
+      }
+      catch (KSailException ex)
+      {
+        ExceptionHandler.HandleException(ex);
         context.ExitCode = 1;
       }
     });

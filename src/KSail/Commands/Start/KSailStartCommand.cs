@@ -20,19 +20,24 @@ sealed class KSailStartCommand : Command
         var config = await KSailClusterConfigLoader.LoadAsync(name: context.ParseResult.GetValueForOption(_nameOption)).ConfigureAwait(false);
         config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
 
-        Console.WriteLine("🟢 Starting cluster");
+        Console.WriteLine($"🟢 Starting cluster '{config.Spec.Project.Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-{config.Metadata.Name}'");
         var handler = new KSailStartCommandHandler(config);
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         if (context.ExitCode == 0)
         {
-          Console.WriteLine("🚀 Cluster started");
+          Console.WriteLine("✔ Cluster started");
         }
         else
         {
-          Console.WriteLine("❌ Cluster could not be started");
+          throw new KSailException("Cluster could not be started");
         }
       }
       catch (OperationCanceledException ex)
+      {
+        ExceptionHandler.HandleException(ex);
+        context.ExitCode = 1;
+      }
+      catch (KSailException ex)
       {
         ExceptionHandler.HandleException(ex);
         context.ExitCode = 1;
