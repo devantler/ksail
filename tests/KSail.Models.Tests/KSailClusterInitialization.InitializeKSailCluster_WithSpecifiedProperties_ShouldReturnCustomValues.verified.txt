@@ -14,6 +14,11 @@
       ManifestsDirectory: ./k8s,
       KustomizationDirectory: ./clusters/my-cluster/flux-system,
       ConfigPath: ./k3d-config.yaml,
+      KustomizeFlows: [
+        apps,
+        infrastructure,
+        infrastructure/controllers
+      ],
       Sops: true
     },
     Registries: [
@@ -89,12 +94,7 @@
         Components: true,
         HelmReleases: true,
         PostBuildVariables: true,
-        OutputDirectory: ./,
-        KustomizeFlows: [
-          apps,
-          infrastructure,
-          infrastructure/controllers
-        ]
+        OutputDirectory: ./
       },
       LintOptions: {},
       ListOptions: {

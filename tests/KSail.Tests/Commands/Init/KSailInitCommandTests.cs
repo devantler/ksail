@@ -7,7 +7,6 @@ namespace KSail.Tests.Commands.Init;
 /// <summary>
 /// Tests for the <see cref="KSailInitCommand"/> class.
 /// </summary>
-[Collection("KSail.Tests")]
 public class KSailInitCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>

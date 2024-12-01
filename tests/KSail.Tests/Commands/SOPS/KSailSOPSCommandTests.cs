@@ -7,7 +7,6 @@ namespace KSail.Tests.Commands.SOPS;
 /// <summary>
 /// Tests for the <see cref="KSailSOPSCommand"/> class.
 /// </summary>
-[Collection("KSail.Tests")]
 public class KSailSOPSCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>

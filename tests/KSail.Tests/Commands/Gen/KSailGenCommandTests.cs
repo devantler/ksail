@@ -7,7 +7,6 @@ namespace KSail.Tests.Commands.Gen;
 /// <summary>
 /// Tests for the <see cref="KSailGenCommand"/> class.
 /// </summary>
-[Collection("KSail.Tests")]
 public class KSailGenCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>

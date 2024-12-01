@@ -14,6 +14,11 @@
       ManifestsDirectory: ./k8s,
       KustomizationDirectory: ./k8s/clusters/ksail-default/flux-system,
       ConfigPath: kind-config.yaml,
+      KustomizeFlows: [
+        apps,
+        infrastructure,
+        infrastructure/controllers
+      ],
       Distribution: kind,
       Sops: false
     },
@@ -90,12 +95,7 @@
         Components: false,
         HelmReleases: false,
         PostBuildVariables: false,
-        OutputDirectory: ./,
-        KustomizeFlows: [
-          apps,
-          infrastructure,
-          infrastructure/controllers
-        ]
+        OutputDirectory: ./
       },
       LintOptions: {},
       ListOptions: {

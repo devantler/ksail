@@ -6,7 +6,7 @@ using KSail.Commands.Start;
 using KSail.Commands.Stop;
 using KSail.Commands.Up;
 
-namespace KSail.Tests.Commands.Start;
+namespace KSail.Tests.Commands.StartStop;
 
 /// <summary>
 /// Tests for the <see cref="KSailStartCommand"/> class.
@@ -38,10 +38,28 @@ public class KSailStartCommandTests : IAsyncLifetime
   }
 
   /// <summary>
+  /// Tests that the 'ksail stop --help'
+  /// </summary>
+  [Fact]
+  public async Task KSailStopHelp_SucceedsAndPrintsIntroductionAndHelp()
+  {
+    //Arrange
+    var console = new TestConsole();
+    var ksailCommand = new KSailStopCommand();
+
+    //Act
+    int exitCode = await ksailCommand.InvokeAsync("--help", console);
+
+    //Assert
+    Assert.Equal(0, exitCode);
+    _ = await Verify(console.Error.ToString() + console.Out);
+  }
+
+  /// <summary>
   /// Tests that a default cluster is created, and the 'ksail up' command is executed successfully.
   /// </summary>
   [Fact]
-  public async Task KSailStart_WithDefaultOptions_SucceedsAndCreatesDefaultCluster()
+  public async Task KSailStartStop_WithDefaultOptions_SucceedsAndCreatesDefaultCluster()
   {
     //Cleanup
     if (Directory.Exists("k8s"))
