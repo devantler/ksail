@@ -1,8 +1,6 @@
 using System.Text;
 using Devantler.KubernetesGenerator.K3d;
 using Devantler.KubernetesGenerator.K3d.Models;
-using Devantler.KubernetesGenerator.K3d.Models.Options;
-using Devantler.KubernetesGenerator.K3d.Models.Options.K3s;
 using Devantler.KubernetesGenerator.K3d.Models.Registries;
 using Devantler.KubernetesGenerator.Kind;
 using Devantler.KubernetesGenerator.Kind.Models;
