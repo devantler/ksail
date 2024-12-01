@@ -34,7 +34,7 @@ public class KSailUpCommandTests : IAsyncLifetime
       File.Delete("k3d-config.yaml");
     if (File.Exists("ksail-config.yaml"))
       File.Delete("ksail-config.yaml");
-    if (!string.IsNullOrEmpty(".sops.yaml"))
+    if (File.Exists(".sops.yaml"))
       File.Delete(".sops.yaml");
     return Task.CompletedTask;
   }
