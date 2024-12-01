@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@v4
       - name: 🐳 Setup Docker
         uses: crazy-max/ghaction-setup-docker@v3
-        if: matrix.os == 'macos-latest'
+        if: matrix.os == 'macos-13' || matrix.os == 'windows-latest'
       - name: ⚙️ Setup .NET
         uses: actions/setup-dotnet@v4
         with:
