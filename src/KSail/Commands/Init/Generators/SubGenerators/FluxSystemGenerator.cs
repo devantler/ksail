@@ -21,14 +21,14 @@ class FluxSystemGenerator
     if (!Directory.Exists(outputDirectory))
       _ = Directory.CreateDirectory(outputDirectory);
     await GenerateFluxSystemKustomization(config, outputDirectory, cancellationToken).ConfigureAwait(false);
-    foreach (string flow in config.Spec.CLI.InitOptions.KustomizeFlows)
+    foreach (string flow in config.Spec.Project.KustomizeFlows)
     {
       List<FluxDependsOn> dependsOn = [];
-      dependsOn = config.Spec.CLI.InitOptions.PostBuildVariables && !config.Spec.CLI.InitOptions.KustomizeFlows.IsNullOrEmpty()
-        ? config.Spec.CLI.InitOptions.KustomizeFlows.Last() == flow
+      dependsOn = config.Spec.CLI.InitOptions.PostBuildVariables && !config.Spec.Project.KustomizeFlows.IsNullOrEmpty()
+        ? config.Spec.Project.KustomizeFlows.Last() == flow
           ? ([new FluxDependsOn { Name = "variables" }])
-          : config.Spec.CLI.InitOptions.KustomizeFlows.Reverse().TakeWhile(f => f != flow).Select(f => new FluxDependsOn { Name = f.Replace('/', '-') }).TakeLast(1).ToList()
-        : config.Spec.CLI.InitOptions.KustomizeFlows.Reverse().TakeWhile(f => f != flow).Select(f => new FluxDependsOn { Name = f.Replace('/', '-') }).TakeLast(1).ToList();
+          : config.Spec.Project.KustomizeFlows.Reverse().TakeWhile(f => f != flow).Select(f => new FluxDependsOn { Name = f.Replace('/', '-') }).TakeLast(1).ToList()
+        : config.Spec.Project.KustomizeFlows.Reverse().TakeWhile(f => f != flow).Select(f => new FluxDependsOn { Name = f.Replace('/', '-') }).TakeLast(1).ToList();
 
       await GenerateFluxSystemFluxKustomization(config, outputDirectory, flow, dependsOn, cancellationToken).ConfigureAwait(false);
     }
@@ -49,7 +49,7 @@ class FluxSystemGenerator
     Console.WriteLine($"✚ generating '{outputDirectory}'");
     var kustomization = new KustomizeKustomization
     {
-      Resources = config.Spec.CLI.InitOptions.KustomizeFlows.Select(flow => $"{flow.Replace('/', '-')}.yaml").ToList(),
+      Resources = config.Spec.Project.KustomizeFlows.Select(flow => $"{flow.Replace('/', '-')}.yaml").ToList(),
       Components = config.Spec.CLI.InitOptions.Components ?
         [
           "../../../components/flux-kustomization-post-build-variables-label",
@@ -106,7 +106,7 @@ class FluxSystemGenerator
           Kind = FluxSource.OCIRepository,
           Name = "flux-system"
         },
-        Path = config.Spec.CLI.InitOptions.KustomizeHooks.IsNullOrEmpty() ? flow : $"{config.Spec.CLI.InitOptions.KustomizeHooks.First()}/{flow}",
+        Path = config.Spec.Project.KustomizeHooks.IsNullOrEmpty() ? flow : $"{config.Spec.Project.KustomizeHooks.First()}/{flow}",
         Prune = true,
         Wait = true,
         Decryption = config.Spec.Project.Sops && !config.Spec.CLI.InitOptions.Components ?
@@ -144,7 +144,7 @@ class FluxSystemGenerator
         Name = $"variables-sensitive-cluster"
       }
     };
-    foreach (string hook in config.Spec.CLI.InitOptions.KustomizeHooks)
+    foreach (string hook in config.Spec.Project.KustomizeHooks)
     {
       substituteList.Add(new FluxKustomizationSpecPostBuildSubstituteFrom
       {

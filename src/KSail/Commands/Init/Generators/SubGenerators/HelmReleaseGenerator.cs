@@ -24,8 +24,8 @@ class HelmReleaseGenerator
 
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    string appsPath = Path.Combine(config.Spec.Project.ManifestsDirectory, config.Spec.CLI.InitOptions.KustomizeHooks.Last(), "apps");
-    string infrastructurePath = Path.Combine(config.Spec.Project.ManifestsDirectory, config.Spec.CLI.InitOptions.KustomizeHooks.Last(), "infrastructure");
+    string appsPath = Path.Combine(config.Spec.Project.ManifestsDirectory, config.Spec.Project.KustomizeHooks.Last(), "apps");
+    string infrastructurePath = Path.Combine(config.Spec.Project.ManifestsDirectory, config.Spec.Project.KustomizeHooks.Last(), "infrastructure");
     string infrastructureControllersPath = Path.Combine(infrastructurePath, "controllers");
     if (!Directory.Exists(appsPath))
       _ = Directory.CreateDirectory(appsPath);

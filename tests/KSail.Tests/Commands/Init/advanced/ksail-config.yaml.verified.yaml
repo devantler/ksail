@@ -12,6 +12,11 @@ spec:
     manifestsDirectory: ./k8s
     kustomizationDirectory: ./k8s/clusters/ksail-default/flux-system
     configPath: ./kind-config.yaml
+    kustomizeFlows:
+    - apps
+    - infrastructure
+    - infrastructure/controllers
+    kustomizeHooks: []
     distribution: kind
     gitOpsTool: flux
     containerEngine: docker
@@ -77,11 +82,6 @@ spec:
       postBuildVariables: true
       outputDirectory: {TempPath}ksail-init-advanced
       template: simple
-      kustomizeFlows:
-      - apps
-      - infrastructure
-      - infrastructure/controllers
-      kustomizeHooks: []
     lintOptions: {}
     listOptions:
       all: false
