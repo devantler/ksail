@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@v4
       - name: 🐳 Setup Docker
         if: matrix.os == 'macos-13'
-        uses: docker-practice/actions-setup-docker@master
+        uses: douglascamata/setup-docker-macos-action@v1-alpha.14
         timeout-minutes: 12
       - name: ⚙️ Setup .NET
         uses: actions/setup-dotnet@v4
