@@ -34,14 +34,4 @@ public class KSailCLIInitOptions
   /// The template to use for the generated output.
   /// </summary>
   public KSailCLIInitTemplate Template { get; set; } = KSailCLIInitTemplate.Simple;
-
-  /// <summary>
-  /// The different Kustomizations to generate. First depends on the second, and so on.
-  /// </summary>
-  public IEnumerable<string> KustomizeFlows { get; set; } = ["apps", "infrastructure", "infrastructure/controllers"];
-
-  /// <summary>
-  /// The different places that it should be able to hook into the Kustomization flows. For example per cluster or distribution.
-  /// </summary>
-  public IEnumerable<string> KustomizeHooks { get; set; } = [];
 }

@@ -21,6 +21,16 @@ public class KSailProjectOptions
   public string ConfigPath { get; set; } = "kind-config.yaml";
 
   /// <summary>
+  /// The different Kustomizations to generate. First depends on the second, and so on.
+  /// </summary>
+  public IEnumerable<string> KustomizeFlows { get; set; } = ["apps", "infrastructure", "infrastructure/controllers"];
+
+  /// <summary>
+  /// The different places that it should be able to hook into the Kustomization flows. For example per cluster or distribution.
+  /// </summary>
+  public IEnumerable<string> KustomizeHooks { get; set; } = [];
+
+  /// <summary>
   /// The Kubernetes distribution to use.
   /// </summary>
   public KSailKubernetesDistribution Distribution { get; set; } = KSailKubernetesDistribution.Kind;

@@ -67,7 +67,7 @@ class ComponentsGenerator
         }
       ]
     };
-    foreach (string hook in config.Spec.CLI.InitOptions.KustomizeHooks.Skip(1))
+    foreach (string hook in config.Spec.Project.KustomizeHooks.Skip(1))
     {
       fluxKustomizationPostBuildVariablesLabelComponent.Patches.First().Patch += $"{Environment.NewLine}    - kind: ConfigMap";
       fluxKustomizationPostBuildVariablesLabelComponent.Patches.First().Patch += $"{Environment.NewLine}      name: variables-{hook}";
