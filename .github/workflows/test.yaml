@@ -18,12 +18,15 @@ jobs:
   test:
     strategy:
       matrix:
-        os: [ubuntu-latest] # windows-latest, macos-latest does not work with dind yet
+        os: [ubuntu-latest, macos-latest] # windows-latest, macos-latest does not work with dind yet
     runs-on: ${{ matrix.os }}
     if: github.event.pull_request.draft == false
     steps:
       - name: 📑 Checkout
         uses: actions/checkout@v4
+      - name: 🐳 Setup Docker
+        uses: douglascamata/setup-docker-macos-action@v1-alpha.14
+        if: matrix.os == 'macos-latest'
       - name: ⚙️ Setup .NET
         uses: actions/setup-dotnet@v4
         with:

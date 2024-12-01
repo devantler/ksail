@@ -1,13 +1,13 @@
 using System.CommandLine;
 using System.CommandLine.IO;
-using KSail.Commands.Update;
+using KSail.Commands.Stop;
 
-namespace KSail.Tests.Commands.Update;
+namespace KSail.Tests.Commands.Stop;
 
 /// <summary>
-/// Tests for the <see cref="KSailUpdateCommand"/> class.
+/// Tests for the <see cref="KSailStopCommand"/> class.
 /// </summary>
-public class KSailUpdateCommandTests : IAsyncLifetime
+public class KSailStopCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
   public Task DisposeAsync() => Task.CompletedTask;
@@ -15,14 +15,14 @@ public class KSailUpdateCommandTests : IAsyncLifetime
   public Task InitializeAsync() => Task.CompletedTask;
 
   /// <summary>
-  /// Tests that the 'ksail update --help'
+  /// Tests that the 'ksail stop --help'
   /// </summary>
   [Fact]
-  public async Task KSailUpdateHelp_SucceedsAndPrintsIntroductionAndHelp()
+  public async Task KSailStopHelp_SucceedsAndPrintsIntroductionAndHelp()
   {
     //Arrange
     var console = new TestConsole();
-    var ksailCommand = new KSailUpdateCommand();
+    var ksailCommand = new KSailStopCommand();
 
     //Act
     int exitCode = await ksailCommand.InvokeAsync("--help", console);
