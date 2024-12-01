@@ -149,7 +149,7 @@ class KSailUpCommandHandler
 
   async Task ProvisionCluster(CancellationToken cancellationToken = default)
   {
-    Console.WriteLine($"🚀 Provisioning cluster '{_config.Metadata.Name}'");
+    Console.WriteLine($"🚀 Provisioning cluster '{_config.Spec.Project.Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-{_config.Metadata.Name}'");
     await _clusterProvisioner.ProvisionAsync(_config.Metadata.Name, _config.Spec.Project.ConfigPath, cancellationToken).ConfigureAwait(false);
     Console.WriteLine();
   }
