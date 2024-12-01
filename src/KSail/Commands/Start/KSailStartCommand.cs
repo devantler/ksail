@@ -29,7 +29,7 @@ sealed class KSailStartCommand : Command
         }
         else
         {
-          throw new KSailException("❌ Cluster could not be started");
+          throw new KSailException("Cluster could not be started");
         }
       }
       catch (OperationCanceledException ex)

@@ -29,7 +29,7 @@ sealed class KSailStopCommand : Command
         }
         else
         {
-          throw new KSailException("❌ Cluster could not be stopped");
+          throw new KSailException("Cluster could not be stopped");
         }
       }
       catch (OperationCanceledException)
