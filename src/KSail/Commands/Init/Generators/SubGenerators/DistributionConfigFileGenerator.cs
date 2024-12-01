@@ -70,21 +70,6 @@ class DistributionConfigFileGenerator
       {
         Name = config.Metadata.Name
       },
-      Options = new K3dOptions
-      {
-        K3s = new K3dOptionsK3s
-        {
-          ExtraArgs = [
-            new K3dOptionsK3sExtraArg
-            {
-              Arg = "--disable=traefik",
-              NodeFilters = [
-                "server:*"
-              ]
-            }
-          ]
-        }
-      },
       Registries = new K3dRegistries
       {
         Config = $"""
