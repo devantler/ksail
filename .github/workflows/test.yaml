@@ -27,7 +27,7 @@ jobs:
       - name: 📑 Checkout
         uses: actions/checkout@v4
       - name: 🐳 Setup Docker
-        uses: docker-practice/actions-setup-docker@master
+        uses: crazy-max/ghaction-setup-docker@v3
         if: matrix.os == 'macos-15'
       - name: ⚙️ Setup .NET
         uses: actions/setup-dotnet@v4
