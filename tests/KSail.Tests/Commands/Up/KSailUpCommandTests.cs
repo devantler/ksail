@@ -63,9 +63,9 @@ public class KSailUpCommandTests : IAsyncLifetime
   [Theory]
   [InlineData("")]
   [InlineData("-d kind")]
-  [InlineData("--name ksail-advanced-kind --distribution kind --components --sops --post-build-variables --helm-releases")]
+  [InlineData("--name ksail-advanced-kind --distribution kind --components --sops --post-build-variables")]
   [InlineData("-d k3d")]
-  [InlineData("--name ksail-advanced-k3d --distribution k3d --components --sops --post-build-variables --helm-releases")]
+  [InlineData("--name ksail-advanced-k3d --distribution k3d --components --sops --post-build-variables")]
   public async Task KSailUp_WithVariousConfigurations_Succeeds(string initArgs)
   {
     //Arrange

@@ -97,7 +97,7 @@ public class KSailInitCommandTests : IAsyncLifetime
     _ = Directory.CreateDirectory(outputPath);
 
     //Act
-    int exitCode = await ksailCommand.InvokeAsync($"--output {outputPath} --components --post-build-variables --sops --helm-releases");
+    int exitCode = await ksailCommand.InvokeAsync($"--output {outputPath} --components --post-build-variables --sops");
 
     //Assert
     Assert.Equal(0, exitCode);
