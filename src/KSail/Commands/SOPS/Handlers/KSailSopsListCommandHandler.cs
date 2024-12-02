@@ -20,7 +20,7 @@ class KSailSOPSListCommandHandler(KSailCluster config)
       if (!keys.Any(key => sopsConfig.CreationRules.Any(rule => rule.Age == key.PublicKey)))
       {
         Console.WriteLine("No keys found");
-        return false;
+        return true;
       }
       foreach (var key in keys.Where(key => sopsConfig.CreationRules.Any(rule => rule.Age == key.PublicKey)))
       {
@@ -40,7 +40,7 @@ class KSailSOPSListCommandHandler(KSailCluster config)
       if (!keys.Any())
       {
         Console.WriteLine("No keys found");
-        return false;
+        return true;
       }
       foreach (var key in keys)
       {
