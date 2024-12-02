@@ -23,7 +23,7 @@
 >
 > </details>
 
-KSail supports all major operating systems:
+KSail supports the following operating systems:
 
 - MacOS (x64 and arm64)
 - Linux (x64 and arm64)
