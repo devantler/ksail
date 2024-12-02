@@ -78,7 +78,6 @@ spec:
     initOptions:
       declarativeConfig: true
       components: false
-      helmReleases: false
       postBuildVariables: false
       outputDirectory: {TempPath}ksail-init-simple
       template: simple

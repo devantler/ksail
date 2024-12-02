@@ -13,7 +13,6 @@ sealed class KSailInitCommand : Command
   readonly DeclarativeConfigOption _declarativeConfigOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly DistributionOption _distributionOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly GitOpsToolOption _gitOpsToolOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly HelmReleasesOption _helmReleasesOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly OutputDirectoryOption _outputDirectoryOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly SOPSOption _sopsOption = new() { Arity = ArgumentArity.ZeroOrOne };
@@ -37,7 +36,6 @@ sealed class KSailInitCommand : Command
         config.UpdateConfig("Spec.CLI.InitOptions.DeclarativeConfig", context.ParseResult.GetValueForOption(_declarativeConfigOption));
         config.UpdateConfig("Spec.CLI.InitOptions.PostBuildVariables", context.ParseResult.GetValueForOption(_postBuildVariablesOption));
         config.UpdateConfig("Spec.CLI.InitOptions.Components", context.ParseResult.GetValueForOption(_componentsOption));
-        config.UpdateConfig("Spec.CLI.InitOptions.HelmReleases", context.ParseResult.GetValueForOption(_helmReleasesOption));
         config.UpdateConfig("Spec.CLI.InitOptions.Template", context.ParseResult.GetValueForOption(_templateOption));
 
         var handler = new KSailInitCommandHandler(config);
@@ -65,7 +63,6 @@ sealed class KSailInitCommand : Command
     AddOption(_postBuildVariablesOption);
     AddOption(_componentsOption);
     AddOption(_distributionOption);
-    AddOption(_helmReleasesOption);
     AddOption(_outputDirectoryOption);
     AddOption(_sopsOption);
     AddOption(_templateOption);
