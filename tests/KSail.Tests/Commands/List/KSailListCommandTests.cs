@@ -7,7 +7,6 @@ namespace KSail.Tests.Commands.List;
 /// <summary>
 /// Tests for the <see cref="KSailListCommand"/> class.
 /// </summary>
-[Collection("KSail.Tests")]
 public class KSailListCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
@@ -31,21 +30,5 @@ public class KSailListCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(0, exitCode);
     _ = await Verify(console.Error.ToString() + console.Out);
-  }
-
-  /// <summary>
-  /// Tests that the 'ksail list' command succeeds when given a valid path.
-  /// </summary>
-  [Fact]
-  public async Task KSailList_Succeeds()
-  {
-    //Arrange
-    var ksailCommand = new KSailListCommand();
-
-    //Act
-    int exitCode = await ksailCommand.InvokeAsync("");
-
-    //Assert
-    Assert.Equal(0, exitCode);
   }
 }

@@ -2,6 +2,7 @@ using System.CommandLine;
 using System.CommandLine.IO;
 using KSail.Commands.Down;
 using KSail.Commands.Init;
+using KSail.Commands.List;
 using KSail.Commands.Start;
 using KSail.Commands.Stop;
 using KSail.Commands.Up;
@@ -71,6 +72,7 @@ public class KSailUpCommandTests : IAsyncLifetime
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();
+    var ksailListCommand = new KSailListCommand();
     var ksailStopCommand = new KSailStopCommand();
     var ksailStartCommand = new KSailStartCommand();
     var ksailUpdateCommand = new KSailUpdateCommand();
@@ -79,6 +81,7 @@ public class KSailUpCommandTests : IAsyncLifetime
     //Act
     int initExitCode = await ksailInitCommand.InvokeAsync(initArgs);
     int upExitCode = await ksailUpCommand.InvokeAsync("--destroy");
+    int listExitCode = await ksailListCommand.InvokeAsync("");
     int stopExitCode = await ksailStopCommand.InvokeAsync("");
     int startExitCode = await ksailStartCommand.InvokeAsync("");
     int updateExitCode = await ksailUpdateCommand.InvokeAsync("");
@@ -87,6 +90,7 @@ public class KSailUpCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, upExitCode);
+    Assert.Equal(0, listExitCode);
     Assert.Equal(0, stopExitCode);
     Assert.Equal(0, startExitCode);
     Assert.Equal(0, updateExitCode);
