@@ -1,8 +1,6 @@
 using System.Text;
 using Devantler.KubernetesGenerator.K3d;
 using Devantler.KubernetesGenerator.K3d.Models;
-using Devantler.KubernetesGenerator.K3d.Models.Options;
-using Devantler.KubernetesGenerator.K3d.Models.Options.K3s;
 using Devantler.KubernetesGenerator.K3d.Models.Registries;
 using Devantler.KubernetesGenerator.Kind;
 using Devantler.KubernetesGenerator.Kind.Models;
@@ -69,21 +67,6 @@ class DistributionConfigFileGenerator
       Metadata = new V1ObjectMeta
       {
         Name = config.Metadata.Name
-      },
-      Options = new K3dOptions
-      {
-        K3s = new K3dOptionsK3s
-        {
-          ExtraArgs = [
-            new K3dOptionsK3sExtraArg
-            {
-              Arg = "--disable=traefik",
-              NodeFilters = [
-                "server:*"
-              ]
-            }
-          ]
-        }
       },
       Registries = new K3dRegistries
       {
