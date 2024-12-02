@@ -16,11 +16,6 @@ public class KSailCLIInitOptions
   public bool Components { get; set; }
 
   /// <summary>
-  /// Whether to include Helm Releases in the generated output.
-  /// </summary>
-  public bool HelmReleases { get; set; }
-
-  /// <summary>
   /// Whether to include post build variables in the generated output (flux feature).
   /// </summary>
   public bool PostBuildVariables { get; set; }

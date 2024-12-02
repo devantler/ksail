@@ -93,7 +93,6 @@
       InitOptions: {
         DeclarativeConfig: true,
         Components: false,
-        HelmReleases: false,
         PostBuildVariables: false,
         OutputDirectory: ./
       },

@@ -138,7 +138,6 @@ public class KSailClusterInitialization
           {
             Template = KSailCLIInitTemplate.Simple,
             Components = true,
-            HelmReleases = true,
             PostBuildVariables = true
           },
           LintOptions = new KSailCLILintOptions

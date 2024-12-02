@@ -78,7 +78,6 @@ spec:
     initOptions:
       declarativeConfig: true
       components: true
-      helmReleases: true
       postBuildVariables: true
       outputDirectory: ./
       template: simple

@@ -75,9 +75,7 @@ class KustomizeFlowGenerator
       kustomization = currentHook == config.Spec.Project.KustomizeHooks.Last()
         ? new KustomizeKustomization
         {
-          Resources = config.Spec.CLI.InitOptions.HelmReleases && currentFlow == "infrastructure/controllers" ? ["cert-manager", "traefik"] :
-                config.Spec.CLI.InitOptions.HelmReleases && currentFlow == "infrastructure" ? ["certificates", "cluster-issuers"] :
-                  config.Spec.CLI.InitOptions.HelmReleases && currentFlow == "apps" ? ["podinfo"] : [],
+          Resources = [],
           Components = config.Spec.CLI.InitOptions.Components ?
               [
                 Path.Combine(relativeRoot, "components/helm-release-crds-label"),

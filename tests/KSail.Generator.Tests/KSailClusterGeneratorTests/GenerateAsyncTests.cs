@@ -131,7 +131,6 @@ public class GenerateAsyncTests
           {
             Template = KSailCLIInitTemplate.Simple,
             Components = true,
-            HelmReleases = true,
             PostBuildVariables = true
           },
           LintOptions = new KSailCLILintOptions

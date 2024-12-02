@@ -93,7 +93,6 @@ Options:
   -pbv, --post-build-variables   Generate ConfigMaps and Secrets for flux post-build-variables.
   -c, --components               Generate components to reduce duplication.
   -d, --distribution <K3d|Kind>  The distribution to use for the cluster.
-  -hr, --helm-releases           Generate Helm releases for Traefik, Cert-Manager, and PodInfo.
   -o, --output <output>          Location to place the generated cluster output.
   -s, --sops                     Enable SOPS support.
   -t, --template <Simple>        The template to use for the initialized cluster.
