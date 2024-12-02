@@ -1,16 +1,12 @@
 // using System.CommandLine;
-// using KSail.Options;
 // using KSail.Utils;
 
 // namespace KSail.Commands.SOPS.Commands;
 
-// sealed class KSailSOPSEncryptCommand : Command
+// sealed class KSailSOPSRemoveCommand : Command
 // {
-//   readonly PathOption _pathOption = new("File to encrypt");
-//   internal KSailSOPSEncryptCommand() : base("encrypt", "Encrypt a file")
+//   internal KSailSOPSRemoveCommand() : base("rm", "Remove a key")
 //   {
-//     AddOption(_pathOption);
-
 //     this.SetHandler(async (context) =>
 //     {
 //       try

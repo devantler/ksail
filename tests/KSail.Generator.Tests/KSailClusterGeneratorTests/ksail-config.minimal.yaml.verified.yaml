@@ -86,7 +86,7 @@ spec:
       all: false
     sopsOptions:
       listOptions:
-        showPublicKey: true
+        showSOPSConfigKeysOnly: false
         showPrivateKey: true
       editOptions: {}
       encryptOptions: {}

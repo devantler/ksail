@@ -102,7 +102,7 @@
       },
       SopsOptions: {
         ListOptions: {
-          ShowPublicKey: true,
+          ShowSOPSConfigKeysOnly: false,
           ShowPrivateKey: true
         },
         EditOptions: {},

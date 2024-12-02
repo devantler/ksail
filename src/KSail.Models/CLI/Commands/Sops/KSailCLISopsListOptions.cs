@@ -6,9 +6,9 @@ namespace KSail.Models.CLI.Commands.Sops;
 public class KSailCLISopsListOptions
 {
   /// <summary>
-  /// Whether to show the public key in the listed keys.
+  /// Whether to only show keys found in the SOPS config file.
   /// </summary>
-  public bool ShowPublicKey { get; set; } = true;
+  public bool ShowSOPSConfigKeysOnly { get; set; } = false;
 
   /// <summary>
   /// Whether to show the private key in the listed keys.
