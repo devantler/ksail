@@ -4,6 +4,7 @@ using KSail.Commands.Init.Options;
 using KSail.Models.Project;
 using KSail.Options;
 using KSail.Utils;
+using YamlDotNet.Core;
 
 namespace KSail.Commands.Init;
 
@@ -42,6 +43,11 @@ sealed class KSailInitCommand : Command
         Console.WriteLine($"📁 Initializing new cluster '{config.Metadata.Name}' in '{config.Spec.CLI.InitOptions.OutputDirectory}' with the '{config.Spec.CLI.InitOptions.Template}' template.");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         Console.WriteLine();
+      }
+      catch (YamlException ex)
+      {
+        ExceptionHandler.HandleException(ex);
+        context.ExitCode = 1;
       }
       catch (OperationCanceledException ex)
       {

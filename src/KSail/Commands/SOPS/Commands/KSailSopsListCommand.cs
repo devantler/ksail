@@ -2,6 +2,7 @@ using System.CommandLine;
 using KSail.Commands.SOPS.Handlers;
 using KSail.Commands.SOPS.Options;
 using KSail.Utils;
+using YamlDotNet.Core;
 
 namespace KSail.Commands.SOPS.Commands;
 
@@ -28,6 +29,11 @@ sealed class KSailSOPSListCommand : Command
         Console.WriteLine("🔑 Listing keys");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;
         Console.WriteLine();
+      }
+      catch (YamlException ex)
+      {
+        ExceptionHandler.HandleException(ex);
+        context.ExitCode = 1;
       }
       catch (OperationCanceledException ex)
       {

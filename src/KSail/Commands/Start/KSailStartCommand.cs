@@ -2,6 +2,7 @@ using System.CommandLine;
 using KSail.Commands.Start.Handlers;
 using KSail.Options;
 using KSail.Utils;
+using YamlDotNet.Core;
 
 namespace KSail.Commands.Start;
 
@@ -32,12 +33,17 @@ sealed class KSailStartCommand : Command
           throw new KSailException("Cluster could not be started");
         }
       }
-      catch (OperationCanceledException ex)
+      catch (YamlException ex)
       {
         ExceptionHandler.HandleException(ex);
         context.ExitCode = 1;
       }
       catch (KSailException ex)
+      {
+        ExceptionHandler.HandleException(ex);
+        context.ExitCode = 1;
+      }
+      catch (OperationCanceledException ex)
       {
         ExceptionHandler.HandleException(ex);
         context.ExitCode = 1;

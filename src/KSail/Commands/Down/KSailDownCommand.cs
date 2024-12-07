@@ -5,6 +5,7 @@ using KSail.Commands.Down.Handlers;
 using KSail.Commands.Down.Options;
 using KSail.Options;
 using KSail.Utils;
+using YamlDotNet.Core;
 
 namespace KSail.Commands.Down;
 
@@ -33,7 +34,7 @@ sealed class KSailDownCommand : Command
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;
         Console.WriteLine();
       }
-      catch (OperationCanceledException ex)
+      catch (YamlException ex)
       {
         ExceptionHandler.HandleException(ex);
         context.ExitCode = 1;
@@ -44,6 +45,11 @@ sealed class KSailDownCommand : Command
         context.ExitCode = 1;
       }
       catch (K3dException ex)
+      {
+        ExceptionHandler.HandleException(ex);
+        context.ExitCode = 1;
+      }
+      catch (OperationCanceledException ex)
       {
         ExceptionHandler.HandleException(ex);
         context.ExitCode = 1;
