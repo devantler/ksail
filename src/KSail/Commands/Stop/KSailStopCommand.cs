@@ -2,6 +2,7 @@ using System.CommandLine;
 using KSail.Commands.Stop.Handlers;
 using KSail.Options;
 using KSail.Utils;
+using YamlDotNet.Core;
 
 namespace KSail.Commands.Stop;
 
@@ -32,13 +33,18 @@ sealed class KSailStopCommand : Command
           throw new KSailException("Cluster could not be stopped");
         }
       }
-      catch (OperationCanceledException)
+      catch (YamlException ex)
       {
+        ExceptionHandler.HandleException(ex);
         context.ExitCode = 1;
       }
       catch (KSailException ex)
       {
         ExceptionHandler.HandleException(ex);
+        context.ExitCode = 1;
+      }
+      catch (OperationCanceledException)
+      {
         context.ExitCode = 1;
       }
     });
