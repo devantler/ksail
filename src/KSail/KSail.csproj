@@ -26,7 +26,7 @@
     <PackageReference Include="Devantler.KubernetesGenerator.CertManager" Version="1.0.3" />
     <PackageReference Include="Devantler.KubernetesGenerator.Flux" Version="1.0.3" />
     <PackageReference Include="Devantler.KubernetesGenerator.K3d" Version="1.0.3" />
-    <PackageReference Include="Devantler.KubernetesGenerator.Kind" Version="1.0.1" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Kind" Version="1.0.3" />
     <PackageReference Include="Devantler.KubernetesProvisioner.Cluster.K3d" Version="1.0.17" />
     <PackageReference Include="Devantler.KubernetesProvisioner.Cluster.Kind" Version="1.0.17" />
     <PackageReference Include="Devantler.KubernetesProvisioner.GitOps.Flux" Version="1.0.17" />
