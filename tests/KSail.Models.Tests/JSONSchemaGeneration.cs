@@ -22,6 +22,6 @@ public class KSailClusterJSONSchemaGeneration
     // Act
     // Assert
     _ = await Verify(schema.ToString());
-    await File.WriteAllTextAsync("../../../../../../ksail-cluster-schema.json", schema.ToString());
+    await File.WriteAllTextAsync("../../../../../../schemas/ksail-cluster-schema.json", schema.ToString());
   }
 }
