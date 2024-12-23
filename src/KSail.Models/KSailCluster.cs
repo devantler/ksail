@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using k8s.Models;
 using KSail.Models.Project;
 
@@ -11,18 +12,22 @@ public class KSailCluster
   /// <summary>
   /// The API version where the KSail Cluster object is defined.
   /// </summary>
+  [Description("The API version where the KSail Cluster object is defined.")]
   public string ApiVersion { get; set; } = "ksail.io/v1alpha1";
   /// <summary>
   /// The KSail Cluster object kind.
   /// </summary>
+  [Description("The KSail Cluster object kind.")]
   public string Kind { get; set; } = "Cluster";
   /// <summary>
   /// The metadata of the KSail Cluster object.
   /// </summary>
+  [Description("The metadata of the KSail Cluster object.")]
   public V1ObjectMeta Metadata { get; set; } = new() { Name = "ksail-default" };
   /// <summary>
   /// The spec of the KSail Cluster object.
   /// </summary>
+  [Description("The spec of the KSail Cluster object.")]
   public KSailClusterSpec Spec { get; set; } = new();
 
   /// <summary>

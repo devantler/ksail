@@ -117,7 +117,7 @@ class KSailUpCommandHandler
     Console.WriteLine("🧮 Creating registries");
     foreach (var registry in config.Spec.Registries ?? [])
     {
-      if (registry.IsGitOpsOCISource)
+      if (registry.IsGitOpsSource)
       {
         Console.WriteLine($"► creating registry '{registry.Name}' on port '{registry.HostPort}' for GitOps OCI source");
       }
@@ -169,16 +169,16 @@ class KSailUpCommandHandler
     }, cancellationToken: cancellationToken).ConfigureAwait(false);
 
     await InitializeSOPSAgeSecret(config, resourceProvisioner, cancellationToken).ConfigureAwait(false);
-    string ociUrlOnHost = $"oci://localhost:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/{_config.Metadata.Name}";
+    string ociUrlOnHost = $"oci://localhost:{_config.Spec.Registries.First(x => x.IsGitOpsSource).HostPort}/{_config.Metadata.Name}";
     await _gitOpsProvisioner.PushManifestsAsync(new Uri(ociUrlOnHost), config.Spec.Project.ManifestsDirectory, cancellationToken: cancellationToken).ConfigureAwait(false);
     string kustomizationDirectoryInOCI = config.Spec.Project.KustomizationDirectory.Replace("k8s/", "", StringComparison.OrdinalIgnoreCase);
     string ociUrlInDocker = _config.Spec.Project.Distribution switch
     {
-      KSailKubernetesDistribution.K3d => $"oci://host.k3d.internal:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/{_config.Metadata.Name}",
+      KSailKubernetesDistribution.K3d => $"oci://host.k3d.internal:{_config.Spec.Registries.First(x => x.IsGitOpsSource).HostPort}/{_config.Metadata.Name}",
       KSailKubernetesDistribution.Kind =>
         RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ?
-          $"oci://172.17.0.1:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/{_config.Metadata.Name}" :
-          $"oci://host.docker.internal:{_config.Spec.Registries.First(x => x.IsGitOpsOCISource).HostPort}/{_config.Metadata.Name}",
+          $"oci://172.17.0.1:{_config.Spec.Registries.First(x => x.IsGitOpsSource).HostPort}/{_config.Metadata.Name}" :
+          $"oci://host.docker.internal:{_config.Spec.Registries.First(x => x.IsGitOpsSource).HostPort}/{_config.Metadata.Name}",
       _ => throw new NotSupportedException($"The distribution '{_config.Spec.Project.Distribution}' is not supported.")
     };
     await _gitOpsProvisioner.BootstrapAsync(new Uri(ociUrlInDocker), kustomizationDirectoryInOCI, true, cancellationToken).ConfigureAwait(false);

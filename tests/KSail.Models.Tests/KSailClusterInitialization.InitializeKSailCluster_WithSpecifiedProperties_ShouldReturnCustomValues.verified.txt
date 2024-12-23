@@ -25,12 +25,12 @@
       {
         Name: ksail-registry,
         HostPort: 5000,
-        IsGitOpsOCISource: true
+        IsGitOpsSource: true
       },
       {
         Name: mirror-docker.io,
         HostPort: 5001,
-        IsGitOpsOCISource: false,
+        IsGitOpsSource: false,
         Proxy: {
           Url: https://registry-1.docker.io,
           Insecure: false
@@ -39,7 +39,7 @@
       {
         Name: mirror-registry.k8s.io,
         HostPort: 5002,
-        IsGitOpsOCISource: false,
+        IsGitOpsSource: false,
         Proxy: {
           Url: https://registry.k8s.io,
           Insecure: false
@@ -48,7 +48,7 @@
       {
         Name: mirror-gcr.io,
         HostPort: 5002,
-        IsGitOpsOCISource: false,
+        IsGitOpsSource: false,
         Proxy: {
           Url: https://gcr.io,
           Insecure: false
@@ -57,7 +57,7 @@
       {
         Name: mirror-ghcr.io,
         HostPort: 5003,
-        IsGitOpsOCISource: false,
+        IsGitOpsSource: false,
         Proxy: {
           Url: https://ghcr.io,
           Insecure: false
@@ -66,7 +66,7 @@
       {
         Name: mirror-mcr.microsoft.com,
         HostPort: 5004,
-        IsGitOpsOCISource: false,
+        IsGitOpsSource: false,
         Proxy: {
           Url: https://mcr.microsoft.com,
           Insecure: false
@@ -75,7 +75,7 @@
       {
         Name: mirror-quay.io,
         HostPort: 5005,
-        IsGitOpsOCISource: false,
+        IsGitOpsSource: false,
         Proxy: {
           Url: https://quay.io,
           Insecure: false
