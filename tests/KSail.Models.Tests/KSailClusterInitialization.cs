@@ -61,7 +61,7 @@ public class KSailClusterInitialization
           {
             Name = "ksail-registry",
             HostPort = 5000,
-            IsGitOpsOCISource = true,
+            IsGitOpsSource = true,
           },
           new KSailRegistry
           {

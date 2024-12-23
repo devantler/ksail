@@ -26,12 +26,12 @@
       {
         Name: ksail-registry,
         HostPort: 5555,
-        IsGitOpsOCISource: true
+        IsGitOpsSource: true
       },
       {
         Name: registry.k8s.io,
         HostPort: 5556,
-        IsGitOpsOCISource: false,
+        IsGitOpsSource: false,
         Proxy: {
           Url: https://registry.k8s.io,
           Insecure: false
@@ -40,7 +40,7 @@
       {
         Name: docker.io,
         HostPort: 5557,
-        IsGitOpsOCISource: false,
+        IsGitOpsSource: false,
         Proxy: {
           Url: https://registry-1.docker.io,
           Insecure: false
@@ -49,7 +49,7 @@
       {
         Name: ghcr.io,
         HostPort: 5558,
-        IsGitOpsOCISource: false,
+        IsGitOpsSource: false,
         Proxy: {
           Url: https://ghcr.io,
           Insecure: false
@@ -58,7 +58,7 @@
       {
         Name: gcr.io,
         HostPort: 5559,
-        IsGitOpsOCISource: false,
+        IsGitOpsSource: false,
         Proxy: {
           Url: https://gcr.io,
           Insecure: false
@@ -67,7 +67,7 @@
       {
         Name: mcr.microsoft.com,
         HostPort: 5560,
-        IsGitOpsOCISource: false,
+        IsGitOpsSource: false,
         Proxy: {
           Url: https://mcr.microsoft.com,
           Insecure: false
@@ -76,7 +76,7 @@
       {
         Name: quay.io,
         HostPort: 5561,
-        IsGitOpsOCISource: false,
+        IsGitOpsSource: false,
         Proxy: {
           Url: https://quay.io,
           Insecure: false

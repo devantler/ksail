@@ -52,7 +52,7 @@ class DistributionConfigFileGenerator
     Console.WriteLine($"✚ generating '{outputPath}'");
     var mirrors = new StringBuilder();
     mirrors = mirrors.AppendLine("mirrors:");
-    foreach (var registry in config.Spec.Registries.Where(x => !x.IsGitOpsOCISource))
+    foreach (var registry in config.Spec.Registries.Where(x => !x.IsGitOpsSource))
     {
       string mirror = $"""
       "{registry.Name}":

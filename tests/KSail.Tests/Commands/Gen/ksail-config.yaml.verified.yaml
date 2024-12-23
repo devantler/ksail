@@ -24,46 +24,46 @@ spec:
   registries:
   - name: ksail-registry
     hostPort: 5555
-    isGitOpsOCISource: true
+    isGitOpsSource: true
     provider: docker
   - name: registry.k8s.io
     hostPort: 5556
-    isGitOpsOCISource: false
+    isGitOpsSource: false
     proxy:
       url: https://registry.k8s.io/
       insecure: false
     provider: docker
   - name: docker.io
     hostPort: 5557
-    isGitOpsOCISource: false
+    isGitOpsSource: false
     proxy:
       url: https://registry-1.docker.io/
       insecure: false
     provider: docker
   - name: ghcr.io
     hostPort: 5558
-    isGitOpsOCISource: false
+    isGitOpsSource: false
     proxy:
       url: https://ghcr.io/
       insecure: false
     provider: docker
   - name: gcr.io
     hostPort: 5559
-    isGitOpsOCISource: false
+    isGitOpsSource: false
     proxy:
       url: https://gcr.io/
       insecure: false
     provider: docker
   - name: mcr.microsoft.com
     hostPort: 5560
-    isGitOpsOCISource: false
+    isGitOpsSource: false
     proxy:
       url: https://mcr.microsoft.com/
       insecure: false
     provider: docker
   - name: quay.io
     hostPort: 5561
-    isGitOpsOCISource: false
+    isGitOpsSource: false
     proxy:
       url: https://quay.io/
       insecure: false

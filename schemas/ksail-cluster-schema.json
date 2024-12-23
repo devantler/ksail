@@ -1,0 +1,531 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/devantler/ksail/main/schemas/ksail-cluster-schema.json",
+  "title": "KSail Cluster",
+  "description": "A configuration object for a KSail cluster",
+  "type": [
+    "object",
+    "null"
+  ],
+  "properties": {
+    "ApiVersion": {
+      "description": "The API version where the KSail Cluster object is defined.",
+      "type": "string"
+    },
+    "Kind": {
+      "description": "The KSail Cluster object kind.",
+      "type": "string"
+    },
+    "Metadata": {
+      "description": "The metadata of the KSail Cluster object.",
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "creationTimestamp": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "deletionGracePeriodSeconds": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "deletionTimestamp": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "finalizers": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "generateName": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "generation": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "labels": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "managedFields": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "apiVersion": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "fieldsType": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "fieldsV1": true,
+              "manager": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "operation": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "subresource": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "time": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              }
+            }
+          }
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "namespace": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ownerReferences": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "apiVersion": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "blockOwnerDeletion": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "controller": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "kind": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "uid": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        },
+        "resourceVersion": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "selfLink": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "uid": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "Spec": {
+      "description": "The spec of the KSail Cluster object.",
+      "type": "object",
+      "properties": {
+        "Connection": {
+          "description": "The options for connecting to the KSail cluster.",
+          "type": "object",
+          "properties": {
+            "Kubeconfig": {
+              "description": "The path to the kubeconfig file.",
+              "type": "string"
+            },
+            "Context": {
+              "description": "The kube context.",
+              "type": "string"
+            },
+            "Timeout": {
+              "description": "The timeout for operations (10s, 5m, 1h).",
+              "type": "string"
+            }
+          }
+        },
+        "Project": {
+          "description": "The options for the KSail project.",
+          "type": "object",
+          "properties": {
+            "ManifestsDirectory": {
+              "description": "The path to the directory that contains the manifests.",
+              "type": "string"
+            },
+            "KustomizationDirectory": {
+              "description": "The relative path to the directory that contains the root kustomization file.",
+              "type": "string"
+            },
+            "ConfigPath": {
+              "description": "The path to the distribution configuration file.",
+              "type": "string"
+            },
+            "KustomizeFlows": {
+              "description": "The different Kustomizations to generate. First depends on the second, and so on.",
+              "type": "array",
+              "items": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "KustomizeHooks": {
+              "description": "The different places that it should be able to hook into the Kustomization flows. For example per cluster or distribution.",
+              "type": "array",
+              "items": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "Distribution": {
+              "description": "The Kubernetes distribution to use.",
+              "type": "integer"
+            },
+            "GitOpsTool": {
+              "description": "The GitOps tool to use.",
+              "type": "integer"
+            },
+            "ContainerEngine": {
+              "description": "The container engine to use.",
+              "type": "integer"
+            },
+            "Sops": {
+              "description": "Whether to enable SOPS support.",
+              "type": "boolean"
+            }
+          }
+        },
+        "Registries": {
+          "description": "The registries to create for the KSail cluster",
+          "type": "array",
+          "items": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "Name": {
+                "description": "The name of the registry.",
+                "type": "string"
+              },
+              "HostPort": {
+                "description": "The host port of the registry (if applicable).",
+                "type": "integer"
+              },
+              "IsGitOpsSource": {
+                "description": "Whether this registry is the GitOps tool\u0027s source for reconciliation.",
+                "type": "boolean"
+              },
+              "Proxy": {
+                "description": "An optional proxy for the registry to use to proxy and cache images.",
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "properties": {
+                  "Url": {
+                    "description": "The URL of the upstream registry to proxy and cache images from.",
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "Username": {
+                    "description": "The username to authenticate with the upstream registry.",
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "Password": {
+                    "description": "The password to authenticate with the upstream registry.",
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "Insecure": {
+                    "description": "Whether to connect to the upstream registry over HTTPS or not.",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "Url"
+                ]
+              },
+              "Username": {
+                "description": "The username to authenticate with the registry.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "Password": {
+                "description": "The password to authenticate with the registry.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "Provider": {
+                "description": "The registry provider.",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "Name",
+              "HostPort"
+            ]
+          }
+        },
+        "CLI": {
+          "description": "The CLI options.",
+          "type": "object",
+          "properties": {
+            "CheckOptions": {
+              "description": "The options to use for the \u0027check\u0027 command.",
+              "type": "object"
+            },
+            "DebugOptions": {
+              "description": "The options to use for the \u0027debug\u0027 command.",
+              "type": "object",
+              "properties": {
+                "Editor": {
+                  "description": "The editor to use for viewing files while debugging.",
+                  "type": "integer"
+                }
+              }
+            },
+            "DownOptions": {
+              "description": "The options to use for the \u0027down\u0027 command.",
+              "type": "object",
+              "properties": {
+                "Registries": {
+                  "description": "Whether to remove registries created by ksail (will remove all cached images).",
+                  "type": "boolean"
+                }
+              }
+            },
+            "GenOptions": {
+              "description": "The options to use for the \u0027gen\u0027 command.",
+              "type": "object"
+            },
+            "InitOptions": {
+              "description": "The options to use for the \u0027init\u0027 command.",
+              "type": "object",
+              "properties": {
+                "DeclarativeConfig": {
+                  "description": "Whether to generate a ksail-config.yaml file, to configure the KSail CLI declaratively.",
+                  "type": "boolean"
+                },
+                "Components": {
+                  "description": "Whether to include Kustomize components in the generated output.",
+                  "type": "boolean"
+                },
+                "PostBuildVariables": {
+                  "description": "Whether to include post build variables in the generated output (flux feature).",
+                  "type": "boolean"
+                },
+                "OutputDirectory": {
+                  "description": "The directory to place the generated output in.",
+                  "type": "string"
+                },
+                "Template": {
+                  "description": "The template to use for the generated output.",
+                  "type": "integer"
+                }
+              }
+            },
+            "LintOptions": {
+              "description": "The options to use for the \u0027lint\u0027 command.",
+              "type": "object"
+            },
+            "ListOptions": {
+              "description": "The options to use for the \u0027list\u0027 command.",
+              "type": "object",
+              "properties": {
+                "All": {
+                  "description": "Whether to list clusters from all supported distributions.",
+                  "type": "boolean"
+                }
+              }
+            },
+            "SopsOptions": {
+              "description": "The options to use for the \u0027sops\u0027 command.",
+              "type": "object",
+              "properties": {
+                "ListOptions": {
+                  "description": "The options to use for the \u0027list\u0027 command.",
+                  "type": "object",
+                  "properties": {
+                    "ShowSOPSConfigKeysOnly": {
+                      "description": "Only show keys found in the SOPS config file.",
+                      "type": "boolean"
+                    },
+                    "ShowPrivateKey": {
+                      "description": "Show the private key in the listed keys.",
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "EditOptions": {
+                  "description": "The options to use for the \u0027edit\u0027 command.",
+                  "type": "object"
+                },
+                "EncryptOptions": {
+                  "description": "The options to use for the \u0027encrypt\u0027 command.",
+                  "type": "object"
+                },
+                "DecryptOptions": {
+                  "description": "The options to use for the \u0027decrypt\u0027 command.",
+                  "type": "object"
+                }
+              }
+            },
+            "StartOptions": {
+              "description": "The options to use for the \u0027start\u0027 command.",
+              "type": "object"
+            },
+            "StopOptions": {
+              "description": "The options to use for the \u0027stop\u0027 command.",
+              "type": "object"
+            },
+            "UpOptions": {
+              "description": "The options to use for the \u0027up\u0027 command.",
+              "type": "object",
+              "properties": {
+                "Destroy": {
+                  "description": "Whether to destroy any existing cluster before creating a new one.",
+                  "type": "boolean"
+                },
+                "Lint": {
+                  "description": "Whether to lint the manifests before applying them.",
+                  "type": "boolean"
+                },
+                "Reconcile": {
+                  "description": "Whether to wait for reconciliation to succeed.",
+                  "type": "boolean"
+                }
+              }
+            },
+            "UpdateOptions": {
+              "description": "The options to use for the \u0027update\u0027 command.",
+              "type": "object",
+              "properties": {
+                "Lint": {
+                  "description": "Whether to lint the manifests before applying them.",
+                  "type": "boolean"
+                },
+                "Reconcile": {
+                  "description": "Whether to wait for reconciliation to succeed.",
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

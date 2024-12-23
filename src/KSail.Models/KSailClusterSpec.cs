@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using KSail.Models.CLI;
 using KSail.Models.Project;
 using KSail.Models.Registry;
@@ -13,18 +14,21 @@ public class KSailClusterSpec
   /// <summary>
   /// The options for connecting to the KSail cluster.
   /// </summary>
+  [Description("The options for connecting to the KSail cluster.")]
   public KSailConnectionOptions Connection { get; set; } = new();
 
   /// <summary>
   /// The options for the KSail project.
   /// </summary>
+  [Description("The options for the KSail project.")]
   public KSailProjectOptions Project { get; set; } = new();
 
   /// <summary>
-  /// The registries to create for the KSail cluster to reconcile flux artifacts, and to proxy and cache images.
+  /// The registries to create for the KSail cluster.
   /// </summary>
+  [Description("The registries to create for the KSail cluster")]
   public IEnumerable<KSailRegistry> Registries { get; set; } = [
-    new KSailRegistry { Name = "ksail-registry", HostPort = 5555, IsGitOpsOCISource = true },
+    new KSailRegistry { Name = "ksail-registry", HostPort = 5555, IsGitOpsSource = true },
     new KSailRegistry { Name = "registry.k8s.io", HostPort = 5556, Proxy = new KSailRegistryProxy { Url = new Uri("https://registry.k8s.io") } },
     new KSailRegistry { Name = "docker.io", HostPort = 5557,  Proxy = new KSailRegistryProxy { Url = new Uri("https://registry-1.docker.io") } },
     new KSailRegistry { Name = "ghcr.io", HostPort = 5558, Proxy = new KSailRegistryProxy { Url = new Uri("https://ghcr.io") } },
@@ -37,6 +41,7 @@ public class KSailClusterSpec
   /// The CLI options.
   /// </summary>
   [YamlMember(Alias = "cli")]
+  [Description("The CLI options.")]
   public KSailCLIOptions CLI { get; set; } = new();
 
   /// <summary>
