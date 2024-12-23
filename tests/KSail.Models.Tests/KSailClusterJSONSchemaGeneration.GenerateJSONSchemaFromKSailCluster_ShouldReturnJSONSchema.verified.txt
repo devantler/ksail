@@ -1,0 +1,465 @@
+﻿{
+  "type": [
+    "object",
+    "null"
+  ],
+  "properties": {
+    "ApiVersion": {
+      "type": "string"
+    },
+    "Kind": {
+      "type": "string"
+    },
+    "Metadata": {
+      "type": "object",
+      "properties": {
+        "annotations": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "creationTimestamp": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "deletionGracePeriodSeconds": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "deletionTimestamp": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "finalizers": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "generateName": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "generation": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "labels": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "managedFields": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "apiVersion": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "fieldsType": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "fieldsV1": true,
+              "manager": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "operation": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "subresource": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "time": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time"
+              }
+            }
+          }
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "namespace": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ownerReferences": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "apiVersion": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "blockOwnerDeletion": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "controller": {
+                "type": [
+                  "boolean",
+                  "null"
+                ]
+              },
+              "kind": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "name": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "uid": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        },
+        "resourceVersion": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "selfLink": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "uid": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "Spec": {
+      "type": "object",
+      "properties": {
+        "Connection": {
+          "type": "object",
+          "properties": {
+            "Kubeconfig": {
+              "type": "string"
+            },
+            "Context": {
+              "type": "string"
+            },
+            "Timeout": {
+              "type": "string"
+            }
+          }
+        },
+        "Project": {
+          "type": "object",
+          "properties": {
+            "ManifestsDirectory": {
+              "type": "string"
+            },
+            "KustomizationDirectory": {
+              "type": "string"
+            },
+            "ConfigPath": {
+              "type": "string"
+            },
+            "KustomizeFlows": {
+              "type": "array",
+              "items": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "KustomizeHooks": {
+              "type": "array",
+              "items": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "Distribution": {
+              "type": "integer"
+            },
+            "GitOpsTool": {
+              "type": "integer"
+            },
+            "ContainerEngine": {
+              "type": "integer"
+            },
+            "Sops": {
+              "type": "boolean"
+            }
+          }
+        },
+        "Registries": {
+          "type": "array",
+          "items": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "Name": {
+                "type": "string"
+              },
+              "HostPort": {
+                "type": "integer"
+              },
+              "IsGitOpsOCISource": {
+                "type": "boolean"
+              },
+              "Proxy": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "properties": {
+                  "Url": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "Username": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "Password": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "Insecure": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "Url"
+                ]
+              },
+              "Username": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "Password": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "Provider": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "Name",
+              "HostPort"
+            ]
+          }
+        },
+        "CLI": {
+          "type": "object",
+          "properties": {
+            "CheckOptions": {
+              "type": "object"
+            },
+            "DebugOptions": {
+              "type": "object",
+              "properties": {
+                "Editor": {
+                  "type": "integer"
+                }
+              }
+            },
+            "DownOptions": {
+              "type": "object",
+              "properties": {
+                "Registries": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "GenOptions": {
+              "type": "object"
+            },
+            "InitOptions": {
+              "type": "object",
+              "properties": {
+                "DeclarativeConfig": {
+                  "type": "boolean"
+                },
+                "Components": {
+                  "type": "boolean"
+                },
+                "PostBuildVariables": {
+                  "type": "boolean"
+                },
+                "OutputDirectory": {
+                  "type": "string"
+                },
+                "Template": {
+                  "type": "integer"
+                }
+              }
+            },
+            "LintOptions": {
+              "type": "object"
+            },
+            "ListOptions": {
+              "type": "object",
+              "properties": {
+                "All": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "SopsOptions": {
+              "type": "object",
+              "properties": {
+                "ListOptions": {
+                  "type": "object",
+                  "properties": {
+                    "ShowSOPSConfigKeysOnly": {
+                      "type": "boolean"
+                    },
+                    "ShowPrivateKey": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "EditOptions": {
+                  "type": "object"
+                },
+                "EncryptOptions": {
+                  "type": "object"
+                },
+                "DecryptOptions": {
+                  "type": "object"
+                }
+              }
+            },
+            "StartOptions": {
+              "type": "object"
+            },
+            "StopOptions": {
+              "type": "object"
+            },
+            "UpOptions": {
+              "type": "object",
+              "properties": {
+                "Destroy": {
+                  "type": "boolean"
+                },
+                "Lint": {
+                  "type": "boolean"
+                },
+                "Reconcile": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "UpdateOptions": {
+              "type": "object",
+              "properties": {
+                "Lint": {
+                  "type": "boolean"
+                },
+                "Reconcile": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
