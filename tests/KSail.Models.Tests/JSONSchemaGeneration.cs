@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Schema;
 
 namespace KSail.Models.Tests;
@@ -15,11 +16,24 @@ public class KSailClusterJSONSchemaGeneration
   [Fact]
   public async Task GenerateJSONSchemaFromKSailCluster_ShouldReturnJSONSchema()
   {
-    // Arrange
+    // Arrange & Act
     var options = JsonSerializerOptions.Default;
-    var schema = options.GetJsonSchemaAsNode(typeof(KSailCluster));
+    var schema = new JsonObject
+    {
+      ["$schema"] = "https://json-schema.org/draft/2020-12/schema",
+      ["$id"] = "https://raw.githubusercontent.com/devantler/ksail/main/schemas/ksail-cluster-schema.json",
+      ["title"] = "KSail Cluster",
+      ["description"] = "A configuration object for a KSail cluster"
+    };
+    var ksailSchema = options.GetJsonSchemaAsNode(typeof(KSailCluster));
+    foreach (var property in ksailSchema.AsObject())
+    {
+      if (!schema.ContainsKey(property.Key))
+      {
+        schema[property.Key] = property.Value?.DeepClone();
+      }
+    }
 
-    // Act
     // Assert
     _ = await Verify(schema.ToString());
     await File.WriteAllTextAsync("../../../../../../schemas/ksail-cluster-schema.json", schema.ToString());
