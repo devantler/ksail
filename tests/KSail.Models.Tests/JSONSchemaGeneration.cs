@@ -20,7 +20,7 @@ public class KSailClusterJSONSchemaGeneration
     var options = JsonSerializerOptions.Default;
     var schema = new JsonObject
     {
-      ["$schema"] = "https://json-schema.org/draft/2020-12/schema",
+      ["$schema"] = "https://json-schema.org/draft-07/schema#",
       ["$id"] = "https://raw.githubusercontent.com/devantler/ksail/main/schemas/ksail-cluster-schema.json",
       ["title"] = "KSail Cluster",
       ["description"] = "A configuration object for a KSail cluster"
