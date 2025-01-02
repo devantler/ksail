@@ -8,16 +8,21 @@ namespace KSail.Commands.Stop;
 
 sealed class KSailStopCommand : Command
 {
-  readonly NameOption _nameOption = new();
+  readonly ExceptionHandler _exceptionHandler = new();
+  readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly EngineOption _engineOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly DistributionOption _distributionOption = new() { Arity = ArgumentArity.ZeroOrOne };
 
   internal KSailStopCommand() : base("stop", "Stop a cluster")
   {
-    AddOption(_nameOption);
+    AddOptions();
 
     this.SetHandler(async (context) =>
     {
       var config = await KSailClusterConfigLoader.LoadAsync(name: context.ParseResult.GetValueForOption(_nameOption)).ConfigureAwait(false);
       config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
+      config.UpdateConfig("Spec.Project.Engine", context.ParseResult.GetValueForOption(_engineOption));
+      config.UpdateConfig("Spec.Project.Distribution", context.ParseResult.GetValueForOption(_distributionOption));
 
       var handler = new KSailStopCommandHandler(config);
       try
@@ -48,5 +53,12 @@ sealed class KSailStopCommand : Command
         context.ExitCode = 1;
       }
     });
+  }
+
+  void AddOptions()
+  {
+    AddOption(_nameOption);
+    AddOption(_engineOption);
+    AddOption(_distributionOption);
   }
 }

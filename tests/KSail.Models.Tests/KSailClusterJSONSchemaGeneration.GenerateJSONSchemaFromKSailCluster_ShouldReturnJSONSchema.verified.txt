@@ -168,11 +168,8 @@
                 ],
                 "properties": {
                   "Proxy": {
-                    "description": "An optional proxy for the registry to use to proxy and cache images.",
-                    "type": [
-                      "object",
-                      "null"
-                    ],
+                    "description": "A proxy for the registry to use to proxy and cache images.",
+                    "type": "object",
                     "properties": {
                       "Url": {
                         "description": "The URL of the upstream registry to proxy and cache images from.",
@@ -244,10 +241,6 @@
           "description": "The CLI options.",
           "type": "object",
           "properties": {
-            "CheckOptions": {
-              "description": "The options to use for the \u0027check\u0027 command.",
-              "type": "object"
-            },
             "DebugOptions": {
               "description": "The options to use for the \u0027debug\u0027 command.",
               "type": "object",
@@ -267,10 +260,6 @@
                   "type": "boolean"
                 }
               }
-            },
-            "GenOptions": {
-              "description": "The options to use for the \u0027gen\u0027 command.",
-              "type": "object"
             },
             "ListOptions": {
               "description": "The options to use for the \u0027list\u0027 command.",
@@ -299,28 +288,8 @@
                       "type": "boolean"
                     }
                   }
-                },
-                "EditOptions": {
-                  "description": "The options to use for the \u0027edit\u0027 command.",
-                  "type": "object"
-                },
-                "EncryptOptions": {
-                  "description": "The options to use for the \u0027encrypt\u0027 command.",
-                  "type": "object"
-                },
-                "DecryptOptions": {
-                  "description": "The options to use for the \u0027decrypt\u0027 command.",
-                  "type": "object"
                 }
               }
-            },
-            "StartOptions": {
-              "description": "The options to use for the \u0027start\u0027 command.",
-              "type": "object"
-            },
-            "StopOptions": {
-              "description": "The options to use for the \u0027stop\u0027 command.",
-              "type": "object"
             },
             "UpOptions": {
               "description": "The options to use for the \u0027up\u0027 command.",

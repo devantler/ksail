@@ -1,7 +1,6 @@
 using System.CommandLine;
 using KSail.Commands.Init.Handlers;
 using KSail.Commands.Init.Options;
-using KSail.Models.Project;
 using KSail.Options;
 using KSail.Utils;
 using YamlDotNet.Core;
@@ -30,7 +29,7 @@ sealed class KSailInitCommand : Command
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadAsync(name: context.ParseResult.GetValueForOption(_nameOption), distribution: context.ParseResult.GetValueForOption(_distributionOption) ?? KSailKubernetesDistribution.Native).ConfigureAwait(false);
+        var config = await KSailClusterConfigLoader.LoadAsync(name: context.ParseResult.GetValueForOption(_nameOption), distribution: context.ParseResult.GetValueForOption(_distributionOption)).ConfigureAwait(false);
         config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
         config.UpdateConfig("Spec.Project.WorkingDirectory", context.ParseResult.GetValueForOption(_workingDirectoryOption));
         config.UpdateConfig("Spec.Project.DeploymentTool", context.ParseResult.GetValueForOption(_deploymentToolOption));

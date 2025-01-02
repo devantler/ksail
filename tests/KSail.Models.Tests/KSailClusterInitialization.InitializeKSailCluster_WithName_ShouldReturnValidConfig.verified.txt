@@ -123,14 +123,12 @@
       ]
     },
     CLIOptions: {
-      CheckOptions: {},
       DebugOptions: {
         Editor: nano
       },
       DownOptions: {
         Registries: false
       },
-      GenOptions: {},
       ListOptions: {
         All: false
       },
@@ -138,13 +136,8 @@
         ListOptions: {
           ShowSOPSConfigKeysOnly: false,
           ShowPrivateKey: true
-        },
-        EditOptions: {},
-        EncryptOptions: {},
-        DecryptOptions: {}
+        }
       },
-      StartOptions: {},
-      StopOptions: {},
       UpOptions: {
         Destroy: false,
         Lint: true,

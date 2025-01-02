@@ -10,12 +10,6 @@ namespace KSail.Models.CLI;
 public class KSailCLIOptions
 {
   /// <summary>
-  /// The options to use for the 'check' command.
-  /// </summary>
-  [Description("The options to use for the 'check' command.")]
-  public KSailCLICheckOptions CheckOptions { get; set; } = new();
-
-  /// <summary>
   /// The options to use for the 'debug' command.
   /// </summary>
   [Description("The options to use for the 'debug' command.")]
@@ -26,13 +20,6 @@ public class KSailCLIOptions
   /// </summary>
   [Description("The options to use for the 'down' command.")]
   public KSailCLIDownOptions DownOptions { get; set; } = new();
-
-  /// <summary>
-  /// The options to use for the 'gen' command.
-  /// </summary>
-  [Description("The options to use for the 'gen' command.")]
-  public KSailCLIGenOptions GenOptions { get; set; } = new();
-
   /// <summary>
   /// The options to use for the 'list' command.
   /// </summary>
@@ -44,18 +31,6 @@ public class KSailCLIOptions
   /// </summary>
   [Description("The options to use for the 'sops' command.")]
   public KSailCLISopsOptions SopsOptions { get; set; } = new();
-
-  /// <summary>
-  /// The options to use for the 'start' command.
-  /// </summary>
-  [Description("The options to use for the 'start' command.")]
-  public KSailCLIStartOptions StartOptions { get; set; } = new();
-
-  /// <summary>
-  /// The options to use for the 'stop' command.
-  /// </summary>
-  [Description("The options to use for the 'stop' command.")]
-  public KSailCLIStopOptions StopOptions { get; set; } = new();
 
   /// <summary>
   /// The options to use for the 'up' command.

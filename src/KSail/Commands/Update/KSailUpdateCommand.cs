@@ -9,6 +9,7 @@ namespace KSail.Commands.Update;
 
 sealed class KSailUpdateCommand : Command
 {
+  readonly ExceptionHandler _exceptionHandler = new();
   readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly PathOption _manifestsPathOption = new("Path to the manifests directory") { Arity = ArgumentArity.ZeroOrOne };
   readonly LintOption _lintOption = new() { Arity = ArgumentArity.ZeroOrOne };

@@ -8,6 +8,7 @@ namespace KSail.Commands.List;
 
 sealed class KSailListCommand : Command
 {
+  readonly ExceptionHandler _exceptionHandler = new();
   readonly AllOption _allOption = new() { Arity = ArgumentArity.ZeroOrOne };
   internal KSailListCommand() : base("list", "List active clusters")
   {
