@@ -1,19 +1,14 @@
 
 using System.CommandLine;
-using KSail.Commands.Gen.Commands.Native.Cluster;
-using KSail.Commands.Gen.Commands.Native.ConfigAndStorage;
-using KSail.Commands.Gen.Commands.Native.Metadata;
-using KSail.Commands.Gen.Commands.Native.Service;
-using KSail.Commands.Gen.Commands.Native.Workloads;
 
 namespace KSail.Commands.Gen.Commands.Native;
 
 class KSailGenNativeCommand : Command
 {
 
-  public KSailGenNativeCommand(IConsole? console = default) : base("native", "Generate a native Kubernetes resource from one of the available categories.")
+  public KSailGenNativeCommand(IConsole? console = default) : base("native", "Generate a native Kubernetes resource.")
   {
-    AddCommands(console);
+    AddCommands();
     this.SetHandler(async (context) =>
       {
         context.ExitCode = await this.InvokeAsync("--help", console).ConfigureAwait(false);
@@ -21,12 +16,50 @@ class KSailGenNativeCommand : Command
     );
   }
 
-  void AddCommands(IConsole? console)
+  void AddCommands()
   {
-    AddCommand(new KSailGenNativeClusterCommand(console));
-    AddCommand(new KSailGenNativeConfigAndStorageCommand(console));
-    AddCommand(new KSailGenNativeMetadataCommand(console));
-    AddCommand(new KSailGenNativeServiceCommand(console));
-    AddCommand(new KSailGenNativeWorkloadsCommand(console));
+    AddCommand(new KSailGenNativeAPIServiceCommand());
+    AddCommand(new KSailGenNativeClusterRoleBindingCommand());
+    AddCommand(new KSailGenNativeClusterRoleCommand());
+    AddCommand(new KSailGenNativeFlowSchemaCommand());
+    AddCommand(new KSailGenNativeNamespaceCommand());
+    AddCommand(new KSailGenNativeNetworkPolicyCommand());
+    AddCommand(new KSailGenNativePersistentVolumeCommand());
+    AddCommand(new KSailGenNativePriorityLevelConfigurationCommand());
+    AddCommand(new KSailGenNativeResourceQuotaCommand());
+    AddCommand(new KSailGenNativeRoleBindingCommand());
+    AddCommand(new KSailGenNativeRoleCommand());
+    AddCommand(new KSailGenNativeRuntimeClassCommand());
+    AddCommand(new KSailGenNativeAccountCommand());
+    AddCommand(new KSailGenNativeStorageVersionMigrationCommand());
+
+    AddCommand(new KSailGenNativeConfigMapCommand());
+    AddCommand(new KSailGenNativeCSIDriverCommand());
+    AddCommand(new KSailGenNativePersistentVolumeClaimCommand());
+    AddCommand(new KSailGenNativeSecretCommand());
+    AddCommand(new KSailGenNativeStorageClassCommand());
+    AddCommand(new KSailGenNativeVolumeAttributesClassCommand());
+
+    AddCommand(new KSailGenNativeClusterTrustBundleCommand());
+    AddCommand(new KSailGenNativeCustomResourceDefinitionCommand());
+    AddCommand(new KSailGenNativeHorizontalPodAutoscalerCommand());
+    AddCommand(new KSailGenNativeLimitRangeCommand());
+    AddCommand(new KSailGenNativeMutatingWebhookConfigurationCommand());
+    AddCommand(new KSailGenNativePodDisruptionBudgetCommand());
+    AddCommand(new KSailGenNativePriorityClassCommand());
+    AddCommand(new KSailGenNativeValidatingAdmissionPolicyBindingCommand());
+    AddCommand(new KSailGenNativeValidatingAdmissionPolicyCommand());
+    AddCommand(new KSailGenNativeValidatingWebhookConfigurationCommand());
+
+    AddCommand(new KSailGenNativeIngressClassCommand());
+    AddCommand(new KSailGenNativeIngressCommand());
+    AddCommand(new KSailGenNativeServiceCommand());
+
+    AddCommand(new KSailGenNativeWorkloadsCronJobCommand());
+    AddCommand(new KSailGenNativeWorkloadsDaemonSetCommand());
+    AddCommand(new KSailGenNativeWorkloadsDeploymentCommand());
+    AddCommand(new KSailGenNativeWorkloadsJobCommand());
+    AddCommand(new KSailGenNativeWorkloadsReplicaSetCommand());
+    AddCommand(new KSailGenNativeWorkloadsStatefulSetCommand());
   }
 }

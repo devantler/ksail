@@ -8,6 +8,7 @@ namespace KSail.Commands.Gen.Commands.CertManager;
 
 class KSailGenCertManagerClusterIssuerCommand : Command
 {
+  readonly ExceptionHandler _exceptionHandler = new();
   readonly FileOutputOption _outputOption = new("./cluster-issuer.yaml");
 
   public KSailGenCertManagerClusterIssuerCommand() : base("cluster-issuer", "Generate a 'cert-manager.io/v1/ClusterIssuer' resource.")
@@ -25,7 +26,7 @@ class KSailGenCertManagerClusterIssuerCommand : Command
         }
         catch (OperationCanceledException ex)
         {
-          ExceptionHandler.HandleException(ex);
+          _ = _exceptionHandler.HandleException(ex);
           context.ExitCode = 1;
         }
       }

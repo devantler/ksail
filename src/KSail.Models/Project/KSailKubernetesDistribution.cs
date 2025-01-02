@@ -8,14 +8,20 @@ namespace KSail.Models.Project;
 public enum KSailKubernetesDistribution
 {
   /// <summary>
-  /// The k3d Kubernetes distribution.
-  /// </summary>
-  [EnumMember(Value = "k3d")]
-  K3d,
-
-  /// <summary>
   /// The kind Kubernetes distribution.
   /// </summary>
-  [EnumMember(Value = "kind")]
-  Kind
+  [EnumMember(Value = "native")]
+  Native,
+
+  /// <summary>
+  /// The k3s Kubernetes distribution.
+  /// </summary>
+  [EnumMember(Value = "k3s")]
+  K3s
+
+  ///// <summary>
+  ///// The Talos Linux Kubernetes distribution.
+  ///// </summary>
+  // [EnumMember(Value = "talos")]
+  // Talos
 }

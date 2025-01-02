@@ -13,5 +13,5 @@ Commands:
   config        Generate a configuration file.
   flux          Generate a Flux resource.
   kustomize     Generate a Kustomize resource.
-  native        Generate a native Kubernetes resource from one of the available categories.
+  native        Generate a native Kubernetes resource.
 

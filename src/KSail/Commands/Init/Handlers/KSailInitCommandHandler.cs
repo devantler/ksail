@@ -1,6 +1,7 @@
 using KSail.Commands.Init.Generators;
 using KSail.Commands.Init.Generators.SubGenerators;
 using KSail.Models;
+using KSail.Models.Project;
 
 namespace KSail.Commands.Init.Handlers;
 
@@ -14,20 +15,17 @@ class KSailInitCommandHandler(KSailCluster config)
 
   public async Task<int> HandleAsync(CancellationToken cancellationToken = default)
   {
-    if (_config.Spec.CLI.InitOptions.DeclarativeConfig)
-    {
-      await _ksailClusterConfigGenerator.GenerateAsync(
-        _config,
-        cancellationToken
-      ).ConfigureAwait(false);
-    }
+    await _ksailClusterConfigGenerator.GenerateAsync(
+      _config,
+      cancellationToken
+    ).ConfigureAwait(false);
 
     await _distributionConfigFileGenerator.GenerateAsync(
       _config,
       cancellationToken
     ).ConfigureAwait(false);
 
-    if (_config.Spec.Project.Sops)
+    if (_config.Spec.Project.SecretManager == KSailSecretManager.SOPS)
     {
       await _sopsConfigFileGenerator.GenerateAsync(
         _config,

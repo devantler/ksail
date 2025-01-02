@@ -7,6 +7,7 @@ using Devantler.KubernetesGenerator.Kustomize;
 using Devantler.KubernetesGenerator.Kustomize.Models;
 using k8s.Models;
 using KSail.Models;
+using KSail.Models.Project;
 using Microsoft.IdentityModel.Tokens;
 
 namespace KSail.Commands.Init.Generators.SubGenerators;
@@ -17,22 +18,22 @@ class FluxSystemGenerator
   readonly FluxKustomizationGenerator _fluxKustomizationGenerator = new();
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    string outputDirectory = Path.Combine(config.Spec.CLI.InitOptions.OutputDirectory, "k8s", "clusters", config.Metadata.Name, "flux-system");
+    string outputDirectory = Path.Combine(config.Spec.Project.WorkingDirectory, "k8s", "clusters", config.Metadata.Name, "flux-system");
     if (!Directory.Exists(outputDirectory))
       _ = Directory.CreateDirectory(outputDirectory);
     await GenerateFluxSystemKustomization(config, outputDirectory, cancellationToken).ConfigureAwait(false);
-    foreach (string flow in config.Spec.Project.KustomizeFlows)
+    foreach (string flow in config.Spec.KustomizeTemplateOptions.Kustomizations)
     {
       List<FluxDependsOn> dependsOn = [];
-      dependsOn = config.Spec.CLI.InitOptions.PostBuildVariables && !config.Spec.Project.KustomizeFlows.IsNullOrEmpty()
-        ? config.Spec.Project.KustomizeFlows.Last() == flow
+      dependsOn = config.Spec.FluxDeploymentToolOptions.PostBuildVariables && !config.Spec.KustomizeTemplateOptions.Kustomizations.IsNullOrEmpty()
+        ? config.Spec.KustomizeTemplateOptions.Kustomizations.Last() == flow
           ? ([new FluxDependsOn { Name = "variables" }])
-          : config.Spec.Project.KustomizeFlows.Reverse().TakeWhile(f => f != flow).Select(f => new FluxDependsOn { Name = f.Replace('/', '-') }).TakeLast(1).ToList()
-        : config.Spec.Project.KustomizeFlows.Reverse().TakeWhile(f => f != flow).Select(f => new FluxDependsOn { Name = f.Replace('/', '-') }).TakeLast(1).ToList();
+          : config.Spec.KustomizeTemplateOptions.Kustomizations.Reverse().TakeWhile(f => f != flow).Select(f => new FluxDependsOn { Name = f.Replace('/', '-') }).TakeLast(1).ToList()
+        : config.Spec.KustomizeTemplateOptions.Kustomizations.Reverse().TakeWhile(f => f != flow).Select(f => new FluxDependsOn { Name = f.Replace('/', '-') }).TakeLast(1).ToList();
 
       await GenerateFluxSystemFluxKustomization(config, outputDirectory, flow, dependsOn, cancellationToken).ConfigureAwait(false);
     }
-    if (config.Spec.CLI.InitOptions.PostBuildVariables)
+    if (config.Spec.FluxDeploymentToolOptions.PostBuildVariables)
     {
       await GenerateFluxSystemFluxKustomization(config, outputDirectory, "variables", [], cancellationToken).ConfigureAwait(false);
     }
@@ -49,15 +50,15 @@ class FluxSystemGenerator
     Console.WriteLine($"✚ generating '{outputDirectory}'");
     var kustomization = new KustomizeKustomization
     {
-      Resources = config.Spec.Project.KustomizeFlows.Select(flow => $"{flow.Replace('/', '-')}.yaml").ToList(),
-      Components = config.Spec.CLI.InitOptions.Components ?
+      Resources = config.Spec.KustomizeTemplateOptions.Kustomizations.Select(flow => $"{flow.Replace('/', '-')}.yaml").ToList(),
+      Components = config.Spec.KustomizeTemplateOptions.Components ?
         [
           "../../../components/flux-kustomization-post-build-variables-label",
           "../../../components/flux-kustomization-sops-label"
         ] :
         null,
     };
-    if (config.Spec.CLI.InitOptions.PostBuildVariables)
+    if (config.Spec.FluxDeploymentToolOptions.PostBuildVariables)
     {
       kustomization.Resources = kustomization.Resources.Append("variables.yaml");
     }
@@ -79,16 +80,16 @@ class FluxSystemGenerator
       {
         Name = flow.Replace('/', '-'),
         NamespaceProperty = "flux-system",
-        Labels = config.Spec.Project.Sops && config.Spec.CLI.InitOptions.PostBuildVariables && config.Spec.CLI.InitOptions.Components && !flow.Equals("variables") ?
+        Labels = config.Spec.Project.SecretManager == KSailSecretManager.SOPS && config.Spec.FluxDeploymentToolOptions.PostBuildVariables && config.Spec.KustomizeTemplateOptions.Components && !flow.Equals("variables") ?
           new Dictionary<string, string>
           {
             { "sops", "enabled" },
             { "post-build-variables", "enabled" }
-          } : config.Spec.CLI.InitOptions.PostBuildVariables && config.Spec.CLI.InitOptions.Components && !flow.Equals("variables") ?
+          } : config.Spec.FluxDeploymentToolOptions.PostBuildVariables && config.Spec.KustomizeTemplateOptions.Components && !flow.Equals("variables") ?
           new Dictionary<string, string>
           {
             { "post-build-variables", "enabled" }
-          } : config.Spec.Project.Sops && config.Spec.CLI.InitOptions.Components ?
+          } : config.Spec.Project.SecretManager == KSailSecretManager.SOPS && config.Spec.KustomizeTemplateOptions.Components ?
           new Dictionary<string, string>
           {
             { "sops", "enabled" }
@@ -106,10 +107,10 @@ class FluxSystemGenerator
           Kind = FluxSource.OCIRepository,
           Name = "flux-system"
         },
-        Path = config.Spec.Project.KustomizeHooks.IsNullOrEmpty() ? flow : $"{config.Spec.Project.KustomizeHooks.First()}/{flow}",
+        Path = config.Spec.KustomizeTemplateOptions.KustomizationHooks.IsNullOrEmpty() ? flow : $"{config.Spec.KustomizeTemplateOptions.KustomizationHooks.First()}/{flow}",
         Prune = true,
         Wait = true,
-        Decryption = config.Spec.Project.Sops && !config.Spec.CLI.InitOptions.Components ?
+        Decryption = config.Spec.Project.SecretManager == KSailSecretManager.SOPS && !config.Spec.KustomizeTemplateOptions.Components ?
           new FluxKustomizationSpecDecryption
           {
             Provider = FluxKustomizationSpecDecryptionProvider.SOPS,
@@ -120,7 +121,7 @@ class FluxSystemGenerator
             }
           } :
           null,
-        PostBuild = config.Spec.CLI.InitOptions.PostBuildVariables && !config.Spec.CLI.InitOptions.Components ?
+        PostBuild = config.Spec.FluxDeploymentToolOptions.PostBuildVariables && !config.Spec.KustomizeTemplateOptions.Components ?
           new FluxKustomizationSpecPostBuild
           {
             SubstituteFrom = GetSubstituteFroms(config)
@@ -144,7 +145,7 @@ class FluxSystemGenerator
         Name = $"variables-sensitive-cluster"
       }
     };
-    foreach (string hook in config.Spec.Project.KustomizeHooks)
+    foreach (string hook in config.Spec.KustomizeTemplateOptions.KustomizationHooks)
     {
       substituteList.Add(new FluxKustomizationSpecPostBuildSubstituteFrom
       {

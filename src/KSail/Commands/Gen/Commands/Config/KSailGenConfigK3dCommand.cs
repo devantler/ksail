@@ -8,6 +8,7 @@ namespace KSail.Commands.Gen.Commands.Config;
 
 class KSailGenConfigK3dCommand : Command
 {
+  readonly ExceptionHandler _exceptionHandler = new();
   readonly FileOutputOption _outputOption = new("./k3d-config.yaml");
 
   public KSailGenConfigK3dCommand() : base("k3d", "Generate a 'k3d.io/v1alpha5/Simple' resource.")
@@ -24,7 +25,7 @@ class KSailGenConfigK3dCommand : Command
       }
       catch (OperationCanceledException ex)
       {
-        ExceptionHandler.HandleException(ex);
+        _ = _exceptionHandler.HandleException(ex);
         context.ExitCode = 1;
       }
     });

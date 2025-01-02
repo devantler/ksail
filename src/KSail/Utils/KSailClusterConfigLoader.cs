@@ -11,28 +11,35 @@ namespace KSail.Utils;
 static class KSailClusterConfigLoader
 {
 
-  internal static async Task<KSailCluster> LoadAsync(string? directory = default, string? name = default, KSailKubernetesDistribution distribution = KSailKubernetesDistribution.Kind)
+  internal static async Task<KSailCluster> LoadAsync(string? directory = default, string? name = default, KSailKubernetesDistribution distribution = default)
   {
-    var ksailClusterConfig = name != null ? new KSailCluster(name, distribution: distribution) : new KSailCluster(distribution: distribution);
     directory ??= Directory.GetCurrentDirectory();
-    string[] possibleFiles = [
+    string? ksailYaml = FindConfigFile(directory, [
       "ksail-cluster.yaml",
+      "ksail-cluster.yml",
       "ksail-config.yaml",
+      "ksail-config.yml",
       "ksail.yaml",
-      ".ksail.yaml"
-    ];
-    string? ksailYaml = FindConfigFile(directory, possibleFiles);
+      "ksail.yml",
+      ".ksail.yaml",
+      ".ksail.yml"
+    ]);
 
-    if (ksailYaml != null)
+    var ksailClusterConfig = string.IsNullOrEmpty(name) ?
+      new KSailCluster(distribution: distribution) :
+      new KSailCluster(name, distribution: distribution);
+
+    if (ksailYaml == null)
     {
-      var deserializer = new DeserializerBuilder()
-        .WithTypeInspector(inner => new KubernetesTypeInspector(new SystemTextJsonTypeInspector(inner)))
-        .WithTypeConverter(new IntstrIntOrStringTypeConverter())
-        .WithTypeConverter(new ResourceQuantityTypeConverter())
-        .WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
-
-      ksailClusterConfig = deserializer.Deserialize<KSailCluster>(await File.ReadAllTextAsync(ksailYaml).ConfigureAwait(false));
+      return ksailClusterConfig;
     }
+    var deserializer = new DeserializerBuilder()
+      .WithTypeInspector(inner => new KubernetesTypeInspector(new SystemTextJsonTypeInspector(inner)))
+      .WithTypeConverter(new IntstrIntOrStringTypeConverter())
+      .WithTypeConverter(new ResourceQuantityTypeConverter())
+      .WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
+
+    ksailClusterConfig = deserializer.Deserialize<KSailCluster>(await File.ReadAllTextAsync(ksailYaml).ConfigureAwait(false));
     return ksailClusterConfig;
   }
 

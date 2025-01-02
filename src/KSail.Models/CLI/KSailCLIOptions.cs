@@ -1,6 +1,5 @@
 using System.ComponentModel;
 using KSail.Models.CLI.Commands;
-using KSail.Models.CLI.Commands.Init;
 using KSail.Models.CLI.Commands.Sops;
 
 namespace KSail.Models.CLI;
@@ -33,18 +32,6 @@ public class KSailCLIOptions
   /// </summary>
   [Description("The options to use for the 'gen' command.")]
   public KSailCLIGenOptions GenOptions { get; set; } = new();
-
-  /// <summary>
-  /// The options to use for the 'init' command.
-  /// </summary>
-  [Description("The options to use for the 'init' command.")]
-  public KSailCLIInitOptions InitOptions { get; set; } = new();
-
-  /// <summary>
-  /// The options to use for the 'lint' command.
-  /// </summary>
-  [Description("The options to use for the 'lint' command.")]
-  public KSailCLILintOptions LintOptions { get; set; } = new();
 
   /// <summary>
   /// The options to use for the 'list' command.

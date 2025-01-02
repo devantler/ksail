@@ -1,32 +1,31 @@
 using System.CommandLine;
-using Spectre.Console;
 
 namespace KSail.Commands.Root.Handlers;
 
-static class KSailRootCommandHandler
+/// <summary>
+/// Handles the KSail root command.
+/// </summary>
+class KSailRootCommandHandler
 {
-  public static void Handle(IConsole? console = null) => PrintIntroduction(console);
-
-  static void PrintIntroduction(IConsole? console = null)
+  /// <summary>
+  /// Handles the KSail root command.
+  /// </summary>
+  /// <param name="console"></param>
+  internal bool Handle(IConsole console)
   {
-    if (console is null)
-    {
-      AnsiConsole.Markup(Introduction);
-    }
-    else
-    {
-      console.WriteLine(Introduction);
-    }
+    PrintIntroduction(console);
+    return true;
   }
 
-  const string Introduction = """
-    🛥️ 🐳    [bold underline]Welcome to [blue]KSail[/]![/]    🛥️ 🐳
-                                         [blue]. . .[/]
-                    __/___                 [blue]:[/]
-              _____/______|             ___[blue]|[/]____     |"\/"|
-      _______/_____\_______\_____     ,'        `.    \  /
-      \               [italic]KSail[/]      |    |  ^        \___/  |
-    [bold blue]~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^[/]
+  void PrintIntroduction(IConsole console) => console.WriteLine(Introduction);
 
-    """;
+  const string Introduction = @"
+    🛥️ 🐳    Welcome to KSail!    🛥️ 🐳
+                                         . . .
+                    __/___                 :
+              _____/______|             ___|____     |""\/""|
+      _______/_____\_______\_____     ,'        `.    \  /
+      \               KSail      |    |  ^        \___/  |
+    ~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
+";
 }

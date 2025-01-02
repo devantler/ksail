@@ -9,6 +9,7 @@ namespace KSail.Commands.Debug;
 
 sealed class KSailDebugCommand : Command
 {
+  readonly ExceptionHandler _exceptionHandler = new();
   readonly KubeconfigOption _kubeconfigOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly ContextOption _contextOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly EditorOption _editorOption = new() { Arity = ArgumentArity.ZeroOrOne };
@@ -32,12 +33,12 @@ sealed class KSailDebugCommand : Command
       }
       catch (YamlException ex)
       {
-        ExceptionHandler.HandleException(ex);
+        _ = _exceptionHandler.HandleException(ex);
         context.ExitCode = 1;
       }
       catch (OperationCanceledException ex)
       {
-        ExceptionHandler.HandleException(ex);
+        _ = _exceptionHandler.HandleException(ex);
         context.ExitCode = 1;
       }
     });

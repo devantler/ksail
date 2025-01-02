@@ -8,6 +8,7 @@ namespace KSail.Commands.Gen.Commands.Kustomize;
 
 class KSailGenKustomizeKustomizationCommand : Command
 {
+  readonly ExceptionHandler _exceptionHandler = new();
   readonly FileOutputOption _outputOption = new("./kustomization.yaml");
   readonly KSailGenKustomizeKustomizationCommandHandler _handler = new();
   public KSailGenKustomizeKustomizationCommand() : base("kustomization", "Generate a 'kustomize.config.k8s.io/v1beta1/Kustomization' resource.")
@@ -23,7 +24,7 @@ class KSailGenKustomizeKustomizationCommand : Command
         }
         catch (OperationCanceledException ex)
         {
-          ExceptionHandler.HandleException(ex);
+          _ = _exceptionHandler.HandleException(ex);
           context.ExitCode = 1;
         }
       }

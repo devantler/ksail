@@ -1,7 +1,0 @@
-﻿---
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-resources: []
-components:
-- ../components/helm-release-crds-label
-- ../components/helm-release-remediation-label

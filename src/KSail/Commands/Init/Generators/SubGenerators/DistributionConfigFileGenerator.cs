@@ -17,23 +17,31 @@ class DistributionConfigFileGenerator
 
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    string distributionConfigPath = Path.Combine(config.Spec.CLI.InitOptions.OutputDirectory, $"{config.Spec.Project.Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-config.yaml");
-    if (File.Exists(distributionConfigPath))
+    switch (config.Spec.Project.Engine, config.Spec.Project.Distribution)
     {
-      Console.WriteLine($"✔ skipping '{distributionConfigPath}', as it already exists.");
-      return;
-    }
-    switch (config.Spec.Project.Distribution)
-    {
-      case KSailKubernetesDistribution.Kind:
-        await GenerateKindConfigFile(config, distributionConfigPath, cancellationToken).ConfigureAwait(false);
+      case (KSailEngine.Docker, KSailKubernetesDistribution.Native):
+        string configPath = Path.Combine(config.Spec.Project.WorkingDirectory, "kind-config.yaml");
+        if (!ConfigFileExists(configPath))
+          await GenerateKindConfigFile(config, configPath, cancellationToken).ConfigureAwait(false);
         break;
-      case KSailKubernetesDistribution.K3d:
-        await GenerateK3DConfigFile(config, distributionConfigPath, cancellationToken).ConfigureAwait(false);
+      case (KSailEngine.Docker, KSailKubernetesDistribution.K3s):
+        configPath = Path.Combine(config.Spec.Project.WorkingDirectory, "k3d-config.yaml");
+        if (!ConfigFileExists(configPath))
+          await GenerateK3DConfigFile(config, configPath, cancellationToken).ConfigureAwait(false);
         break;
       default:
         throw new NotSupportedException($"Distribution '{config.Spec.Project.Distribution}' is not supported.");
     }
+  }
+
+  static bool ConfigFileExists(string path)
+  {
+    if (File.Exists(path))
+    {
+      Console.WriteLine($"✔ skipping '{path}', as it already exists.");
+      return true;
+    }
+    return false;
   }
 
   async Task GenerateKindConfigFile(KSailCluster config, string outputPath, CancellationToken cancellationToken = default)
@@ -52,7 +60,7 @@ class DistributionConfigFileGenerator
     Console.WriteLine($"✚ generating '{outputPath}'");
     var mirrors = new StringBuilder();
     mirrors = mirrors.AppendLine("mirrors:");
-    foreach (var registry in config.Spec.Registries.Where(x => !x.IsGitOpsSource))
+    foreach (var registry in config.Spec.MirrorRegistryOptions.MirrorRegistries)
     {
       string mirror = $"""
       "{registry.Name}":

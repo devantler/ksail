@@ -40,24 +40,73 @@ public class KSailLintCommandTests : IAsyncLifetime
   [Fact]
   public async Task KSailLint_GivenValidPath_Succeeds()
   {
-    //Cleanup
-    string outputPath = Path.Combine(Path.GetTempPath(), "ksail-lint-test-cluster");
-    if (Directory.Exists(outputPath))
-      Directory.Delete(outputPath, true);
-
     //Arrange
+    string path = Path.Combine(Path.GetTempPath(), "ksail-lint-test-cluster");
     var ksailInitCommand = new KSailInitCommand();
     var ksailLintCommand = new KSailLintCommand();
 
     //Act
-    int initExitCode = await ksailInitCommand.InvokeAsync($"--name test-cluster --output {outputPath} --template simple");
-    int lintExitCode = await ksailLintCommand.InvokeAsync($"--path {outputPath}/k8s");
+    int initExitCode = await ksailInitCommand.InvokeAsync($"--name test-cluster --path {path}");
+    int lintExitCode = await ksailLintCommand.InvokeAsync($"--path {path}");
 
     //Assert
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, lintExitCode);
 
     //Cleanup
-    Directory.Delete(outputPath, true);
+    Directory.Delete(path, true);
+  }
+
+  /// <summary>
+  /// Tests that the 'ksail lint' command skips when given an invalid path or a path with no YAML files.
+  /// </summary>
+  [Fact]
+  public async Task KSailLint_GivenInvalidPathOrNoYaml_Succeeds()
+  {
+    //Arrange
+    string path = Path.Combine(Path.GetTempPath(), "ksail-lint-invalid-path");
+    var ksailLintCommand = new KSailLintCommand();
+    _ = Directory.CreateDirectory(path);
+
+    //Act
+    int lintExitCode = await ksailLintCommand.InvokeAsync($"--path {path}");
+
+    //Assert
+    Assert.Equal(0, lintExitCode);
+
+    //Cleanup
+    Directory.Delete(path, true);
+  }
+
+  /// <summary>
+  /// Tests that the 'ksail lint' command succeeds when given a valid path.
+  /// </summary>
+  [Fact]
+  public async Task KSailLint_GivenInvalidYaml_Fails()
+  {
+    //Arrange
+    string path = Path.Combine(Path.GetTempPath(), "ksail-lint-invalid-yaml");
+    var ksailLintCommand = new KSailLintCommand();
+    string invalidYaml = """
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        name: my-pod
+      spec:
+        containers:
+        - name: my-container
+          image: my-image
+    """;
+    _ = Directory.CreateDirectory(path);
+    File.WriteAllText(Path.Combine(path, "invalid.yaml"), invalidYaml);
+
+    //Act
+    int lintExitCode = await ksailLintCommand.InvokeAsync($"--path {path}");
+
+    //Assert
+    Assert.Equal(1, lintExitCode);
+
+    //Cleanup
+    Directory.Delete(path, true);
   }
 }

@@ -13,9 +13,9 @@ class ProjectGenerator
   {
     await _fluxSystemGenerator.GenerateAsync(config, cancellationToken).ConfigureAwait(false);
     await _kustomizeFlowGenerator.GenerateAsync(config, cancellationToken).ConfigureAwait(false);
-    if (config.Spec.CLI.InitOptions.Components)
+    if (config.Spec.KustomizeTemplateOptions.Components)
       await _componentsGenerator.GenerateAsync(config, cancellationToken).ConfigureAwait(false);
-    if (config.Spec.CLI.InitOptions.PostBuildVariables)
+    if (config.Spec.FluxDeploymentToolOptions.PostBuildVariables)
       await _variablesGenerator.GenerateAsync(config, cancellationToken).ConfigureAwait(false);
   }
 }

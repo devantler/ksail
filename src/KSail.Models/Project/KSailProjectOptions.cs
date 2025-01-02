@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using YamlDotNet.Serialization;
 
 namespace KSail.Models.Project;
 
@@ -8,56 +9,63 @@ namespace KSail.Models.Project;
 public class KSailProjectOptions
 {
   /// <summary>
-  /// The path to the directory that contains the manifests.
+  /// The template used for the project.
   /// </summary>
-  [Description("The path to the directory that contains the manifests.")]
-  public string ManifestsDirectory { get; set; } = "./k8s";
+  [Description("The template used for the project.")]
+  public KSailProjectTemplate Template { get; set; } = KSailProjectTemplate.Kustomize;
 
   /// <summary>
-  /// The relative path to the directory that contains the root kustomization file.
+  /// The working directory for the project.
   /// </summary>
-  [Description("The relative path to the directory that contains the root kustomization file.")]
-  public string KustomizationDirectory { get; set; } = "./k8s/clusters/ksail-default/flux-system";
+  [Description("The working directory for the project.")]
+  public string WorkingDirectory { get; set; } = ".";
 
   /// <summary>
-  /// The path to the distribution configuration file.
+  /// The path to the ksail configuration file.
   /// </summary>
-  [Description("The path to the distribution configuration file.")]
-  public string ConfigPath { get; set; } = "kind-config.yaml";
+  [Description("The path to the ksail configuration file.")]
+  public string ConfigPath { get; set; } = "ksail-config.yaml";
 
   /// <summary>
-  /// The different Kustomizations to generate. First depends on the second, and so on.
+  /// The container engine to use.
   /// </summary>
-  [Description("The different Kustomizations to generate. First depends on the second, and so on.")]
-  public IEnumerable<string> KustomizeFlows { get; set; } = ["apps", "infrastructure", "infrastructure/controllers"];
-
-  /// <summary>
-  /// The different places that it should be able to hook into the Kustomization flows. For example per cluster or distribution.
-  /// </summary>
-  [Description("The different places that it should be able to hook into the Kustomization flows. For example per cluster or distribution.")]
-  public IEnumerable<string> KustomizeHooks { get; set; } = [];
+  [Description("The engine to use for running the KSail cluster.")]
+  public KSailEngine Engine { get; set; } = KSailEngine.Docker;
 
   /// <summary>
   /// The Kubernetes distribution to use.
   /// </summary>
   [Description("The Kubernetes distribution to use.")]
-  public KSailKubernetesDistribution Distribution { get; set; } = KSailKubernetesDistribution.Kind;
+  public KSailKubernetesDistribution Distribution { get; set; } = KSailKubernetesDistribution.Native;
 
   /// <summary>
-  /// The GitOps tool to use.
+  /// The path to the distribution configuration file.
   /// </summary>
-  [Description("The GitOps tool to use.")]
-  public KSailGitOpsTool GitOpsTool { get; set; } = KSailGitOpsTool.Flux;
+  [Description("The path to the distribution configuration file.")]
+  public string DistributionConfigPath { get; set; } = "kind-config.yaml";
 
   /// <summary>
-  /// The container engine to use.
+  /// The Deployment tool to use.
   /// </summary>
-  [Description("The container engine to use.")]
-  public KSailContainerEngine ContainerEngine { get; set; } = KSailContainerEngine.Docker;
+  [Description("The Deployment tool to use.")]
+  public KSailDeploymentTool DeploymentTool { get; set; } = KSailDeploymentTool.Flux;
 
   /// <summary>
-  /// Whether to enable SOPS support.
+  /// The secret manager to use.
   /// </summary>
-  [Description("Whether to enable SOPS support.")]
-  public bool Sops { get; set; }
+  [Description("The secret manager to use.")]
+  public KSailSecretManager SecretManager { get; set; } = KSailSecretManager.None;
+
+  /// <summary>
+  /// The CNI to use.
+  /// </summary>
+  [Description("The CNI to use.")]
+  [YamlMember(Alias = "cni")]
+  public KSailCNI CNI { get; set; } = KSailCNI.Default;
+
+  /// <summary>
+  /// Whether to set up mirror registries for the project.
+  /// </summary>
+  [Description("Whether to set up mirror registries for the project.")]
+  public bool MirrorRegistries { get; set; } = false;
 }

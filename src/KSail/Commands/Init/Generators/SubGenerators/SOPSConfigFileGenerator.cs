@@ -11,18 +11,30 @@ class SOPSConfigFileGenerator
 
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    string sopsConfigPath = Path.Combine(config.Spec.CLI.InitOptions.OutputDirectory, ".sops.yaml");
+    string sopsConfigPath = Path.Combine(config.Spec.Project.WorkingDirectory, ".sops.yaml");
     if (!File.Exists(sopsConfigPath) || string.IsNullOrEmpty(await File.ReadAllTextAsync(sopsConfigPath, cancellationToken).ConfigureAwait(false)))
     {
-      var ageKey = await LocalAgeKeyManager.CreateKeyAsync(cancellationToken).ConfigureAwait(false);
-      await GenerateNewSOPSConfigFile(sopsConfigPath, config.Metadata.Name, ageKey, cancellationToken).ConfigureAwait(false);
+      await GenerateNewSOPSConfigFile(
+        sopsConfigPath,
+        config.Metadata.Name,
+        await LocalAgeKeyManager.CreateKeyAsync(cancellationToken).ConfigureAwait(false),
+        cancellationToken
+      ).ConfigureAwait(false);
     }
     else
     {
       var sopsConfig = await LocalAgeKeyManager.GetSOPSConfigAsync(sopsConfigPath, cancellationToken).ConfigureAwait(false);
-      string publicKey = sopsConfig.CreationRules.First(cr => cr.PathRegex.Contains(config.Metadata.Name, StringComparison.OrdinalIgnoreCase)).Age;
-      var ageKey = await LocalAgeKeyManager.GetKeyAsync(publicKey, cancellationToken).ConfigureAwait(false);
-      Console.WriteLine(ageKey.CreatedAt);
+      var existingCreationRule = sopsConfig.CreationRules.FirstOrDefault(cr => cr.PathRegex.Contains(config.Metadata.Name, StringComparison.OrdinalIgnoreCase));
+      var ageKey = default(AgeKey);
+      if (existingCreationRule is null)
+      {
+        ageKey = await LocalAgeKeyManager.CreateKeyAsync(cancellationToken).ConfigureAwait(false);
+      }
+      else
+      {
+        string publicKey = existingCreationRule.Age;
+        ageKey = await LocalAgeKeyManager.GetKeyAsync(publicKey, cancellationToken).ConfigureAwait(false);
+      }
       await GenerateUpdatedSOPSConfigFile(sopsConfigPath, config.Metadata.Name, ageKey, cancellationToken).ConfigureAwait(false);
     }
   }

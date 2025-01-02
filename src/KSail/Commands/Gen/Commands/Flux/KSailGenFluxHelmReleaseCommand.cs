@@ -8,6 +8,7 @@ namespace KSail.Commands.Gen.Commands.Flux;
 
 class KSailGenFluxHelmReleaseCommand : Command
 {
+  readonly ExceptionHandler _exceptionHandler = new();
   readonly FileOutputOption _outputOption = new("./helm-release.yaml");
   readonly KSailGenFluxHelmReleaseCommandHandler _handler = new();
   public KSailGenFluxHelmReleaseCommand() : base("helm-release", "Generate a 'helm.toolkit.fluxcd.io/v2/HelmRelease' resource.")
@@ -24,7 +25,7 @@ class KSailGenFluxHelmReleaseCommand : Command
         }
         catch (OperationCanceledException ex)
         {
-          ExceptionHandler.HandleException(ex);
+          _ = _exceptionHandler.HandleException(ex);
           context.ExitCode = 1;
         }
       }

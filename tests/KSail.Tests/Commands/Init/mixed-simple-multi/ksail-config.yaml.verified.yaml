@@ -1,0 +1,21 @@
+﻿---
+apiVersion: ksail.io/v1alpha1
+kind: Cluster
+metadata:
+  name: cluster1
+spec:
+  connection:
+    kubeconfig: ~/.kube/config
+    context: kind-cluster1
+    timeout: 5m
+  project:
+    template: kustomize
+    workingDirectory: {TempPath}ksail-init-mixed-simple-multi
+    configPath: ksail-config.yaml
+    engine: docker
+    distribution: native
+    distributionConfigPath: kind-config.yaml
+    deploymentTool: flux
+    secretManager: none
+    cni: default
+    mirrorRegistries: false
