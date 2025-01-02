@@ -11,12 +11,12 @@
       Timeout: 5m
     },
     Project: {
-      Template: kustomize,
       WorkingDirectory: .,
-      ConfigPath: ksail-config.yaml,
+      KSailConfigPath: ksail-config.yaml,
+      DistributionConfigPath: kind-config.yaml,
+      Template: kustomize,
       Engine: docker,
       Distribution: native,
-      DistributionConfigPath: kind-config.yaml,
       DeploymentTool: flux,
       SecretManager: none,
       CNI: default,
@@ -24,12 +24,12 @@
     },
     FluxDeploymentToolOptions: {
       Source: {
-        Url: https://host.docker.internal:5555/ksail-registry
+        Url: oci://host.docker.internal:5555/ksail-registry
       },
       PostBuildVariables: false
     },
     KustomizeTemplateOptions: {
-      RootKustomization: k8s/clusters/my-cluster/flux-system/kustomization.yaml,
+      RootKustomizationDir: k8s/clusters/my-cluster/flux-system/kustomization.yaml,
       Kustomizations: [
         apps,
         infrastructure,
@@ -49,8 +49,8 @@
             Password: null,
             Insecure: false
           },
-          Name: registry.k8s.io,
           HostPort: 5556,
+          Name: registry.k8s.io,
           Username: null,
           Password: null,
           Provider: docker
@@ -62,8 +62,8 @@
             Password: null,
             Insecure: false
           },
-          Name: docker.io,
           HostPort: 5557,
+          Name: docker.io,
           Username: null,
           Password: null,
           Provider: docker
@@ -75,8 +75,8 @@
             Password: null,
             Insecure: false
           },
-          Name: ghcr.io,
           HostPort: 5558,
+          Name: ghcr.io,
           Username: null,
           Password: null,
           Provider: docker
@@ -88,8 +88,8 @@
             Password: null,
             Insecure: false
           },
-          Name: gcr.io,
           HostPort: 5559,
+          Name: gcr.io,
           Username: null,
           Password: null,
           Provider: docker
@@ -101,8 +101,8 @@
             Password: null,
             Insecure: false
           },
-          Name: mcr.microsoft.com,
           HostPort: 5560,
+          Name: mcr.microsoft.com,
           Username: null,
           Password: null,
           Provider: docker
@@ -114,8 +114,8 @@
             Password: null,
             Insecure: false
           },
-          Name: quay.io,
           HostPort: 5561,
+          Name: quay.io,
           Username: null,
           Password: null,
           Provider: docker

@@ -138,15 +138,18 @@ class KSailUpCommandHandler
         Console.WriteLine();
       }
     }
-    Console.WriteLine("🧮 Creating mirror registries");
-    // foreach (var mirrorRegistry in config.Spec.MirrorRegistryOptions.MirrorRegistries)
-    // {
-    //   Console.WriteLine($"► creating mirror registry '{mirrorRegistry.Name} for '{mirrorRegistry.Proxy.Url}'");
-    //   var proxyUrl = mirrorRegistry.Proxy?.Url;
-    //   await _engineProvisioner
-    //    .CreateRegistryAsync(mirrorRegistry!.Name, mirrorRegistry.HostPort, proxyUrl, cancellationToken).ConfigureAwait(false);
-    // }
-    Console.WriteLine();
+    if (config.Spec.Project.MirrorRegistries)
+    {
+      // TODO: Fix this
+      Console.WriteLine("🧮 Creating mirror registries");
+      foreach (var mirrorRegistry in config.Spec.MirrorRegistryOptions.MirrorRegistries)
+      {
+        Console.WriteLine($"► creating mirror registry '{mirrorRegistry.Name} for '{mirrorRegistry.Proxy?.Url}'");
+        await _engineProvisioner
+         .CreateRegistryAsync(mirrorRegistry.Name, mirrorRegistry.HostPort, mirrorRegistry.Proxy?.Url, cancellationToken).ConfigureAwait(false);
+      }
+      Console.WriteLine();
+    }
   }
 
   async Task<bool> Lint(KSailCluster config, CancellationToken cancellationToken = default)
@@ -164,13 +167,13 @@ class KSailUpCommandHandler
   async Task ProvisionCluster(CancellationToken cancellationToken = default)
   {
     Console.WriteLine($"🚀 Provisioning cluster '{_config.Spec.Project.Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-{_config.Metadata.Name}'");
-    await _clusterProvisioner.ProvisionAsync(_config.Metadata.Name, _config.Spec.Project.ConfigPath, cancellationToken).ConfigureAwait(false);
+    await _clusterProvisioner.ProvisionAsync(_config.Metadata.Name, _config.Spec.Project.DistributionConfigPath, cancellationToken).ConfigureAwait(false);
     Console.WriteLine();
   }
 
   async Task BootstrapDeploymentTool(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    Console.WriteLine($"🔼 Bootstrapping GitOps with {config.Spec.Project.DeploymentTool}");
+    Console.WriteLine($"🔼 Bootstrapping {config.Spec.Project.DeploymentTool}");
     Console.WriteLine("► creating 'flux-system' namespace");
     using var resourceProvisioner = new KubernetesResourceProvisioner(config.Spec.Connection.Context);
     _ = await resourceProvisioner.CreateNamespaceAsync(new V1Namespace
@@ -181,9 +184,14 @@ class KSailUpCommandHandler
       }
     }, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-    await _deploymentTool.PushManifestsAsync(_config.Spec.FluxDeploymentToolOptions.Source.Url, "k8s", cancellationToken: cancellationToken).ConfigureAwait(false);
-    await _deploymentTool.BootstrapAsync(config.Spec.FluxDeploymentToolOptions.Source.Url,
-      config.Spec.KustomizeTemplateOptions.RootKustomization.Replace("k8s/", "", StringComparison.OrdinalIgnoreCase),
+    string scheme = config.Spec.FluxDeploymentToolOptions.Source.Url.Scheme;
+    string host = "localhost";
+    string absolutePath = config.Spec.FluxDeploymentToolOptions.Source.Url.AbsolutePath;
+    var sourceUrlFromHost = new Uri($"{scheme}://{host}:{config.Spec.FluxDeploymentToolOptions.Source.Url.Port}{absolutePath}");
+    await _deploymentTool.PushManifestsAsync(sourceUrlFromHost, "k8s", cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _deploymentTool.BootstrapAsync(
+      config.Spec.FluxDeploymentToolOptions.Source.Url,
+      config.Spec.KustomizeTemplateOptions.RootKustomizationDir.Replace("k8s/", "", StringComparison.OrdinalIgnoreCase),
       true,
       cancellationToken
     ).ConfigureAwait(false);

@@ -9,12 +9,6 @@ namespace KSail.Models.Project;
 public class KSailProjectOptions
 {
   /// <summary>
-  /// The template used for the project.
-  /// </summary>
-  [Description("The template used for the project.")]
-  public KSailProjectTemplate Template { get; set; } = KSailProjectTemplate.Kustomize;
-
-  /// <summary>
   /// The working directory for the project.
   /// </summary>
   [Description("The working directory for the project.")]
@@ -24,7 +18,20 @@ public class KSailProjectOptions
   /// The path to the ksail configuration file.
   /// </summary>
   [Description("The path to the ksail configuration file.")]
-  public string ConfigPath { get; set; } = "ksail-config.yaml";
+  [YamlMember(Alias = "ksailConfigPath")]
+  public string KSailConfigPath { get; set; } = "ksail-config.yaml";
+
+  /// <summary>
+  /// The path to the distribution configuration file.
+  /// </summary>
+  [Description("The path to the distribution configuration file.")]
+  public string DistributionConfigPath { get; set; } = "kind-config.yaml";
+
+  /// <summary>
+  /// The template used for the project.
+  /// </summary>
+  [Description("The template used for the project.")]
+  public KSailProjectTemplate Template { get; set; } = KSailProjectTemplate.Kustomize;
 
   /// <summary>
   /// The container engine to use.
@@ -38,11 +45,6 @@ public class KSailProjectOptions
   [Description("The Kubernetes distribution to use.")]
   public KSailKubernetesDistribution Distribution { get; set; } = KSailKubernetesDistribution.Native;
 
-  /// <summary>
-  /// The path to the distribution configuration file.
-  /// </summary>
-  [Description("The path to the distribution configuration file.")]
-  public string DistributionConfigPath { get; set; } = "kind-config.yaml";
 
   /// <summary>
   /// The Deployment tool to use.

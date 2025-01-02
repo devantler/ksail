@@ -11,7 +11,7 @@ public class KSailKustomizeTemplateOptions
   /// The root kustomization file.
   /// </summary>
   [Description("The root kustomization file.")]
-  public string RootKustomization { get; set; } = "k8s/clusters/ksail-default/flux-system/kustomization.yaml";
+  public string RootKustomizationDir { get; set; } = "k8s/clusters/ksail-default/flux-system";
 
   /// <summary>
   /// The Flux kustomizations to include.

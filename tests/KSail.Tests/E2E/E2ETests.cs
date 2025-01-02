@@ -45,9 +45,9 @@ public class E2ETests : IAsyncLifetime
   [Theory]
   [InlineData("")]
   [InlineData("-d kind")]
-  [InlineData("--name ksail-advanced-kind --distribution kind --secret-manager sops --components --post-build-variables")]
+  [InlineData("--name ksail-advanced-native --distribution native --secret-manager sops --components --post-build-variables")]
   [InlineData("-d k3d")]
-  [InlineData("--name ksail-advanced-k3d --distribution k3d --secret-manager sops --components --post-build-variables")]
+  [InlineData("--name ksail-advanced-k3s --distribution k3s --secret-manager sops --components --post-build-variables")]
   public async Task KSailUp_WithVariousConfigurations_Succeeds(string initArgs)
   {
     //Arrange

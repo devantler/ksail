@@ -1,15 +1,15 @@
-﻿---
+---
 apiVersion: ksail.io/v1alpha1
 kind: Cluster
 metadata:
-  name: cluster1
+  name: ksail-default
 spec:
   connection:
     kubeconfig: ~/.kube/config
-    context: kind-cluster1
+    context: kind-ksail-default
     timeout: 5m
   project:
-    workingDirectory: {TempPath}ksail-init-mixed-simple-multi
+    workingDirectory: .
     ksailConfigPath: ksail-config.yaml
     distributionConfigPath: kind-config.yaml
     template: kustomize

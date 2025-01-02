@@ -9,12 +9,12 @@ spec:
     context: k3d-my-cluster
     timeout: 5m
   project:
-    template: kustomize
     workingDirectory: .
-    configPath: ksail-config.yaml
+    ksailConfigPath: ksail-config.yaml
+    distributionConfigPath: k3d-config.yaml
+    template: kustomize
     engine: docker
     distribution: k3s
-    distributionConfigPath: k3d-config.yaml
     deploymentTool: flux
     secretManager: none
     cni: default

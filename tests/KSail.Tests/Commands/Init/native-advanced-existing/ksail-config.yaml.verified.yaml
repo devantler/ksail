@@ -9,12 +9,12 @@ spec:
     context: kind-ksail-default
     timeout: 5m
   project:
-    template: kustomize
     workingDirectory: {TempPath}ksail-init-native-advanced-existing
-    configPath: ksail-config.yaml
+    ksailConfigPath: ksail-config.yaml
+    distributionConfigPath: kind-config.yaml
+    template: kustomize
     engine: docker
     distribution: native
-    distributionConfigPath: kind-config.yaml
     deploymentTool: flux
     secretManager: sops
     cni: default

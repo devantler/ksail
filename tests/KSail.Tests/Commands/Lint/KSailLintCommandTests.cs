@@ -9,7 +9,7 @@ namespace KSail.Tests.Commands.Lint;
 /// Tests for the <see cref="KSailLintCommand"/> class.
 /// </summary>
 [Collection("KSail.Tests")]
-public class KSailLintCommandTests : IAsyncLifetime
+public class KSailLintCommandTests : IAsyncLifetime, IDisposable
 {
   /// <inheritdoc/>
   public Task DisposeAsync() => Task.CompletedTask;
@@ -52,9 +52,6 @@ public class KSailLintCommandTests : IAsyncLifetime
     //Assert
     Assert.Equal(0, initExitCode);
     Assert.Equal(0, lintExitCode);
-
-    //Cleanup
-    Directory.Delete(path, true);
   }
 
   /// <summary>
@@ -73,9 +70,6 @@ public class KSailLintCommandTests : IAsyncLifetime
 
     //Assert
     Assert.Equal(0, lintExitCode);
-
-    //Cleanup
-    Directory.Delete(path, true);
   }
 
   /// <summary>
@@ -105,8 +99,23 @@ public class KSailLintCommandTests : IAsyncLifetime
 
     //Assert
     Assert.Equal(1, lintExitCode);
+  }
 
-    //Cleanup
-    Directory.Delete(path, true);
+  /// <inheritdoc/>
+  public void Dispose()
+  {
+    var directories = new List<string> {
+      Path.Combine(Path.GetTempPath(), "ksail-lint-test-cluster"),
+      Path.Combine(Path.GetTempPath(), "ksail-lint-invalid-path"),
+      Path.Combine(Path.GetTempPath(), "ksail-lint-invalid-yaml")
+    };
+    foreach (string directory in directories)
+    {
+      if (Directory.Exists(directory))
+      {
+        Directory.Delete(directory, true);
+      }
+    }
+    GC.SuppressFinalize(this);
   }
 }

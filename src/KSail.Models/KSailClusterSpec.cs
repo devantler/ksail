@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 using KSail.Models.CLI;
 using KSail.Models.CNI;
 using KSail.Models.Connection;
@@ -67,17 +68,15 @@ public class KSailClusterSpec
   /// <summary>
   /// The CLI options.
   /// </summary>
-  [YamlMember(Alias = "cliOptions")]
   [Description("The CLI options.")]
+  [YamlMember(Alias = "cliOptions")]
   [YamlIgnore]
   public KSailCLIOptions CLIOptions { get; set; } = new();
 
   /// <summary>
   /// Initializes a new instance of the <see cref="KSailClusterSpec"/> class.
   /// </summary>
-  public KSailClusterSpec()
-  {
-  }
+  public KSailClusterSpec() => SetOCISourceUriBasedOnOS();
 
   /// <summary>
   /// Initializes a new instance of the <see cref="KSailClusterSpec"/> class.
@@ -85,13 +84,14 @@ public class KSailClusterSpec
   /// <param name="name"></param>
   public KSailClusterSpec(string name)
   {
+    SetOCISourceUriBasedOnOS();
     Connection = new KSailConnectionOptions
     {
       Context = $"kind-{name}"
     };
     KustomizeTemplateOptions = new KSailKustomizeTemplateOptions
     {
-      RootKustomization = $"k8s/clusters/{name}/flux-system/kustomization.yaml"
+      RootKustomizationDir = $"k8s/clusters/{name}/flux-system/kustomization.yaml"
     };
   }
 
@@ -102,6 +102,7 @@ public class KSailClusterSpec
   /// <param name="distribution"></param>
   public KSailClusterSpec(string name, KSailKubernetesDistribution distribution) : this(name)
   {
+    SetOCISourceUriBasedOnOS();
     Connection = new KSailConnectionOptions
     {
       Context = distribution switch
@@ -123,5 +124,15 @@ public class KSailClusterSpec
     };
   }
 
-
+  void SetOCISourceUriBasedOnOS()
+  {
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+    {
+      FluxDeploymentToolOptions = new KSailFluxDeploymentToolOptions(new Uri("oci://172.17.0.1:5555/ksail-registry"));
+    }
+    else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+    {
+      FluxDeploymentToolOptions = new KSailFluxDeploymentToolOptions(new Uri("oci://host.docker.internal:5555/ksail-registry"));
+    }
+  }
 }

@@ -51,17 +51,21 @@
           "description": "The options for the KSail project.",
           "type": "object",
           "properties": {
-            "Template": {
-              "description": "The template used for the project.",
-              "type": "integer"
-            },
             "WorkingDirectory": {
               "description": "The working directory for the project.",
               "type": "string"
             },
-            "ConfigPath": {
+            "KSailConfigPath": {
               "description": "The path to the ksail configuration file.",
               "type": "string"
+            },
+            "DistributionConfigPath": {
+              "description": "The path to the distribution configuration file.",
+              "type": "string"
+            },
+            "Template": {
+              "description": "The template used for the project.",
+              "type": "integer"
             },
             "Engine": {
               "description": "The engine to use for running the KSail cluster.",
@@ -70,10 +74,6 @@
             "Distribution": {
               "description": "The Kubernetes distribution to use.",
               "type": "integer"
-            },
-            "DistributionConfigPath": {
-              "description": "The path to the distribution configuration file.",
-              "type": "string"
             },
             "DeploymentTool": {
               "description": "The Deployment tool to use.",
@@ -117,7 +117,7 @@
           "description": "The options for the Kustomize template.",
           "type": "object",
           "properties": {
-            "RootKustomization": {
+            "RootKustomizationDir": {
               "description": "The root kustomization file.",
               "type": "string"
             },
@@ -199,16 +199,13 @@
                       "Url"
                     ]
                   },
+                  "HostPort": {
+                    "description": "The host port of the registry (if applicable).",
+                    "type": "integer"
+                  },
                   "Name": {
                     "description": "The name of the registry.",
                     "type": "string"
-                  },
-                  "HostPort": {
-                    "description": "The host port of the registry (if applicable).",
-                    "type": [
-                      "integer",
-                      "null"
-                    ]
                   },
                   "Username": {
                     "description": "The username to authenticate with the registry.",
