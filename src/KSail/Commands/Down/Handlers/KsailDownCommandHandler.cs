@@ -11,16 +11,16 @@ namespace KSail.Commands.Down.Handlers;
 class KSailDownCommandHandler
 {
   readonly KSailCluster _config;
-  readonly DockerProvisioner _containerEngineProvisioner;
+  readonly DockerProvisioner _engineProvisioner;
   readonly IKubernetesClusterProvisioner _kubernetesDistributionProvisioner;
 
   internal KSailDownCommandHandler(KSailCluster config)
   {
     _config = config;
-    _containerEngineProvisioner = _config.Spec.Project.Engine switch
+    _engineProvisioner = _config.Spec.Project.Engine switch
     {
       KSailEngine.Docker => new DockerProvisioner(),
-      _ => throw new NotSupportedException($"Container engine '{_config.Spec.Project.Engine}' is not supported.")
+      _ => throw new NotSupportedException($"Engine '{_config.Spec.Project.Engine}' is not supported.")
     };
     _kubernetesDistributionProvisioner = _config.Spec.Project.Distribution switch
     {
@@ -47,12 +47,14 @@ class KSailDownCommandHandler
     {
       case KSailDeploymentTool.Flux:
         if (_config.Spec.FluxDeploymentToolOptions.Source is KSailOCIRepository)
-          await _containerEngineProvisioner.DeleteRegistryAsync(_config.Spec.FluxDeploymentToolOptions.Source.Name);
+          await _engineProvisioner.DeleteRegistryAsync(_config.Spec.FluxDeploymentToolOptions.Source.Url.Segments.Last(), cancellationToken).ConfigureAwait(false);
         break;
+      default:
+        throw new NotSupportedException($"deployment tool '{_config.Spec.Project.DeploymentTool}' is not supported.");
     }
     foreach (var registry in _config.Spec.MirrorRegistryOptions.MirrorRegistries)
     {
-      await _containerEngineProvisioner.DeleteRegistryAsync(registry.Name, cancellationToken).ConfigureAwait(false);
+      await _engineProvisioner.DeleteRegistryAsync(registry.Name, cancellationToken).ConfigureAwait(false);
     }
   }
 }

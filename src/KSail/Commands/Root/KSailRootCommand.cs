@@ -1,5 +1,7 @@
 using System.CommandLine;
 using KSail.Commands.Debug;
+using KSail.Commands.Down;
+using KSail.Commands.Gen;
 using KSail.Commands.Init;
 using KSail.Commands.Lint;
 using KSail.Commands.Root.Handlers;
@@ -14,7 +16,7 @@ sealed class KSailRootCommand : RootCommand
 
   internal KSailRootCommand(IConsole console) : base("KSail is an SDK for building GitOps enabled clusters.")
   {
-    AddCommands();
+    AddCommands(console);
 
     this.SetHandler(async (context) =>
       {
@@ -32,7 +34,7 @@ sealed class KSailRootCommand : RootCommand
     );
   }
 
-  void AddCommands()
+  void AddCommands(IConsole console)
   {
     AddCommand(new KSailInitCommand());
     AddCommand(new KSailLintCommand());
@@ -41,9 +43,9 @@ sealed class KSailRootCommand : RootCommand
     // AddCommand(new KSailUpdateCommand());
     // AddCommand(new KSailStartCommand());
     // AddCommand(new KSailStopCommand());
-    // AddCommand(new KSailDownCommand());
+    AddCommand(new KSailDownCommand());
     AddCommand(new KSailDebugCommand());
-    // AddCommand(new KSailGenCommand(console));
+    AddCommand(new KSailGenCommand(console));
     // AddCommand(new KSailSecCommand());
   }
 }

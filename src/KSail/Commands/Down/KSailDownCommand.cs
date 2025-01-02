@@ -11,7 +11,9 @@ namespace KSail.Commands.Down;
 
 sealed class KSailDownCommand : Command
 {
+  readonly ExceptionHandler _exceptionHandler = new();
   readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly EngineOption _engineOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly DistributionOption _distributionOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly RegistriesOption _registriesOption = new() { Arity = ArgumentArity.ZeroOrOne };
   internal KSailDownCommand() : base("down", "Destroy a cluster")
@@ -26,6 +28,7 @@ sealed class KSailDownCommand : Command
       {
         var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
         config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
+        config.UpdateConfig("Spec.Project.Engine", context.ParseResult.GetValueForOption(_engineOption));
         config.UpdateConfig("Spec.Project.Distribution", context.ParseResult.GetValueForOption(_distributionOption));
         config.UpdateConfig("Spec.CLI.DownOptions.Registries", context.ParseResult.GetValueForOption(_registriesOption));
 
@@ -45,6 +48,11 @@ sealed class KSailDownCommand : Command
         context.ExitCode = 1;
       }
       catch (K3dException ex)
+      {
+        _ = _exceptionHandler.HandleException(ex);
+        context.ExitCode = 1;
+      }
+      catch (NotSupportedException ex)
       {
         _ = _exceptionHandler.HandleException(ex);
         context.ExitCode = 1;

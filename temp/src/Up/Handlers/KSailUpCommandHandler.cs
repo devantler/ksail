@@ -54,7 +54,7 @@ class KSailUpCommandHandler
   internal async Task<int> HandleAsync(CancellationToken cancellationToken = default)
   {
 
-    if (!await CheckContainerEngineIsRunning(cancellationToken).ConfigureAwait(false))
+    if (!await CheckEngineIsRunning(cancellationToken).ConfigureAwait(false))
     {
       return 1;
     }
@@ -96,7 +96,7 @@ class KSailUpCommandHandler
     return true;
   }
 
-  async Task<bool> CheckContainerEngineIsRunning(CancellationToken cancellationToken = default)
+  async Task<bool> CheckEngineIsRunning(CancellationToken cancellationToken = default)
   {
     Console.WriteLine($"🐳 Checking {_config.Spec.Project.Engine} is running");
     if (await _containerEngineProvisioner.CheckReadyAsync(cancellationToken).ConfigureAwait(false))
