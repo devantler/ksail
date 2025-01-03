@@ -30,7 +30,7 @@ sealed class KSailDownCommand : Command
         config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
         config.UpdateConfig("Spec.Project.Engine", context.ParseResult.GetValueForOption(_engineOption));
         config.UpdateConfig("Spec.Project.Distribution", context.ParseResult.GetValueForOption(_distributionOption));
-        config.UpdateConfig("Spec.CLI.DownOptions.Registries", context.ParseResult.GetValueForOption(_registriesOption));
+        config.UpdateConfig("Spec.CLIOptions.DownOptions.Registries", context.ParseResult.GetValueForOption(_registriesOption));
 
         var handler = new KSailDownCommandHandler(config);
         Console.WriteLine($"🔥 Destroying cluster '{config.Spec.Project.Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-{config.Metadata.Name}'");

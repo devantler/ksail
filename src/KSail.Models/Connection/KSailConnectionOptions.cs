@@ -17,7 +17,7 @@ public class KSailConnectionOptions
   /// The kube context.
   /// </summary>
   [Description("The kube context.")]
-  public string Context { get; set; } = "k3d-default";
+  public string Context { get; set; } = "kind-ksail-default";
 
   /// <summary>
   /// The timeout for operations (30s, 5m, 1h).

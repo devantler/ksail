@@ -52,9 +52,12 @@ class KSailDownCommandHandler
       default:
         throw new NotSupportedException($"deployment tool '{_config.Spec.Project.DeploymentTool}' is not supported.");
     }
-    foreach (var registry in _config.Spec.MirrorRegistryOptions.MirrorRegistries)
+    if (_config.Spec.Project.MirrorRegistries)
     {
-      await _engineProvisioner.DeleteRegistryAsync(registry.Name, cancellationToken).ConfigureAwait(false);
+      foreach (var registry in _config.Spec.MirrorRegistryOptions.MirrorRegistries)
+      {
+        await _engineProvisioner.DeleteRegistryAsync(registry.Name, cancellationToken).ConfigureAwait(false);
+      }
     }
   }
 }

@@ -25,10 +25,7 @@ static class KSailGenCommandTestsTheoryData
       { "kustomize --help" },
       { "native" },
       { "native -h" },
-      { "native --help" },
-      { "native" },
-      { "native -h" },
-      { "native --help" },
+      { "native --help" }
     };
   public static TheoryData<string, string> GenerateNativeResourceTheoryData =>
     new()

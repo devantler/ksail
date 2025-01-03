@@ -6,7 +6,7 @@ Usage:
 
 Options:
   -n, --name <name>        The name of the cluster.
-  -p, --path <path>        Path to the manifests directory
+  -p, --path <path>        Path to the working directory for your project
   -l, --lint               Lint manifests before pushing an update
   -r, --reconcile          Reconcile manifests after pushing an update
   -t, --timeout <timeout>  The time to wait for each kustomization to become ready.

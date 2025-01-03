@@ -6,7 +6,7 @@ metadata:
 spec:
   connection:
     kubeconfig: ~/.kube/config
-    context: kind-cluster1
+    context: kind-ksail-default
     timeout: 5m
   project:
     workingDirectory: {TempPath}ksail-init-mixed-advanced-multi

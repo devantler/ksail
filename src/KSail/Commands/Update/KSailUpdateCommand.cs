@@ -11,7 +11,7 @@ sealed class KSailUpdateCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
   readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly PathOption _manifestsPathOption = new("Path to the manifests directory") { Arity = ArgumentArity.ZeroOrOne };
+  readonly PathOption _workingDirectory = new("Path to the working directory for your project") { Arity = ArgumentArity.ZeroOrOne };
   readonly LintOption _lintOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly ReconcileOption _reconcileOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly TimeoutOption _timeoutOption = new() { Arity = ArgumentArity.ZeroOrOne };
@@ -29,9 +29,9 @@ sealed class KSailUpdateCommand : Command
         var config = await KSailClusterConfigLoader.LoadAsync(name: context.ParseResult.GetValueForOption(_nameOption)).ConfigureAwait(false);
         config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
         config.UpdateConfig("Spec.Connection.Timeout", context.ParseResult.GetValueForOption(_timeoutOption));
-        config.UpdateConfig("Spec.Project.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsPathOption));
-        config.UpdateConfig("Spec.CLI.UpdateOptions.Lint", context.ParseResult.GetValueForOption(_lintOption));
-        config.UpdateConfig("Spec.CLI.UpdateOptions.Reconcile", context.ParseResult.GetValueForOption(_reconcileOption));
+        config.UpdateConfig("Spec.Project.WorkingDirectory", context.ParseResult.GetValueForOption(_workingDirectory));
+        config.UpdateConfig("Spec.CLIOptions.UpdateOptions.Lint", context.ParseResult.GetValueForOption(_lintOption));
+        config.UpdateConfig("Spec.CLIOptions.UpdateOptions.Reconcile", context.ParseResult.GetValueForOption(_reconcileOption));
 
         var handler = new KSailUpdateCommandHandler(config);
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;
@@ -57,7 +57,7 @@ sealed class KSailUpdateCommand : Command
   void AddOptions()
   {
     AddOption(_nameOption);
-    AddOption(_manifestsPathOption);
+    AddOption(_workingDirectory);
     AddOption(_lintOption);
     AddOption(_reconcileOption);
     AddOption(_timeoutOption);

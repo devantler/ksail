@@ -13,10 +13,9 @@ class KSailUpdateCommandHandler
 
   internal KSailUpdateCommandHandler(KSailCluster config)
   {
-    string context = $"{config.Spec.Project.Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-{config.Metadata.Name}";
     _deploymentTool = config.Spec.Project.DeploymentTool switch
     {
-      KSailDeploymentTool.Flux => new FluxProvisioner(context),
+      KSailDeploymentTool.Flux => new FluxProvisioner(config.Spec.Connection.Context),
       _ => throw new NotSupportedException($"The deployment tool '{config.Spec.Project.DeploymentTool}' is not supported.")
     };
     _config = config;
@@ -28,13 +27,22 @@ class KSailUpdateCommandHandler
     {
       return false;
     }
+    string manifestDirectory = Path.Combine(_config.Spec.Project.WorkingDirectory, "k8s");
+    if (!Directory.Exists(manifestDirectory) || Directory.GetFiles(manifestDirectory, "*.yaml", SearchOption.AllDirectories).Length == 0)
+    {
+      throw new KSailException($"a '{manifestDirectory}' directory does not exist or is empty.");
+    }
     switch (_config.Spec.Project.DeploymentTool)
     {
       case KSailDeploymentTool.Flux:
-        var ksailRegistryUri = _config.Spec.FluxDeploymentToolOptions.Source.Url;
-        Console.WriteLine($"📥 Pushing manifests to '{ksailRegistryUri}'");
+        string scheme = _config.Spec.FluxDeploymentToolOptions.Source.Url.Scheme;
+        string host = "localhost";
+        int port = _config.Spec.FluxDeploymentToolOptions.Source.Url.Port;
+        string absolutePath = _config.Spec.FluxDeploymentToolOptions.Source.Url.AbsolutePath;
+        var ociRegistryFromHost = new Uri($"{scheme}://{host}:{port}{absolutePath}");
+        Console.WriteLine($"📥 Pushing manifests to '{ociRegistryFromHost}'");
         // TODO: Make some form of abstraction around GitOps tools, so it is easier to support apply-based tools like kubectl
-        await _deploymentTool.PushManifestsAsync(ksailRegistryUri, "k8s", cancellationToken: cancellationToken).ConfigureAwait(false);
+        await _deploymentTool.PushManifestsAsync(ociRegistryFromHost, Path.Combine(_config.Spec.Project.WorkingDirectory, "k8s"), cancellationToken: cancellationToken).ConfigureAwait(false);
         Console.WriteLine();
         if (_config.Spec.CLIOptions.UpdateOptions.Reconcile)
         {

@@ -26,7 +26,7 @@ sealed class KSailDebugCommand : Command
         var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
         config.UpdateConfig("Spec.Connection.Kubeconfig", context.ParseResult.GetValueForOption(_kubeconfigOption));
         config.UpdateConfig("Spec.Connection.Context", context.ParseResult.GetValueForOption(_contextOption));
-        config.UpdateConfig("Spec.CLI.DebugOptions.Editor", context.ParseResult.GetValueForOption(_editorOption));
+        config.UpdateConfig("Spec.CLIOptions.DebugOptions.Editor", context.ParseResult.GetValueForOption(_editorOption));
         var handler = new KSailDebugCommandHandler(config);
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;
         Console.WriteLine();

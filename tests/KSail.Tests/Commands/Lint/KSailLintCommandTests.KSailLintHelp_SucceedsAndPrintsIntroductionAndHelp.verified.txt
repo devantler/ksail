@@ -6,7 +6,7 @@ Usage:
 
 Options:
   -n, --name <name>  The name of the cluster.
-  -p, --path <path>  The directory where the manifest files are located
+  -p, --path <path>  Path to the working directory for your project
   --version          Show version information
   -?, -h, --help     Show help and usage information
 

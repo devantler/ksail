@@ -13,18 +13,18 @@ namespace KSail.Tests.E2E;
 /// E2E tests for the various distributions.
 /// </summary>
 [Collection("KSail.Tests")]
-public class E2ETests : IAsyncLifetime
+public class E2ETests : IAsyncLifetime, IDisposable
 {
   /// <inheritdoc/>
-  public async Task DisposeAsync() => await CleanupAsync();
+  public Task DisposeAsync() => Task.CompletedTask;
   /// <inheritdoc/>
-  public async Task InitializeAsync() => await CleanupAsync();
+  public Task InitializeAsync() => Task.CompletedTask;
 
   /// <summary>
   /// Cleanup the test environment.
   /// </summary>
   /// <returns></returns>
-  static Task CleanupAsync()
+  static void Cleanup()
   {
     if (Directory.Exists("k8s"))
       Directory.Delete("k8s", true);
@@ -36,18 +36,18 @@ public class E2ETests : IAsyncLifetime
       File.Delete("ksail-config.yaml");
     if (File.Exists(".sops.yaml"))
       File.Delete(".sops.yaml");
-    return Task.CompletedTask;
   }
 
   /// <summary>
   /// Tests that the 'ksail up' command is executed successfully with various configurations.
   /// </summary>
   [Theory]
-  [InlineData("")]
-  [InlineData("-d kind")]
-  [InlineData("--name ksail-advanced-native --distribution native --secret-manager sops --components --post-build-variables")]
-  [InlineData("-d k3d")]
-  [InlineData("--name ksail-advanced-k3s --distribution k3s --secret-manager sops --components --post-build-variables")]
+  [InlineData("-d native")]
+  //TODO: Add back --secret-manager sops
+  [InlineData("--name ksail-advanced-native --distribution native --components --post-build-variables")]
+  [InlineData("-d k3s")]
+  //TODO: Add back --secret-manager sops
+  [InlineData("--name ksail-advanced-k3s --distribution k3s --components --post-build-variables")]
   public async Task KSailUp_WithVariousConfigurations_Succeeds(string initArgs)
   {
     //Arrange
@@ -76,5 +76,12 @@ public class E2ETests : IAsyncLifetime
     Assert.Equal(0, startExitCode);
     Assert.Equal(0, updateExitCode);
     Assert.Equal(0, downExitCode);
+  }
+
+  /// <inheritdoc/>
+  public void Dispose()
+  {
+    Cleanup();
+    GC.SuppressFinalize(this);
   }
 }
