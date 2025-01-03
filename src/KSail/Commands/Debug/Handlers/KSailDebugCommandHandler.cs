@@ -11,7 +11,7 @@ class KSailDebugCommandHandler
 
   internal async Task<bool> HandleAsync(CancellationToken cancellationToken = default)
   {
-    await K9s.RunAsync(_config.Spec.CLI.DebugOptions.Editor, _config.Spec.Connection.Kubeconfig, _config.Spec.Connection.Context, cancellationToken).ConfigureAwait(false);
+    await K9s.RunAsync(_config.Spec.CLIOptions.DebugOptions.Editor, _config.Spec.Connection.Kubeconfig, _config.Spec.Connection.Context, cancellationToken).ConfigureAwait(false);
     return true;
   }
 }

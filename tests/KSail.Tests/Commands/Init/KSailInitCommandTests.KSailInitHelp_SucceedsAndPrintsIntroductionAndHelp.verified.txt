@@ -5,15 +5,17 @@ Usage:
   init [options]
 
 Options:
-  -n, --name <name>              The name of the cluster.
-  -dc, --declarative-config      Generate a ksail-config.yaml file, to configure the KSail CLI declaratively.
-  -pbv, --post-build-variables   Generate ConfigMaps and Secrets for flux post-build-variables.
-  -c, --components               Generate components to reduce duplication.
-  -d, --distribution <K3d|Kind>  The distribution to use for the cluster.
-  -o, --output <output>          Location to place the generated cluster output.
-  -s, --sops                     Enable SOPS support.
-  -t, --template <Simple>        The template to use for the initialized cluster.
-  --version                      Show version information
-  -?, -h, --help                 Show help and usage information
+  -n, --name <name>                                 The name of the cluster.
+  -p, --path <path>                                 The directory in which to generate the project
+  -dt, --deployment-tool <Flux>                     The Deployment tool to use for updating the state of the cluster.
+  -d, --distribution <K3s|Native>                   The distribution to use for the cluster.
+  -sm, --secret-manager <None|SOPS>                 Configure which secret manager to use.
+  -t, --template <Kustomize>                        The template to use for the initialized cluster.
+  -k, --kustomizations <kustomizations>             The kustomizations to include in the initialized cluster.
+  -kh, --kustomization-hooks <kustomization-hooks>  The kustomization hooks to include in the initialized cluster.
+  -c, --components                                  Generate components to reduce duplication.
+  -pbv, --post-build-variables                      Generate ConfigMaps and Secrets for flux post-build-variables.
+  --version                                         Show version information
+  -?, -h, --help                                    Show help and usage information
 
 

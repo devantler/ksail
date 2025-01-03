@@ -1,7 +1,0 @@
-﻿---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: variables-sensitive
-  namespace: flux-system
-stringData: {}

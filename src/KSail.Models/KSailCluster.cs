@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using k8s.Models;
 using KSail.Models.Project;
 
 namespace KSail.Models;
@@ -23,7 +22,7 @@ public class KSailCluster
   /// The metadata of the KSail Cluster object.
   /// </summary>
   [Description("The metadata of the KSail Cluster object.")]
-  public V1ObjectMeta Metadata { get; set; } = new() { Name = "ksail-default" };
+  public KSailMetadata Metadata { get; set; } = new();
   /// <summary>
   /// The spec of the KSail Cluster object.
   /// </summary>

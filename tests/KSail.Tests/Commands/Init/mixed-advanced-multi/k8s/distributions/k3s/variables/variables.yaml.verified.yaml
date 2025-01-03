@@ -1,0 +1,7 @@
+﻿---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: variables-distributions-k3s
+  namespace: flux-system
+data: {}

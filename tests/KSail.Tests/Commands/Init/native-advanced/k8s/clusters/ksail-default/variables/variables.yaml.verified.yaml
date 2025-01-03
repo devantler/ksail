@@ -1,0 +1,7 @@
+﻿---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: variables-clusters-ksail-default
+  namespace: flux-system
+data: {}

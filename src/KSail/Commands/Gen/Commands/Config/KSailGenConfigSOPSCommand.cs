@@ -8,6 +8,7 @@ namespace KSail.Commands.Gen.Commands.Config;
 
 class KSailGenConfigSOPSCommand : Command
 {
+  readonly ExceptionHandler _exceptionHandler = new();
   readonly FileOutputOption _outputOption = new("./.sops.yaml");
   readonly KSailGenConfigSOPSCommandHandler _handler = new();
   public KSailGenConfigSOPSCommand() : base("sops", "Generate a SOPS configuration file.")
@@ -23,7 +24,7 @@ class KSailGenConfigSOPSCommand : Command
         }
         catch (OperationCanceledException ex)
         {
-          ExceptionHandler.HandleException(ex);
+          _ = _exceptionHandler.HandleException(ex);
           context.ExitCode = 1;
         }
       }

@@ -8,6 +8,7 @@ namespace KSail.Commands.List;
 
 sealed class KSailListCommand : Command
 {
+  readonly ExceptionHandler _exceptionHandler = new();
   readonly AllOption _allOption = new() { Arity = ArgumentArity.ZeroOrOne };
   internal KSailListCommand() : base("list", "List active clusters")
   {
@@ -17,7 +18,7 @@ sealed class KSailListCommand : Command
       try
       {
         var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
-        config.UpdateConfig("Spec.CLI.ListOptions.All", context.ParseResult.GetValueForOption(_allOption));
+        config.UpdateConfig("Spec.CLIOptions.ListOptions.All", context.ParseResult.GetValueForOption(_allOption));
         var cancellationToken = context.GetCancellationToken();
         var handler = new KSailListCommandHandler(config);
 
@@ -27,12 +28,12 @@ sealed class KSailListCommand : Command
       }
       catch (YamlException ex)
       {
-        ExceptionHandler.HandleException(ex);
+        _ = _exceptionHandler.HandleException(ex);
         context.ExitCode = 1;
       }
       catch (OperationCanceledException ex)
       {
-        ExceptionHandler.HandleException(ex);
+        _ = _exceptionHandler.HandleException(ex);
         context.ExitCode = 1;
       }
     });

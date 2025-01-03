@@ -1,5 +1,6 @@
 using System.CommandLine;
 using System.CommandLine.IO;
+using System.Diagnostics.CodeAnalysis;
 using KSail.Commands.Gen;
 
 namespace KSail.Tests.Commands.Gen;
@@ -7,6 +8,7 @@ namespace KSail.Tests.Commands.Gen;
 /// <summary>
 /// Tests for the <see cref="KSailGenCommand"/> class.
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class KSailGenCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
