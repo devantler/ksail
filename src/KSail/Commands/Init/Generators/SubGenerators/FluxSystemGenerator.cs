@@ -48,15 +48,27 @@ class FluxSystemGenerator
       return;
     }
     Console.WriteLine($"✚ generating '{outputDirectory}'");
+    List<string>? components = null;
+    if (config.Spec.KustomizeTemplateOptions.Components)
+    {
+      components = [];
+      if (config.Spec.Project.DeploymentTool == KSailDeploymentTool.Flux)
+      {
+        if (config.Spec.FluxDeploymentToolOptions.PostBuildVariables)
+        {
+          components.Add("../../../components/flux-kustomization-post-build-variables-label");
+        }
+        if (config.Spec.Project.SecretManager == KSailSecretManager.SOPS)
+        {
+          components.Add("../../../components/flux-kustomization-sops-label");
+        }
+      }
+
+    }
     var kustomization = new KustomizeKustomization
     {
       Resources = config.Spec.KustomizeTemplateOptions.Kustomizations.Select(flow => $"{flow.Replace('/', '-')}.yaml").ToList(),
-      Components = config.Spec.KustomizeTemplateOptions.Components ?
-        [
-          "../../../components/flux-kustomization-post-build-variables-label",
-          "../../../components/flux-kustomization-sops-label"
-        ] :
-        null,
+      Components = components
     };
     if (config.Spec.FluxDeploymentToolOptions.PostBuildVariables)
     {
@@ -85,16 +97,16 @@ class FluxSystemGenerator
           {
             { "sops", "enabled" },
             { "post-build-variables", "enabled" }
-          } : config.Spec.FluxDeploymentToolOptions.PostBuildVariables && config.Spec.KustomizeTemplateOptions.Components && !flow.Equals("variables") ?
-          new Dictionary<string, string>
-          {
+        } : config.Spec.FluxDeploymentToolOptions.PostBuildVariables && config.Spec.KustomizeTemplateOptions.Components && !flow.Equals("variables") ?
+        new Dictionary<string, string>
+        {
             { "post-build-variables", "enabled" }
-          } : config.Spec.Project.SecretManager == KSailSecretManager.SOPS && config.Spec.KustomizeTemplateOptions.Components ?
-          new Dictionary<string, string>
-          {
+        } : config.Spec.Project.SecretManager == KSailSecretManager.SOPS && config.Spec.KustomizeTemplateOptions.Components ?
+        new Dictionary<string, string>
+        {
             { "sops", "enabled" }
-          } :
-          null
+        } :
+        null
       },
       Spec = new FluxKustomizationSpec
       {
@@ -111,22 +123,22 @@ class FluxSystemGenerator
         Prune = true,
         Wait = true,
         Decryption = config.Spec.Project.SecretManager == KSailSecretManager.SOPS && !config.Spec.KustomizeTemplateOptions.Components ?
-          new FluxKustomizationSpecDecryption
+        new FluxKustomizationSpecDecryption
+        {
+          Provider = FluxKustomizationSpecDecryptionProvider.SOPS,
+          SecretRef = new FluxSecretRef
           {
-            Provider = FluxKustomizationSpecDecryptionProvider.SOPS,
-            SecretRef = new FluxSecretRef
-            {
-              Name = "sops-age",
-              Key = "sops.agekey"
-            }
-          } :
-          null,
+            Name = "sops-age",
+            Key = "sops.agekey"
+          }
+        } :
+        null,
         PostBuild = config.Spec.FluxDeploymentToolOptions.PostBuildVariables && !config.Spec.KustomizeTemplateOptions.Components ?
-          new FluxKustomizationSpecPostBuild
-          {
-            SubstituteFrom = GetSubstituteFroms(config)
-          } :
-          null
+        new FluxKustomizationSpecPostBuild
+        {
+          SubstituteFrom = GetSubstituteFroms(config)
+        } :
+        null
       }
     };
     await _fluxKustomizationGenerator.GenerateAsync(fluxKustomization, outputDirectory, cancellationToken: cancellationToken).ConfigureAwait(false);

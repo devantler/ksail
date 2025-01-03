@@ -33,7 +33,7 @@ sealed class KSailDownCommand : Command
         config.UpdateConfig("Spec.CLIOptions.DownOptions.Registries", context.ParseResult.GetValueForOption(_registriesOption));
 
         var handler = new KSailDownCommandHandler(config);
-        Console.WriteLine($"🔥 Destroying cluster '{config.Spec.Project.Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-{config.Metadata.Name}'");
+        Console.WriteLine($"🔥 Destroying cluster '{config.Spec.Connection.Context}");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;
         Console.WriteLine();
       }
