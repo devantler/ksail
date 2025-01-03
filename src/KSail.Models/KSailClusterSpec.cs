@@ -91,7 +91,7 @@ public class KSailClusterSpec
     };
     KustomizeTemplateOptions = new KSailKustomizeTemplateOptions
     {
-      RootKustomizationDir = $"k8s/clusters/{name}/flux-system/kustomization.yaml"
+      RootKustomizationDir = $"k8s/clusters/{name}/flux-system"
     };
   }
 
@@ -121,6 +121,10 @@ public class KSailClusterSpec
         KSailKubernetesDistribution.K3s => "k3d-config.yaml",
         _ => "kind-config.yaml"
       }
+    };
+    KustomizeTemplateOptions = new KSailKustomizeTemplateOptions
+    {
+      RootKustomizationDir = $"k8s/clusters/{name}/flux-system"
     };
   }
 

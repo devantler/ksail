@@ -234,6 +234,17 @@ public class KSailInitCommandTests : IAsyncLifetime, IDisposable
         Directory.Delete(path, true);
       }
     }
+    string[] filePaths =
+    [
+      "ksail-config.yaml"
+    ];
+    foreach (string path in filePaths)
+    {
+      if (File.Exists(path))
+      {
+        File.Delete(path);
+      }
+    }
     GC.SuppressFinalize(this);
   }
 }
