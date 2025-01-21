@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="KubernetesClient" Version="15.0.1" />
+    <PackageReference Include="KubernetesClient" Version="16.0.2" />
     <PackageReference Include="Devantler.K9sCLI" Version="1.0.17" />
   </ItemGroup>
 
