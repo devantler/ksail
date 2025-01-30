@@ -32,7 +32,7 @@ class KSailDownCommandHandler
 
   internal async Task<bool> HandleAsync(CancellationToken cancellationToken = default)
   {
-    await _kubernetesDistributionProvisioner.DeprovisionAsync(_config.Metadata.Name, cancellationToken).ConfigureAwait(false);
+    await _kubernetesDistributionProvisioner.DeleteAsync(_config.Metadata.Name, cancellationToken).ConfigureAwait(false);
     if (_config.Spec.CLIOptions.DownOptions.Registries)
     {
       Console.WriteLine("► deleting registries...");

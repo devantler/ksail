@@ -1,5 +1,4 @@
-
-using Devantler.KubernetesGenerator.Native.Cluster;
+using Devantler.KubernetesGenerator.Native;
 using k8s.Models;
 
 namespace KSail.Commands.Gen.Handlers.Native;

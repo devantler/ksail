@@ -1,11 +1,11 @@
 using System.Text;
 using Devantler.ContainerEngineProvisioner.Docker;
-using Devantler.KeyManager.Local.Age;
 using Devantler.KubernetesProvisioner.Cluster.Core;
 using Devantler.KubernetesProvisioner.Cluster.K3d;
 using Devantler.KubernetesProvisioner.Cluster.Kind;
 using Devantler.KubernetesProvisioner.GitOps.Flux;
 using Devantler.KubernetesProvisioner.Resources.Native;
+using Devantler.SecretManager.SOPS.LocalAge;
 using k8s;
 using k8s.Models;
 using KSail.Commands.Down.Handlers;
@@ -20,7 +20,7 @@ namespace KSail.Commands.Up.Handlers;
 class KSailUpCommandHandler
 {
   //TODO: readonly CiliumProvisioner _cniProvisioner = new();
-  readonly LocalAgeKeyManager _keyManager = new();
+  readonly SOPSLocalAgeSecretManager _secretManager = new();
   readonly DockerProvisioner _engineProvisioner;
   readonly FluxProvisioner _deploymentTool;
   readonly IKubernetesClusterProvisioner _clusterProvisioner;
@@ -79,7 +79,7 @@ class KSailUpCommandHandler
     if (_config.Spec.CLIOptions.UpOptions.Reconcile)
     {
       Console.WriteLine("🔄 Reconciling kustomizations");
-      await _deploymentTool.ReconcileAsync(_config.Spec.KustomizeTemplateOptions.Kustomizations.Reverse().ToArray(), _config.Spec.Connection.Timeout, cancellationToken).ConfigureAwait(false);
+      await _deploymentTool.ReconcileAsync(_config.Spec.Connection.Timeout, cancellationToken).ConfigureAwait(false);
       Console.WriteLine();
     }
     return 0;
@@ -167,7 +167,7 @@ class KSailUpCommandHandler
   async Task ProvisionCluster(CancellationToken cancellationToken = default)
   {
     Console.WriteLine($"🚀 Provisioning cluster '{_config.Spec.Project.Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-{_config.Metadata.Name}'");
-    await _clusterProvisioner.ProvisionAsync(_config.Metadata.Name, _config.Spec.Project.DistributionConfigPath, cancellationToken).ConfigureAwait(false);
+    await _clusterProvisioner.CreateAsync(_config.Metadata.Name, _config.Spec.Project.DistributionConfigPath, cancellationToken).ConfigureAwait(false);
     Console.WriteLine();
   }
 
@@ -208,7 +208,7 @@ class KSailUpCommandHandler
       string publicKey = sopsConfig.CreationRules.First(x => x.PathRegex.Contains(config.Metadata.Name, StringComparison.OrdinalIgnoreCase)).Age.Split(',')[0].Trim();
 
       Console.WriteLine("► getting private key from SOPS_AGE_KEY_FILE or default location");
-      var ageKey = await _keyManager.GetKeyAsync(publicKey, cancellationToken).ConfigureAwait(false);
+      var ageKey = await _secretManager.GetKeyAsync(publicKey, cancellationToken).ConfigureAwait(false);
 
       Console.WriteLine("► creating 'sops-age' secret in 'flux-system' namespace");
       var secret = new V1Secret

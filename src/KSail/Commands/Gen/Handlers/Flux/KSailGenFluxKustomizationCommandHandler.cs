@@ -1,7 +1,6 @@
 using Devantler.KubernetesGenerator.Flux;
 using Devantler.KubernetesGenerator.Flux.Models;
-using Devantler.KubernetesGenerator.Flux.Models.Sources;
-using k8s.Models;
+using Devantler.KubernetesGenerator.Flux.Models.Kustomization;
 
 namespace KSail.Commands.Gen.Handlers.Flux;
 
@@ -12,7 +11,7 @@ class KSailGenFluxKustomizationCommandHandler
   {
     var fluxKustomization = new FluxKustomization
     {
-      Metadata = new V1ObjectMeta
+      Metadata = new FluxNamespacedMetadata
       {
         Name = "flux-kustomization"
       },
@@ -22,9 +21,9 @@ class KSailGenFluxKustomizationCommandHandler
         Timeout = "3m",
         RetryInterval = "2m",
         DependsOn = [],
-        SourceRef = new FluxKustomizationSpecSourceRef
+        SourceRef = new FluxSourceRef
         {
-          Kind = FluxSource.OCIRepository,
+          Kind = FluxSourceRefKind.OCIRepository,
           Name = "flux-system",
         },
         Path = "path/to/kustomize-kustomization-dir",

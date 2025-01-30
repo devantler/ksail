@@ -47,7 +47,7 @@ class KSailUpdateCommandHandler
         if (_config.Spec.CLIOptions.UpdateOptions.Reconcile)
         {
           Console.WriteLine("🔄 Reconciling changes");
-          await _deploymentTool.ReconcileAsync(_config.Spec.KustomizeTemplateOptions.Kustomizations.Reverse().ToArray(), _config.Spec.Connection.Timeout, cancellationToken).ConfigureAwait(false);
+          await _deploymentTool.ReconcileAsync(_config.Spec.Connection.Timeout, cancellationToken).ConfigureAwait(false);
         }
         Console.WriteLine();
         break;

@@ -1,6 +1,6 @@
 // using System.CommandLine;
-// using Devantler.KeyManager.Core;
-// using Devantler.KeyManager.Local.Age;
+// using Devantler.SecretManager.Core;
+// using Devantler.SecretManager.SOPS.LocalAge;
 // using Devantler.Keys.Age;
 // using KSail.Models;
 // using KSail.Utils;
@@ -36,13 +36,13 @@
 // class KSailSOPGenCommandHandler
 // {
 //   private KSailCluster _config;
-//   readonly ILocalKeyManager<AgeKey> _keyManager = new LocalAgeKeyManager();
+//   readonly ILocalSecretManager<AgeKey> _secretManager = new LocalAgeSecretManager();
 
 //   public KSailSOPGenCommandHandler(KSailCluster config) => _config = config;
 
 //   internal async Task<int> HandleAsync(CancellationToken cancellationToken)
 //   {
-//     var key = await _keyManager.CreateKeyAsync(cancellationToken).ConfigureAwait(false);
+//     var key = await _secretManager.CreateKeyAsync(cancellationToken).ConfigureAwait(false);
 //     Console.WriteLine(key);
 //   }
 // }

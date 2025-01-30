@@ -8,5 +8,5 @@ public interface IKSailGitOpsSource
   /// <summary>
   /// The URL of the GitOps source.
   /// </summary>
-  public Uri Url { get; set; }
+  Uri Url { get; set; }
 }

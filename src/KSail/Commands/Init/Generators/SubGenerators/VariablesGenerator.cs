@@ -1,4 +1,4 @@
-using Devantler.KubernetesGenerator.Native.ConfigAndStorage;
+using Devantler.KubernetesGenerator.Native;
 using k8s.Models;
 using KSail.Models;
 

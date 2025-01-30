@@ -1,4 +1,4 @@
-using Devantler.KeyManager.Local.Age;
+using Devantler.SecretManager.SOPS.LocalAge;
 using Devantler.Keys.Age;
 using KSail.Models;
 using KSail.Utils;
@@ -8,11 +8,11 @@ namespace KSail.Commands.SOPS.Handlers;
 class KSailSOPSListCommandHandler(KSailCluster config)
 {
   readonly KSailCluster _config = config;
-  readonly LocalAgeKeyManager _keyManager = new();
+  readonly LocalAgeSecretManager _secretManager = new();
 
   internal async Task<bool> HandleAsync(CancellationToken cancellationToken)
   {
-    var keys = await _keyManager.ListKeysAsync(cancellationToken).ConfigureAwait(false);
+    var keys = await _secretManager.ListKeysAsync(cancellationToken).ConfigureAwait(false);
 
     if (_config.Spec.CLIOptions.SopsOptions.ListOptions.ShowSOPSConfigKeysOnly)
     {

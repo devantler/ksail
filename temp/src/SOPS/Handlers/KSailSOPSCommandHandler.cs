@@ -1,12 +1,12 @@
-// using Devantler.KeyManager.Core.Models;
-// using Devantler.KeyManager.Local.Age;
+// using Devantler.SecretManager.Core.Models;
+// using Devantler.SecretManager.SOPS.LocalAge;
 // using KSail.Models;
 
 // namespace KSail.Commands.SOPS.Handlers;
 
 // class KSailSOPSCommandHandler() : IDisposable
 // {
-//   readonly LocalAgeKeyManager _keyManager = new();
+//   readonly LocalAgeSecretManager _secretManager = new();
 //   internal async Task<int> HandleAsync(string clusterName, bool generateKey, bool showKey, bool showPublicKey, bool showPrivateKey, string encrypt, string decrypt, string import, string export, CancellationToken cancellationToken = default)
 //   {
 //     switch (generateKey, showKey, showPublicKey, showPrivateKey, encrypt, decrypt, import, export)
@@ -35,8 +35,8 @@
 
 //   async Task HandleGenerateKey(KSailCluster config, CancellationToken cancellationToken = default)
 //   {
-//     var sopsConfig = await _keyManager.GetSOPSConfigAsync(config.Metadata.Name, cancellationToken).ConfigureAwait(false);
-//     var ageKey = await _keyManager.CreateKeyAsync(cancellationToken).ConfigureAwait(false);
+//     var sopsConfig = await _secretManager.GetSOPSConfigAsync(config.Metadata.Name, cancellationToken).ConfigureAwait(false);
+//     var ageKey = await _secretManager.CreateKeyAsync(cancellationToken).ConfigureAwait(false);
 
 //     sopsConfig.CreationRules.Add(new SOPSConfigCreationRule
 //     {
@@ -50,7 +50,7 @@
 
 //   async Task<int> HandleShowPrivateKey(string clusterName, CancellationToken cancellationToken = default)
 //   {
-//     var (exitCode, privateKey) = await _keyManager.GetPrivateKeyAsync(KeyType.Age, name, cancellationToken).ConfigureAwait(false);
+//     var (exitCode, privateKey) = await _secretManager.GetPrivateKeyAsync(KeyType.Age, name, cancellationToken).ConfigureAwait(false);
 //     if (exitCode != 0)
 //     {
 //       throw new KSailException("Private SOPS key not found");
