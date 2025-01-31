@@ -13,18 +13,18 @@ class KSailGenFluxHelmReleaseCommandHandler
     {
       Metadata = new FluxNamespacedMetadata
       {
-        Name = "<name>",
-        Namespace = "<namespace>"
+        Name = "my-helm-release",
+        Namespace = "my-namespace"
       },
       Spec = new FluxHelmReleaseSpec(new FluxHelmReleaseSpecChart
       {
         Spec = new FluxHelmReleaseSpecChartSpec
         {
-          Chart = "<chart>",
+          Chart = "my-chart",
           SourceRef = new FluxSourceRef
           {
             Kind = FluxSourceRefKind.HelmRepository,
-            Name = "<name>"
+            Name = "my-helm-repo"
           }
         }
       })
