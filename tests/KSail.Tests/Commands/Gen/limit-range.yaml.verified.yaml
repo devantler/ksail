@@ -1,7 +1,0 @@
-﻿---
-apiVersion: v1
-kind: LimitRange
-metadata:
-  name: <name>
-spec:
-  limits: []
