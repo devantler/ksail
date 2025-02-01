@@ -17,8 +17,6 @@ namespace KSail.Commands.Root;
 sealed class KSailRootCommand : RootCommand
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly KSailRootCommandHandler _kSailRootCommandHandler = new();
-
   internal KSailRootCommand(IConsole console) : base("KSail is an SDK for building GitOps enabled clusters.")
   {
     AddCommands(console);
@@ -27,7 +25,7 @@ sealed class KSailRootCommand : RootCommand
       {
         try
         {
-          bool exitCode = _kSailRootCommandHandler.Handle(console) && await this.InvokeAsync("--help", console).ConfigureAwait(false) == 0;
+          bool exitCode = KSailRootCommandHandler.Handle(console) && await this.InvokeAsync("--help", console).ConfigureAwait(false) == 0;
           context.ExitCode = exitCode ? 0 : 1;
         }
         catch (OperationCanceledException ex)
