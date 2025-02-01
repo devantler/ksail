@@ -21,9 +21,9 @@ class KSailGenFluxKustomizationCommandHandler
         Timeout = "3m",
         RetryInterval = "2m",
         DependsOn = [],
-        SourceRef = new FluxSourceRef
+        SourceRef = new FluxKustomizationSpecSourceRef
         {
-          Kind = FluxSourceRefKind.OCIRepository,
+          Kind = FluxKustomizationSpecSourceRefKind.OCIRepository,
           Name = "flux-system",
         },
         Path = "path/to/kustomize-kustomization-dir",

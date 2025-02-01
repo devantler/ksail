@@ -13,8 +13,8 @@ class KSailGenFluxHelmRepositoryCommandHandler
     {
       Metadata = new FluxNamespacedMetadata
       {
-        Name = "<name>",
-        Namespace = "<namespace>"
+        Name = "my-helm-repo",
+        Namespace = "my-namespace"
       },
       Spec = new FluxHelmRepositorySpec()
       {

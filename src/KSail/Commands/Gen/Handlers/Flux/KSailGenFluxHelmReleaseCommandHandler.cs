@@ -21,9 +21,9 @@ class KSailGenFluxHelmReleaseCommandHandler
         Spec = new FluxHelmReleaseSpecChartSpec
         {
           Chart = "my-chart",
-          SourceRef = new FluxSourceRef
+          SourceRef = new FluxHelmReleaseSpecChartSpecSourceRef
           {
-            Kind = FluxSourceRefKind.HelmRepository,
+            Kind = FluxHelmReleaseSpecChartSpecSourceRefKind.HelmRepository,
             Name = "my-helm-repo"
           }
         }
