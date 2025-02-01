@@ -15,7 +15,7 @@ class KSailGenNativeAccountCommandHandler
       Kind = "ServiceAccount",
       Metadata = new V1ObjectMeta()
       {
-        Name = "<name>"
+        Name = "my-service-account",
       },
     };
     await _generator.GenerateAsync(model, outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);

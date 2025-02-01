@@ -14,7 +14,7 @@ class KSailGenNativePriorityClassCommandHandler
       Kind = "PriorityClass",
       Metadata = new V1ObjectMeta()
       {
-        Name = "<name>"
+        Name = "my-priority-class"
       },
       Value = 1000,
       GlobalDefault = false,

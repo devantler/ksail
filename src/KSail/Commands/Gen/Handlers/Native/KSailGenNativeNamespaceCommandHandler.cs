@@ -14,7 +14,7 @@ class KSailGenNativeNamespaceCommandHandler
       Kind = "Namespace",
       Metadata = new V1ObjectMeta()
       {
-        Name = "<name>",
+        Name = "my-namespace"
       }
     };
     await _generator.GenerateAsync(model, outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);

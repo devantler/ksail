@@ -14,7 +14,7 @@ class KSailGenNativeWorkloadsStatefulSetCommandHandler
       Kind = "StatefulSet",
       Metadata = new V1ObjectMeta
       {
-        Name = "<name>"
+        Name = "my-stateful-set"
       },
       Spec = new V1StatefulSetSpec
       {
@@ -22,10 +22,10 @@ class KSailGenNativeWorkloadsStatefulSetCommandHandler
         {
           MatchLabels = new Dictionary<string, string>
           {
-            ["app"] = "<name>"
+            ["app"] = "my-stateful-set"
           }
         },
-        ServiceName = "<name>",
+        ServiceName = "my-service",
         Replicas = 1,
         Template = new V1PodTemplateSpec
         {
@@ -33,7 +33,7 @@ class KSailGenNativeWorkloadsStatefulSetCommandHandler
           {
             Labels = new Dictionary<string, string>
             {
-              ["app"] = "<name>"
+              ["app"] = "my-stateful-set"
             }
           },
           Spec = new V1PodSpec
@@ -42,8 +42,8 @@ class KSailGenNativeWorkloadsStatefulSetCommandHandler
             [
               new V1Container
               {
-                Name = "<name>",
-                Image = "<image>",
+                Name = "my-container",
+                Image = "my-image",
                 ImagePullPolicy = "IfNotPresent",
                 Command = []
               }

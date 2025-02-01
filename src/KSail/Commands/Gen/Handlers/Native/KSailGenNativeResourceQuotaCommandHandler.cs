@@ -15,7 +15,7 @@ class KSailGenNativeResourceQuotaCommandHandler
       Kind = "ResourceQuota",
       Metadata = new V1ObjectMeta()
       {
-        Name = "<name>",
+        Name = "my-resource-quota"
       },
       Spec = new V1ResourceQuotaSpec()
       {

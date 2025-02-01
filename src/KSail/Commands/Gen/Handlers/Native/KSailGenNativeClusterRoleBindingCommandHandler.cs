@@ -14,21 +14,21 @@ class KSailGenNativeClusterRoleBindingCommandHandler
       Kind = "ClusterRoleBinding",
       Metadata = new V1ObjectMeta()
       {
-        Name = "<name>",
+        Name = "my-cluster-role-binding"
       },
       Subjects =
       [
         new Rbacv1Subject()
         {
           Kind = "Group",
-          Name = "<group>",
+          Name = "my-group",
           ApiGroup = "rbac.authorization.k8s.io"
         }
       ],
       RoleRef = new V1RoleRef()
       {
         Kind = "ClusterRole",
-        Name = "<cluster-role>",
+        Name = "my-cluster-role",
         ApiGroup = "rbac.authorization.k8s.io",
       }
     };

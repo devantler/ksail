@@ -14,11 +14,11 @@ class KSailGenNativeWorkloadsCronJobCommandHandler
       Kind = "CronJob",
       Metadata = new V1ObjectMeta
       {
-        Name = "<name>"
+        Name = "my-cron-job"
       },
       Spec = new V1CronJobSpec
       {
-        Schedule = "<schedule>",
+        Schedule = "*/1 * * * *",
         JobTemplate = new V1JobTemplateSpec
         {
           Spec = new V1JobSpec
@@ -31,8 +31,8 @@ class KSailGenNativeWorkloadsCronJobCommandHandler
                 [
                   new V1Container
                   {
-                    Name = "<name>",
-                    Image = "<image>",
+                    Name = "my-container",
+                    Image = "my-image",
                     ImagePullPolicy = "IfNotPresent",
                     Command = []
                   }

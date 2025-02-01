@@ -15,15 +15,15 @@ class KSailGenNativeRoleCommandHandler
       Kind = "Role",
       Metadata = new V1ObjectMeta()
       {
-        Name = "<name>",
+        Name = "my-role",
         NamespaceProperty = "<namespace>",
       },
       Rules = [
         new V1PolicyRule()
         {
-          ApiGroups = ["<api-group>"],
-          Resources = ["<resource>"],
-          Verbs = ["<verb>"],
+          ApiGroups = [""],
+          Resources = [""],
+          Verbs = [""]
         }
       ]
     };

@@ -14,10 +14,10 @@ class KSailGenNativeSecretCommandHandler
       Kind = "Secret",
       Metadata = new V1ObjectMeta()
       {
-        Name = "<name>",
-        NamespaceProperty = "<namespace>"
+        Name = "my-secret",
+        NamespaceProperty = "my-namespace"
       },
-      Type = "<type>",
+      Type = "Opaque",
       StringData = new Dictionary<string, string>()
     };
     await _generator.GenerateAsync(model, outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);

@@ -14,7 +14,7 @@ class KSailGenNativeServiceCommandHandler
       Kind = "Service",
       Metadata = new V1ObjectMeta()
       {
-        Name = "<name>",
+        Name = "my-service",
       },
       Spec = new V1ServiceSpec()
       {
@@ -22,7 +22,7 @@ class KSailGenNativeServiceCommandHandler
         [
           new V1ServicePort()
           {
-            Name = "<name>",
+            Name = "my-port",
             Port = 0,
             TargetPort = 0,
           },

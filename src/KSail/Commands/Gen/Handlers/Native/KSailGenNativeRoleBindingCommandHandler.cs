@@ -15,7 +15,7 @@ class KSailGenNativeRoleBindingCommandHandler
       Kind = "RoleBinding",
       Metadata = new V1ObjectMeta()
       {
-        Name = "<name>",
+        Name = "my-role-binding",
         NamespaceProperty = "<namespace>",
       },
       Subjects =
@@ -23,14 +23,14 @@ class KSailGenNativeRoleBindingCommandHandler
         new Rbacv1Subject()
         {
           Kind = "User",
-          Name = "<user-name>",
+          Name = "my-user",
           ApiGroup = "rbac.authorization.k8s.io",
         }
       ],
       RoleRef = new V1RoleRef()
       {
         Kind = "Role",
-        Name = "<cluster-role-name>",
+        Name = "my-role",
         ApiGroup = "rbac.authorization.k8s.io",
       }
     };

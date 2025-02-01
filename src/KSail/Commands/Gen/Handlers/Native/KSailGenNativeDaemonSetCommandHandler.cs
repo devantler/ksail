@@ -14,7 +14,7 @@ class KSailGenNativeWorkloadsDaemonSetCommandHandler
       Kind = "DaemonSet",
       Metadata = new V1ObjectMeta
       {
-        Name = "<name>"
+        Name = "my-daemon-set"
       },
       Spec = new V1DaemonSetSpec
       {
@@ -22,7 +22,7 @@ class KSailGenNativeWorkloadsDaemonSetCommandHandler
         {
           MatchLabels = new Dictionary<string, string>
           {
-            ["app"] = "<name>"
+            ["app"] = "my-daemon-set"
           }
         },
         Template = new V1PodTemplateSpec
@@ -31,7 +31,7 @@ class KSailGenNativeWorkloadsDaemonSetCommandHandler
           {
             Labels = new Dictionary<string, string>
             {
-              ["app"] = "<name>"
+              ["app"] = "my-daemon-set"
             }
           },
           Spec = new V1PodSpec
@@ -40,8 +40,8 @@ class KSailGenNativeWorkloadsDaemonSetCommandHandler
             [
               new V1Container
               {
-                Name = "<name>",
-                Image = "<image>",
+                Name = "my-container",
+                Image = "my-image",
                 ImagePullPolicy = "IfNotPresent",
                 Command = []
               }

@@ -14,7 +14,7 @@ class KSailGenNativePodDisruptionBudgetCommandHandler
       Kind = "PodDisruptionBudget",
       Metadata = new V1ObjectMeta()
       {
-        Name = "<name>"
+        Name = "my-pod-disruption-budget"
       },
       Spec = new V1PodDisruptionBudgetSpec()
       {

@@ -15,7 +15,7 @@ class KSailGenNativePersistentVolumeCommandHandler
       Kind = "PersistentVolume",
       Metadata = new V1ObjectMeta()
       {
-        Name = "<name>",
+        Name = "my-persistent-volume"
       },
       Spec = new V1PersistentVolumeSpec()
       {
@@ -24,7 +24,7 @@ class KSailGenNativePersistentVolumeCommandHandler
           ["storage"] = new ResourceQuantity("5Gi")
         },
         AccessModes = ["ReadWriteOnce"],
-        StorageClassName = "<storage-class>"
+        StorageClassName = "my-storage-class",
       }
     };
     await _generator.GenerateAsync(model, outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);

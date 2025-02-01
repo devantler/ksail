@@ -14,7 +14,7 @@ class KSailGenNativeClusterRoleCommandHandler
       Kind = "ClusterRole",
       Metadata = new V1ObjectMeta()
       {
-        Name = "<name>",
+        Name = "my-cluster-role"
       },
       Rules =
       [

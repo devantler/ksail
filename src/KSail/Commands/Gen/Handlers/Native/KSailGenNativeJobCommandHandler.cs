@@ -14,7 +14,7 @@ class KSailGenNativeWorkloadsJobCommandHandler
       Kind = "Job",
       Metadata = new V1ObjectMeta
       {
-        Name = "<name>"
+        Name = "my-job"
       },
       Spec = new V1JobSpec
       {
@@ -26,8 +26,8 @@ class KSailGenNativeWorkloadsJobCommandHandler
             [
               new V1Container
               {
-                Name = "<name>",
-                Image = "<image>",
+                Name = "my-container",
+                Image = "my-image",
                 ImagePullPolicy = "IfNotPresent",
                 Command = []
               }

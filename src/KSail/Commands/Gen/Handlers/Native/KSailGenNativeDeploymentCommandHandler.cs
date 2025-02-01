@@ -14,7 +14,7 @@ class KSailGenNativeWorkloadsDeploymentCommandHandler
       Kind = "Deployment",
       Metadata = new V1ObjectMeta
       {
-        Name = "<name>"
+        Name = "my-deployment"
       },
       Spec = new V1DeploymentSpec
       {
@@ -22,7 +22,7 @@ class KSailGenNativeWorkloadsDeploymentCommandHandler
         {
           MatchLabels = new Dictionary<string, string>
           {
-            ["app"] = "<name>"
+            ["app"] = "my-deployment"
           }
         },
         Template = new V1PodTemplateSpec
@@ -31,7 +31,7 @@ class KSailGenNativeWorkloadsDeploymentCommandHandler
           {
             Labels = new Dictionary<string, string>
             {
-              ["app"] = "<name>"
+              ["app"] = "my-deployment"
             }
           },
           Spec = new V1PodSpec
@@ -40,8 +40,8 @@ class KSailGenNativeWorkloadsDeploymentCommandHandler
             [
               new V1Container
               {
-                Name = "<name>",
-                Image = "<image>",
+                Name = "my-container",
+                Image = "my-image",
                 ImagePullPolicy = "IfNotPresent",
                 Command = []
               }

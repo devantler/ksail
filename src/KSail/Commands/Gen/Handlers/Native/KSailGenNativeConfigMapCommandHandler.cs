@@ -14,11 +14,12 @@ class KSailGenNativeConfigMapCommandHandler
       Kind = "ConfigMap",
       Metadata = new V1ObjectMeta()
       {
-        Name = "<name>",
+        Name = "my-config-map"
       },
       Data = new Dictionary<string, string>()
       {
-        { "<key>", "<value>" }
+        { "key1", "value1" },
+        { "key2", "value2" }
       }
     };
     await _generator.GenerateAsync(model, outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);

@@ -14,8 +14,8 @@ class KSailGenNativePersistentVolumeClaimCommandHandler
       Kind = "PersistentVolumeClaim",
       Metadata = new V1ObjectMeta()
       {
-        Name = "<name>",
-        NamespaceProperty = "<namespace>"
+        Name = "my-persistent-volume-claim",
+        NamespaceProperty = "my-namespace"
       },
       Spec = new V1PersistentVolumeClaimSpec()
       {

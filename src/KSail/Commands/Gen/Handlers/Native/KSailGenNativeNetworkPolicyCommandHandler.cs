@@ -15,8 +15,8 @@ class KSailGenNativeNetworkPolicyCommandHandler
       Kind = "NetworkPolicy",
       Metadata = new V1ObjectMeta()
       {
-        Name = "<name>",
-        NamespaceProperty = "<namespace>",
+        Name = "my-network-policy",
+        NamespaceProperty = "my-namespace"
       },
       Spec = new V1NetworkPolicySpec()
       {

@@ -14,7 +14,7 @@ class KSailGenNativeHorizontalPodAutoscalerCommandHandler
       Kind = "HorizontalPodAutoscaler",
       Metadata = new V1ObjectMeta()
       {
-        Name = "<name>"
+        Name = "my-hpa"
       },
       Spec = new V2HorizontalPodAutoscalerSpec()
       {
@@ -23,8 +23,8 @@ class KSailGenNativeHorizontalPodAutoscalerCommandHandler
         ScaleTargetRef = new V2CrossVersionObjectReference()
         {
           ApiVersion = "apps/v1",
-          Kind = "<workload-kind>",
-          Name = "<workload-name>"
+          Kind = "Deployment",
+          Name = "my-deployment"
         },
         Behavior = new V2HorizontalPodAutoscalerBehavior(),
         Metrics = []

@@ -14,29 +14,29 @@ class KSailGenNativeIngressCommandHandler
       Kind = "Ingress",
       Metadata = new V1ObjectMeta()
       {
-        Name = "<name>",
+        Name = "my-ingress"
       },
       Spec = new V1IngressSpec()
       {
-        IngressClassName = "<ingressClassName>",
+        IngressClassName = "my-ingress-class",
         Rules =
        [
          new V1IngressRule()
          {
-           Host = "<host>",
+           Host = "my-host",
            Http = new V1HTTPIngressRuleValue()
            {
              Paths =
              [
                new V1HTTPIngressPath()
                {
-                 Path = "<path>",
+                 Path = "/",
                  PathType = "ImplementationSpecific",
                  Backend = new V1IngressBackend()
                  {
                    Service = new V1IngressServiceBackend()
                    {
-                     Name = "<name>",
+                     Name = "my-service",
                      Port = new V1ServiceBackendPort()
                      {
                        Number = 0,
