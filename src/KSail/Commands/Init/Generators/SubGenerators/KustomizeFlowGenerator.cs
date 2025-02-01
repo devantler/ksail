@@ -11,7 +11,7 @@ class KustomizeFlowGenerator
   readonly KustomizeKustomizationGenerator _kustomizationGenerator = new();
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    if (!config.Spec.KustomizeTemplateOptions.KustomizationHooks.Any())
+    if (config.Spec.KustomizeTemplateOptions.KustomizationHooks.Length == 0)
     {
       config.Spec.KustomizeTemplateOptions.KustomizationHooks = [""];
     }
