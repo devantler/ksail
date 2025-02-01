@@ -24,7 +24,7 @@
     },
     FluxDeploymentToolOptions: {
       Source: {
-        Url: oci://host.docker.internal:5555/ksail-registry
+        Url: oci://testhost:5555/ksail-registry
       },
       PostBuildVariables: false
     },
