@@ -15,11 +15,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="6.0.3" />
+    <PackageReference Include="coverlet.collector" Version="6.0.4" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-    <PackageReference Include="Verify.Xunit" Version="28.8.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="3.0.0" />
-    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="Verify.Xunit" Version="28.9.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.0.1" />
+    <PackageReference Include="xunit" Version="2.9.3" />
   </ItemGroup>
 
   <ItemGroup>
