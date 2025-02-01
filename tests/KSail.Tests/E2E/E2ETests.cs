@@ -59,22 +59,20 @@ public class E2ETests : IAsyncLifetime, IDisposable
     var ksailUpdateCommand = new KSailUpdateCommand();
     var ksailDownCommand = new KSailDownCommand();
 
-    //Act
+    //Act & Assert
     int initExitCode = await ksailInitCommand.InvokeAsync(initArgs);
-    int upExitCode = await ksailUpCommand.InvokeAsync("--destroy");
-    int listExitCode = await ksailListCommand.InvokeAsync("");
-    int stopExitCode = await ksailStopCommand.InvokeAsync("");
-    int startExitCode = await ksailStartCommand.InvokeAsync("");
-    int updateExitCode = await ksailUpdateCommand.InvokeAsync("");
-    int downExitCode = await ksailDownCommand.InvokeAsync("--registries");
-
-    //Assert
     Assert.Equal(0, initExitCode);
+    int upExitCode = await ksailUpCommand.InvokeAsync("--destroy");
     Assert.Equal(0, upExitCode);
+    int listExitCode = await ksailListCommand.InvokeAsync("");
     Assert.Equal(0, listExitCode);
+    int stopExitCode = await ksailStopCommand.InvokeAsync("");
     Assert.Equal(0, stopExitCode);
+    int startExitCode = await ksailStartCommand.InvokeAsync("");
     Assert.Equal(0, startExitCode);
+    int updateExitCode = await ksailUpdateCommand.InvokeAsync("");
     Assert.Equal(0, updateExitCode);
+    int downExitCode = await ksailDownCommand.InvokeAsync("--registries");
     Assert.Equal(0, downExitCode);
   }
 
