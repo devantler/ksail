@@ -5,13 +5,12 @@ metadata:
   name: infrastructure-controllers
   namespace: flux-system
 spec:
-  interval: 60m
-  retryInterval: 2m
-  timeout: 3m
-  dependsOn: []
+  interval: 1h0m0s
+  path: ./infrastructure/controllers
+  prune: true
+  retryInterval: 2m0s
   sourceRef:
     kind: OCIRepository
     name: flux-system
-  path: infrastructure/controllers
-  prune: true
+  timeout: 3m0s
   wait: true
