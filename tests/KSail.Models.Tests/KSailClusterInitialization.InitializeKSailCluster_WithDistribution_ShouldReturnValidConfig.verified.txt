@@ -29,7 +29,7 @@
       PostBuildVariables: false
     },
     KustomizeTemplateOptions: {
-      RootKustomizationDir: k8s/clusters/ksail-default/flux-system,
+      RootKustomizationDirectory: k8s/clusters/ksail-default/flux-system,
       Kustomizations: [
         apps,
         infrastructure,

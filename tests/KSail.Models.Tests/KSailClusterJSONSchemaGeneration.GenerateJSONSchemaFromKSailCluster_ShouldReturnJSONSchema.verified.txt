@@ -117,7 +117,7 @@
           "description": "The options for the Kustomize template.",
           "type": "object",
           "properties": {
-            "RootKustomizationDir": {
+            "RootKustomizationDirectory": {
               "description": "The root kustomization file.",
               "type": "string"
             },
