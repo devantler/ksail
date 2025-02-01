@@ -1,3 +1,4 @@
+using System.Globalization;
 using Devantler.K9sCLI;
 using KSail.Models;
 
@@ -11,7 +12,10 @@ class KSailDebugCommandHandler
 
   internal async Task<bool> HandleAsync(CancellationToken cancellationToken = default)
   {
-    await K9s.RunAsync(_config.Spec.CLIOptions.DebugOptions.Editor, _config.Spec.Connection.Kubeconfig, _config.Spec.Connection.Context, cancellationToken).ConfigureAwait(false);
-    return true;
+    string[] args = [];
+    Environment.SetEnvironmentVariable("EDITOR", _config.Spec.CLIOptions.DebugOptions.Editor.ToString().ToLower(CultureInfo.CurrentCulture));
+    var (exitCode, _) = await K9s.RunAsync(args, cancellationToken: cancellationToken).ConfigureAwait(false);
+    Environment.SetEnvironmentVariable("EDITOR", null);
+    return exitCode == 0;
   }
 }
