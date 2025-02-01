@@ -20,7 +20,6 @@ class KSailGenFluxKustomizationCommandHandler
         Interval = "60m",
         Timeout = "3m",
         RetryInterval = "2m",
-        DependsOn = [],
         SourceRef = new FluxKustomizationSpecSourceRef
         {
           Kind = FluxKustomizationSpecSourceRefKind.OCIRepository,
@@ -29,7 +28,6 @@ class KSailGenFluxKustomizationCommandHandler
         Path = "path/to/kustomize-kustomization-dir",
         Prune = true,
         Wait = true
-
       }
     };
 
