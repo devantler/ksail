@@ -15,5 +15,5 @@ spec:
   sourceRef:
     kind: OCIRepository
     name: flux-system
-  path: clusters/ksail-default/variables
+  path: clusters/ksail-advanced-native/variables
   prune: true

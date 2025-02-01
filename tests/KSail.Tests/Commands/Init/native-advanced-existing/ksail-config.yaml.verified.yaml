@@ -2,11 +2,11 @@
 apiVersion: ksail.io/v1alpha1
 kind: Cluster
 metadata:
-  name: ksail-default
+  name: ksail-advanced-native
 spec:
   connection:
     kubeconfig: ~/.kube/config
-    context: kind-ksail-default
+    context: kind-ksail-advanced-native
     timeout: 5m
   project:
     workingDirectory: {TempPath}ksail-init-native-advanced-existing

@@ -2,7 +2,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infrastructure-controllers
+  name: apps
   namespace: flux-system
   labels:
     sops: enabled
@@ -13,9 +13,9 @@ spec:
   timeout: 3m
   wait: true
   dependsOn:
-  - name: variables
+  - name: infrastructure
   sourceRef:
     kind: OCIRepository
     name: flux-system
-  path: clusters/ksail-default/infrastructure/controllers
+  path: clusters/ksail-advanced-native/apps
   prune: true

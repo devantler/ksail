@@ -17,5 +17,5 @@ spec:
   sourceRef:
     kind: OCIRepository
     name: flux-system
-  path: clusters/ksail-default/infrastructure
+  path: clusters/ksail-advanced-native/infrastructure
   prune: true
