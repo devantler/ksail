@@ -2,17 +2,18 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  labels:
-    sops: enabled
   name: variables
   namespace: flux-system
+  labels:
+    sops: enabled
 spec:
-  interval: 1h0m0s
-  path: ./clusters/ksail-default/variables
-  prune: true
-  retryInterval: 2m0s
+  interval: 60m
+  retryInterval: 2m
+  timeout: 3m
+  wait: true
+  dependsOn: []
   sourceRef:
     kind: OCIRepository
     name: flux-system
-  timeout: 3m0s
-  wait: true
+  path: clusters/ksail-default/variables
+  prune: true
