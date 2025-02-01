@@ -110,9 +110,9 @@ class FluxSystemGenerator
         Timeout = "3m",
         RetryInterval = "2m",
         DependsOn = dependsOn,
-        SourceRef = new FluxSourceRef
+        SourceRef = new FluxKustomizationSpecSourceRef
         {
-          Kind = FluxSourceRefKind.OCIRepository,
+          Kind = FluxKustomizationSpecSourceRefKind.OCIRepository,
           Name = "flux-system"
         },
         Path = config.Spec.KustomizeTemplateOptions.KustomizationHooks.Length == 0 ? flow : $"{config.Spec.KustomizeTemplateOptions.KustomizationHooks.First()}/{flow}",
