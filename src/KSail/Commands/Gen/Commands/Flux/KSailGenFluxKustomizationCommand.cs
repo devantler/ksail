@@ -8,6 +8,7 @@ namespace KSail.Commands.Gen.Commands.Flux;
 
 sealed class KSailGenFluxKustomizationCommand : Command
 {
+  readonly ExceptionHandler _exceptionHandler = new();
   readonly FileOutputOption _outputOption = new("./flux-kustomization.yaml");
   readonly KSailGenFluxKustomizationCommandHandler _handler = new();
   internal KSailGenFluxKustomizationCommand() : base("kustomization", "Generate a 'kustomize.toolkit.fluxcd.io/v1/Kustomization' resource.")
@@ -24,7 +25,7 @@ sealed class KSailGenFluxKustomizationCommand : Command
         }
         catch (OperationCanceledException ex)
         {
-          ExceptionHandler.HandleException(ex);
+          _ = _exceptionHandler.HandleException(ex);
           context.ExitCode = 1;
         }
       }

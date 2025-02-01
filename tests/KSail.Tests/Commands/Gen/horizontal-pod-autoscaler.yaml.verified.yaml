@@ -2,7 +2,7 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: <name>
+  name: my-hpa
 spec:
   behavior: {}
   maxReplicas: 4
@@ -10,5 +10,5 @@ spec:
   minReplicas: 2
   scaleTargetRef:
     apiVersion: apps/v1
-    kind: <workload-kind>
-    name: <workload-name>
+    kind: Deployment
+    name: my-deployment

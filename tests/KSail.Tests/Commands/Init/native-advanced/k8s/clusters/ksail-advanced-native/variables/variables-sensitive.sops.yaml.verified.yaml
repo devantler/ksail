@@ -1,0 +1,7 @@
+﻿---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: variables-clusters-ksail-advanced-native-sensitive
+  namespace: flux-system
+stringData: {}

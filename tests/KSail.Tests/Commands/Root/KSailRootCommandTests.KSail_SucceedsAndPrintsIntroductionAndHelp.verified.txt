@@ -1,11 +1,10 @@
-﻿🛥️ 🐳    [bold underline]Welcome to [blue]KSail[/]![/]    🛥️ 🐳
-                                     [blue]. . .[/]
-                __/___                 [blue]:[/]
-          _____/______|             ___[blue]|[/]____     |"\/"|
+﻿🛥️ 🐳    Welcome to KSail!    🛥️ 🐳
+                                     . . .
+                __/___                 :
+          _____/______|             ___|____     |"\/"|
   _______/_____\_______\_____     ,'        `.    \  /
-  \               [italic]KSail[/]      |    |  ^        \___/  |
-[bold blue]~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^[/]
-
+  \                KSail     |    |  ^        \___/  |
+~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
 Description:
   KSail is an SDK for building GitOps enabled clusters.
 
@@ -21,11 +20,10 @@ Commands:
   lint    Lint manifests for a cluster
   list    List active clusters
   up      Provision a cluster
+  down    Destroy a cluster
   update  Update a cluster
   start   Start a cluster
   stop    Stop a cluster
-  down    Destroy a cluster
   debug   Debug a cluster (❤️ K9s)
   gen     Generate a resource.
-  sops    Manage secrets in Git
 

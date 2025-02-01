@@ -1,7 +1,13 @@
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 using KSail.Models.CLI;
+using KSail.Models.CNI;
+using KSail.Models.Connection;
+using KSail.Models.DeploymentTool;
+using KSail.Models.MirrorRegistry;
 using KSail.Models.Project;
-using KSail.Models.Registry;
+using KSail.Models.SecretManager;
+using KSail.Models.Template;
 using YamlDotNet.Serialization;
 
 namespace KSail.Models;
@@ -24,34 +30,53 @@ public class KSailClusterSpec
   public KSailProjectOptions Project { get; set; } = new();
 
   /// <summary>
-  /// The registries to create for the KSail cluster.
+  /// The options for the Flux deployment tool.
   /// </summary>
-  [Description("The registries to create for the KSail cluster")]
-  public IEnumerable<KSailRegistry> Registries { get; set; } = [
-    new KSailRegistry { Name = "ksail-registry", HostPort = 5555, IsGitOpsSource = true },
-    new KSailRegistry { Name = "registry.k8s.io", HostPort = 5556, Proxy = new KSailRegistryProxy { Url = new Uri("https://registry.k8s.io") } },
-    new KSailRegistry { Name = "docker.io", HostPort = 5557,  Proxy = new KSailRegistryProxy { Url = new Uri("https://registry-1.docker.io") } },
-    new KSailRegistry { Name = "ghcr.io", HostPort = 5558, Proxy = new KSailRegistryProxy { Url = new Uri("https://ghcr.io") } },
-    new KSailRegistry { Name = "gcr.io", HostPort = 5559, Proxy = new KSailRegistryProxy { Url = new Uri("https://gcr.io") } },
-    new KSailRegistry { Name = "mcr.microsoft.com", HostPort = 5560, Proxy = new KSailRegistryProxy { Url = new Uri("https://mcr.microsoft.com") } },
-    new KSailRegistry { Name = "quay.io", HostPort = 5561, Proxy = new KSailRegistryProxy { Url = new Uri("https://quay.io") } },
-  ];
+  [Description("The options for the Flux deployment tool.")]
+  [YamlIgnore]
+  public KSailFluxDeploymentToolOptions FluxDeploymentToolOptions { get; set; } = new();
+
+  /// <summary>
+  /// The options for the Kustomize template.
+  /// </summary>
+  [Description("The options for the Kustomize template.")]
+  [YamlIgnore]
+  public KSailKustomizeTemplateOptions KustomizeTemplateOptions { get; set; } = new();
+
+  /// <summary>
+  /// The options for the SOPS Secret Manager.
+  /// </summary>
+  [Description("The options for the SOPS Secret Manager.")]
+  [YamlMember(Alias = "sopsSecretManagerOptions")]
+  [YamlIgnore]
+  public KSailSOPSSecretManagerOptions SOPSSecretManagerOptions { get; set; } = new();
+
+  /// <summary>
+  /// The options for the Cilium CNI.
+  /// </summary>
+  [Description("The options for the Cilium CNI.")]
+  [YamlIgnore]
+  public KSailCiliumCNIOptions CiliumCNIOptions { get; set; } = new();
+
+  /// <summary>
+  /// The options for mirror registries.
+  /// </summary>
+  [Description("The options for mirror registries.")]
+  [YamlIgnore]
+  public KSailMirrorRegistryOptions MirrorRegistryOptions { get; set; } = new();
 
   /// <summary>
   /// The CLI options.
   /// </summary>
-  [YamlMember(Alias = "cli")]
   [Description("The CLI options.")]
-  public KSailCLIOptions CLI { get; set; } = new();
+  [YamlMember(Alias = "cliOptions")]
+  [YamlIgnore]
+  public KSailCLIOptions CLIOptions { get; set; } = new();
 
   /// <summary>
   /// Initializes a new instance of the <see cref="KSailClusterSpec"/> class.
   /// </summary>
-  public KSailClusterSpec()
-  {
-    Connection = new KSailConnectionOptions();
-    Project = new KSailProjectOptions();
-  }
+  public KSailClusterSpec() => SetOCISourceUriBasedOnOS();
 
   /// <summary>
   /// Initializes a new instance of the <see cref="KSailClusterSpec"/> class.
@@ -59,15 +84,15 @@ public class KSailClusterSpec
   /// <param name="name"></param>
   public KSailClusterSpec(string name)
   {
+    SetOCISourceUriBasedOnOS();
     Connection = new KSailConnectionOptions
     {
       Context = $"kind-{name}"
     };
-    Project = new KSailProjectOptions
+    KustomizeTemplateOptions = new KSailKustomizeTemplateOptions
     {
-      KustomizationDirectory = $"./k8s/clusters/{name}/flux-system",
+      RootKustomizationDirectory = $"k8s/clusters/{name}/flux-system"
     };
-    Project.KustomizationDirectory = $"{Project.ManifestsDirectory}/clusters/{name}/flux-system";
   }
 
   /// <summary>
@@ -77,8 +102,41 @@ public class KSailClusterSpec
   /// <param name="distribution"></param>
   public KSailClusterSpec(string name, KSailKubernetesDistribution distribution) : this(name)
   {
-    Project.Distribution = distribution;
-    Project.ConfigPath = $"./{distribution.ToString().ToLower()}-config.yaml";
-    Connection.Context = $"{distribution.ToString().ToLower()}-{name}";
+    SetOCISourceUriBasedOnOS();
+    Connection = new KSailConnectionOptions
+    {
+      Context = distribution switch
+      {
+        KSailKubernetesDistribution.Native => $"kind-{name}",
+        KSailKubernetesDistribution.K3s => $"k3d-{name}",
+        _ => $"kind-{name}"
+      }
+    };
+    Project = new KSailProjectOptions
+    {
+      Distribution = distribution,
+      DistributionConfigPath = distribution switch
+      {
+        KSailKubernetesDistribution.Native => "kind-config.yaml",
+        KSailKubernetesDistribution.K3s => "k3d-config.yaml",
+        _ => "kind-config.yaml"
+      }
+    };
+    KustomizeTemplateOptions = new KSailKustomizeTemplateOptions
+    {
+      RootKustomizationDirectory = $"k8s/clusters/{name}/flux-system"
+    };
+  }
+
+  void SetOCISourceUriBasedOnOS()
+  {
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+    {
+      FluxDeploymentToolOptions = new KSailFluxDeploymentToolOptions(new Uri("oci://172.17.0.1:5555/ksail-registry"));
+    }
+    else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+    {
+      FluxDeploymentToolOptions = new KSailFluxDeploymentToolOptions(new Uri("oci://host.docker.internal:5555/ksail-registry"));
+    }
   }
 }

@@ -2,10 +2,10 @@
 apiVersion: networking.k8s.io/v1
 kind: Service
 metadata:
-  name: <name>
+  name: my-service
 spec:
   ports:
-  - name: <name>
+  - name: my-port
     port: 0
     targetPort: 0
   selector: {}

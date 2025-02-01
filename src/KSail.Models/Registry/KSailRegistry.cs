@@ -17,19 +17,7 @@ public class KSailRegistry
   /// The host port of the registry (if applicable).
   /// </summary>
   [Description("The host port of the registry (if applicable).")]
-  public required int HostPort { get; set; }
-
-  /// <summary>
-  /// Whether this registry is the GitOps tool's source for reconciliation.
-  /// </summary>
-  [Description("Whether this registry is the GitOps tool's source for reconciliation.")]
-  public bool IsGitOpsSource { get; set; }
-
-  /// <summary>
-  /// An optional proxy for the registry to use to proxy and cache images.
-  /// </summary>
-  [Description("An optional proxy for the registry to use to proxy and cache images.")]
-  public KSailRegistryProxy? Proxy { get; set; }
+  public int? HostPort { get; set; }
 
   /// <summary>
   /// The username to authenticate with the registry.
@@ -42,7 +30,6 @@ public class KSailRegistry
   /// </summary>
   [Description("The password to authenticate with the registry.")]
   public string? Password { get; set; }
-
 
   /// <summary>
   /// The registry provider.

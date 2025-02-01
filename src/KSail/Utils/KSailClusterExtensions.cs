@@ -17,9 +17,6 @@ public static class KSailClusterExtensions
   /// <exception cref="ArgumentException"></exception>
   public static void UpdateConfig<T>(this KSailCluster config, string propertyPath, T value)
   {
-    ArgumentNullException.ThrowIfNull(config);
-    if (string.IsNullOrEmpty(propertyPath)) throw new ArgumentException("Property path cannot be null or empty.", nameof(propertyPath));
-
     string[] properties = propertyPath.Split('.');
     object? currentObject = config;
     object? defaultObject = new KSailCluster();
@@ -34,23 +31,23 @@ public static class KSailClusterExtensions
         // If it's the last property in the path, set the value
         object? currentValue = property.GetValue(currentObject);
         object? defaultValue = defaultProperty.GetValue(defaultObject);
-        // if currentValue is not value and value is different from the value it is set to at initialization
+
         if (value != null && !Equals(currentValue, value) && !Equals(value, defaultValue))
+        {
+          if (value is IEnumerable<string> enumerableValue && enumerableValue.Count() == 0)
+            continue;
           property.SetValue(currentObject, value);
+        }
       }
       else
       {
         // Traverse to the next object in the path
         object? nextObject = property.GetValue(currentObject);
         object? nextDefaultObject = defaultProperty.GetValue(defaultObject);
-        if (nextObject == null)
-        {
-          // Initialize the property if it's null
-          nextObject = Activator.CreateInstance(property.PropertyType);
-          nextDefaultObject = Activator.CreateInstance(defaultProperty.PropertyType);
-          property.SetValue(currentObject, nextObject);
-          property.SetValue(defaultObject, nextDefaultObject);
-        }
+        nextObject ??= Activator.CreateInstance(property.PropertyType);
+        nextDefaultObject ??= Activator.CreateInstance(defaultProperty.PropertyType);
+        property.SetValue(currentObject, nextObject);
+        property.SetValue(defaultObject, nextDefaultObject);
         currentObject = nextObject;
         defaultObject = nextDefaultObject;
       }

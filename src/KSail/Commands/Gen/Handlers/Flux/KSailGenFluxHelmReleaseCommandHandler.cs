@@ -1,7 +1,6 @@
 using Devantler.KubernetesGenerator.Flux;
 using Devantler.KubernetesGenerator.Flux.Models;
-using Devantler.KubernetesGenerator.Flux.Models.Sources;
-using k8s.Models;
+using Devantler.KubernetesGenerator.Flux.Models.HelmRelease;
 
 namespace KSail.Commands.Gen.Handlers.Flux;
 
@@ -12,26 +11,25 @@ class KSailGenFluxHelmReleaseCommandHandler
   {
     var helmRelease = new FluxHelmRelease()
     {
-      Metadata = new V1ObjectMeta
+      Metadata = new FluxNamespacedMetadata
       {
-        Name = "<name>",
-        NamespaceProperty = "<namespace>"
+        Name = "my-helm-release",
+        Namespace = "my-namespace"
       },
-      Spec = new FluxHelmReleaseSpec()
+      Spec = new FluxHelmReleaseSpec(new FluxHelmReleaseSpecChart
       {
-        Interval = "10m",
-        Chart = new FluxHelmReleaseSpecChart
+        Spec = new FluxHelmReleaseSpecChartSpec
         {
-          Spec = new FluxHelmReleaseSpecChartSpec
+          Chart = "my-chart",
+          SourceRef = new FluxHelmReleaseSpecChartSpecSourceRef
           {
-            Chart = "<chart>",
-            SourceRef = new FluxSourceRef
-            {
-              Kind = FluxSource.HelmRepository,
-              Name = "<name>"
-            }
+            Kind = FluxHelmReleaseSpecChartSpecSourceRefKind.HelmRepository,
+            Name = "my-helm-repo"
           }
         }
+      })
+      {
+        Interval = "10m"
       }
     };
     await _generator.GenerateAsync(helmRelease, outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);

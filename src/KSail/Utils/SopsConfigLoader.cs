@@ -1,11 +1,11 @@
-using Devantler.KeyManager.Core.Models;
-using Devantler.KeyManager.Local.Age;
+using Devantler.SecretManager.SOPS.LocalAge.Models;
+using Devantler.SecretManager.SOPS.LocalAge.Utils;
 
 namespace KSail.Utils;
 
 static class SopsConfigLoader
 {
-  static readonly LocalAgeKeyManager _keyManager = new();
+  static readonly SOPSConfigHelper _sopsConfigHelper = new();
   internal static async Task<SOPSConfig> LoadAsync(CancellationToken cancellationToken)
   {
     Console.WriteLine("► searching for a '.sops.yaml' file");
@@ -26,7 +26,7 @@ static class SopsConfigLoader
       throw new KSailException("'.sops.yaml' file not found in the current or parent directories");
     }
     Console.WriteLine("► reading public key from '.sops.yaml' file");
-    var sopsConfig = await _keyManager.GetSOPSConfigAsync(sopsConfigPath, cancellationToken).ConfigureAwait(false);
+    var sopsConfig = await _sopsConfigHelper.GetSOPSConfigAsync(sopsConfigPath, cancellationToken).ConfigureAwait(false);
     return sopsConfig;
   }
 }

@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: <name>
+  name: my-persistent-volume
 spec:
   accessModes:
   - ReadWriteOnce
   capacity:
     storage: 5Gi
-  storageClassName: <storage-class>
+  storageClassName: my-storage-class

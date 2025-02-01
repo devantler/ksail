@@ -1,4 +1,4 @@
-using Devantler.KubernetesGenerator.Native.ConfigAndStorage;
+using Devantler.KubernetesGenerator.Native;
 using k8s.Models;
 using KSail.Models;
 
@@ -10,9 +10,9 @@ class VariablesGenerator
   readonly SecretGenerator _secretGenerator = new();
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    foreach (string hook in config.Spec.Project.KustomizeHooks)
+    foreach (string hook in config.Spec.KustomizeTemplateOptions.KustomizationHooks)
     {
-      string hookPath = Path.Combine(config.Spec.CLI.InitOptions.OutputDirectory, "k8s", hook, "variables");
+      string hookPath = Path.Combine(config.Spec.Project.WorkingDirectory, "k8s", hook, "variables");
       string name = hook.Replace("/", "-", StringComparison.Ordinal);
       await GenerateVariables(hookPath, name, cancellationToken).ConfigureAwait(false);
     }

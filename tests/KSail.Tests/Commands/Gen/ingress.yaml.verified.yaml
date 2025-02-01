@@ -2,17 +2,17 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: <name>
+  name: my-ingress
 spec:
-  ingressClassName: <ingressClassName>
+  ingressClassName: my-ingress-class
   rules:
-  - host: <host>
+  - host: my-host
     http:
       paths:
       - backend:
           service:
-            name: <name>
+            name: my-service
             port:
               number: 0
-        path: <path>
+        path: /
         pathType: ImplementationSpecific

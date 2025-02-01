@@ -2,13 +2,14 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: <name>
-  namespace: <namespace>
+  name: my-helm-release
+  namespace: my-namespace
 spec:
-  interval: 10m
   chart:
     spec:
-      chart: <chart>
+      chart: my-chart
+      reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
-        name: <name>
+        name: my-helm-repo
+  interval: 10m0s

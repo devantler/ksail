@@ -8,6 +8,7 @@ namespace KSail.Commands.Gen.Commands.Config;
 
 class KSailGenConfigKSailCommand : Command
 {
+  readonly ExceptionHandler _exceptionHandler = new();
   readonly FileOutputOption _fileOutputOption = new("./ksail-config.yaml");
   readonly KSailGenConfigKSailCommandHandler _handler = new();
   public KSailGenConfigKSailCommand() : base("ksail", "Generate a 'ksail.io/v1alpha1/Cluster' resource.")
@@ -23,7 +24,7 @@ class KSailGenConfigKSailCommand : Command
         }
         catch (OperationCanceledException ex)
         {
-          ExceptionHandler.HandleException(ex);
+          _ = _exceptionHandler.HandleException(ex);
           context.ExitCode = 1;
         }
       }

@@ -7,10 +7,9 @@ spec:
   interval: 60m
   retryInterval: 2m
   timeout: 3m
-  dependsOn: []
+  wait: true
   sourceRef:
     kind: OCIRepository
     name: flux-system
   path: path/to/kustomize-kustomization-dir
   prune: true
-  wait: true

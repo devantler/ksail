@@ -1,6 +1,6 @@
 using Devantler.KubernetesGenerator.Flux;
 using Devantler.KubernetesGenerator.Flux.Models;
-using k8s.Models;
+using Devantler.KubernetesGenerator.Flux.Models.HelmRepository;
 
 namespace KSail.Commands.Gen.Handlers.Flux;
 
@@ -11,10 +11,10 @@ class KSailGenFluxHelmRepositoryCommandHandler
   {
     var helmRepository = new FluxHelmRepository()
     {
-      Metadata = new V1ObjectMeta
+      Metadata = new FluxNamespacedMetadata
       {
-        Name = "<name>",
-        NamespaceProperty = "<namespace>"
+        Name = "my-helm-repo",
+        Namespace = "my-namespace"
       },
       Spec = new FluxHelmRepositorySpec()
       {

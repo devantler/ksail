@@ -1,5 +1,3 @@
-using System.Runtime.Serialization;
-
 namespace KSail.Models.Project;
 
 /// <summary>
@@ -8,14 +6,17 @@ namespace KSail.Models.Project;
 public enum KSailKubernetesDistribution
 {
   /// <summary>
-  /// The k3d Kubernetes distribution.
-  /// </summary>
-  [EnumMember(Value = "k3d")]
-  K3d,
-
-  /// <summary>
   /// The kind Kubernetes distribution.
   /// </summary>
-  [EnumMember(Value = "kind")]
-  Kind
+  Native,
+
+  /// <summary>
+  /// The k3s Kubernetes distribution.
+  /// </summary>
+  K3s
+
+  ///// <summary>
+  ///// The Talos Linux Kubernetes distribution.
+  ///// </summary>
+  // Talos
 }

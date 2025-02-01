@@ -2,7 +2,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: <name>
-  namespace: <namespace>
+  name: my-helm-repo
+  namespace: my-namespace
 spec:
   url: https://charts.example.com/charts

@@ -6,7 +6,7 @@ on:
   issues:
     types: [closed]
   schedule:
-    - cron: '0 */1 * * *'
+    - cron: "0 */1 * * *"
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -16,4 +16,5 @@ jobs:
     steps:
       - name: Github Action Notify Release
         uses: nearform-actions/github-action-notify-release@v1.12.2
-
+        with:
+          notify-after: 1m

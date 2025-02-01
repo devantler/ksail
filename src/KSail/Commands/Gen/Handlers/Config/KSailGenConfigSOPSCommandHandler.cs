@@ -1,11 +1,11 @@
-using Devantler.KeyManager.Core.Models;
-using Devantler.KeyManager.Local.Age;
+using Devantler.SecretManager.SOPS.LocalAge.Models;
+using Devantler.SecretManager.SOPS.LocalAge.Utils;
 
 namespace KSail.Commands.Gen.Handlers.Config;
 
 class KSailGenConfigSOPSCommandHandler
 {
-  readonly LocalAgeKeyManager _keyManager = new();
+  readonly SOPSConfigHelper _configHelper = new();
   internal async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken = default)
   {
     var sopsConfig = new SOPSConfig
@@ -21,7 +21,7 @@ class KSailGenConfigSOPSCommandHandler
         }
       ]
     };
-    await _keyManager.CreateSOPSConfigAsync(outputFile, sopsConfig, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _configHelper.CreateSOPSConfigAsync(outputFile, sopsConfig, cancellationToken: cancellationToken).ConfigureAwait(false);
     return 0;
   }
 }

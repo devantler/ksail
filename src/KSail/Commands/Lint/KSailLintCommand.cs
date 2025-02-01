@@ -1,4 +1,6 @@
 using System.CommandLine;
+using Devantler.KubernetesValidator.ClientSide.Schemas;
+using Devantler.KubernetesValidator.ClientSide.YamlSyntax;
 using KSail.Commands.Lint.Handlers;
 using KSail.Options;
 using KSail.Utils;
@@ -8,22 +10,25 @@ namespace KSail.Commands.Lint;
 
 sealed class KSailLintCommand : Command
 {
+  readonly ExceptionHandler _exceptionHandler = new();
   readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly PathOption _manifestsPathOption = new(" Path to the manifests directory") { Arity = ArgumentArity.ZeroOrOne };
+  readonly PathOption _workingDirectoryOption = new("Path to the working directory for your project") { Arity = ArgumentArity.ZeroOrOne };
   internal KSailLintCommand() : base(
    "lint", "Lint manifests for a cluster"
   )
   {
     AddOption(_nameOption);
-    AddOption(_manifestsPathOption);
+    AddOption(_workingDirectoryOption);
     this.SetHandler(async (context) =>
     {
       try
       {
-        string? manifestsPath = context.ParseResult.GetValueForOption(_manifestsPathOption);
-        var config = await KSailClusterConfigLoader.LoadAsync(context.ParseResult.GetValueForOption(_manifestsPathOption), context.ParseResult.GetValueForOption(_nameOption)).ConfigureAwait(false);
+        string workingDirectory = context.ParseResult.GetValueForOption(_workingDirectoryOption) ?? Environment.CurrentDirectory;
+        string? name = context.ParseResult.GetValueForOption(_nameOption);
+
+        var config = await KSailClusterConfigLoader.LoadAsync(workingDirectory, name).ConfigureAwait(false);
         config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
-        config.UpdateConfig("Spec.Project.ManifestsDirectory", context.ParseResult.GetValueForOption(_manifestsPathOption));
+        config.UpdateConfig("Spec.Project.WorkingDirectory", workingDirectory);
 
         Console.WriteLine("🧹 Linting manifest files");
         var handler = new KSailLintCommandHandler();
@@ -32,12 +37,22 @@ sealed class KSailLintCommand : Command
       }
       catch (YamlException ex)
       {
-        ExceptionHandler.HandleException(ex);
+        _ = _exceptionHandler.HandleException(ex);
+        context.ExitCode = 1;
+      }
+      catch (YamlSyntaxValidatorException ex)
+      {
+        _ = _exceptionHandler.HandleException(ex);
+        context.ExitCode = 1;
+      }
+      catch (SchemaValidatorException ex)
+      {
+        _ = _exceptionHandler.HandleException(ex);
         context.ExitCode = 1;
       }
       catch (OperationCanceledException ex)
       {
-        ExceptionHandler.HandleException(ex);
+        _ = _exceptionHandler.HandleException(ex);
         context.ExitCode = 1;
       }
     });

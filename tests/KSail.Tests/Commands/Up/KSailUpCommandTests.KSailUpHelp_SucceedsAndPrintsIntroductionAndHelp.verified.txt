@@ -5,17 +5,17 @@ Usage:
   up [options]
 
 Options:
-  -n, --name <name>                               The name of the cluster.
-  --destroy                                       Destroy any existing cluster before provisioning
-  -c, --config <config>                           Path to the cluster configuration file
-  -d, --distribution <K3d|Kind>                   The distribution to use for the cluster.
-  -p, --path <path>                               Path to the manifests directory
-  -kp, --kustomization-path <kustomization-path>  Path to the root kustomization directory
-  -t, --timeout <timeout>                         The time to wait for each kustomization to become ready.
-  -s, --sops                                      Enable SOPS support.
-  -l, --lint                                      Lint manifests before pushing an update
-  -r, --reconcile                                 Reconcile manifests after pushing an update
-  --version                                       Show version information
-  -?, -h, --help                                  Show help and usage information
+  -p, --path <path>                                 The directory in which to find the project
+  -n, --name <name>                                 The name of the cluster.
+  -e, --engine <Docker>                             The engine to use for provisioning the cluster.
+  -d, --distribution <K3s|Native>                   The distribution to use for the cluster.
+  -sm, --secret-manager <None|SOPS>                 Configure which secret manager to use.
+  -dc, --distribution-config <distribution-config>  Path to the distribution configuration file
+  -t, --timeout <timeout>                           The time to wait for each kustomization to become ready.
+  --destroy                                         Destroy any existing cluster before provisioning
+  -l, --lint                                        Lint manifests before pushing an update
+  -r, --reconcile                                   Reconcile manifests after pushing an update
+  --version                                         Show version information
+  -?, -h, --help                                    Show help and usage information
 
 

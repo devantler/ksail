@@ -5,98 +5,17 @@ metadata:
   name: my-cluster
 spec:
   connection:
-    kubeconfig: ./.kube/config
-    context: my-cluster
+    kubeconfig: ~/.kube/config
+    context: k3d-my-cluster
     timeout: 5m
   project:
-    manifestsDirectory: ./k8s
-    kustomizationDirectory: ./clusters/my-cluster/flux-system
-    configPath: ./k3d-config.yaml
-    kustomizeFlows:
-    - apps
-    - infrastructure
-    - infrastructure/controllers
-    kustomizeHooks: []
-    distribution: k3d
-    gitOpsTool: flux
-    containerEngine: docker
-    sops: true
-  registries:
-  - name: ksail-registry
-    hostPort: 5000
-    isGitOpsSource: true
-    provider: docker
-  - name: mirror-docker.io
-    hostPort: 5001
-    isGitOpsSource: false
-    proxy:
-      url: https://registry-1.docker.io/
-      insecure: false
-    provider: docker
-  - name: mirror-registry.k8s.io
-    hostPort: 5002
-    isGitOpsSource: false
-    proxy:
-      url: https://registry.k8s.io/
-      insecure: false
-    provider: docker
-  - name: mirror-gcr.io
-    hostPort: 5002
-    isGitOpsSource: false
-    proxy:
-      url: https://gcr.io/
-      insecure: false
-    provider: docker
-  - name: mirror-ghcr.io
-    hostPort: 5003
-    isGitOpsSource: false
-    proxy:
-      url: https://ghcr.io/
-      insecure: false
-    provider: docker
-  - name: mirror-mcr.microsoft.com
-    hostPort: 5004
-    isGitOpsSource: false
-    proxy:
-      url: https://mcr.microsoft.com/
-      insecure: false
-    provider: docker
-  - name: mirror-quay.io
-    hostPort: 5005
-    isGitOpsSource: false
-    proxy:
-      url: https://quay.io/
-      insecure: false
-    provider: docker
-  cli:
-    checkOptions: {}
-    debugOptions:
-      editor: nano
-    downOptions:
-      registries: true
-    genOptions: {}
-    initOptions:
-      declarativeConfig: true
-      components: true
-      postBuildVariables: true
-      outputDirectory: ./
-      template: simple
-    lintOptions: {}
-    listOptions:
-      all: false
-    sopsOptions:
-      listOptions:
-        showSOPSConfigKeysOnly: false
-        showPrivateKey: true
-      editOptions: {}
-      encryptOptions: {}
-      decryptOptions: {}
-    startOptions: {}
-    stopOptions: {}
-    upOptions:
-      destroy: false
-      lint: true
-      reconcile: true
-    updateOptions:
-      lint: true
-      reconcile: true
+    workingDirectory: .
+    ksailConfigPath: ksail-config.yaml
+    distributionConfigPath: k3d-config.yaml
+    template: Kustomize
+    engine: Docker
+    distribution: K3s
+    deploymentTool: Flux
+    secretManager: None
+    cni: Default
+    mirrorRegistries: false
