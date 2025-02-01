@@ -1,5 +1,3 @@
-using System.Runtime.Serialization;
-
 namespace KSail.Models.Project;
 
 /// <summary>
@@ -10,6 +8,5 @@ public enum KSailProjectTemplate
   /// <summary>
   /// The kustomize template for a project using Kustomize to structure and customize the kubernetes manifests.
   /// </summary>
-  [EnumMember(Value = "kustomize")]
   Kustomize
 }

@@ -1,5 +1,3 @@
-using System.Runtime.Serialization;
-
 namespace KSail.Models.Project;
 
 /// <summary>
@@ -10,13 +8,11 @@ public enum KSailCNI
   /// <summary>
   /// The default CNI.
   /// </summary>
-  [EnumMember(Value = "default")]
   Default,
 
   ///// <summary>
   ///// The Cilium CNI.
   ///// </summary>
-  // [EnumMember(Value = "cilium")]
   // Cilium,
 
 }
