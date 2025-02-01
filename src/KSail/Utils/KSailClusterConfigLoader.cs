@@ -10,9 +10,20 @@ namespace KSail.Utils;
 
 static class KSailClusterConfigLoader
 {
+  static readonly IDeserializer _deserializer = new DeserializerBuilder()
+      .WithTypeInspector(inner => new KubernetesTypeInspector(new SystemTextJsonTypeInspector(inner)))
+      .WithTypeConverter(new IntstrIntOrStringTypeConverter())
+      .WithTypeConverter(new ResourceQuantityTypeConverter())
+      .WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
 
   internal static async Task<KSailCluster> LoadAsync(string? directory = default, string? name = default, KSailKubernetesDistribution distribution = default)
   {
+    // Create default KSailClusterConfig
+    var ksailClusterConfig = string.IsNullOrEmpty(name) ?
+      new KSailCluster(distribution: distribution) :
+      new KSailCluster(name, distribution: distribution);
+
+    // Locate KSail YAML file
     directory ??= Directory.GetCurrentDirectory();
     string? ksailYaml = FindConfigFile(directory, [
       "ksail-cluster.yaml",
@@ -25,21 +36,15 @@ static class KSailClusterConfigLoader
       ".ksail.yml"
     ]);
 
-    var ksailClusterConfig = string.IsNullOrEmpty(name) ?
-      new KSailCluster(distribution: distribution) :
-      new KSailCluster(name, distribution: distribution);
-
+    // If no KSail YAML file is found, return the default KSailClusterConfig
     if (ksailYaml == null)
     {
       return ksailClusterConfig;
     }
-    var deserializer = new DeserializerBuilder()
-      .WithTypeInspector(inner => new KubernetesTypeInspector(new SystemTextJsonTypeInspector(inner)))
-      .WithTypeConverter(new IntstrIntOrStringTypeConverter())
-      .WithTypeConverter(new ResourceQuantityTypeConverter())
-      .WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
 
-    ksailClusterConfig = deserializer.Deserialize<KSailCluster>(await File.ReadAllTextAsync(ksailYaml).ConfigureAwait(false));
+    // Deserialize KSail YAML file
+    ksailClusterConfig = _deserializer.Deserialize<KSailCluster>(await File.ReadAllTextAsync(ksailYaml).ConfigureAwait(false));
+
     return ksailClusterConfig;
   }
 
