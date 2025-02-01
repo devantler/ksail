@@ -23,13 +23,13 @@
   <ItemGroup>
     <PackageReference Include="Devantler.ContainerEngineProvisioner.Docker" Version="1.0.10" />
     <PackageReference Include="Devantler.SecretManager.SOPS.LocalAge" Version="1.1.54" />
-    <PackageReference Include="Devantler.KubernetesGenerator.CertManager" Version="1.1.15" />
-    <PackageReference Include="Devantler.KubernetesGenerator.Flux" Version="1.1.15" />
-    <PackageReference Include="Devantler.KubernetesGenerator.K3d" Version="1.1.15" />
-    <PackageReference Include="Devantler.KubernetesGenerator.Kind" Version="1.1.15" />
-    <PackageReference Include="Devantler.KubernetesProvisioner.Cluster.K3d" Version="1.2.0" />
-    <PackageReference Include="Devantler.KubernetesProvisioner.Cluster.Kind" Version="1.2.0" />
-    <PackageReference Include="Devantler.KubernetesProvisioner.GitOps.Flux" Version="1.2.0" />
+    <PackageReference Include="Devantler.KubernetesGenerator.CertManager" Version="1.2.1" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Flux" Version="1.2.1" />
+    <PackageReference Include="Devantler.KubernetesGenerator.K3d" Version="1.2.1" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Kind" Version="1.2.1" />
+    <PackageReference Include="Devantler.KubernetesProvisioner.Cluster.K3d" Version="1.2.1" />
+    <PackageReference Include="Devantler.KubernetesProvisioner.Cluster.Kind" Version="1.2.1" />
+    <PackageReference Include="Devantler.KubernetesProvisioner.GitOps.Flux" Version="1.2.1" />
     <PackageReference Include="Devantler.KubernetesValidator.ClientSide.Schemas" Version="1.0.22" />
     <PackageReference Include="Devantler.KubernetesValidator.ClientSide.YamlSyntax" Version="1.0.22" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
