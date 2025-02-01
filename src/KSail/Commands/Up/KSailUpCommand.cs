@@ -40,7 +40,7 @@ sealed class KSailUpCommand : Command
         config.UpdateConfig("Spec.Project.Engine", context.ParseResult.GetValueForOption(_engineOption));
         config.UpdateConfig("Spec.Project.Distribution", context.ParseResult.GetValueForOption(_distributionOption));
         config.UpdateConfig("Spec.Project.SecretManager", context.ParseResult.GetValueForOption(_secretManagerOption));
-        config.UpdateConfig("Spec.KustomizeTemplateOptions.RootKustomizationDirectory", $"k8s/{config.Metadata.Name}/flux-system");
+        config.UpdateConfig("Spec.KustomizeTemplateOptions.RootKustomizationDirectory", $"k8s/clusters/{config.Metadata.Name}/flux-system");
         config.UpdateConfig("Spec.FluxDeploymentToolOptions.Source.Url", context.ParseResult.GetValueForOption(_fluxDeploymentToolSourceUrlOption));
         config.UpdateConfig("Spec.CLIOptions.UpOptions.Destroy", context.ParseResult.GetValueForOption(_destroyOption));
         config.UpdateConfig("Spec.CLIOptions.UpOptions.Lint", context.ParseResult.GetValueForOption(_lintOption));
