@@ -191,7 +191,7 @@ class KSailUpCommandHandler
     await _deploymentTool.PushManifestsAsync(sourceUrlFromHost, "k8s", cancellationToken: cancellationToken).ConfigureAwait(false);
     await _deploymentTool.BootstrapAsync(
       config.Spec.FluxDeploymentToolOptions.Source.Url,
-      config.Spec.KustomizeTemplateOptions.RootKustomizationDir.Replace("k8s/", "", StringComparison.OrdinalIgnoreCase),
+      config.Spec.KustomizeTemplateOptions.RootKustomizationDirectory.Replace("k8s/", "", StringComparison.OrdinalIgnoreCase),
       true,
       cancellationToken
     ).ConfigureAwait(false);
