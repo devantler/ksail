@@ -2,20 +2,20 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: <name>
+  name: my-stateful-set
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: <name>
-  serviceName: <name>
+      app: my-stateful-set
+  serviceName: my-service
   template:
     metadata:
       labels:
-        app: <name>
+        app: my-stateful-set
     spec:
       containers:
       - command: []
-        image: <image>
+        image: my-image
         imagePullPolicy: IfNotPresent
-        name: <name>
+        name: my-container

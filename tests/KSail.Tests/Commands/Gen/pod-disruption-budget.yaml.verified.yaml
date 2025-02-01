@@ -2,7 +2,7 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: <name>
+  name: my-pod-disruption-budget
 spec:
   maxUnavailable: 1
   minAvailable: 2

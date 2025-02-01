@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: <name>
+  name: my-cron-job
 spec:
   jobTemplate:
     spec:
@@ -10,8 +10,8 @@ spec:
         spec:
           containers:
           - command: []
-            image: <image>
+            image: my-image
             imagePullPolicy: IfNotPresent
-            name: <name>
+            name: my-container
           restartPolicy: OnFailure
-  schedule: <schedule>
+  schedule: '*/1 * * * *'

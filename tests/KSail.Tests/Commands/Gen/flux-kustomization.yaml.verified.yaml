@@ -10,7 +10,7 @@ spec:
   prune: true
   retryInterval: 2m0s
   sourceRef:
-    kind: ""
-    name: ""
+    kind: OCIRepository
+    name: flux-system
   timeout: 3m0s
   wait: true

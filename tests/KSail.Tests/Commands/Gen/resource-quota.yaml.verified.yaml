@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ResourceQuota
 metadata:
-  name: <name>
+  name: my-resource-quota
 spec:
   hard: {}
   scopeSelector: {}

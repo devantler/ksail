@@ -2,18 +2,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: <name>
+  name: my-deployment
 spec:
   selector:
     matchLabels:
-      app: <name>
+      app: my-deployment
   template:
     metadata:
       labels:
-        app: <name>
+        app: my-deployment
     spec:
       containers:
       - command: []
-        image: <image>
+        image: my-image
         imagePullPolicy: IfNotPresent
-        name: <name>
+        name: my-container
