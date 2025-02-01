@@ -3,14 +3,13 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: flux-kustomization
-  namespace: flux-system
 spec:
-  interval: 1h0m0s
-  path: ./path/to/kustomize-kustomization-dir
-  prune: true
-  retryInterval: 2m0s
+  interval: 60m
+  retryInterval: 2m
+  timeout: 3m
+  wait: true
   sourceRef:
     kind: OCIRepository
     name: flux-system
-  timeout: 3m0s
-  wait: true
+  path: path/to/kustomize-kustomization-dir
+  prune: true
