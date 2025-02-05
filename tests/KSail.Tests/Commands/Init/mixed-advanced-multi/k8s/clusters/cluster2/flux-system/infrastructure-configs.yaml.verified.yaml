@@ -4,9 +4,6 @@ kind: Kustomization
 metadata:
   name: infrastructure-configs
   namespace: flux-system
-  labels:
-    sops: enabled
-    post-build-variables: enabled
 spec:
   interval: 60m
   retryInterval: 2m
@@ -19,3 +16,33 @@ spec:
     name: flux-system
   path: clusters/cluster2/infrastructure/configs
   prune: true
+  postBuild:
+    substituteFrom:
+    - kind: ConfigMap
+      name: variables-cluster
+      optional: false
+    - kind: Secret
+      name: variables-sensitive-cluster
+      optional: false
+    - kind: ConfigMap
+      name: variables-clusters/cluster2
+      optional: false
+    - kind: Secret
+      name: variables-sensitive-clusters/cluster2
+      optional: false
+    - kind: ConfigMap
+      name: variables-distributions/k3s
+      optional: false
+    - kind: Secret
+      name: variables-sensitive-distributions/k3s
+      optional: false
+    - kind: ConfigMap
+      name: variables-shared
+      optional: false
+    - kind: Secret
+      name: variables-sensitive-shared
+      optional: false
+  decryption:
+    provider: SOPS
+    secretRef:
+      name: sops-age
