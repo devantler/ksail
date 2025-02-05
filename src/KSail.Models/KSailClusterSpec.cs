@@ -91,7 +91,7 @@ public class KSailClusterSpec
     };
     KustomizeTemplateOptions = new KSailKustomizeTemplateOptions
     {
-      RootKustomizationDirectory = $"k8s/clusters/{name}/flux-system"
+      Root = $"k8s/clusters/{name}/flux-system"
     };
   }
 
@@ -124,7 +124,7 @@ public class KSailClusterSpec
     };
     KustomizeTemplateOptions = new KSailKustomizeTemplateOptions
     {
-      RootKustomizationDirectory = $"k8s/clusters/{name}/flux-system"
+      Root = $"k8s/clusters/{name}/flux-system"
     };
   }
 
