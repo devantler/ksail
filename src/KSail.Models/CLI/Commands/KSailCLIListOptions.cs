@@ -8,8 +8,8 @@ namespace KSail.Models.CLI.Commands;
 public class KSailCLIListOptions
 {
   /// <summary>
-  /// Whether to list clusters from all supported distributions.
+  /// List clusters from all supported distributions.
   /// </summary>
-  [Description("Whether to list clusters from all supported distributions.")]
+  [Description("List clusters from all supported distributions.")]
   public bool All { get; set; }
 }

@@ -26,8 +26,8 @@ public class KSailMirrorRegistryProxy
   public string? Password { get; set; }
 
   /// <summary>
-  /// Whether to connect to the upstream registry over HTTPS or not.
+  /// Connect to the upstream registry over HTTPS.
   /// </summary>
-  [Description("Whether to connect to the upstream registry over HTTPS or not.")]
+  [Description("Connect to the upstream registry over HTTPS.")]
   public bool Insecure { get; set; }
 }
