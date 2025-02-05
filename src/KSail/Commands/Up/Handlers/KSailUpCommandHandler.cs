@@ -58,7 +58,8 @@ class KSailUpCommandHandler
       return 1;
     }
 
-    await CreatePrerequisites(_config, cancellationToken).ConfigureAwait(false);
+    await CreateOCISourceRegistry(_config, cancellationToken).ConfigureAwait(false);
+    await CreateMirrorRegistries(_config, cancellationToken).ConfigureAwait(false);
 
     if (!await Lint(_config, cancellationToken).ConfigureAwait(false))
     {
@@ -119,7 +120,7 @@ class KSailUpCommandHandler
     }
   }
 
-  async Task CreatePrerequisites(KSailCluster config, CancellationToken cancellationToken = default)
+  async Task CreateOCISourceRegistry(KSailCluster config, CancellationToken cancellationToken = default)
   {
     if (config.Spec.Project.Engine == KSailEngine.Docker && config.Spec.Project.DeploymentTool == KSailDeploymentTool.Flux)
     {
@@ -138,6 +139,10 @@ class KSailUpCommandHandler
         Console.WriteLine();
       }
     }
+  }
+
+  async Task CreateMirrorRegistries(KSailCluster config, CancellationToken cancellationToken)
+  {
     if (config.Spec.Project.MirrorRegistries)
     {
       // TODO: Fix this
