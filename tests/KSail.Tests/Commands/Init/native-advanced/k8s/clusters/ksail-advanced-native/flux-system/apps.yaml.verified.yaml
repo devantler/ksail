@@ -43,6 +43,6 @@ spec:
       name: variables-sensitive-shared
       optional: false
   decryption:
-    provider: SOPS
+    provider: sops
     secretRef:
       name: sops-age
