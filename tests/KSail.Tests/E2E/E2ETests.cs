@@ -44,10 +44,10 @@ public class E2ETests : IAsyncLifetime, IDisposable
   [Theory]
   [InlineData("-d native")]
   //TODO: Add back --secret-manager sops
-  [InlineData("--name ksail-advanced-native --distribution native --components --post-build-variables")]
+  [InlineData("--name ksail-advanced-native --distribution native --kustomize-components --flux-post-build-variables")]
   [InlineData("-d k3s")]
   //TODO: Add back --secret-manager sops
-  [InlineData("--name ksail-advanced-k3s --distribution k3s --components --post-build-variables")]
+  [InlineData("--name ksail-advanced-k3s --distribution k3s --kustomize-components --flux-post-build-variables")]
   public async Task KSailUp_WithVariousConfigurations_Succeeds(string initArgs)
   {
     //Arrange
