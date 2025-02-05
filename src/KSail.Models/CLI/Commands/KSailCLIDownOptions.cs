@@ -8,8 +8,8 @@ namespace KSail.Models.CLI.Commands;
 public class KSailCLIDownOptions
 {
   /// <summary>
-  /// Whether to remove registries created by ksail (will remove all cached images).
+  /// Remove registries created by ksail (will remove all cached images).
   /// </summary>
-  [Description("Whether to remove registries created by ksail (will remove all cached images).")]
+  [Description("Remove registries created by ksail (will remove all cached images).")]
   public bool Registries { get; set; }
 }

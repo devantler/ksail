@@ -8,19 +8,19 @@ namespace KSail.Models.CLI.Commands;
 public class KSailCLIUpOptions
 {
   /// <summary>
-  /// Whether to destroy any existing cluster before creating a new one.
+  /// Destroy any existing cluster before creating a new one.
   /// </summary>
-  [Description("Whether to destroy any existing cluster before creating a new one.")]
+  [Description("Destroy any existing cluster before creating a new one.")]
   public bool Destroy { get; set; }
   /// <summary>
-  /// Whether to lint the manifests before applying them.
+  /// Lint the manifests before applying them.
   /// </summary>
-  [Description("Whether to lint the manifests before applying them.")]
+  [Description("Lint the manifests before applying them.")]
   public bool Lint { get; set; } = true;
 
   /// <summary>
-  /// Whether to wait for reconciliation to succeed.
+  /// Wait for reconciliation to succeed.
   /// </summary>
-  [Description("Whether to wait for reconciliation to succeed.")]
+  [Description("Wait for reconciliation to succeed.")]
   public bool Reconcile { get; set; } = true;
 }

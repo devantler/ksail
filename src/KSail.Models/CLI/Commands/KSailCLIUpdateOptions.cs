@@ -8,14 +8,14 @@ namespace KSail.Models.CLI.Commands;
 public class KSailCLIUpdateOptions
 {
   /// <summary>
-  /// Whether to lint the manifests before applying them.
+  /// Lint the manifests before applying them.
   /// </summary>
-  [Description("Whether to lint the manifests before applying them.")]
+  [Description("Lint the manifests before applying them.")]
   public bool Lint { get; set; } = true;
 
   /// <summary>
-  /// Whether to wait for reconciliation to succeed.
+  /// Wait for reconciliation to succeed.
   /// </summary>
-  [Description("Whether to wait for reconciliation to succeed.")]
+  [Description("Wait for reconciliation to succeed.")]
   public bool Reconcile { get; set; } = true;
 }

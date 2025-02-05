@@ -191,7 +191,7 @@
                         ]
                       },
                       "Insecure": {
-                        "description": "Whether to connect to the upstream registry over HTTPS or not.",
+                        "description": "Connect to the upstream registry over HTTPS.",
                         "type": "boolean"
                       }
                     },
@@ -253,7 +253,7 @@
               "type": "object",
               "properties": {
                 "Registries": {
-                  "description": "Whether to remove registries created by ksail (will remove all cached images).",
+                  "description": "Remove registries created by ksail (will remove all cached images).",
                   "type": "boolean"
                 }
               }
@@ -263,7 +263,7 @@
               "type": "object",
               "properties": {
                 "All": {
-                  "description": "Whether to list clusters from all supported distributions.",
+                  "description": "List clusters from all supported distributions.",
                   "type": "boolean"
                 }
               }
@@ -293,15 +293,15 @@
               "type": "object",
               "properties": {
                 "Destroy": {
-                  "description": "Whether to destroy any existing cluster before creating a new one.",
+                  "description": "Destroy any existing cluster before creating a new one.",
                   "type": "boolean"
                 },
                 "Lint": {
-                  "description": "Whether to lint the manifests before applying them.",
+                  "description": "Lint the manifests before applying them.",
                   "type": "boolean"
                 },
                 "Reconcile": {
-                  "description": "Whether to wait for reconciliation to succeed.",
+                  "description": "Wait for reconciliation to succeed.",
                   "type": "boolean"
                 }
               }
@@ -311,11 +311,11 @@
               "type": "object",
               "properties": {
                 "Lint": {
-                  "description": "Whether to lint the manifests before applying them.",
+                  "description": "Lint the manifests before applying them.",
                   "type": "boolean"
                 },
                 "Reconcile": {
-                  "description": "Whether to wait for reconciliation to succeed.",
+                  "description": "Wait for reconciliation to succeed.",
                   "type": "boolean"
                 }
               }
