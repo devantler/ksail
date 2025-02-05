@@ -6,6 +6,3 @@ resources:
 - infrastructure.yaml
 - infrastructure-controllers.yaml
 - variables.yaml
-components:
-- ../../../components/flux-kustomization-post-build-variables-label
-- ../../../components/flux-kustomization-sops-label
