@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Schema;
+using System.Text.Json.Serialization.Metadata;
 
 namespace KSail.Models.Tests;
 
@@ -19,7 +20,12 @@ public class KSailClusterJSONSchemaGeneration
   public async Task GenerateJSONSchemaFromKSailCluster_ShouldReturnJSONSchema()
   {
     // Arrange & Act
-    var options = JsonSerializerOptions.Default;
+    var options = new JsonSerializerOptions()
+    {
+      PropertyNamingPolicy = new JsonCamelCaseAllLowerNamingPolicy(),
+      TypeInfoResolver = new DefaultJsonTypeInfoResolver()
+    };
+
     var schema = new JsonObject
     {
       ["$schema"] = "https://json-schema.org/draft-07/schema#",
@@ -75,5 +81,44 @@ public class KSailClusterJSONSchemaGeneration
     // Assert
     _ = await Verify(schema.ToString());
     await File.WriteAllTextAsync("../../../../../../schemas/ksail-cluster-schema.json", schema.ToString());
+  }
+}
+
+class JsonCamelCaseAllLowerNamingPolicy : JsonNamingPolicy
+{
+  public override string ConvertName(string name)
+  {
+    // Convert to camel case
+    if (string.IsNullOrEmpty(name))
+    {
+      return name;
+    }
+
+    char[] chars = name.ToCharArray();
+    for (int i = 0; i < chars.Length; i++)
+    {
+      if (i == 1 && !char.IsUpper(chars[i]))
+      {
+        break;
+      }
+
+      bool hasNext = i + 1 < chars.Length;
+      if (i > 0 && hasNext && !char.IsUpper(chars[i + 1]))
+      {
+        break;
+      }
+
+      chars[i] = char.ToLowerInvariant(chars[i]);
+    }
+
+    string result = new(chars);
+
+    if (result.Contains("ksail", StringComparison.OrdinalIgnoreCase))
+    {
+      string ksailWord = result.Substring(result.IndexOf("ksail", StringComparison.OrdinalIgnoreCase), 5);
+      result = result.Replace(ksailWord, ksailWord.ToLower(), StringComparison.InvariantCulture);
+    }
+
+    return result;
   }
 }
