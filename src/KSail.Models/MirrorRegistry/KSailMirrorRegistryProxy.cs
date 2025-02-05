@@ -1,11 +1,11 @@
 using System.ComponentModel;
 
-namespace KSail.Models.Registry;
+namespace KSail.Models.MirrorRegistry;
 
 /// <summary>
 /// An optional proxy for the registry to use to proxy and cache images.
 /// </summary>
-public class KSailRegistryProxy
+public class KSailMirrorRegistryProxy
 {
   /// <summary>
   /// The URL of the upstream registry to proxy and cache images from.
