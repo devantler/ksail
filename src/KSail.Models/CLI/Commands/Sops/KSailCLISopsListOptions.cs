@@ -8,13 +8,13 @@ namespace KSail.Models.CLI.Commands.Sops;
 public class KSailCLISopsListOptions
 {
   /// <summary>
-  /// Whether to only show keys found in the SOPS config file.
+  /// Only show keys found in the SOPS config file.
   /// </summary>
   [Description("Only show keys found in the SOPS config file.")]
   public bool ShowSOPSConfigKeysOnly { get; set; } = false;
 
   /// <summary>
-  /// Whether to show the private key in the listed keys.
+  /// Show the private key in the listed keys.
   /// </summary>
   [Description("Show the private key in the listed keys.")]
   public bool ShowPrivateKey { get; set; } = true;
