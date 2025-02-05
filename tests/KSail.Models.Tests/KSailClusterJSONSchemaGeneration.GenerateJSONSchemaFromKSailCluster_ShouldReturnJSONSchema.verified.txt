@@ -117,12 +117,12 @@
           "description": "The options for the Kustomize template.",
           "type": "object",
           "properties": {
-            "RootKustomizationDirectory": {
-              "description": "The root kustomization file.",
+            "Root": {
+              "description": "The root directory.",
               "type": "string"
             },
-            "Kustomizations": {
-              "description": "The kustomizations to include. The first depends on the next, and so on.",
+            "Flows": {
+              "description": "The flows to include. The first depends on the next, and so on.",
               "type": "array",
               "items": {
                 "type": [
@@ -131,7 +131,7 @@
                 ]
               }
             },
-            "KustomizationHooks": {
+            "Hooks": {
               "description": "The kustomization hooks to use. Each kustomization hook includes an extension to the kustomization allowing you to customize that kustomization at a specific point in the kustomize build process.",
               "type": "array",
               "items": {

@@ -29,13 +29,13 @@
       PostBuildVariables: false
     },
     KustomizeTemplateOptions: {
-      RootKustomizationDirectory: k8s/clusters/my-cluster/flux-system,
-      Kustomizations: [
+      Root: k8s/clusters/my-cluster/flux-system,
+      Flows: [
         apps,
-        infrastructure,
+        infrastructure/configs,
         infrastructure/controllers
       ],
-      KustomizationHooks: []
+      Hooks: []
     },
     SOPSSecretManagerOptions: {},
     CiliumCNIOptions: {},

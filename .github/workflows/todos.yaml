@@ -12,7 +12,15 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v4"
+      - name: Generate GitHub App Token
+        uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
       - uses: "alstr/todo-to-issue-action@v5"
         env:
           AUTO_ASSIGN: true
-          LABEL: chore
+          CLOSE_ISSUES: true
+          PROJECT: user/devantler/4
+          PROJECTS_SECRET: ${{ steps.app-token.outputs.token }}

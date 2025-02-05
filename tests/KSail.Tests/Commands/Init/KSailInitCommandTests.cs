@@ -40,20 +40,20 @@ public class KSailInitCommandTests : IAsyncLifetime, IDisposable
   public async Task KSailInit_WithDefaultOptions_SucceedsAndGeneratesKSailProject()
   {
     //Arrange
-    string path = Path.Combine(Path.GetTempPath(), "ksail-init-native-simple");
+    string outputDir = Path.Combine(Path.GetTempPath(), "ksail-init-native-simple");
     var ksailCommand = new KSailInitCommand();
-    _ = Directory.CreateDirectory(path);
+    _ = Directory.CreateDirectory(outputDir);
 
     //Act
-    int exitCode = await ksailCommand.InvokeAsync($"--path {path}");
+    int exitCode = await ksailCommand.InvokeAsync($"--output {outputDir}");
 
     //Assert
     Assert.Equal(0, exitCode);
-    Assert.True(Directory.Exists(path));
-    foreach (string file in Directory.GetFiles(path, "*", SearchOption.AllDirectories))
+    Assert.True(Directory.Exists(outputDir));
+    foreach (string file in Directory.GetFiles(outputDir, "*", SearchOption.AllDirectories))
     {
       string fileName = Path.GetFileName(file);
-      string relativefilePath = file.Replace(path, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
+      string relativefilePath = file.Replace(outputDir, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
       relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, '/');
       string? directoryPath = Path.GetDirectoryName(relativefilePath);
       _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml").UseDirectory(Path.Combine("native-simple", directoryPath!)).UseFileName(fileName);
@@ -67,22 +67,22 @@ public class KSailInitCommandTests : IAsyncLifetime, IDisposable
   public async Task KSailInit_WithDefaultOptionsOnTopOfExistingProject_SucceedsAndGeneratesKSailProject()
   {
     //Arrange
-    string path = Path.Combine(Path.GetTempPath(), "ksail-init-native-simple-existing");
+    string outputDir = Path.Combine(Path.GetTempPath(), "ksail-init-native-simple-existing");
     var ksailCommand = new KSailInitCommand();
-    _ = Directory.CreateDirectory(path);
+    _ = Directory.CreateDirectory(outputDir);
 
     //Act
-    int exitCodeRun1 = await ksailCommand.InvokeAsync($"--path {path}");
-    int exitCodeRun2 = await ksailCommand.InvokeAsync($"--path {path}");
+    int exitCodeRun1 = await ksailCommand.InvokeAsync($"--output {outputDir}");
+    int exitCodeRun2 = await ksailCommand.InvokeAsync($"--output {outputDir}");
 
     //Assert
     Assert.Equal(0, exitCodeRun1);
     Assert.Equal(0, exitCodeRun2);
-    Assert.True(Directory.Exists(path));
-    foreach (string file in Directory.GetFiles(path, "*", SearchOption.AllDirectories))
+    Assert.True(Directory.Exists(outputDir));
+    foreach (string file in Directory.GetFiles(outputDir, "*", SearchOption.AllDirectories))
     {
       string fileName = Path.GetFileName(file);
-      string relativefilePath = file.Replace(path, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
+      string relativefilePath = file.Replace(outputDir, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
       relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, '/');
       string? directoryPath = Path.GetDirectoryName(relativefilePath);
       _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml").UseDirectory(Path.Combine("native-simple-existing", directoryPath!)).UseFileName(fileName);
@@ -96,22 +96,22 @@ public class KSailInitCommandTests : IAsyncLifetime, IDisposable
   public async Task KSailInit_WithDefaultOptionsMultipleClusters_SucceedsAndGeneratesKSailProject()
   {
     //Arrange
-    string path = Path.Combine(Path.GetTempPath(), "ksail-init-mixed-simple-multi");
+    string outputDir = Path.Combine(Path.GetTempPath(), "ksail-init-mixed-simple-multi");
     var ksailCommand = new KSailInitCommand();
-    _ = Directory.CreateDirectory(path);
+    _ = Directory.CreateDirectory(outputDir);
 
     //Act
-    int exitCodeRun1 = await ksailCommand.InvokeAsync($"--name cluster1 --distribution native --path {path}");
-    int exitCodeRun2 = await ksailCommand.InvokeAsync($"--name cluster2 --distribution k3s --path {path}");
+    int exitCodeRun1 = await ksailCommand.InvokeAsync($"--name cluster1 --distribution native --output {outputDir}");
+    int exitCodeRun2 = await ksailCommand.InvokeAsync($"--name cluster2 --distribution k3s --output {outputDir}");
 
     //Assert
     Assert.Equal(0, exitCodeRun1);
     Assert.Equal(0, exitCodeRun2);
-    Assert.True(Directory.Exists(path));
-    foreach (string file in Directory.GetFiles(path, "*", SearchOption.AllDirectories))
+    Assert.True(Directory.Exists(outputDir));
+    foreach (string file in Directory.GetFiles(outputDir, "*", SearchOption.AllDirectories))
     {
       string fileName = Path.GetFileName(file);
-      string relativefilePath = file.Replace(path, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
+      string relativefilePath = file.Replace(outputDir, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
       relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, '/');
       string? directoryPath = Path.GetDirectoryName(relativefilePath);
       _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml").UseDirectory(Path.Combine("mixed-simple-multi", directoryPath!)).UseFileName(fileName);
@@ -125,24 +125,24 @@ public class KSailInitCommandTests : IAsyncLifetime, IDisposable
   public async Task KSailInit_WithAdvancedOptions_SucceedsAndGeneratesKSailProject()
   {
     //Arrange
-    string path = Path.Combine(Path.GetTempPath(), "ksail-init-native-advanced");
+    string outputDir = Path.Combine(Path.GetTempPath(), "ksail-init-native-advanced");
     var ksailCommand = new KSailInitCommand();
-    _ = Directory.CreateDirectory(path);
+    _ = Directory.CreateDirectory(outputDir);
 
     //Act
-    int exitCode = await ksailCommand.InvokeAsync($"--name ksail-advanced-native --path {path} --secret-manager sops --post-build-variables --kustomization-hooks clusters/ksail-advanced-native distributions/native shared");
+    int exitCode = await ksailCommand.InvokeAsync($"--name ksail-advanced-native --output {outputDir} --secret-manager sops --flux-post-build-variables --kustomize-hooks clusters/ksail-advanced-native distributions/native shared");
 
     //Assert
     Assert.Equal(0, exitCode);
-    Assert.True(Directory.Exists(path));
-    foreach (string file in Directory.GetFiles(path, "*", SearchOption.AllDirectories))
+    Assert.True(Directory.Exists(outputDir));
+    foreach (string file in Directory.GetFiles(outputDir, "*", SearchOption.AllDirectories))
     {
       string fileName = Path.GetFileName(file);
       if (fileName == ".sops.yaml")
       {
         continue;
       }
-      string relativefilePath = file.Replace(path, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
+      string relativefilePath = file.Replace(outputDir, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
       relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, '/');
       string? directoryPath = Path.GetDirectoryName(relativefilePath);
       _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml").UseDirectory(Path.Combine("native-advanced", directoryPath!)).UseFileName(fileName);
@@ -156,26 +156,26 @@ public class KSailInitCommandTests : IAsyncLifetime, IDisposable
   public async Task KSailInit_WithAdvancedOptionsOnTopOfExistingProject_SucceedsAndGeneratesKSailProject()
   {
     //Arrange
-    string path = Path.Combine(Path.GetTempPath(), "ksail-init-native-advanced-existing");
+    string outputDir = Path.Combine(Path.GetTempPath(), "ksail-init-native-advanced-existing");
     var ksailCommand = new KSailInitCommand();
-    _ = Directory.CreateDirectory(path);
+    _ = Directory.CreateDirectory(outputDir);
 
     //Act
-    int exitCodeRun1 = await ksailCommand.InvokeAsync($"--name ksail-advanced-native --path {path} --secret-manager sops --post-build-variables --kustomization-hooks clusters/ksail-advanced-native distributions/native shared");
-    int exitCodeRun2 = await ksailCommand.InvokeAsync($"--name ksail-advanced-native --path {path} --secret-manager sops --post-build-variables --kustomization-hooks clusters/ksail-advanced-native distributions/native shared");
+    int exitCodeRun1 = await ksailCommand.InvokeAsync($"--name ksail-advanced-native --output {outputDir} --secret-manager sops --flux-post-build-variables --kustomize-hooks clusters/ksail-advanced-native distributions/native shared");
+    int exitCodeRun2 = await ksailCommand.InvokeAsync($"--name ksail-advanced-native --output {outputDir} --secret-manager sops --flux-post-build-variables --kustomize-hooks clusters/ksail-advanced-native distributions/native shared");
 
     //Assert
     Assert.Equal(0, exitCodeRun1);
     Assert.Equal(0, exitCodeRun2);
-    Assert.True(Directory.Exists(path));
-    foreach (string file in Directory.GetFiles(path, "*", SearchOption.AllDirectories))
+    Assert.True(Directory.Exists(outputDir));
+    foreach (string file in Directory.GetFiles(outputDir, "*", SearchOption.AllDirectories))
     {
       string fileName = Path.GetFileName(file);
       if (fileName == ".sops.yaml")
       {
         continue;
       }
-      string relativefilePath = file.Replace(path, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
+      string relativefilePath = file.Replace(outputDir, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
       relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, '/');
       string? directoryPath = Path.GetDirectoryName(relativefilePath);
       _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml").UseDirectory(Path.Combine("native-advanced-existing", directoryPath!)).UseFileName(fileName);
@@ -189,26 +189,26 @@ public class KSailInitCommandTests : IAsyncLifetime, IDisposable
   public async Task KSailInit_WithAdvancedOptionsMultipleClusters_SucceedsAndGeneratesKSailProject()
   {
     //Arrange
-    string path = Path.Combine(Path.GetTempPath(), "ksail-init-mixed-advanced-multi");
+    string outputDir = Path.Combine(Path.GetTempPath(), "ksail-init-mixed-advanced-multi");
     var ksailCommand = new KSailInitCommand();
-    _ = Directory.CreateDirectory(path);
+    _ = Directory.CreateDirectory(outputDir);
 
     //Act
-    int exitCodeRun1 = await ksailCommand.InvokeAsync($"--name cluster1 --path {path} --secret-manager sops --post-build-variables --distribution native --kustomization-hooks clusters/cluster1 distributions/native shared");
-    int exitCodeRun2 = await ksailCommand.InvokeAsync($"--name cluster2 --path {path} --secret-manager sops --post-build-variables --distribution k3s --kustomization-hooks clusters/cluster2 distributions/k3s shared");
+    int exitCodeRun1 = await ksailCommand.InvokeAsync($"--name cluster1 --output {outputDir} --secret-manager sops --flux-post-build-variables --distribution native --kustomize-hooks clusters/cluster1 distributions/native shared");
+    int exitCodeRun2 = await ksailCommand.InvokeAsync($"--name cluster2 --output {outputDir} --secret-manager sops --flux-post-build-variables --distribution k3s --kustomize-hooks clusters/cluster2 distributions/k3s shared");
 
     //Assert
     Assert.Equal(0, exitCodeRun1);
     Assert.Equal(0, exitCodeRun2);
-    Assert.True(Directory.Exists(path));
-    foreach (string file in Directory.GetFiles(path, "*", SearchOption.AllDirectories))
+    Assert.True(Directory.Exists(outputDir));
+    foreach (string file in Directory.GetFiles(outputDir, "*", SearchOption.AllDirectories))
     {
       string fileName = Path.GetFileName(file);
       if (fileName == ".sops.yaml")
       {
         continue;
       }
-      string relativefilePath = file.Replace(path, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
+      string relativefilePath = file.Replace(outputDir, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
       relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, '/');
       string? directoryPath = Path.GetDirectoryName(relativefilePath);
       _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml").UseDirectory(Path.Combine("mixed-advanced-multi", directoryPath!)).UseFileName(fileName);
@@ -227,22 +227,22 @@ public class KSailInitCommandTests : IAsyncLifetime, IDisposable
       Path.Combine(Path.GetTempPath(), "ksail-init-native-simple-existing"),
       Path.Combine(Path.GetTempPath(), "ksail-init-native-simple")
     ];
-    foreach (string path in directoryPaths)
+    foreach (string outputDir in directoryPaths)
     {
-      if (Directory.Exists(path))
+      if (Directory.Exists(outputDir))
       {
-        Directory.Delete(path, true);
+        Directory.Delete(outputDir, true);
       }
     }
     string[] filePaths =
     [
       "ksail-config.yaml"
     ];
-    foreach (string path in filePaths)
+    foreach (string outputDir in filePaths)
     {
-      if (File.Exists(path))
+      if (File.Exists(outputDir))
       {
-        File.Delete(path);
+        File.Delete(outputDir);
       }
     }
     GC.SuppressFinalize(this);

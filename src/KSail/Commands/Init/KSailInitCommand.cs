@@ -10,15 +10,16 @@ namespace KSail.Commands.Init;
 sealed class KSailInitCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly PathOption _workingDirectoryOption = new("The directory in which to generate the project") { Arity = ArgumentArity.ZeroOrOne };
-  readonly DeploymentToolOption _deploymentToolOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly DistributionOption _distributionOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly SecretManagerOption _secretManagerOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly TemplateOption _templateOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly KustomizationsOption _kustomizationsOption = new() { Arity = ArgumentArity.ZeroOrMore, AllowMultipleArgumentsPerToken = true };
-  readonly KustomizationHooksOption _kustomizationHooksOption = new() { Arity = ArgumentArity.ZeroOrMore, AllowMultipleArgumentsPerToken = true };
-  readonly PostBuildVariablesOption _postBuildVariablesOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly NameOption _metadataNameOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly PathOption _projectWorkingDirectoryOption = new("The output directory", ["-o", "--output"]) { Arity = ArgumentArity.ZeroOrOne };
+  readonly FluxDeploymentToolPostBuildVariablesOption _fluxDeploymentToolPostBuildVariablesOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly KustomizeTemplateFlowsOption _kustomizeTemplateKustomizationsOption = new() { Arity = ArgumentArity.ZeroOrMore, AllowMultipleArgumentsPerToken = true };
+  readonly KustomizeTemplateHooksOption _kustomizeTemplateKustomizationHooksOption = new() { Arity = ArgumentArity.ZeroOrMore, AllowMultipleArgumentsPerToken = true };
+  readonly ProjectDeploymentToolOption _projectDeploymentToolOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly ProjectDistributionOption _projectDistributionOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly ProjectMirrorRegistriesOption _projectMirrorRegistriesOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly ProjectSecretManagerOption _projectSecretManagerOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly ProjectTemplateOption _projectTemplateOption = new() { Arity = ArgumentArity.ZeroOrOne };
 
   public KSailInitCommand() : base("init", "Initialize a cluster")
   {
@@ -28,16 +29,17 @@ sealed class KSailInitCommand : Command
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadAsync(name: context.ParseResult.GetValueForOption(_nameOption), distribution: context.ParseResult.GetValueForOption(_distributionOption)).ConfigureAwait(false);
-        config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
-        config.UpdateConfig("Spec.Project.WorkingDirectory", context.ParseResult.GetValueForOption(_workingDirectoryOption));
-        config.UpdateConfig("Spec.Project.DeploymentTool", context.ParseResult.GetValueForOption(_deploymentToolOption));
-        config.UpdateConfig("Spec.Project.Distribution", context.ParseResult.GetValueForOption(_distributionOption));
-        config.UpdateConfig("Spec.Project.SecretManager", context.ParseResult.GetValueForOption(_secretManagerOption));
-        config.UpdateConfig("Spec.Project.Template", context.ParseResult.GetValueForOption(_templateOption));
-        config.UpdateConfig("Spec.KustomizeTemplateOptions.Kustomizations", context.ParseResult.GetValueForOption(_kustomizationsOption));
-        config.UpdateConfig("Spec.KustomizeTemplateOptions.KustomizationHooks", context.ParseResult.GetValueForOption(_kustomizationHooksOption));
-        config.UpdateConfig("Spec.FluxDeploymentToolOptions.PostBuildVariables", context.ParseResult.GetValueForOption(_postBuildVariablesOption));
+        var config = await KSailClusterConfigLoader.LoadAsync(name: context.ParseResult.GetValueForOption(_metadataNameOption), distribution: context.ParseResult.GetValueForOption(_projectDistributionOption)).ConfigureAwait(false);
+        config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_metadataNameOption));
+        config.UpdateConfig("Spec.FluxDeploymentToolOptions.PostBuildVariables", context.ParseResult.GetValueForOption(_fluxDeploymentToolPostBuildVariablesOption));
+        config.UpdateConfig("Spec.KustomizeTemplateOptions.Flows", context.ParseResult.GetValueForOption(_kustomizeTemplateKustomizationsOption));
+        config.UpdateConfig("Spec.KustomizeTemplateOptions.Hooks", context.ParseResult.GetValueForOption(_kustomizeTemplateKustomizationHooksOption));
+        config.UpdateConfig("Spec.Project.DeploymentTool", context.ParseResult.GetValueForOption(_projectDeploymentToolOption));
+        config.UpdateConfig("Spec.Project.Distribution", context.ParseResult.GetValueForOption(_projectDistributionOption));
+        config.UpdateConfig("Spec.Project.MirrorRegistries", context.ParseResult.GetValueForOption(_projectMirrorRegistriesOption));
+        config.UpdateConfig("Spec.Project.SecretManager", context.ParseResult.GetValueForOption(_projectSecretManagerOption));
+        config.UpdateConfig("Spec.Project.Template", context.ParseResult.GetValueForOption(_projectTemplateOption));
+        config.UpdateConfig("Spec.Project.WorkingDirectory", context.ParseResult.GetValueForOption(_projectWorkingDirectoryOption));
 
         var handler = new KSailInitCommandHandler(config);
         Console.WriteLine($"📁 Initializing new cluster '{config.Metadata.Name}' in '{config.Spec.Project.WorkingDirectory}' with the '{config.Spec.Project.Template}' template.");
@@ -69,14 +71,15 @@ sealed class KSailInitCommand : Command
 
   void AddOptions()
   {
-    AddOption(_nameOption);
-    AddOption(_workingDirectoryOption);
-    AddOption(_deploymentToolOption);
-    AddOption(_distributionOption);
-    AddOption(_secretManagerOption);
-    AddOption(_templateOption);
-    AddOption(_kustomizationsOption);
-    AddOption(_kustomizationHooksOption);
-    AddOption(_postBuildVariablesOption);
+    AddOption(_metadataNameOption);
+    AddOption(_projectWorkingDirectoryOption);
+    AddOption(_projectDeploymentToolOption);
+    AddOption(_projectDistributionOption);
+    AddOption(_projectMirrorRegistriesOption);
+    AddOption(_projectSecretManagerOption);
+    AddOption(_projectTemplateOption);
+    AddOption(_fluxDeploymentToolPostBuildVariablesOption);
+    AddOption(_kustomizeTemplateKustomizationHooksOption);
+    AddOption(_kustomizeTemplateKustomizationsOption);
   }
 }

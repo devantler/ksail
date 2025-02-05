@@ -5,16 +5,17 @@ Usage:
   init [options]
 
 Options:
-  -n, --name <name>                                 The name of the cluster.
-  -p, --path <path>                                 The directory in which to generate the project
-  -dt, --deployment-tool <Flux>                     The Deployment tool to use for updating the state of the cluster.
-  -d, --distribution <K3s|Native>                   The distribution to use for the cluster.
-  -sm, --secret-manager <None|SOPS>                 Configure which secret manager to use.
-  -t, --template <Kustomize>                        The template to use for the initialized cluster.
-  -k, --kustomizations <kustomizations>             The kustomizations to include in the initialized cluster.
-  -kh, --kustomization-hooks <kustomization-hooks>  The kustomization hooks to include in the initialized cluster.
-  -pbv, --post-build-variables                      Generate ConfigMaps and Secrets for flux post-build-variables.
-  --version                                         Show version information
-  -?, -h, --help                                    Show help and usage information
+  -n, --name <name>                         The name of the cluster.
+  -o, --output <output>                     The output directory
+  -dt, --deployment-tool <Flux>             The Deployment tool to use for updating the state of the cluster.
+  -d, --distribution <K3s|Native>           The distribution to use for the cluster.
+  -mr, --mirror-registries                  Enable mirror registries.
+  -sm, --secret-manager <None|SOPS>         Configure which secret manager to use.
+  -t, --template <Kustomize>                The template to use for the initialized cluster.
+  -fpbv, --flux-post-build-variables        Generate ConfigMaps and Secrets for flux post-build-variables.
+  -kh, --kustomize-hooks <kustomize-hooks>  The kustomize hooks to include in the initialized cluster.
+  -kf, --kustomize-flows <kustomize-flows>  The flows to include. The first depends on the next, and so on.
+  --version                                 Show version information
+  -?, -h, --help                            Show help and usage information
 
 
