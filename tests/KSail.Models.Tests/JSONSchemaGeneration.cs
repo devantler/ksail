@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Schema;
+using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 
 namespace KSail.Models.Tests;
@@ -23,7 +24,8 @@ public class KSailClusterJSONSchemaGeneration
     var options = new JsonSerializerOptions()
     {
       PropertyNamingPolicy = new JsonCamelCaseAllLowerNamingPolicy(),
-      TypeInfoResolver = new DefaultJsonTypeInfoResolver()
+      TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
+      Converters = { new JsonStringEnumConverter() }
     };
 
     var schema = new JsonObject

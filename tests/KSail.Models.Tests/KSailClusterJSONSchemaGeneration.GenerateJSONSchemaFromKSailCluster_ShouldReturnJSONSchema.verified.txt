@@ -65,27 +65,41 @@
             },
             "template": {
               "description": "The template used for the project.",
-              "type": "integer"
+              "enum": [
+                "Kustomize"
+              ]
             },
             "engine": {
               "description": "The engine to use for running the KSail cluster.",
-              "type": "integer"
+              "enum": [
+                "Docker"
+              ]
             },
             "distribution": {
               "description": "The Kubernetes distribution to use.",
-              "type": "integer"
+              "enum": [
+                "Native",
+                "K3s"
+              ]
             },
             "deploymentTool": {
               "description": "The Deployment tool to use.",
-              "type": "integer"
+              "enum": [
+                "Flux"
+              ]
             },
             "secretManager": {
               "description": "The secret manager to use.",
-              "type": "integer"
+              "enum": [
+                "None",
+                "SOPS"
+              ]
             },
             "cni": {
               "description": "The CNI to use.",
-              "type": "integer"
+              "enum": [
+                "Default"
+              ]
             },
             "mirrorRegistries": {
               "description": "Whether to set up mirror registries for the project.",
@@ -223,7 +237,9 @@
                   },
                   "provider": {
                     "description": "The registry provider.",
-                    "type": "integer"
+                    "enum": [
+                      "Docker"
+                    ]
                   }
                 },
                 "required": [
@@ -244,7 +260,10 @@
               "properties": {
                 "editor": {
                   "description": "The editor to use for viewing files while debugging.",
-                  "type": "integer"
+                  "enum": [
+                    "Nano",
+                    "Vim"
+                  ]
                 }
               }
             },
