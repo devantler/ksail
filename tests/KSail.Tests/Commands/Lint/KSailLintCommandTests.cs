@@ -46,7 +46,7 @@ public class KSailLintCommandTests : IAsyncLifetime, IDisposable
     var ksailLintCommand = new KSailLintCommand();
 
     //Act
-    int initExitCode = await ksailInitCommand.InvokeAsync($"--name test-cluster --path {path}");
+    int initExitCode = await ksailInitCommand.InvokeAsync($"--name test-cluster --output {path}");
     int lintExitCode = await ksailLintCommand.InvokeAsync($"--path {path}");
 
     //Assert
