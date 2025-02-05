@@ -15,11 +15,11 @@ sealed class KSailUpCommand : Command
   readonly ExceptionHandler _exceptionHandler = new();
   readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly EngineOption _engineOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly DistributionOption _distributionOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly ProjectDistributionOption _distributionOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly PathOption _workingDirectoryOption = new("The directory in which to find the project") { Arity = ArgumentArity.ZeroOrOne };
   readonly PathOption _distributionConfigOption = new("Path to the distribution configuration file", ["--distribution-config", "-dc"]) { Arity = ArgumentArity.ZeroOrOne };
   readonly TimeoutOption _timeoutOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly SecretManagerOption _secretManagerOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly ProjectSecretManagerOption _secretManagerOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly FluxDeploymentToolSourceUrlOption _fluxDeploymentToolSourceUrlOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly DestroyOption _destroyOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly LintOption _lintOption = new() { Arity = ArgumentArity.ZeroOrOne };

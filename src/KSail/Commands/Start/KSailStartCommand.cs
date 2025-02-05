@@ -11,7 +11,7 @@ sealed class KSailStartCommand : Command
   readonly ExceptionHandler _exceptionHandler = new();
   readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly EngineOption _engineOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly DistributionOption _distributionOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly ProjectDistributionOption _distributionOption = new() { Arity = ArgumentArity.ZeroOrOne };
 
   internal KSailStartCommand() : base("start", "Start a cluster")
   {

@@ -3,7 +3,7 @@ using KSail.Models.Project;
 
 namespace KSail.Options;
 
-class SecretManagerOption() : Option<KSailSecretManager>(
+class ProjectSecretManagerOption() : Option<KSailSecretManager>(
   ["-sm", "--secret-manager"],
   "Configure which secret manager to use."
 )

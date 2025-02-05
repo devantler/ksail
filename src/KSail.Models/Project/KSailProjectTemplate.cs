@@ -6,7 +6,7 @@ namespace KSail.Models.Project;
 public enum KSailProjectTemplate
 {
   /// <summary>
-  /// The kustomize template for a project using Kustomize to structure and customize the kubernetes manifests.
+  /// The Kustomize template.
   /// </summary>
   Kustomize
 }

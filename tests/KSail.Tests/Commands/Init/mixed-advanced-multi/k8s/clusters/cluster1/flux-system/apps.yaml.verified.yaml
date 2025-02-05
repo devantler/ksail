@@ -13,7 +13,7 @@ spec:
   timeout: 3m
   wait: true
   dependsOn:
-  - name: infrastructure
+  - name: infrastructure-configs
   sourceRef:
     kind: OCIRepository
     name: flux-system
