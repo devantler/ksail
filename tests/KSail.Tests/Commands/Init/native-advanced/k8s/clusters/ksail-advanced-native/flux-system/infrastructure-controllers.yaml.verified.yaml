@@ -4,9 +4,6 @@ kind: Kustomization
 metadata:
   name: infrastructure-controllers
   namespace: flux-system
-  labels:
-    sops: enabled
-    post-build-variables: enabled
 spec:
   interval: 60m
   retryInterval: 2m

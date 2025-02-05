@@ -130,7 +130,7 @@ public class KSailInitCommandTests : IAsyncLifetime, IDisposable
     _ = Directory.CreateDirectory(path);
 
     //Act
-    int exitCode = await ksailCommand.InvokeAsync($"--name ksail-advanced-native --path {path} --secret-manager sops --components --post-build-variables --kustomization-hooks clusters/ksail-advanced-native distributions/native shared");
+    int exitCode = await ksailCommand.InvokeAsync($"--name ksail-advanced-native --path {path} --secret-manager sops --post-build-variables --kustomization-hooks clusters/ksail-advanced-native distributions/native shared");
 
     //Assert
     Assert.Equal(0, exitCode);
@@ -161,8 +161,8 @@ public class KSailInitCommandTests : IAsyncLifetime, IDisposable
     _ = Directory.CreateDirectory(path);
 
     //Act
-    int exitCodeRun1 = await ksailCommand.InvokeAsync($"--name ksail-advanced-native --path {path} --secret-manager sops --components --post-build-variables --kustomization-hooks clusters/ksail-advanced-native distributions/native shared");
-    int exitCodeRun2 = await ksailCommand.InvokeAsync($"--name ksail-advanced-native --path {path} --secret-manager sops --components --post-build-variables --kustomization-hooks clusters/ksail-advanced-native distributions/native shared");
+    int exitCodeRun1 = await ksailCommand.InvokeAsync($"--name ksail-advanced-native --path {path} --secret-manager sops --post-build-variables --kustomization-hooks clusters/ksail-advanced-native distributions/native shared");
+    int exitCodeRun2 = await ksailCommand.InvokeAsync($"--name ksail-advanced-native --path {path} --secret-manager sops --post-build-variables --kustomization-hooks clusters/ksail-advanced-native distributions/native shared");
 
     //Assert
     Assert.Equal(0, exitCodeRun1);
@@ -194,8 +194,8 @@ public class KSailInitCommandTests : IAsyncLifetime, IDisposable
     _ = Directory.CreateDirectory(path);
 
     //Act
-    int exitCodeRun1 = await ksailCommand.InvokeAsync($"--name cluster1 --path {path} --secret-manager sops --components --post-build-variables --distribution native --kustomization-hooks clusters/cluster1 distributions/native shared");
-    int exitCodeRun2 = await ksailCommand.InvokeAsync($"--name cluster2 --path {path} --secret-manager sops --components --post-build-variables --distribution k3s --kustomization-hooks clusters/cluster2 distributions/k3s shared");
+    int exitCodeRun1 = await ksailCommand.InvokeAsync($"--name cluster1 --path {path} --secret-manager sops --post-build-variables --distribution native --kustomization-hooks clusters/cluster1 distributions/native shared");
+    int exitCodeRun2 = await ksailCommand.InvokeAsync($"--name cluster2 --path {path} --secret-manager sops --post-build-variables --distribution k3s --kustomization-hooks clusters/cluster2 distributions/k3s shared");
 
     //Assert
     Assert.Equal(0, exitCodeRun1);

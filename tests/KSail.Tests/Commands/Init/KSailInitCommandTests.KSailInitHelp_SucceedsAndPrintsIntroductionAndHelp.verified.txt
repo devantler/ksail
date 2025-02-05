@@ -13,7 +13,6 @@ Options:
   -t, --template <Kustomize>                        The template to use for the initialized cluster.
   -k, --kustomizations <kustomizations>             The kustomizations to include in the initialized cluster.
   -kh, --kustomization-hooks <kustomization-hooks>  The kustomization hooks to include in the initialized cluster.
-  -c, --components                                  Generate components to reduce duplication.
   -pbv, --post-build-variables                      Generate ConfigMaps and Secrets for flux post-build-variables.
   --version                                         Show version information
   -?, -h, --help                                    Show help and usage information
