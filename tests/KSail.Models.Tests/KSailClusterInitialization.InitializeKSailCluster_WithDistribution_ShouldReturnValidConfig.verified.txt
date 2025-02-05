@@ -35,8 +35,7 @@
         infrastructure,
         infrastructure/controllers
       ],
-      KustomizationHooks: [],
-      Components: false
+      KustomizationHooks: []
     },
     SOPSSecretManagerOptions: {},
     CiliumCNIOptions: {},

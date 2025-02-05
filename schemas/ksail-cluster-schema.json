@@ -140,10 +140,6 @@
                   "null"
                 ]
               }
-            },
-            "Components": {
-              "description": "Enable components in the kustomize template.",
-              "type": "boolean"
             }
           }
         },

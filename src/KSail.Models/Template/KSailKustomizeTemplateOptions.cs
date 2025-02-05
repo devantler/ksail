@@ -25,10 +25,4 @@ public class KSailKustomizeTemplateOptions
   [Description("The kustomization hooks to use. Each kustomization hook includes an extension to the " +
     "kustomization allowing you to customize that kustomization at a specific point in the kustomize build process.")]
   public string[] KustomizationHooks { get; set; } = [];
-
-  /// <summary>
-  /// Enable components in the kustomize template.
-  /// </summary>
-  [Description("Enable components in the kustomize template.")]
-  public bool Components { get; set; }
 }

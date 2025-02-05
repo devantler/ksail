@@ -18,7 +18,6 @@ sealed class KSailInitCommand : Command
   readonly TemplateOption _templateOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly KustomizationsOption _kustomizationsOption = new() { Arity = ArgumentArity.ZeroOrMore, AllowMultipleArgumentsPerToken = true };
   readonly KustomizationHooksOption _kustomizationHooksOption = new() { Arity = ArgumentArity.ZeroOrMore, AllowMultipleArgumentsPerToken = true };
-  readonly ComponentsOption _componentsOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly PostBuildVariablesOption _postBuildVariablesOption = new() { Arity = ArgumentArity.ZeroOrOne };
 
   public KSailInitCommand() : base("init", "Initialize a cluster")
@@ -38,7 +37,6 @@ sealed class KSailInitCommand : Command
         config.UpdateConfig("Spec.Project.Template", context.ParseResult.GetValueForOption(_templateOption));
         config.UpdateConfig("Spec.KustomizeTemplateOptions.Kustomizations", context.ParseResult.GetValueForOption(_kustomizationsOption));
         config.UpdateConfig("Spec.KustomizeTemplateOptions.KustomizationHooks", context.ParseResult.GetValueForOption(_kustomizationHooksOption));
-        config.UpdateConfig("Spec.KustomizeTemplateOptions.Components", context.ParseResult.GetValueForOption(_componentsOption));
         config.UpdateConfig("Spec.FluxDeploymentToolOptions.PostBuildVariables", context.ParseResult.GetValueForOption(_postBuildVariablesOption));
 
         var handler = new KSailInitCommandHandler(config);
@@ -79,7 +77,6 @@ sealed class KSailInitCommand : Command
     AddOption(_templateOption);
     AddOption(_kustomizationsOption);
     AddOption(_kustomizationHooksOption);
-    AddOption(_componentsOption);
     AddOption(_postBuildVariablesOption);
   }
 }
