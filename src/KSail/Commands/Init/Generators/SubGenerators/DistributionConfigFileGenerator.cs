@@ -41,7 +41,13 @@ class DistributionConfigFileGenerator
     Console.WriteLine($"✚ generating '{outputPath}'");
     var kindConfig = new KindConfig
     {
-      Name = config.Metadata.Name
+      Name = config.Metadata.Name,
+      ContainerdConfigPatches = config.Spec.Project.MirrorRegistries ? [
+        """
+        [plugins."io.containerd.grpc.v1.cri".registry]
+          config_path = "/etc/containerd/certs.d"
+        """
+      ] : null
     };
 
     await _kindConfigKubernetesGenerator.GenerateAsync(kindConfig, outputPath, cancellationToken: cancellationToken).ConfigureAwait(false);
