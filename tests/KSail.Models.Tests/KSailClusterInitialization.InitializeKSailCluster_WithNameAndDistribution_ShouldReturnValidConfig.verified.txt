@@ -20,7 +20,7 @@
       DeploymentTool: Flux,
       SecretManager: None,
       CNI: Default,
-      Editor: nano,
+      Editor: Nano,
       MirrorRegistries: false
     },
     FluxDeploymentTool: {
