@@ -124,7 +124,7 @@
     },
     CLIOptions: {
       DebugOptions: {
-        Editor: nano
+        Editor: Nano
       },
       DownOptions: {
         Registries: false
