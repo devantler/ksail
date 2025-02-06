@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using Devantler.K9sCLI;
 using YamlDotNet.Serialization;
