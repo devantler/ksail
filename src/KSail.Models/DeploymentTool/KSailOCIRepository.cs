@@ -14,7 +14,7 @@ public class KSailOCIRepository : IKSailGitOpsSource
   /// The URL of the OCI repository.
   /// </summary>
   [Description("The URL of the OCI repository.")]
-  public Uri Url { get; set; } = new Uri("oci://172.17.0.1:5555/ksail-registry");
+  public Uri Url { get; set; } = new Uri("oci://host.docker.internal:5555/ksail-registry");
 
   /// <summary>
   /// Initializes a new instance of the <see cref="KSailOCIRepository"/> class.

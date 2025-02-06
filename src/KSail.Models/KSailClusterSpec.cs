@@ -76,7 +76,7 @@ public class KSailClusterSpec
   /// <summary>
   /// Initializes a new instance of the <see cref="KSailClusterSpec"/> class.
   /// </summary>
-  public KSailClusterSpec() => SetOCISourceUriBasedOnOS();
+  public KSailClusterSpec() => SetOCISourceUri();
 
   /// <summary>
   /// Initializes a new instance of the <see cref="KSailClusterSpec"/> class.
@@ -84,7 +84,7 @@ public class KSailClusterSpec
   /// <param name="name"></param>
   public KSailClusterSpec(string name)
   {
-    SetOCISourceUriBasedOnOS();
+    SetOCISourceUri();
     Connection = new KSailConnectionOptions
     {
       Context = $"kind-{name}"
@@ -102,7 +102,7 @@ public class KSailClusterSpec
   /// <param name="distribution"></param>
   public KSailClusterSpec(string name, KSailKubernetesDistribution distribution) : this(name)
   {
-    SetOCISourceUriBasedOnOS();
+    SetOCISourceUri(distribution);
     Connection = new KSailConnectionOptions
     {
       Context = distribution switch
@@ -128,15 +128,25 @@ public class KSailClusterSpec
     };
   }
 
-  void SetOCISourceUriBasedOnOS()
+  void SetOCISourceUri(KSailKubernetesDistribution distribution = KSailKubernetesDistribution.Native)
   {
-    if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+    switch (distribution)
     {
-      FluxDeploymentToolOptions = new KSailFluxDeploymentToolOptions(new Uri("oci://172.17.0.1:5555/ksail-registry"));
-    }
-    else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-    {
-      FluxDeploymentToolOptions = new KSailFluxDeploymentToolOptions(new Uri("oci://host.docker.internal:5555/ksail-registry"));
+      case KSailKubernetesDistribution.Native:
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+          FluxDeploymentToolOptions = new KSailFluxDeploymentToolOptions(new Uri("oci://172.17.0.1:5555/ksail-registry"));
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+          FluxDeploymentToolOptions = new KSailFluxDeploymentToolOptions(new Uri("oci://host.docker.internal:5555/ksail-registry"));
+        }
+        break;
+      case KSailKubernetesDistribution.K3s:
+        FluxDeploymentToolOptions = new KSailFluxDeploymentToolOptions(new Uri("oci://host.k3d.internal:5555/ksail-registry"));
+        break;
+      default:
+        break;
     }
   }
 }
