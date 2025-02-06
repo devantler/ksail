@@ -23,7 +23,7 @@ public class KSailClusterJSONSchemaGeneration
     // Arrange & Act
     var options = new JsonSerializerOptions()
     {
-      PropertyNamingPolicy = new JsonCamelCaseAllLowerNamingPolicy(),
+      PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
       TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
       Converters = { new JsonStringEnumConverter() }
     };
@@ -86,41 +86,3 @@ public class KSailClusterJSONSchemaGeneration
   }
 }
 
-class JsonCamelCaseAllLowerNamingPolicy : JsonNamingPolicy
-{
-  public override string ConvertName(string name)
-  {
-    // Convert to camel case
-    if (string.IsNullOrEmpty(name))
-    {
-      return name;
-    }
-
-    char[] chars = name.ToCharArray();
-    for (int i = 0; i < chars.Length; i++)
-    {
-      if (i == 1 && !char.IsUpper(chars[i]))
-      {
-        break;
-      }
-
-      bool hasNext = i + 1 < chars.Length;
-      if (i > 0 && hasNext && !char.IsUpper(chars[i + 1]))
-      {
-        break;
-      }
-
-      chars[i] = char.ToLowerInvariant(chars[i]);
-    }
-
-    string result = new(chars);
-
-    if (result.Contains("ksail", StringComparison.OrdinalIgnoreCase))
-    {
-      string ksailWord = result.Substring(result.IndexOf("ksail", StringComparison.OrdinalIgnoreCase), 5);
-      result = result.Replace(ksailWord, ksailWord.ToLower(), StringComparison.InvariantCulture);
-    }
-
-    return result;
-  }
-}

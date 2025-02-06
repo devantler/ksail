@@ -58,7 +58,7 @@ class DistributionConfigFileGenerator
     Console.WriteLine($"✚ generating '{outputPath}'");
     var mirrors = new StringBuilder();
     mirrors = mirrors.AppendLine("mirrors:");
-    foreach (var registry in config.Spec.MirrorRegistryOptions.MirrorRegistries)
+    foreach (var registry in config.Spec.MirrorRegistries)
     {
       string mirror = $"""
       "{registry.Name}":

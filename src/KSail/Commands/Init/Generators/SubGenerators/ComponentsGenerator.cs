@@ -19,7 +19,7 @@ class ComponentsGenerator
     {
       if (config.Spec.Project.DeploymentTool == KSailDeploymentTool.Flux)
       {
-        if (config.Spec.FluxDeploymentToolOptions.PostBuildVariables)
+        if (config.Spec.FluxDeploymentTool.PostBuildVariables)
         {
           await GenerateFluxKustomizationPostBuildVariablesLabelComponent(config, componentsPath, cancellationToken).ConfigureAwait(false);
         }
@@ -70,7 +70,7 @@ class ComponentsGenerator
         }
       ]
     };
-    foreach (string hook in config.Spec.KustomizeTemplateOptions.Hooks.Skip(1))
+    foreach (string hook in config.Spec.KustomizeTemplate.Hooks.Skip(1))
     {
       fluxKustomizationPostBuildVariablesLabelComponent.Patches.First().Patch += $"{Environment.NewLine}    - kind: ConfigMap";
       fluxKustomizationPostBuildVariablesLabelComponent.Patches.First().Patch += $"{Environment.NewLine}      name: variables-{hook}";

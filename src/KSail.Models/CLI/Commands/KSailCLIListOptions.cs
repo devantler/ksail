@@ -5,7 +5,7 @@ namespace KSail.Models.CLI.Commands;
 /// <summary>
 /// The options to use for the 'list' command.
 /// </summary>
-public class KSailCLIListOptions
+public class KSailCLIList
 {
   /// <summary>
   /// List clusters from all supported distributions.

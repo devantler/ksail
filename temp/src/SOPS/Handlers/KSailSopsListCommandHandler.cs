@@ -14,7 +14,7 @@ class KSailSOPSListCommandHandler(KSailCluster config)
   {
     var keys = await _secretManager.ListKeysAsync(cancellationToken).ConfigureAwait(false);
 
-    if (_config.Spec.CLIOptions.SopsOptions.ListOptions.ShowSOPSConfigKeysOnly)
+    if (_config.Spec.CLI.SopsOptions.List.ShowSOPSConfigKeysOnly)
     {
       var sopsConfig = await SopsConfigLoader.LoadAsync(cancellationToken).ConfigureAwait(false);
       if (!keys.Any(key => sopsConfig.CreationRules.Any(rule => rule.Age == key.PublicKey)))
@@ -24,7 +24,7 @@ class KSailSOPSListCommandHandler(KSailCluster config)
       }
       foreach (var key in keys.Where(key => sopsConfig.CreationRules.Any(rule => rule.Age == key.PublicKey)))
       {
-        if (_config.Spec.CLIOptions.SopsOptions.ListOptions.ShowPrivateKey)
+        if (_config.Spec.CLI.SopsOptions.List.ShowPrivateKey)
         {
           Console.WriteLine(key);
         }
@@ -45,7 +45,7 @@ class KSailSOPSListCommandHandler(KSailCluster config)
       foreach (var key in keys)
       {
 
-        if (_config.Spec.CLIOptions.SopsOptions.ListOptions.ShowPrivateKey)
+        if (_config.Spec.CLI.SopsOptions.List.ShowPrivateKey)
         {
           Console.WriteLine(key);
         }

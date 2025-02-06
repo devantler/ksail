@@ -77,7 +77,7 @@ class KSailUpCommandHandler
 
     await BootstrapDeploymentTool(_config, cancellationToken).ConfigureAwait(false);
 
-    if (_config.Spec.CLIOptions.UpOptions.Reconcile)
+    if (_config.Spec.CLI.Up.Reconcile)
     {
       Console.WriteLine("🔄 Reconciling kustomizations");
       await _deploymentTool.ReconcileAsync(_config.Spec.Connection.Timeout, cancellationToken).ConfigureAwait(false);
@@ -88,7 +88,7 @@ class KSailUpCommandHandler
 
   async Task<bool> DestroyExistingCluster(CancellationToken cancellationToken)
   {
-    if (_config.Spec.CLIOptions.UpOptions.Destroy)
+    if (_config.Spec.CLI.Up.Destroy)
     {
       Console.WriteLine($"🔥 Destroying existing cluster '{_config.Metadata.Name}'");
       bool success = await _ksailDownCommandHandler.HandleAsync(cancellationToken).ConfigureAwait(false);
@@ -124,14 +124,14 @@ class KSailUpCommandHandler
   {
     if (config.Spec.Project.Engine == KSailEngine.Docker && config.Spec.Project.DeploymentTool == KSailDeploymentTool.Flux)
     {
-      if (config.Spec.FluxDeploymentToolOptions.Source is KSailOCIRepository)
+      if (config.Spec.FluxDeploymentTool.Source is KSailOCIRepository)
       {
         Console.WriteLine("📥 Create OCI source registry");
-        int port = config.Spec.FluxDeploymentToolOptions.Source.Url.Port;
-        Console.WriteLine($"► creating '{config.Spec.FluxDeploymentToolOptions.Source.Url}' as Flux OCI source registry");
+        int port = config.Spec.FluxDeploymentTool.Source.Url.Port;
+        Console.WriteLine($"► creating '{config.Spec.FluxDeploymentTool.Source.Url}' as Flux OCI source registry");
         await _engineProvisioner
          .CreateRegistryAsync(
-          config.Spec.FluxDeploymentToolOptions.Source.Url.Segments.Last(),
+          config.Spec.FluxDeploymentTool.Source.Url.Segments.Last(),
           port,
           cancellationToken: cancellationToken
         ).ConfigureAwait(false);
@@ -147,7 +147,7 @@ class KSailUpCommandHandler
     {
       // TODO: Fix this
       Console.WriteLine("🧮 Creating mirror registries");
-      foreach (var mirrorRegistry in config.Spec.MirrorRegistryOptions.MirrorRegistries)
+      foreach (var mirrorRegistry in config.Spec.MirrorRegistries)
       {
         Console.WriteLine($"► creating mirror registry '{mirrorRegistry.Name} for '{mirrorRegistry.Proxy?.Url}'");
         await _engineProvisioner
@@ -159,7 +159,7 @@ class KSailUpCommandHandler
 
   async Task<bool> Lint(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    if (config.Spec.CLIOptions.UpOptions.Lint)
+    if (config.Spec.CLI.Up.Lint)
     {
       Console.WriteLine("🔍 Linting manifests");
       bool success = await _ksailLintCommandHandler.HandleAsync(config, cancellationToken).ConfigureAwait(false);
@@ -189,14 +189,14 @@ class KSailUpCommandHandler
       }
     }, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-    string scheme = config.Spec.FluxDeploymentToolOptions.Source.Url.Scheme;
+    string scheme = config.Spec.FluxDeploymentTool.Source.Url.Scheme;
     string host = "localhost";
-    string absolutePath = config.Spec.FluxDeploymentToolOptions.Source.Url.AbsolutePath;
-    var sourceUrlFromHost = new Uri($"{scheme}://{host}:{config.Spec.FluxDeploymentToolOptions.Source.Url.Port}{absolutePath}");
+    string absolutePath = config.Spec.FluxDeploymentTool.Source.Url.AbsolutePath;
+    var sourceUrlFromHost = new Uri($"{scheme}://{host}:{config.Spec.FluxDeploymentTool.Source.Url.Port}{absolutePath}");
     await _deploymentTool.PushManifestsAsync(sourceUrlFromHost, "k8s", cancellationToken: cancellationToken).ConfigureAwait(false);
     await _deploymentTool.BootstrapAsync(
-      config.Spec.FluxDeploymentToolOptions.Source.Url,
-      config.Spec.KustomizeTemplateOptions.Root.Replace("k8s/", "", StringComparison.OrdinalIgnoreCase),
+      config.Spec.FluxDeploymentTool.Source.Url,
+      config.Spec.KustomizeTemplate.Root.Replace("k8s/", "", StringComparison.OrdinalIgnoreCase),
       true,
       cancellationToken
     ).ConfigureAwait(false);

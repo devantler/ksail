@@ -33,7 +33,7 @@ class KSailDownCommandHandler
   internal async Task<bool> HandleAsync(CancellationToken cancellationToken = default)
   {
     await _kubernetesDistributionProvisioner.DeleteAsync(_config.Metadata.Name, cancellationToken).ConfigureAwait(false);
-    if (_config.Spec.CLIOptions.DownOptions.Registries)
+    if (_config.Spec.CLI.Down.Registries)
     {
       Console.WriteLine("► deleting registries...");
       await DeleteRegistriesAsync(cancellationToken).ConfigureAwait(false);
@@ -46,15 +46,15 @@ class KSailDownCommandHandler
     switch (_config.Spec.Project.DeploymentTool)
     {
       case KSailDeploymentTool.Flux:
-        if (_config.Spec.FluxDeploymentToolOptions.Source is KSailOCIRepository)
-          await _engineProvisioner.DeleteRegistryAsync(_config.Spec.FluxDeploymentToolOptions.Source.Url.Segments.Last(), cancellationToken).ConfigureAwait(false);
+        if (_config.Spec.FluxDeploymentTool.Source is KSailOCIRepository)
+          await _engineProvisioner.DeleteRegistryAsync(_config.Spec.FluxDeploymentTool.Source.Url.Segments.Last(), cancellationToken).ConfigureAwait(false);
         break;
       default:
         throw new NotSupportedException($"deployment tool '{_config.Spec.Project.DeploymentTool}' is not supported.");
     }
     if (_config.Spec.Project.MirrorRegistries)
     {
-      foreach (var registry in _config.Spec.MirrorRegistryOptions.MirrorRegistries)
+      foreach (var registry in _config.Spec.MirrorRegistries)
       {
         await _engineProvisioner.DeleteRegistryAsync(registry.Name, cancellationToken).ConfigureAwait(false);
       }

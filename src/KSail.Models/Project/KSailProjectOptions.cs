@@ -1,4 +1,7 @@
 using System.ComponentModel;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+using Devantler.K9sCLI;
 using YamlDotNet.Serialization;
 
 namespace KSail.Models.Project;
@@ -6,7 +9,7 @@ namespace KSail.Models.Project;
 /// <summary>
 /// The options for the KSail project.
 /// </summary>
-public class KSailProjectOptions
+public class KSailProject
 {
   /// <summary>
   /// The working directory for the project.
@@ -19,6 +22,7 @@ public class KSailProjectOptions
   /// </summary>
   [Description("The path to the ksail configuration file.")]
   [YamlMember(Alias = "ksailConfigPath")]
+  [JsonPropertyName("ksailConfigPath")]
   public string KSailConfigPath { get; set; } = "ksail-config.yaml";
 
   /// <summary>
@@ -64,6 +68,12 @@ public class KSailProjectOptions
   [Description("The CNI to use.")]
   [YamlMember(Alias = "cni")]
   public KSailCNI CNI { get; set; } = KSailCNI.Default;
+
+  /// <summary>
+  /// The editor to use for viewing files while debugging.
+  /// </summary>
+  [Description("The editor to use for viewing files while debugging.")]
+  public Editor Editor { get; set; } = Editor.Nano;
 
   /// <summary>
   /// Whether to set up mirror registries for the project.

@@ -6,6 +6,7 @@ using KSail.Models.Connection;
 using KSail.Models.DeploymentTool;
 using KSail.Models.MirrorRegistry;
 using KSail.Models.Project;
+using KSail.Models.Registry;
 using KSail.Models.SecretManager;
 using KSail.Models.Template;
 using YamlDotNet.Serialization;
@@ -21,57 +22,68 @@ public class KSailClusterSpec
   /// The options for connecting to the KSail cluster.
   /// </summary>
   [Description("The options for connecting to the KSail cluster.")]
-  public KSailConnectionOptions Connection { get; set; } = new();
+  public KSailConnection Connection { get; set; } = new();
 
   /// <summary>
   /// The options for the KSail project.
   /// </summary>
   [Description("The options for the KSail project.")]
-  public KSailProjectOptions Project { get; set; } = new();
+  public KSailProject Project { get; set; } = new();
 
   /// <summary>
   /// The options for the Flux deployment tool.
   /// </summary>
   [Description("The options for the Flux deployment tool.")]
-  [YamlIgnore]
-  public KSailFluxDeploymentToolOptions FluxDeploymentToolOptions { get; set; } = new();
+  public KSailFluxDeploymentTool FluxDeploymentTool { get; set; } = new();
 
   /// <summary>
   /// The options for the Kustomize template.
   /// </summary>
   [Description("The options for the Kustomize template.")]
-  [YamlIgnore]
-  public KSailKustomizeTemplateOptions KustomizeTemplateOptions { get; set; } = new();
+  public KSailKustomizeTemplate KustomizeTemplate { get; set; } = new();
 
   /// <summary>
   /// The options for the SOPS Secret Manager.
   /// </summary>
   [Description("The options for the SOPS Secret Manager.")]
-  [YamlMember(Alias = "sopsSecretManagerOptions")]
-  [YamlIgnore]
-  public KSailSOPSSecretManagerOptions SOPSSecretManagerOptions { get; set; } = new();
+  [YamlMember(Alias = "sopsSecretManager")]
+  public KSailSOPSSecretManager SOPSSecretManager { get; set; } = new();
 
   /// <summary>
   /// The options for the Cilium CNI.
   /// </summary>
   [Description("The options for the Cilium CNI.")]
-  [YamlIgnore]
-  public KSailCiliumCNIOptions CiliumCNIOptions { get; set; } = new();
+  public KSailCiliumCNI CiliumCNI { get; set; } = new();
 
   /// <summary>
-  /// The options for mirror registries.
+  /// The ksail registry for storing deployment artifacts.
   /// </summary>
-  [Description("The options for mirror registries.")]
-  [YamlIgnore]
-  public KSailMirrorRegistryOptions MirrorRegistryOptions { get; set; } = new();
+  [Description("The ksail registry for storing deployment artifacts.")]
+  public KSailRegistry KSailRegistry { get; set; } = new KSailRegistry
+  {
+    Name = "ksail-registry",
+    HostPort = 5555
+  };
+
+  /// <summary>
+  /// The mirror registries to create for the KSail cluster.
+  /// </summary>
+  [Description("The mirror registries to create for the KSail cluster.")]
+  public IEnumerable<KSailMirrorRegistry> MirrorRegistries { get; set; } = [
+    new KSailMirrorRegistry { Name = "registry.k8s.io", HostPort = 5556, Proxy = new KSailMirrorRegistryProxy { Url = new Uri("https://registry.k8s.io") } },
+    new KSailMirrorRegistry { Name = "docker.io", HostPort = 5557,  Proxy = new KSailMirrorRegistryProxy { Url = new Uri("https://registry-1.docker.io") } },
+    new KSailMirrorRegistry { Name = "ghcr.io", HostPort = 5558, Proxy = new KSailMirrorRegistryProxy { Url = new Uri("https://ghcr.io") } },
+    new KSailMirrorRegistry { Name = "gcr.io", HostPort = 5559, Proxy = new KSailMirrorRegistryProxy { Url = new Uri("https://gcr.io") } },
+    new KSailMirrorRegistry { Name = "mcr.microsoft.com", HostPort = 5560, Proxy = new KSailMirrorRegistryProxy { Url = new Uri("https://mcr.microsoft.com") } },
+    new KSailMirrorRegistry { Name = "quay.io", HostPort = 5561, Proxy = new KSailMirrorRegistryProxy { Url = new Uri("https://quay.io") } },
+  ];
 
   /// <summary>
   /// The CLI options.
   /// </summary>
   [Description("The CLI options.")]
-  [YamlMember(Alias = "cliOptions")]
-  [YamlIgnore]
-  public KSailCLIOptions CLIOptions { get; set; } = new();
+  [YamlMember(Alias = "cli")]
+  public KSailCLI CLI { get; set; } = new();
 
   /// <summary>
   /// Initializes a new instance of the <see cref="KSailClusterSpec"/> class.
@@ -85,11 +97,11 @@ public class KSailClusterSpec
   public KSailClusterSpec(string name)
   {
     SetOCISourceUriBasedOnOS();
-    Connection = new KSailConnectionOptions
+    Connection = new KSailConnection
     {
       Context = $"kind-{name}"
     };
-    KustomizeTemplateOptions = new KSailKustomizeTemplateOptions
+    KustomizeTemplate = new KSailKustomizeTemplate
     {
       Root = $"k8s/clusters/{name}/flux-system"
     };
@@ -103,7 +115,7 @@ public class KSailClusterSpec
   public KSailClusterSpec(string name, KSailKubernetesDistribution distribution) : this(name)
   {
     SetOCISourceUriBasedOnOS();
-    Connection = new KSailConnectionOptions
+    Connection = new KSailConnection
     {
       Context = distribution switch
       {
@@ -112,7 +124,7 @@ public class KSailClusterSpec
         _ => $"kind-{name}"
       }
     };
-    Project = new KSailProjectOptions
+    Project = new KSailProject
     {
       Distribution = distribution,
       DistributionConfigPath = distribution switch
@@ -122,7 +134,7 @@ public class KSailClusterSpec
         _ => "kind-config.yaml"
       }
     };
-    KustomizeTemplateOptions = new KSailKustomizeTemplateOptions
+    KustomizeTemplate = new KSailKustomizeTemplate
     {
       Root = $"k8s/clusters/{name}/flux-system"
     };
@@ -132,11 +144,11 @@ public class KSailClusterSpec
   {
     if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
     {
-      FluxDeploymentToolOptions = new KSailFluxDeploymentToolOptions(new Uri("oci://172.17.0.1:5555/ksail-registry"));
+      FluxDeploymentTool = new KSailFluxDeploymentTool(new Uri("oci://172.17.0.1:5555/ksail-registry"));
     }
     else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
     {
-      FluxDeploymentToolOptions = new KSailFluxDeploymentToolOptions(new Uri("oci://host.docker.internal:5555/ksail-registry"));
+      FluxDeploymentTool = new KSailFluxDeploymentTool(new Uri("oci://host.docker.internal:5555/ksail-registry"));
     }
   }
 }

@@ -5,7 +5,7 @@ namespace KSail.Models.DeploymentTool;
 /// <summary>
 /// The options for the KSail Flux Deployment Tool.
 /// </summary>
-public class KSailFluxDeploymentToolOptions
+public class KSailFluxDeploymentTool
 {
   /// <summary>
   /// The source for reconciling GitOps resources.
@@ -20,15 +20,15 @@ public class KSailFluxDeploymentToolOptions
   public bool PostBuildVariables { get; set; }
 
   /// <summary>
-  /// Initializes a new instance of the <see cref="KSailFluxDeploymentToolOptions"/> class.
+  /// Initializes a new instance of the <see cref="KSailFluxDeploymentTool"/> class.
   /// </summary>
-  public KSailFluxDeploymentToolOptions()
+  public KSailFluxDeploymentTool()
   {
   }
 
   /// <summary>
-  /// Initializes a new instance of the <see cref="KSailFluxDeploymentToolOptions"/> class with the specified GitOps source URL.
+  /// Initializes a new instance of the <see cref="KSailFluxDeploymentTool"/> class with the specified GitOps source URL.
   /// </summary>
   /// <param name="gitOpsSourceUrl"></param>
-  public KSailFluxDeploymentToolOptions(Uri gitOpsSourceUrl) => Source = new KSailOCIRepository(gitOpsSourceUrl);
+  public KSailFluxDeploymentTool(Uri gitOpsSourceUrl) => Source = new KSailOCIRepository(gitOpsSourceUrl);
 }

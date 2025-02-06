@@ -101,13 +101,20 @@
                 "Default"
               ]
             },
+            "editor": {
+              "description": "The editor to use for viewing files while debugging.",
+              "enum": [
+                "Nano",
+                "Vim"
+              ]
+            },
             "mirrorRegistries": {
               "description": "Whether to set up mirror registries for the project.",
               "type": "boolean"
             }
           }
         },
-        "fluxDeploymentToolOptions": {
+        "fluxDeploymentTool": {
           "description": "The options for the Flux deployment tool.",
           "type": "object",
           "properties": {
@@ -127,7 +134,7 @@
             }
           }
         },
-        "kustomizeTemplateOptions": {
+        "kustomizeTemplate": {
           "description": "The options for the Kustomize template.",
           "type": "object",
           "properties": {
@@ -161,113 +168,135 @@
             }
           }
         },
-        "sopsSecretManagerOptions": {
+        "sopsSecretManager": {
           "description": "The options for the SOPS Secret Manager.",
           "type": "object"
         },
-        "ciliumCNIOptions": {
+        "ciliumCNI": {
           "description": "The options for the Cilium CNI.",
           "type": "object"
         },
-        "mirrorRegistryOptions": {
-          "description": "The options for mirror registries.",
+        "kSailRegistry": {
+          "description": "The ksail registry for storing deployment artifacts.",
           "type": "object",
           "properties": {
-            "mirrorRegistries": {
-              "type": "array",
-              "items": {
-                "type": [
-                  "object",
-                  "null"
-                ],
+            "name": {
+              "description": "The name of the registry.",
+              "type": "string"
+            },
+            "hostPort": {
+              "description": "The host port of the registry (if applicable).",
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "username": {
+              "description": "The username to authenticate with the registry.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "password": {
+              "description": "The password to authenticate with the registry.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "provider": {
+              "description": "The registry provider.",
+              "enum": [
+                "Docker"
+              ]
+            }
+          },
+          "required": [
+            "name"
+          ]
+        },
+        "mirrorRegistries": {
+          "description": "The mirror registries to create for the KSail cluster.",
+          "type": "array",
+          "items": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "proxy": {
+                "description": "A proxy for the registry to use to proxy and cache images.",
+                "type": "object",
                 "properties": {
-                  "proxy": {
-                    "description": "A proxy for the registry to use to proxy and cache images.",
-                    "type": "object",
-                    "properties": {
-                      "url": {
-                        "description": "The URL of the upstream registry to proxy and cache images from.",
-                        "type": "string",
-                        "format": "uri"
-                      },
-                      "username": {
-                        "description": "The username to authenticate with the upstream registry.",
-                        "type": [
-                          "string",
-                          "null"
-                        ]
-                      },
-                      "password": {
-                        "description": "The password to authenticate with the upstream registry.",
-                        "type": [
-                          "string",
-                          "null"
-                        ]
-                      },
-                      "insecure": {
-                        "description": "Connect to the upstream registry over HTTPS.",
-                        "type": "boolean"
-                      }
-                    },
-                    "required": [
-                      "url"
-                    ]
-                  },
-                  "hostPort": {
-                    "description": "The host port of the registry (if applicable).",
-                    "type": "integer"
-                  },
-                  "name": {
-                    "description": "The name of the registry.",
-                    "type": "string"
+                  "url": {
+                    "description": "The URL of the upstream registry to proxy and cache images from.",
+                    "type": "string",
+                    "format": "uri"
                   },
                   "username": {
-                    "description": "The username to authenticate with the registry.",
+                    "description": "The username to authenticate with the upstream registry.",
                     "type": [
                       "string",
                       "null"
                     ]
                   },
                   "password": {
-                    "description": "The password to authenticate with the registry.",
+                    "description": "The password to authenticate with the upstream registry.",
                     "type": [
                       "string",
                       "null"
                     ]
                   },
-                  "provider": {
-                    "description": "The registry provider.",
-                    "enum": [
-                      "Docker"
-                    ]
+                  "insecure": {
+                    "description": "Connect to the upstream registry over HTTPS.",
+                    "type": "boolean"
                   }
                 },
                 "required": [
-                  "proxy",
-                  "name"
+                  "url"
+                ]
+              },
+              "hostPort": {
+                "description": "The host port of the registry (if applicable).",
+                "type": "integer"
+              },
+              "name": {
+                "description": "The name of the registry.",
+                "type": "string"
+              },
+              "username": {
+                "description": "The username to authenticate with the registry.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "password": {
+                "description": "The password to authenticate with the registry.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "provider": {
+                "description": "The registry provider.",
+                "enum": [
+                  "Docker"
                 ]
               }
-            }
+            },
+            "required": [
+              "proxy",
+              "name"
+            ]
           }
         },
-        "cliOptions": {
+        "cli": {
           "description": "The CLI options.",
           "type": "object",
           "properties": {
-            "debugOptions": {
-              "description": "The options to use for the \u0027debug\u0027 command.",
-              "type": "object",
-              "properties": {
-                "editor": {
-                  "description": "The editor to use for viewing files while debugging.",
-                  "enum": [
-                    "Nano",
-                    "Vim"
-                  ]
-                }
-              }
-            },
-            "downOptions": {
+            "down": {
               "description": "The options to use for the \u0027down\u0027 command.",
               "type": "object",
               "properties": {
@@ -277,7 +306,7 @@
                 }
               }
             },
-            "listOptions": {
+            "list": {
               "description": "The options to use for the \u0027list\u0027 command.",
               "type": "object",
               "properties": {
@@ -287,11 +316,11 @@
                 }
               }
             },
-            "sopsOptions": {
+            "sops": {
               "description": "The options to use for the \u0027sops\u0027 command.",
               "type": "object",
               "properties": {
-                "listOptions": {
+                "list": {
                   "description": "The options to use for the \u0027list\u0027 command.",
                   "type": "object",
                   "properties": {
@@ -307,7 +336,7 @@
                 }
               }
             },
-            "upOptions": {
+            "up": {
               "description": "The options to use for the \u0027up\u0027 command.",
               "type": "object",
               "properties": {
@@ -325,7 +354,7 @@
                 }
               }
             },
-            "updateOptions": {
+            "update": {
               "description": "The options to use for the \u0027update\u0027 command.",
               "type": "object",
               "properties": {

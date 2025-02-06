@@ -5,7 +5,7 @@ namespace KSail.Models.CLI.Commands.Sops;
 /// <summary>
 /// The options to use for the 'list' command.
 /// </summary>
-public class KSailCLISopsListOptions
+public class KSailCLISopsList
 {
   /// <summary>
   /// Only show keys found in the SOPS config file.

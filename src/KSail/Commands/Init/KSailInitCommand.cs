@@ -32,10 +32,10 @@ sealed class KSailInitCommand : Command
       {
         var config = await KSailClusterConfigLoader.LoadAsync(name: context.ParseResult.GetValueForOption(_metadataNameOption), distribution: context.ParseResult.GetValueForOption(_projectDistributionOption)).ConfigureAwait(false);
         config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_metadataNameOption));
-        config.UpdateConfig("Spec.FluxDeploymentToolOptions.PostBuildVariables", context.ParseResult.GetValueForOption(_fluxDeploymentToolPostBuildVariablesOption));
-        config.UpdateConfig("Spec.KustomizeTemplateOptions.Components", context.ParseResult.GetValueForOption(_kustomizeTemplateComponentsOption));
-        config.UpdateConfig("Spec.KustomizeTemplateOptions.Flows", context.ParseResult.GetValueForOption(_kustomizeTemplateKustomizationsOption));
-        config.UpdateConfig("Spec.KustomizeTemplateOptions.Hooks", context.ParseResult.GetValueForOption(_kustomizeTemplateKustomizationHooksOption));
+        config.UpdateConfig("Spec.FluxDeploymentTool.PostBuildVariables", context.ParseResult.GetValueForOption(_fluxDeploymentToolPostBuildVariablesOption));
+        config.UpdateConfig("Spec.KustomizeTemplate.Components", context.ParseResult.GetValueForOption(_kustomizeTemplateComponentsOption));
+        config.UpdateConfig("Spec.KustomizeTemplate.Flows", context.ParseResult.GetValueForOption(_kustomizeTemplateKustomizationsOption));
+        config.UpdateConfig("Spec.KustomizeTemplate.Hooks", context.ParseResult.GetValueForOption(_kustomizeTemplateKustomizationHooksOption));
         config.UpdateConfig("Spec.Project.DeploymentTool", context.ParseResult.GetValueForOption(_projectDeploymentToolOption));
         config.UpdateConfig("Spec.Project.Distribution", context.ParseResult.GetValueForOption(_projectDistributionOption));
         config.UpdateConfig("Spec.Project.MirrorRegistries", context.ParseResult.GetValueForOption(_projectMirrorRegistriesOption));
