@@ -57,7 +57,10 @@ public partial class KSailInitCommandTests : IAsyncLifetime, IDisposable
       string relativefilePath = file.Replace(outputDir, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
       relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, '/');
       string? directoryPath = Path.GetDirectoryName(relativefilePath);
-      _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml").UseDirectory(Path.Combine("native-simple", directoryPath!)).UseFileName(fileName);
+      _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml")
+        .UseDirectory(Path.Combine("native-simple", directoryPath!))
+        .UseFileName(fileName)
+        .ScrubLinesWithReplace(line => UrlRegex().Replace(line, "url: <url>"));
     }
   }
 
@@ -86,7 +89,10 @@ public partial class KSailInitCommandTests : IAsyncLifetime, IDisposable
       string relativefilePath = file.Replace(outputDir, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
       relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, '/');
       string? directoryPath = Path.GetDirectoryName(relativefilePath);
-      _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml").UseDirectory(Path.Combine("native-simple-existing", directoryPath!)).UseFileName(fileName);
+      _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml")
+        .UseDirectory(Path.Combine("native-simple-existing", directoryPath!))
+        .UseFileName(fileName)
+        .ScrubLinesWithReplace(line => UrlRegex().Replace(line, "url: <url>"));
     }
   }
 
