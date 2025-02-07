@@ -1,6 +1,7 @@
 using System.CommandLine;
 using System.CommandLine.IO;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.RegularExpressions;
 using KSail.Commands.Gen;
 
 namespace KSail.Tests.Commands.Gen;
@@ -9,7 +10,7 @@ namespace KSail.Tests.Commands.Gen;
 /// Tests for the <see cref="KSailGenCommand"/> class.
 /// </summary>
 [ExcludeFromCodeCoverage]
-public class KSailGenCommandTests : IAsyncLifetime
+public partial class KSailGenCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
   public Task DisposeAsync() => Task.CompletedTask;
@@ -40,6 +41,10 @@ public class KSailGenCommandTests : IAsyncLifetime
   /// </summary>
   /// <returns></returns>
   [Theory]
+  [MemberData(nameof(KSailGenCommandTestsTheoryData.GenerateCertManagerResourceTheoryData), MemberType = typeof(KSailGenCommandTestsTheoryData))]
+  [MemberData(nameof(KSailGenCommandTestsTheoryData.GenerateConfigResourceTheoryData), MemberType = typeof(KSailGenCommandTestsTheoryData))]
+  [MemberData(nameof(KSailGenCommandTestsTheoryData.GenerateFluxResourceTheoryData), MemberType = typeof(KSailGenCommandTestsTheoryData))]
+  [MemberData(nameof(KSailGenCommandTestsTheoryData.GenerateKustomizeResourceTheoryData), MemberType = typeof(KSailGenCommandTestsTheoryData))]
   [MemberData(nameof(KSailGenCommandTestsTheoryData.GenerateNativeResourceTheoryData), MemberType = typeof(KSailGenCommandTestsTheoryData))]
   public async Task KSailGen_SucceedsAndGeneratesAResource(string command, string fileName)
   {
@@ -57,9 +62,14 @@ public class KSailGenCommandTests : IAsyncLifetime
 
     //Assert
     Assert.Equal(0, exitCode);
-    _ = await Verify(fileContents, extension: "yaml").UseFileName(fileName);
+    _ = await Verify(fileContents, extension: "yaml")
+      .UseFileName(fileName)
+      .ScrubLinesWithReplace(line => UrlRegex().Replace(line, "url: <url>"));
 
     //Cleanup
     File.Delete(outputPath);
   }
+
+  [GeneratedRegex("url:.*")]
+  private static partial Regex UrlRegex();
 }
