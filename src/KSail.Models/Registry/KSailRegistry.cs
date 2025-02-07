@@ -17,7 +17,7 @@ public class KSailRegistry
   /// The host port of the registry (if applicable).
   /// </summary>
   [Description("The host port of the registry (if applicable).")]
-  public int? HostPort { get; set; }
+  public int HostPort { get; set; }
 
   /// <summary>
   /// The username to authenticate with the registry.

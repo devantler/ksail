@@ -13,10 +13,4 @@ public class KSailMirrorRegistry : KSailRegistry
   /// </summary>
   [Description("A proxy for the registry to use to proxy and cache images.")]
   public required KSailMirrorRegistryProxy Proxy { get; set; }
-
-  /// <summary>
-  /// The host port of the registry.
-  /// </summary>
-  [Description("The host port of the registry (if applicable).")]
-  public new int HostPort { get; set; }
 }

@@ -33,14 +33,12 @@ public class KSailClusterSpec
   /// The options for the Flux deployment tool.
   /// </summary>
   [Description("The options for the Flux deployment tool.")]
-  [YamlIgnore]
   public KSailFluxDeploymentToolOptions FluxDeploymentToolOptions { get; set; } = new();
 
   /// <summary>
   /// The options for the Kustomize template.
   /// </summary>
   [Description("The options for the Kustomize template.")]
-  [YamlIgnore]
   public KSailKustomizeTemplateOptions KustomizeTemplateOptions { get; set; } = new();
 
   /// <summary>
@@ -48,21 +46,18 @@ public class KSailClusterSpec
   /// </summary>
   [Description("The options for the SOPS Secret Manager.")]
   [YamlMember(Alias = "sopsSecretManagerOptions")]
-  [YamlIgnore]
   public KSailSOPSSecretManagerOptions SOPSSecretManagerOptions { get; set; } = new();
 
   /// <summary>
   /// The options for the Cilium CNI.
   /// </summary>
   [Description("The options for the Cilium CNI.")]
-  [YamlIgnore]
   public KSailCiliumCNIOptions CiliumCNIOptions { get; set; } = new();
 
   /// <summary>
   /// The options for mirror registries.
   /// </summary>
   [Description("The options for mirror registries.")]
-  [YamlIgnore]
   public KSailMirrorRegistryOptions MirrorRegistryOptions { get; set; } = new();
 
   /// <summary>
@@ -70,7 +65,6 @@ public class KSailClusterSpec
   /// </summary>
   [Description("The CLI options.")]
   [YamlMember(Alias = "cliOptions")]
-  [YamlIgnore]
   public KSailCLIOptions CLIOptions { get; set; } = new();
 
   /// <summary>

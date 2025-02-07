@@ -116,6 +116,7 @@
               "type": "object",
               "properties": {
                 "url": {
+                  "description": "The URL of the repository.",
                   "type": "string",
                   "format": "uri"
                 }
@@ -209,13 +210,13 @@
                       "url"
                     ]
                   },
-                  "hostPort": {
-                    "description": "The host port of the registry (if applicable).",
-                    "type": "integer"
-                  },
                   "name": {
                     "description": "The name of the registry.",
                     "type": "string"
+                  },
+                  "hostPort": {
+                    "description": "The host port of the registry (if applicable).",
+                    "type": "integer"
                   },
                   "username": {
                     "description": "The username to authenticate with the registry.",

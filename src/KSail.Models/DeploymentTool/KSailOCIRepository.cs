@@ -6,26 +6,26 @@ namespace KSail.Models.DeploymentTool;
 /// The source for reconciling Flux resources.
 /// </summary>
 /// <remarks>
-/// Constructs a new instance of the KSail OCI repository with the specified URL.
+/// Constructs a new instance of the KSail repository with the specified URL.
 /// </remarks>
-public class KSailOCIRepository : IKSailGitOpsSource
+public class KSailRepository
 {
   /// <summary>
   /// The URL of the OCI repository.
   /// </summary>
-  [Description("The URL of the OCI repository.")]
+  [Description("The URL of the repository.")]
   public Uri Url { get; set; } = new Uri("oci://host.docker.internal:5555/ksail-registry");
 
   /// <summary>
-  /// Initializes a new instance of the <see cref="KSailOCIRepository"/> class.
+  /// Initializes a new instance of the <see cref="KSailRepository"/> class.
   /// </summary>
-  public KSailOCIRepository()
+  public KSailRepository()
   {
   }
 
   /// <summary>
-  /// Initializes a new instance of the <see cref="KSailOCIRepository"/> class with the specified URL.
+  /// Initializes a new instance of the <see cref="KSailRepository"/> class with the specified URL.
   /// </summary>
   /// <param name="url"></param>
-  public KSailOCIRepository(Uri url) => Url = url;
+  public KSailRepository(Uri url) => Url = url;
 }

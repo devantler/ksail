@@ -3,7 +3,6 @@ using Devantler.KubernetesProvisioner.Cluster.Core;
 using Devantler.KubernetesProvisioner.Cluster.K3d;
 using Devantler.KubernetesProvisioner.Cluster.Kind;
 using KSail.Models;
-using KSail.Models.DeploymentTool;
 using KSail.Models.Project;
 
 namespace KSail.Commands.Down.Handlers;
@@ -46,8 +45,7 @@ class KSailDownCommandHandler
     switch (_config.Spec.Project.DeploymentTool)
     {
       case KSailDeploymentTool.Flux:
-        if (_config.Spec.FluxDeploymentToolOptions.Source is KSailOCIRepository)
-          await _engineProvisioner.DeleteRegistryAsync(_config.Spec.FluxDeploymentToolOptions.Source.Url.Segments.Last(), cancellationToken).ConfigureAwait(false);
+        await _engineProvisioner.DeleteRegistryAsync(_config.Spec.FluxDeploymentToolOptions.Source.Url.Segments.Last(), cancellationToken).ConfigureAwait(false);
         break;
       default:
         throw new NotSupportedException($"deployment tool '{_config.Spec.Project.DeploymentTool}' is not supported.");

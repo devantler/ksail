@@ -107,7 +107,6 @@ class FluxSystemGenerator
     await _fluxKustomizationGenerator.GenerateAsync(fluxKustomization, outputDirectory, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  // TODO: Add support for Flux Kustomization post-build Variables
   IEnumerable<FluxKustomizationSpecPostBuildSubstituteFrom> GetSubstituteFroms(KSailCluster config)
   {
     var substituteList = new List<FluxKustomizationSpecPostBuildSubstituteFrom>
