@@ -5,4 +5,4 @@ metadata:
   name: my-helm-repo
   namespace: my-namespace
 spec:
-  url: https://charts.example.com/charts
+  url: <url>

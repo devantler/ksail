@@ -11,7 +11,6 @@ using k8s.Models;
 using KSail.Commands.Down.Handlers;
 using KSail.Commands.Lint.Handlers;
 using KSail.Models;
-using KSail.Models.DeploymentTool;
 using KSail.Models.Project;
 using KSail.Utils;
 
@@ -124,20 +123,17 @@ class KSailUpCommandHandler
   {
     if (config.Spec.Project.Engine == KSailEngine.Docker && config.Spec.Project.DeploymentTool == KSailDeploymentTool.Flux)
     {
-      if (config.Spec.FluxDeploymentToolOptions.Source is KSailOCIRepository)
-      {
-        Console.WriteLine("📥 Create OCI source registry");
-        int port = config.Spec.FluxDeploymentToolOptions.Source.Url.Port;
-        Console.WriteLine($"► creating '{config.Spec.FluxDeploymentToolOptions.Source.Url}' as Flux OCI source registry");
-        await _engineProvisioner
-         .CreateRegistryAsync(
-          config.Spec.FluxDeploymentToolOptions.Source.Url.Segments.Last(),
-          port,
-          cancellationToken: cancellationToken
-        ).ConfigureAwait(false);
+      Console.WriteLine("📥 Create OCI source registry");
+      int port = config.Spec.FluxDeploymentToolOptions.Source.Url.Port;
+      Console.WriteLine($"► creating '{config.Spec.FluxDeploymentToolOptions.Source.Url}' as Flux OCI source registry");
+      await _engineProvisioner
+       .CreateRegistryAsync(
+        config.Spec.FluxDeploymentToolOptions.Source.Url.Segments.Last(),
+        port,
+        cancellationToken: cancellationToken
+      ).ConfigureAwait(false);
 
-        Console.WriteLine();
-      }
+      Console.WriteLine();
     }
   }
 

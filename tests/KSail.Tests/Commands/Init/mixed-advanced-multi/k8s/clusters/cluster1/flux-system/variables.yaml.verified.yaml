@@ -4,8 +4,6 @@ kind: Kustomization
 metadata:
   name: variables
   namespace: flux-system
-  labels:
-    sops: enabled
 spec:
   interval: 60m
   retryInterval: 2m
@@ -17,3 +15,7 @@ spec:
     name: flux-system
   path: clusters/cluster1/variables
   prune: true
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age

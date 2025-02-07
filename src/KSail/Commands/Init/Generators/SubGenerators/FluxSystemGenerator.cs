@@ -44,27 +44,9 @@ class FluxSystemGenerator
       return;
     }
     Console.WriteLine($"✚ generating '{outputDirectory}'");
-    List<string>? components = null;
-    if (config.Spec.KustomizeTemplateOptions.Components)
-    {
-      components = [];
-      if (config.Spec.Project.DeploymentTool == KSailDeploymentTool.Flux)
-      {
-        if (config.Spec.FluxDeploymentToolOptions.PostBuildVariables)
-        {
-          components.Add("../../../components/flux-kustomization-post-build-variables-label");
-        }
-        if (config.Spec.Project.SecretManager == KSailSecretManager.SOPS)
-        {
-          components.Add("../../../components/flux-kustomization-sops-label");
-        }
-      }
-
-    }
     var kustomization = new KustomizeKustomization
     {
-      Resources = [.. config.Spec.KustomizeTemplateOptions.Flows.Select(flow => $"{flow.Replace('/', '-')}.yaml")],
-      Components = components
+      Resources = [.. config.Spec.KustomizeTemplateOptions.Flows.Select(flow => $"{flow.Replace('/', '-')}.yaml")]
     };
     if (config.Spec.FluxDeploymentToolOptions.PostBuildVariables)
     {
@@ -87,22 +69,7 @@ class FluxSystemGenerator
       Metadata = new FluxNamespacedMetadata
       {
         Name = flow.Replace('/', '-'),
-        Namespace = "flux-system",
-        Labels = config.Spec.Project.SecretManager == KSailSecretManager.SOPS && config.Spec.FluxDeploymentToolOptions.PostBuildVariables && config.Spec.KustomizeTemplateOptions.Components && !flow.Equals("variables") ?
-          new Dictionary<string, string>
-          {
-            { "sops", "enabled" },
-            { "post-build-variables", "enabled" }
-        } : config.Spec.FluxDeploymentToolOptions.PostBuildVariables && config.Spec.KustomizeTemplateOptions.Components && !flow.Equals("variables") ?
-        new Dictionary<string, string>
-        {
-            { "post-build-variables", "enabled" }
-        } : config.Spec.Project.SecretManager == KSailSecretManager.SOPS && config.Spec.KustomizeTemplateOptions.Components ?
-        new Dictionary<string, string>
-        {
-            { "sops", "enabled" }
-        } :
-        null
+        Namespace = "flux-system"
       },
       Spec = new FluxKustomizationSpec
       {
@@ -118,7 +85,7 @@ class FluxSystemGenerator
         Path = config.Spec.KustomizeTemplateOptions.Hooks.Length == 0 ? flow : $"{config.Spec.KustomizeTemplateOptions.Hooks.First()}/{flow}",
         Prune = true,
         Wait = true,
-        Decryption = config.Spec.Project.SecretManager == KSailSecretManager.SOPS && !config.Spec.KustomizeTemplateOptions.Components ?
+        Decryption = config.Spec.Project.SecretManager == KSailSecretManager.SOPS ?
           new FluxKustomizationSpecDecryption
           {
             Provider = FluxKustomizationSpecDecryptionProvider.SOPS,
@@ -129,7 +96,7 @@ class FluxSystemGenerator
             }
           } :
           null,
-        PostBuild = config.Spec.FluxDeploymentToolOptions.PostBuildVariables && !config.Spec.KustomizeTemplateOptions.Components ?
+        PostBuild = flow != "variables" && config.Spec.FluxDeploymentToolOptions.PostBuildVariables ?
         new FluxKustomizationSpecPostBuild
         {
           SubstituteFrom = GetSubstituteFroms(config)
@@ -140,18 +107,17 @@ class FluxSystemGenerator
     await _fluxKustomizationGenerator.GenerateAsync(fluxKustomization, outputDirectory, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
-  // TODO: Add support for Flux Kustomization post-build Variables
   IEnumerable<FluxKustomizationSpecPostBuildSubstituteFrom> GetSubstituteFroms(KSailCluster config)
   {
     var substituteList = new List<FluxKustomizationSpecPostBuildSubstituteFrom>
     {
       new() {
         Kind = FluxConfigRefKind.ConfigMap,
-        Name = $"variables-cluster"
+        Name = "variables"
       },
       new() {
         Kind = FluxConfigRefKind.Secret,
-        Name = $"variables-sensitive-cluster"
+        Name = "variables-sensitive"
       }
     };
     foreach (string hook in config.Spec.KustomizeTemplateOptions.Hooks)

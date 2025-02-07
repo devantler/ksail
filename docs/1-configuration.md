@@ -119,8 +119,6 @@ spec:
   initOptions:
     # Whether to use a declarative configuration for ksail
     declarativeConfig: true
-    # Whether to include Kustomize components for duplicated code
-    components: false
     # Whether to include a few helm releases to get you started
     helmReleases: false
     # Whether to use flux post build variables for templating variables in manifests

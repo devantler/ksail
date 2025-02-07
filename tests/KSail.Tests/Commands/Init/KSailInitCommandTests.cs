@@ -1,5 +1,6 @@
 using System.CommandLine;
 using System.CommandLine.IO;
+using System.Text.RegularExpressions;
 using KSail.Commands.Init;
 
 namespace KSail.Tests.Commands.Init;
@@ -8,7 +9,7 @@ namespace KSail.Tests.Commands.Init;
 /// Tests for the <see cref="KSailInitCommand"/> class.
 /// </summary>
 [Collection("KSail.Tests")]
-public class KSailInitCommandTests : IAsyncLifetime, IDisposable
+public partial class KSailInitCommandTests : IAsyncLifetime, IDisposable
 {
   /// <inheritdoc/>
   public Task DisposeAsync() => Task.CompletedTask;
@@ -56,7 +57,10 @@ public class KSailInitCommandTests : IAsyncLifetime, IDisposable
       string relativefilePath = file.Replace(outputDir, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
       relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, '/');
       string? directoryPath = Path.GetDirectoryName(relativefilePath);
-      _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml").UseDirectory(Path.Combine("native-simple", directoryPath!)).UseFileName(fileName);
+      _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml")
+        .UseDirectory(Path.Combine("native-simple", directoryPath!))
+        .UseFileName(fileName)
+        .ScrubLinesWithReplace(line => UrlRegex().Replace(line, "url: <url>"));
     }
   }
 
@@ -85,7 +89,10 @@ public class KSailInitCommandTests : IAsyncLifetime, IDisposable
       string relativefilePath = file.Replace(outputDir, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
       relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, '/');
       string? directoryPath = Path.GetDirectoryName(relativefilePath);
-      _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml").UseDirectory(Path.Combine("native-simple-existing", directoryPath!)).UseFileName(fileName);
+      _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml")
+        .UseDirectory(Path.Combine("native-simple-existing", directoryPath!))
+        .UseFileName(fileName)
+        .ScrubLinesWithReplace(line => UrlRegex().Replace(line, "url: <url>"));
     }
   }
 
@@ -110,11 +117,15 @@ public class KSailInitCommandTests : IAsyncLifetime, IDisposable
     Assert.True(Directory.Exists(outputDir));
     foreach (string file in Directory.GetFiles(outputDir, "*", SearchOption.AllDirectories))
     {
+      //Ignore any yaml paths that contain url
       string fileName = Path.GetFileName(file);
       string relativefilePath = file.Replace(outputDir, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
       relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, '/');
       string? directoryPath = Path.GetDirectoryName(relativefilePath);
-      _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml").UseDirectory(Path.Combine("mixed-simple-multi", directoryPath!)).UseFileName(fileName);
+      _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml")
+          .UseDirectory(Path.Combine("mixed-simple-multi", directoryPath!)
+        ).UseFileName(fileName)
+        .ScrubLinesWithReplace(line => UrlRegex().Replace(line, "url: <url>"));
     }
   }
 
@@ -130,7 +141,7 @@ public class KSailInitCommandTests : IAsyncLifetime, IDisposable
     _ = Directory.CreateDirectory(outputDir);
 
     //Act
-    int exitCode = await ksailCommand.InvokeAsync($"--name ksail-advanced-native --output {outputDir} --secret-manager sops --flux-post-build-variables --kustomize-components --kustomize-hooks clusters/ksail-advanced-native distributions/native shared");
+    int exitCode = await ksailCommand.InvokeAsync($"--name ksail-advanced-native --output {outputDir} --secret-manager sops --flux-post-build-variables --kustomize-hooks clusters/ksail-advanced-native distributions/native shared");
 
     //Assert
     Assert.Equal(0, exitCode);
@@ -145,7 +156,10 @@ public class KSailInitCommandTests : IAsyncLifetime, IDisposable
       string relativefilePath = file.Replace(outputDir, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
       relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, '/');
       string? directoryPath = Path.GetDirectoryName(relativefilePath);
-      _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml").UseDirectory(Path.Combine("native-advanced", directoryPath!)).UseFileName(fileName);
+      _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml")
+          .UseDirectory(Path.Combine("native-advanced", directoryPath!)
+        ).UseFileName(fileName)
+        .ScrubLinesWithReplace(line => UrlRegex().Replace(line, "url: <url>"));
     }
   }
 
@@ -161,8 +175,8 @@ public class KSailInitCommandTests : IAsyncLifetime, IDisposable
     _ = Directory.CreateDirectory(outputDir);
 
     //Act
-    int exitCodeRun1 = await ksailCommand.InvokeAsync($"--name ksail-advanced-native --output {outputDir} --secret-manager sops --flux-post-build-variables --kustomize-components --kustomize-hooks clusters/ksail-advanced-native distributions/native shared");
-    int exitCodeRun2 = await ksailCommand.InvokeAsync($"--name ksail-advanced-native --output {outputDir} --secret-manager sops --flux-post-build-variables --kustomize-components --kustomize-hooks clusters/ksail-advanced-native distributions/native shared");
+    int exitCodeRun1 = await ksailCommand.InvokeAsync($"--name ksail-advanced-native --output {outputDir} --secret-manager sops --flux-post-build-variables --kustomize-hooks clusters/ksail-advanced-native distributions/native shared");
+    int exitCodeRun2 = await ksailCommand.InvokeAsync($"--name ksail-advanced-native --output {outputDir} --secret-manager sops --flux-post-build-variables --kustomize-hooks clusters/ksail-advanced-native distributions/native shared");
 
     //Assert
     Assert.Equal(0, exitCodeRun1);
@@ -178,7 +192,10 @@ public class KSailInitCommandTests : IAsyncLifetime, IDisposable
       string relativefilePath = file.Replace(outputDir, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
       relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, '/');
       string? directoryPath = Path.GetDirectoryName(relativefilePath);
-      _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml").UseDirectory(Path.Combine("native-advanced-existing", directoryPath!)).UseFileName(fileName);
+      _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml")
+          .UseDirectory(Path.Combine("native-advanced-existing", directoryPath!)
+        ).UseFileName(fileName)
+        .ScrubLinesWithReplace(line => UrlRegex().Replace(line, "url: <url>"));
     }
   }
 
@@ -194,8 +211,8 @@ public class KSailInitCommandTests : IAsyncLifetime, IDisposable
     _ = Directory.CreateDirectory(outputDir);
 
     //Act
-    int exitCodeRun1 = await ksailCommand.InvokeAsync($"--name cluster1 --output {outputDir} --secret-manager sops --kustomize-components --flux-post-build-variables --distribution native --kustomize-hooks clusters/cluster1 distributions/native shared");
-    int exitCodeRun2 = await ksailCommand.InvokeAsync($"--name cluster2 --output {outputDir} --secret-manager sops --kustomize-components --flux-post-build-variables --distribution k3s --kustomize-hooks clusters/cluster2 distributions/k3s shared");
+    int exitCodeRun1 = await ksailCommand.InvokeAsync($"--name cluster1 --output {outputDir} --secret-manager sops --flux-post-build-variables --distribution native --kustomize-hooks clusters/cluster1 distributions/native shared");
+    int exitCodeRun2 = await ksailCommand.InvokeAsync($"--name cluster2 --output {outputDir} --secret-manager sops --flux-post-build-variables --distribution k3s --kustomize-hooks clusters/cluster2 distributions/k3s shared");
 
     //Assert
     Assert.Equal(0, exitCodeRun1);
@@ -211,7 +228,10 @@ public class KSailInitCommandTests : IAsyncLifetime, IDisposable
       string relativefilePath = file.Replace(outputDir, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
       relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, '/');
       string? directoryPath = Path.GetDirectoryName(relativefilePath);
-      _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml").UseDirectory(Path.Combine("mixed-advanced-multi", directoryPath!)).UseFileName(fileName);
+      _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml")
+          .UseDirectory(Path.Combine("mixed-advanced-multi", directoryPath!)
+        ).UseFileName(fileName)
+        .ScrubLinesWithReplace(line => UrlRegex().Replace(line, "url: <url>"));
     }
   }
 
@@ -247,4 +267,7 @@ public class KSailInitCommandTests : IAsyncLifetime, IDisposable
     }
     GC.SuppressFinalize(this);
   }
+
+  [GeneratedRegex("url:.*")]
+  private static partial Regex UrlRegex();
 }

@@ -35,8 +35,7 @@
         infrastructure/configs,
         infrastructure/controllers
       ],
-      Hooks: [],
-      Components: false
+      Hooks: []
     },
     SOPSSecretManagerOptions: {},
     CiliumCNIOptions: {},
@@ -49,8 +48,8 @@
             Password: null,
             Insecure: false
           },
-          HostPort: 5556,
           Name: registry.k8s.io,
+          HostPort: 5556,
           Username: null,
           Password: null,
           Provider: Docker
@@ -62,8 +61,8 @@
             Password: null,
             Insecure: false
           },
-          HostPort: 5557,
           Name: docker.io,
+          HostPort: 5557,
           Username: null,
           Password: null,
           Provider: Docker
@@ -75,8 +74,8 @@
             Password: null,
             Insecure: false
           },
-          HostPort: 5558,
           Name: ghcr.io,
+          HostPort: 5558,
           Username: null,
           Password: null,
           Provider: Docker
@@ -88,8 +87,8 @@
             Password: null,
             Insecure: false
           },
-          HostPort: 5559,
           Name: gcr.io,
+          HostPort: 5559,
           Username: null,
           Password: null,
           Provider: Docker
@@ -101,8 +100,8 @@
             Password: null,
             Insecure: false
           },
-          HostPort: 5560,
           Name: mcr.microsoft.com,
+          HostPort: 5560,
           Username: null,
           Password: null,
           Provider: Docker
@@ -114,8 +113,8 @@
             Password: null,
             Insecure: false
           },
-          HostPort: 5561,
           Name: quay.io,
+          HostPort: 5561,
           Username: null,
           Password: null,
           Provider: Docker
