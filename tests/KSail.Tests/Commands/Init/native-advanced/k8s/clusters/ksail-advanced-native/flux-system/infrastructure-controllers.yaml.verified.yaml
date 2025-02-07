@@ -19,10 +19,10 @@ spec:
   postBuild:
     substituteFrom:
     - kind: ConfigMap
-      name: variables-cluster
+      name: variables
       optional: false
     - kind: Secret
-      name: variables-sensitive-cluster
+      name: variables-sensitive
       optional: false
     - kind: ConfigMap
       name: variables-clusters/ksail-advanced-native
