@@ -96,7 +96,7 @@ class FluxSystemGenerator
             }
           } :
           null,
-        PostBuild = config.Spec.FluxDeploymentToolOptions.PostBuildVariables ?
+        PostBuild = flow != "variables" && config.Spec.FluxDeploymentToolOptions.PostBuildVariables ?
         new FluxKustomizationSpecPostBuild
         {
           SubstituteFrom = GetSubstituteFroms(config)
@@ -113,11 +113,11 @@ class FluxSystemGenerator
     {
       new() {
         Kind = FluxConfigRefKind.ConfigMap,
-        Name = $"variables-cluster"
+        Name = "variables"
       },
       new() {
         Kind = FluxConfigRefKind.Secret,
-        Name = $"variables-sensitive-cluster"
+        Name = "variables-sensitive"
       }
     };
     foreach (string hook in config.Spec.KustomizeTemplateOptions.Hooks)
