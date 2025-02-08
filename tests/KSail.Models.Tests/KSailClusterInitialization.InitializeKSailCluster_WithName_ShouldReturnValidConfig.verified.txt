@@ -20,15 +20,16 @@
       DeploymentTool: Flux,
       SecretManager: None,
       CNI: Default,
+      Editor: Nano,
       MirrorRegistries: false
     },
-    FluxDeploymentToolOptions: {
+    FluxDeploymentTool: {
       Source: {
         Url: oci://testhost:5555/ksail-registry
       },
       PostBuildVariables: false
     },
-    KustomizeTemplateOptions: {
+    KustomizeTemplate: {
       Root: k8s/clusters/my-cluster/flux-system,
       Flows: [
         apps,
@@ -37,112 +38,114 @@
       ],
       Hooks: []
     },
-    SOPSSecretManagerOptions: {},
-    CiliumCNIOptions: {},
-    MirrorRegistryOptions: {
-      MirrorRegistries: [
-        {
-          Proxy: {
-            Url: https://registry.k8s.io,
-            Username: null,
-            Password: null,
-            Insecure: false
-          },
-          Name: registry.k8s.io,
-          HostPort: 5556,
-          Username: null,
-          Password: null,
-          Provider: Docker
-        },
-        {
-          Proxy: {
-            Url: https://registry-1.docker.io,
-            Username: null,
-            Password: null,
-            Insecure: false
-          },
-          Name: docker.io,
-          HostPort: 5557,
-          Username: null,
-          Password: null,
-          Provider: Docker
-        },
-        {
-          Proxy: {
-            Url: https://ghcr.io,
-            Username: null,
-            Password: null,
-            Insecure: false
-          },
-          Name: ghcr.io,
-          HostPort: 5558,
-          Username: null,
-          Password: null,
-          Provider: Docker
-        },
-        {
-          Proxy: {
-            Url: https://gcr.io,
-            Username: null,
-            Password: null,
-            Insecure: false
-          },
-          Name: gcr.io,
-          HostPort: 5559,
-          Username: null,
-          Password: null,
-          Provider: Docker
-        },
-        {
-          Proxy: {
-            Url: https://mcr.microsoft.com,
-            Username: null,
-            Password: null,
-            Insecure: false
-          },
-          Name: mcr.microsoft.com,
-          HostPort: 5560,
-          Username: null,
-          Password: null,
-          Provider: Docker
-        },
-        {
-          Proxy: {
-            Url: https://quay.io,
-            Username: null,
-            Password: null,
-            Insecure: false
-          },
-          Name: quay.io,
-          HostPort: 5561,
-          Username: null,
-          Password: null,
-          Provider: Docker
-        }
-      ]
+    SOPSSecretManager: {},
+    CiliumCNI: {},
+    KSailRegistry: {
+      Name: ksail-registry,
+      HostPort: 5555,
+      Username: null,
+      Password: null,
+      Provider: Docker
     },
-    CLIOptions: {
-      DebugOptions: {
-        Editor: Nano
+    MirrorRegistries: [
+      {
+        Proxy: {
+          Url: https://registry.k8s.io,
+          Username: null,
+          Password: null,
+          Insecure: false
+        },
+        Name: registry.k8s.io,
+        HostPort: 5556,
+        Username: null,
+        Password: null,
+        Provider: Docker
       },
-      DownOptions: {
+      {
+        Proxy: {
+          Url: https://registry-1.docker.io,
+          Username: null,
+          Password: null,
+          Insecure: false
+        },
+        Name: docker.io,
+        HostPort: 5557,
+        Username: null,
+        Password: null,
+        Provider: Docker
+      },
+      {
+        Proxy: {
+          Url: https://ghcr.io,
+          Username: null,
+          Password: null,
+          Insecure: false
+        },
+        Name: ghcr.io,
+        HostPort: 5558,
+        Username: null,
+        Password: null,
+        Provider: Docker
+      },
+      {
+        Proxy: {
+          Url: https://gcr.io,
+          Username: null,
+          Password: null,
+          Insecure: false
+        },
+        Name: gcr.io,
+        HostPort: 5559,
+        Username: null,
+        Password: null,
+        Provider: Docker
+      },
+      {
+        Proxy: {
+          Url: https://mcr.microsoft.com,
+          Username: null,
+          Password: null,
+          Insecure: false
+        },
+        Name: mcr.microsoft.com,
+        HostPort: 5560,
+        Username: null,
+        Password: null,
+        Provider: Docker
+      },
+      {
+        Proxy: {
+          Url: https://quay.io,
+          Username: null,
+          Password: null,
+          Insecure: false
+        },
+        Name: quay.io,
+        HostPort: 5561,
+        Username: null,
+        Password: null,
+        Provider: Docker
+      }
+    ],
+    CLI: {
+      Down: {
         Registries: false
       },
-      ListOptions: {
+      List: {
         All: false
       },
-      SopsOptions: {
-        ListOptions: {
+      Sops: {
+        List: {
           ShowSOPSConfigKeysOnly: false,
           ShowPrivateKey: true
         }
       },
-      UpOptions: {
+      Up: {
         Destroy: false,
         Lint: true,
         Reconcile: true
       },
-      UpdateOptions: {
+      Update: {
         Lint: true,
         Reconcile: true
       }

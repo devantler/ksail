@@ -30,8 +30,8 @@ sealed class KSailUpdateCommand : Command
         config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
         config.UpdateConfig("Spec.Connection.Timeout", context.ParseResult.GetValueForOption(_timeoutOption));
         config.UpdateConfig("Spec.Project.WorkingDirectory", context.ParseResult.GetValueForOption(_workingDirectory));
-        config.UpdateConfig("Spec.CLIOptions.UpdateOptions.Lint", context.ParseResult.GetValueForOption(_lintOption));
-        config.UpdateConfig("Spec.CLIOptions.UpdateOptions.Reconcile", context.ParseResult.GetValueForOption(_reconcileOption));
+        config.UpdateConfig("Spec.CLI.Update.Lint", context.ParseResult.GetValueForOption(_lintOption));
+        config.UpdateConfig("Spec.CLI.Update.Reconcile", context.ParseResult.GetValueForOption(_reconcileOption));
 
         var handler = new KSailUpdateCommandHandler(config);
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;

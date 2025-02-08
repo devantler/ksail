@@ -5,7 +5,7 @@ namespace KSail.Models.Template;
 /// <summary>
 /// The options for the KSail Kustomize Template.
 /// </summary>
-public class KSailKustomizeTemplateOptions
+public class KSailKustomizeTemplate
 {
   /// <summary>
   /// The root directory or kustomization file.

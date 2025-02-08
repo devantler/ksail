@@ -13,7 +13,7 @@ class KSailDebugCommandHandler
   internal async Task<bool> HandleAsync(CancellationToken cancellationToken = default)
   {
     string[] args = [];
-    Environment.SetEnvironmentVariable("EDITOR", _config.Spec.CLIOptions.DebugOptions.Editor.ToString().ToLower(CultureInfo.CurrentCulture));
+    Environment.SetEnvironmentVariable("EDITOR", _config.Spec.Project.Editor.ToString().ToLower(CultureInfo.CurrentCulture));
     var (exitCode, _) = await K9s.RunAsync(args, cancellationToken: cancellationToken).ConfigureAwait(false);
     Environment.SetEnvironmentVariable("EDITOR", null);
     return exitCode == 0;

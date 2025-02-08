@@ -10,7 +10,7 @@ class VariablesGenerator
   readonly SecretGenerator _secretGenerator = new();
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    foreach (string hook in config.Spec.KustomizeTemplateOptions.Hooks)
+    foreach (string hook in config.Spec.KustomizeTemplate.Hooks)
     {
       string hookPath = Path.Combine(config.Spec.Project.WorkingDirectory, "k8s", hook, "variables");
       string name = hook.Replace("/", "-", StringComparison.Ordinal);
@@ -52,7 +52,7 @@ class VariablesGenerator
 
   async Task GenerateVariablesSensitiveSecret(string outputPath, string name, CancellationToken cancellationToken = default)
   {
-    string variablesSensitiveSecretPath = Path.Combine(outputPath, "variables-sensitive.sops.yaml");
+    string variablesSensitiveSecretPath = Path.Combine(outputPath, "variables-sensitive.enc.yaml");
     if (File.Exists(variablesSensitiveSecretPath))
     {
       Console.WriteLine($"✔ skipping '{variablesSensitiveSecretPath}', as it already exists.");

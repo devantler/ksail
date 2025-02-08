@@ -5,7 +5,7 @@ namespace KSail.Models.CLI.Commands;
 /// <summary>
 /// The options to use for the 'up' command.
 /// </summary>
-public class KSailCLIUpOptions
+public class KSailCLIUp
 {
   /// <summary>
   /// Destroy any existing cluster before creating a new one.

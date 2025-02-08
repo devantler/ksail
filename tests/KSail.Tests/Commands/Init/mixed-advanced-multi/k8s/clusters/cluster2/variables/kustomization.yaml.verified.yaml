@@ -4,4 +4,4 @@ kind: Kustomization
 resources:
 - ../../../distributions/k3s/variables
 - variables.yaml
-- variables-sensitive.sops.yaml
+- variables-sensitive.enc.yaml

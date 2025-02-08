@@ -35,16 +35,16 @@ class KSailUpdateCommandHandler
     switch (_config.Spec.Project.DeploymentTool)
     {
       case KSailDeploymentTool.Flux:
-        string scheme = _config.Spec.FluxDeploymentToolOptions.Source.Url.Scheme;
+        string scheme = _config.Spec.FluxDeploymentTool.Source.Url.Scheme;
         string host = "localhost";
-        int port = _config.Spec.FluxDeploymentToolOptions.Source.Url.Port;
-        string absolutePath = _config.Spec.FluxDeploymentToolOptions.Source.Url.AbsolutePath;
+        int port = _config.Spec.FluxDeploymentTool.Source.Url.Port;
+        string absolutePath = _config.Spec.FluxDeploymentTool.Source.Url.AbsolutePath;
         var ociRegistryFromHost = new Uri($"{scheme}://{host}:{port}{absolutePath}");
         Console.WriteLine($"📥 Pushing manifests to '{ociRegistryFromHost}'");
         // TODO: Make some form of abstraction around GitOps tools, so it is easier to support apply-based tools like kubectl
         await _deploymentTool.PushManifestsAsync(ociRegistryFromHost, Path.Combine(_config.Spec.Project.WorkingDirectory, "k8s"), cancellationToken: cancellationToken).ConfigureAwait(false);
         Console.WriteLine();
-        if (_config.Spec.CLIOptions.UpdateOptions.Reconcile)
+        if (_config.Spec.CLI.Update.Reconcile)
         {
           Console.WriteLine("🔄 Reconciling changes");
           await _deploymentTool.ReconcileAsync(_config.Spec.Connection.Timeout, cancellationToken).ConfigureAwait(false);
@@ -61,7 +61,7 @@ class KSailUpdateCommandHandler
 
   async Task<bool> Lint(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    if (config.Spec.CLIOptions.UpdateOptions.Lint)
+    if (config.Spec.CLI.Update.Lint)
     {
       Console.WriteLine("🔍 Linting manifests");
       bool success = await _ksailLintCommandHandler.HandleAsync(config, cancellationToken).ConfigureAwait(false);

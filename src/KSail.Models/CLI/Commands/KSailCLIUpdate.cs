@@ -5,7 +5,7 @@ namespace KSail.Models.CLI.Commands;
 /// <summary>
 /// The options to use for the 'update' command.
 /// </summary>
-public class KSailCLIUpdateOptions
+public class KSailCLIUpdate
 {
   /// <summary>
   /// Lint the manifests before applying them.

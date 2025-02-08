@@ -13,7 +13,7 @@ sealed class KSailListCommandHandler(KSailCluster config)
 
   internal async Task<IEnumerable<string>> HandleAsync(CancellationToken cancellationToken = default)
   {
-    if (_config.Spec.CLIOptions.ListOptions.All)
+    if (_config.Spec.CLI.List.All)
     {
       IEnumerable<string> clusters = [];
       Console.WriteLine("---- K3d ----");

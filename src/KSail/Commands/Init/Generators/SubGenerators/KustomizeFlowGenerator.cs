@@ -10,20 +10,20 @@ class KustomizeFlowGenerator
   readonly KustomizeKustomizationGenerator _kustomizationGenerator = new();
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    if (config.Spec.KustomizeTemplateOptions.Hooks.Length == 0)
+    if (config.Spec.KustomizeTemplate.Hooks.Length == 0)
     {
-      config.Spec.KustomizeTemplateOptions.Hooks = [""];
+      config.Spec.KustomizeTemplate.Hooks = [""];
     }
-    foreach (string currentHook in config.Spec.KustomizeTemplateOptions.Hooks)
+    foreach (string currentHook in config.Spec.KustomizeTemplate.Hooks)
     {
-      foreach (string currentFlow in config.Spec.KustomizeTemplateOptions.Flows)
+      foreach (string currentFlow in config.Spec.KustomizeTemplate.Flows)
       {
         await GenerateKustomizeFlowHook(config, currentHook, currentFlow, cancellationToken).ConfigureAwait(false);
       }
     }
-    if (config.Spec.FluxDeploymentToolOptions.PostBuildVariables)
+    if (config.Spec.FluxDeploymentTool.PostBuildVariables)
     {
-      foreach (string hook in config.Spec.KustomizeTemplateOptions.Hooks)
+      foreach (string hook in config.Spec.KustomizeTemplate.Hooks)
       {
         await GenerateKustomizeFlowHook(config, hook, "variables", cancellationToken).ConfigureAwait(false);
       }
@@ -47,19 +47,19 @@ class KustomizeFlowGenerator
 
     if (currentFlow == "variables")
     {
-      string pathToNextFlow = currentHook == config.Spec.KustomizeTemplateOptions.Hooks.Last() ?
+      string pathToNextFlow = currentHook == config.Spec.KustomizeTemplate.Hooks.Last() ?
         "" :
         Path.Combine(
           relativeRoot,
-          $"{config.Spec.KustomizeTemplateOptions.Hooks.ElementAt(
-            Array.IndexOf([.. config.Spec.KustomizeTemplateOptions.Hooks], currentHook) + 1
+          $"{config.Spec.KustomizeTemplate.Hooks.ElementAt(
+            Array.IndexOf([.. config.Spec.KustomizeTemplate.Hooks], currentHook) + 1
           )}/{currentFlow}"
         );
       kustomization = new KustomizeKustomization
       {
         Resources = [
           Path.Combine($"variables.yaml"),
-          Path.Combine($"variables-sensitive.sops.yaml")
+          Path.Combine($"variables-sensitive.enc.yaml")
         ]
       };
       if (!string.IsNullOrEmpty(pathToNextFlow))
@@ -67,14 +67,14 @@ class KustomizeFlowGenerator
     }
     else
     {
-      kustomization = currentHook == config.Spec.KustomizeTemplateOptions.Hooks.Last()
+      kustomization = currentHook == config.Spec.KustomizeTemplate.Hooks.Last()
         ? new KustomizeKustomization
         {
           Resources = [],
         }
         : new KustomizeKustomization
         {
-          Resources = [Path.Combine(relativeRoot, $"{config.Spec.KustomizeTemplateOptions.Hooks.ElementAt(Array.IndexOf([.. config.Spec.KustomizeTemplateOptions.Hooks], currentHook) + 1)}/{currentFlow}")],
+          Resources = [Path.Combine(relativeRoot, $"{config.Spec.KustomizeTemplate.Hooks.ElementAt(Array.IndexOf([.. config.Spec.KustomizeTemplate.Hooks], currentHook) + 1)}/{currentFlow}")],
         };
     }
 

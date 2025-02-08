@@ -18,7 +18,7 @@ public class KSailClusterInitialization
     var cluster = new KSailCluster();
 
     // Act & Assert
-    cluster.Spec.FluxDeploymentToolOptions.Source.Url = new Uri("oci://testhost:5555/ksail-registry");
+    cluster.Spec.FluxDeploymentTool.Source.Url = new Uri("oci://testhost:5555/ksail-registry");
     var settings = new VerifySettings();
     settings.AddExtraSettings(s => s.DefaultValueHandling = DefaultValueHandling.Include);
     settings.DontIgnoreEmptyCollections();
@@ -41,7 +41,7 @@ public class KSailClusterInitialization
     {
       s.DefaultValueHandling = DefaultValueHandling.Include;
     });
-    cluster.Spec.FluxDeploymentToolOptions.Source.Url = new Uri("oci://testhost:5555/ksail-registry");
+    cluster.Spec.FluxDeploymentTool.Source.Url = new Uri("oci://testhost:5555/ksail-registry");
     settings.DontIgnoreEmptyCollections();
     _ = await Verify(cluster, settings);
   }
@@ -61,7 +61,7 @@ public class KSailClusterInitialization
     {
       s.DefaultValueHandling = DefaultValueHandling.Include;
     });
-    cluster.Spec.FluxDeploymentToolOptions.Source.Url = new Uri("oci://testhost:5555/ksail-registry");
+    cluster.Spec.FluxDeploymentTool.Source.Url = new Uri("oci://testhost:5555/ksail-registry");
     settings.DontIgnoreEmptyCollections();
     _ = await Verify(cluster, settings);
   }
@@ -81,7 +81,7 @@ public class KSailClusterInitialization
     {
       s.DefaultValueHandling = DefaultValueHandling.Include;
     });
-    cluster.Spec.FluxDeploymentToolOptions.Source.Url = new Uri("oci://testhost:5555/ksail-registry");
+    cluster.Spec.FluxDeploymentTool.Source.Url = new Uri("oci://testhost:5555/ksail-registry");
     settings.DontIgnoreEmptyCollections();
     _ = await Verify(cluster, settings);
   }

@@ -18,18 +18,18 @@ class FluxSystemGenerator
     if (!Directory.Exists(outputDirectory))
       _ = Directory.CreateDirectory(outputDirectory);
     await GenerateFluxSystemKustomization(config, outputDirectory, cancellationToken).ConfigureAwait(false);
-    foreach (string flow in config.Spec.KustomizeTemplateOptions.Flows)
+    foreach (string flow in config.Spec.KustomizeTemplate.Flows)
     {
       List<FluxDependsOn>? dependsOn = null;
-      dependsOn = config.Spec.FluxDeploymentToolOptions.PostBuildVariables && config.Spec.KustomizeTemplateOptions.Flows.Length != 0
-        ? config.Spec.KustomizeTemplateOptions.Flows.Last() == flow
+      dependsOn = config.Spec.FluxDeploymentTool.PostBuildVariables && config.Spec.KustomizeTemplate.Flows.Length != 0
+        ? config.Spec.KustomizeTemplate.Flows.Last() == flow
           ? [new FluxDependsOn { Name = "variables" }]
-          : [.. config.Spec.KustomizeTemplateOptions.Flows.Reverse().TakeWhile(f => f != flow).Select(f => new FluxDependsOn { Name = f.Replace('/', '-') }).TakeLast(1)]
-        : [.. config.Spec.KustomizeTemplateOptions.Flows.Reverse().TakeWhile(f => f != flow).Select(f => new FluxDependsOn { Name = f.Replace('/', '-') }).TakeLast(1)];
+          : [.. config.Spec.KustomizeTemplate.Flows.Reverse().TakeWhile(f => f != flow).Select(f => new FluxDependsOn { Name = f.Replace('/', '-') }).TakeLast(1)]
+        : [.. config.Spec.KustomizeTemplate.Flows.Reverse().TakeWhile(f => f != flow).Select(f => new FluxDependsOn { Name = f.Replace('/', '-') }).TakeLast(1)];
 
       await GenerateFluxSystemFluxKustomization(config, outputDirectory, flow, dependsOn, cancellationToken).ConfigureAwait(false);
     }
-    if (config.Spec.FluxDeploymentToolOptions.PostBuildVariables)
+    if (config.Spec.FluxDeploymentTool.PostBuildVariables)
     {
       await GenerateFluxSystemFluxKustomization(config, outputDirectory, "variables", [], cancellationToken).ConfigureAwait(false);
     }
@@ -46,9 +46,9 @@ class FluxSystemGenerator
     Console.WriteLine($"✚ generating '{outputDirectory}'");
     var kustomization = new KustomizeKustomization
     {
-      Resources = [.. config.Spec.KustomizeTemplateOptions.Flows.Select(flow => $"{flow.Replace('/', '-')}.yaml")]
+      Resources = [.. config.Spec.KustomizeTemplate.Flows.Select(flow => $"{flow.Replace('/', '-')}.yaml")]
     };
-    if (config.Spec.FluxDeploymentToolOptions.PostBuildVariables)
+    if (config.Spec.FluxDeploymentTool.PostBuildVariables)
     {
       kustomization.Resources = kustomization.Resources.Append("variables.yaml");
     }
@@ -82,7 +82,7 @@ class FluxSystemGenerator
           Kind = FluxKustomizationSpecSourceRefKind.OCIRepository,
           Name = "flux-system"
         },
-        Path = config.Spec.KustomizeTemplateOptions.Hooks.Length == 0 ? flow : $"{config.Spec.KustomizeTemplateOptions.Hooks.First()}/{flow}",
+        Path = config.Spec.KustomizeTemplate.Hooks.Length == 0 ? flow : $"{config.Spec.KustomizeTemplate.Hooks.First()}/{flow}",
         Prune = true,
         Wait = true,
         Decryption = config.Spec.Project.SecretManager == KSailSecretManager.SOPS ?
@@ -96,7 +96,7 @@ class FluxSystemGenerator
             }
           } :
           null,
-        PostBuild = flow != "variables" && config.Spec.FluxDeploymentToolOptions.PostBuildVariables ?
+        PostBuild = flow != "variables" && config.Spec.FluxDeploymentTool.PostBuildVariables ?
         new FluxKustomizationSpecPostBuild
         {
           SubstituteFrom = GetSubstituteFroms(config)
@@ -120,7 +120,7 @@ class FluxSystemGenerator
         Name = "variables-sensitive"
       }
     };
-    foreach (string hook in config.Spec.KustomizeTemplateOptions.Hooks)
+    foreach (string hook in config.Spec.KustomizeTemplate.Hooks)
     {
       substituteList.Add(new FluxKustomizationSpecPostBuildSubstituteFrom
       {

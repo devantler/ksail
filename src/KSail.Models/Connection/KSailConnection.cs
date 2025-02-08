@@ -5,7 +5,7 @@ namespace KSail.Models.Connection;
 /// <summary>
 /// The options to use for the connection.
 /// </summary>
-public class KSailConnectionOptions
+public class KSailConnection
 {
   /// <summary>
   /// The path to the kubeconfig file.
