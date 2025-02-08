@@ -179,16 +179,6 @@ class KSailUpCommandHandler
     {
       switch ((config.Spec.Project.Engine, config.Spec.Project.Distribution))
       {
-        //  for NODE in $(kind get nodes --name "kube-kraken-${CLUSTER_TYPE}"); do
-        //   docker cp scripts/kind/config/mirror_registry.sh "$NODE":/etc/mirror_registry.sh # copy script inside node
-        //   if [ "$(uname)" == "Darwin" ]; then
-        //     docker exec "$NODE" sh -c "chmod +x /etc/mirror_registry.sh; NO_PROXY=127.0.0.0/8,10.0.0.0/8,172.19.0.0/16,192.168.0.0/16,.local,.svc,.cluster.local /etc/mirror_registry.sh" &
-        //   else
-        //     docker exec "$NODE" sh -c "chmod +x /etc/mirror_registry.sh; /etc/mirror_registry.sh" &
-        //   fi
-        //   pids+=("$!") # Configure every node in background
-        // done
-        // wait "${pids[@]}" # Wait for all configurations to end
         case (KSailEngine.Docker, KSailKubernetesDistribution.Native):
           Console.WriteLine("🔼 Bootstrapping mirror registries in containerd");
           string[] args = [
