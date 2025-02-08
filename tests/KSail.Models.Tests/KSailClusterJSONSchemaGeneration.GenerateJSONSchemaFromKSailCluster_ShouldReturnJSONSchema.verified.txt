@@ -123,6 +123,7 @@
               "type": "object",
               "properties": {
                 "url": {
+                  "description": "The URL of the repository.",
                   "type": "string",
                   "format": "uri"
                 }
@@ -161,10 +162,6 @@
                   "null"
                 ]
               }
-            },
-            "components": {
-              "description": "Enable components in the kustomize template.",
-              "type": "boolean"
             }
           }
         },
@@ -233,6 +230,10 @@
                     "description": "The URL of the upstream registry to proxy and cache images from.",
                     "type": "string",
                     "format": "uri"
+                  },
+                  "hostPort": {
+                    "description": "The host port of the registry (if applicable).",
+                    "type": "integer"
                   },
                   "username": {
                     "description": "The username to authenticate with the upstream registry.",

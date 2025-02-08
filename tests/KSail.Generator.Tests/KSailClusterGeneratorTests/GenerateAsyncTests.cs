@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using KSail.Models;
 using KSail.Models.Project;
 
@@ -6,7 +7,7 @@ namespace KSail.Generator.Tests.KSailClusterGeneratorTests;
 /// <summary>
 /// Tests for <see cref="KSailClusterGenerator"/>.
 /// </summary>
-public class GenerateAsyncTests
+public partial class GenerateAsyncTests
 {
   readonly KSailClusterGenerator _generator = new();
   /// <summary>
@@ -25,7 +26,9 @@ public class GenerateAsyncTests
     string ksailClusterConfigFromFile = await File.ReadAllTextAsync(outputPath);
 
     // Assert
-    _ = await Verify(ksailClusterConfigFromFile, extension: "yaml").UseFileName("ksail-config.full.yaml");
+    _ = await Verify(ksailClusterConfigFromFile, extension: "yaml")
+      .UseFileName("ksail-config.full.yaml")
+      .ScrubLinesWithReplace(line => UrlRegex().Replace(line, "url: <url>"));
 
     // Cleanup
     File.Delete(outputPath);
@@ -48,9 +51,14 @@ public class GenerateAsyncTests
     string ksailClusterConfigFromFile = await File.ReadAllTextAsync(outputPath);
 
     // Assert
-    _ = await Verify(ksailClusterConfigFromFile, extension: "yaml").UseFileName("ksail-config.minimal.yaml");
+    _ = await Verify(ksailClusterConfigFromFile, extension: "yaml")
+      .UseFileName("ksail-config.minimal.yaml")
+      .ScrubLinesWithReplace(line => UrlRegex().Replace(line, "url: <url>"));
 
     // Cleanup
     File.Delete(outputPath);
   }
+
+  [GeneratedRegex("url:.*")]
+  private static partial Regex UrlRegex();
 }

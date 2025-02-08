@@ -13,7 +13,6 @@ Options:
   -sm, --secret-manager <None|SOPS>         Configure which secret manager to use.
   -t, --template <Kustomize>                The template to use for the initialized cluster.
   -fpbv, --flux-post-build-variables        Generate ConfigMaps and Secrets for flux post-build-variables.
-  -kc, --kustomize-components               Generate components to reduce duplication.
   -kh, --kustomize-hooks <kustomize-hooks>  The kustomize hooks to include in the initialized cluster.
   -kf, --kustomize-flows <kustomize-flows>  The flows to include. The first depends on the next, and so on.
   --version                                 Show version information

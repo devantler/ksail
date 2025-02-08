@@ -2,7 +2,6 @@
 using Devantler.KubernetesGenerator.Kustomize;
 using Devantler.KubernetesGenerator.Kustomize.Models;
 using KSail.Models;
-using KSail.Models.Project;
 
 namespace KSail.Commands.Init.Generators.SubGenerators;
 
@@ -46,17 +45,6 @@ class KustomizeFlowGenerator
     string relativeRoot = string.Join("/", Enumerable.Repeat("..", Path.Combine(currentHook, currentFlow).Split('/').Length));
     KustomizeKustomization? kustomization;
 
-    List<string>? components = null;
-    if (config.Spec.KustomizeTemplate.Components && currentHook == config.Spec.KustomizeTemplate.Hooks.First())
-    {
-      components = [];
-      if (config.Spec.Project.DeploymentTool == KSailDeploymentTool.Flux)
-      {
-        components.Add(Path.Combine(relativeRoot, "components/helm-release-crds-label"));
-        components.Add(Path.Combine(relativeRoot, "components/helm-release-remediation-label"));
-      }
-    }
-
     if (currentFlow == "variables")
     {
       string pathToNextFlow = currentHook == config.Spec.KustomizeTemplate.Hooks.Last() ?
@@ -72,8 +60,7 @@ class KustomizeFlowGenerator
         Resources = [
           Path.Combine($"variables.yaml"),
           Path.Combine($"variables-sensitive.sops.yaml")
-        ],
-        Components = components
+        ]
       };
       if (!string.IsNullOrEmpty(pathToNextFlow))
         kustomization.Resources = kustomization.Resources.Prepend(pathToNextFlow);
@@ -84,12 +71,10 @@ class KustomizeFlowGenerator
         ? new KustomizeKustomization
         {
           Resources = [],
-          Components = components
         }
         : new KustomizeKustomization
         {
           Resources = [Path.Combine(relativeRoot, $"{config.Spec.KustomizeTemplate.Hooks.ElementAt(Array.IndexOf([.. config.Spec.KustomizeTemplate.Hooks], currentHook) + 1)}/{currentFlow}")],
-          Components = components
         };
     }
 

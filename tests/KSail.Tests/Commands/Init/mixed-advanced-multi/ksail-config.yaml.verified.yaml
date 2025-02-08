@@ -22,7 +22,7 @@ spec:
     mirrorRegistries: false
   fluxDeploymentTool:
     source:
-      url: oci://host.docker.internal:5555/ksail-registry
+      url: <url>
     postBuildVariables: true
   kustomizeTemplate:
     root: k8s/clusters/cluster1/flux-system
@@ -43,37 +43,37 @@ spec:
     provider: Docker
   mirrorRegistries:
   - proxy:
-      url: https://registry.k8s.io/
+      url: <url>
       insecure: false
     hostPort: 5556
     name: registry.k8s.io
     provider: Docker
   - proxy:
-      url: https://registry-1.docker.io/
+      url: <url>
       insecure: false
     hostPort: 5557
     name: docker.io
     provider: Docker
   - proxy:
-      url: https://ghcr.io/
+      url: <url>
       insecure: false
     hostPort: 5558
     name: ghcr.io
     provider: Docker
   - proxy:
-      url: https://gcr.io/
+      url: <url>
       insecure: false
     hostPort: 5559
     name: gcr.io
     provider: Docker
   - proxy:
-      url: https://mcr.microsoft.com/
+      url: <url>
       insecure: false
     hostPort: 5560
     name: mcr.microsoft.com
     provider: Docker
   - proxy:
-      url: https://quay.io/
+      url: <url>
       insecure: false
     hostPort: 5561
     name: quay.io

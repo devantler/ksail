@@ -90,8 +90,7 @@ Usage:
 Options:
   -n, --name <name>              The name of the cluster.
   -dc, --declarative-config      Generate a ksail-config.yaml file, to configure the KSail CLI declaratively.
-  -pbv, --flux-post-build-variables   Generate ConfigMaps and Secrets for flux post-build-variables.
-  -kc, --kustomize-components               Generate components to reduce duplication.
+  -fpbv, --flux-post-build-variables   Generate ConfigMaps and Secrets for flux post-build-variables.
   -d, --distribution <K3d|Kind>  The distribution to use for the cluster.
   -o, --output <output>          Location to place the generated cluster output.
   -s, --sops                     Enable SOPS support.

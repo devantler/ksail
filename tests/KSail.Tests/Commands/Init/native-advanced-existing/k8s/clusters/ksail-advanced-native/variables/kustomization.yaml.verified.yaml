@@ -5,6 +5,3 @@ resources:
 - ../../../distributions/native/variables
 - variables.yaml
 - variables-sensitive.sops.yaml
-components:
-- ../../../components/helm-release-crds-label
-- ../../../components/helm-release-remediation-label

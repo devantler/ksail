@@ -11,7 +11,7 @@ public class KSailFluxDeploymentTool
   /// The source for reconciling GitOps resources.
   /// </summary>
   [Description("The source for reconciling GitOps resources.")]
-  public IKSailGitOpsSource Source { get; set; } = new KSailOCIRepository();
+  public KSailRepository Source { get; set; } = new KSailRepository();
 
   /// <summary>
   /// Enable Flux post-build variables.
@@ -30,5 +30,5 @@ public class KSailFluxDeploymentTool
   /// Initializes a new instance of the <see cref="KSailFluxDeploymentTool"/> class with the specified GitOps source URL.
   /// </summary>
   /// <param name="gitOpsSourceUrl"></param>
-  public KSailFluxDeploymentTool(Uri gitOpsSourceUrl) => Source = new KSailOCIRepository(gitOpsSourceUrl);
+  public KSailFluxDeploymentTool(Uri gitOpsSourceUrl) => Source = new KSailRepository(gitOpsSourceUrl);
 }

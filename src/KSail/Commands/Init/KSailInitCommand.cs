@@ -13,7 +13,6 @@ sealed class KSailInitCommand : Command
   readonly NameOption _metadataNameOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly PathOption _projectWorkingDirectoryOption = new("The output directory", ["-o", "--output"]) { Arity = ArgumentArity.ZeroOrOne };
   readonly FluxDeploymentToolPostBuildVariablesOption _fluxDeploymentToolPostBuildVariablesOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly KustomizeTemplateComponentsOption _kustomizeTemplateComponentsOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly KustomizeTemplateFlowsOption _kustomizeTemplateKustomizationsOption = new() { Arity = ArgumentArity.ZeroOrMore, AllowMultipleArgumentsPerToken = true };
   readonly KustomizeTemplateHooksOption _kustomizeTemplateKustomizationHooksOption = new() { Arity = ArgumentArity.ZeroOrMore, AllowMultipleArgumentsPerToken = true };
   readonly ProjectDeploymentToolOption _projectDeploymentToolOption = new() { Arity = ArgumentArity.ZeroOrOne };
@@ -33,7 +32,6 @@ sealed class KSailInitCommand : Command
         var config = await KSailClusterConfigLoader.LoadAsync(name: context.ParseResult.GetValueForOption(_metadataNameOption), distribution: context.ParseResult.GetValueForOption(_projectDistributionOption)).ConfigureAwait(false);
         config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_metadataNameOption));
         config.UpdateConfig("Spec.FluxDeploymentTool.PostBuildVariables", context.ParseResult.GetValueForOption(_fluxDeploymentToolPostBuildVariablesOption));
-        config.UpdateConfig("Spec.KustomizeTemplate.Components", context.ParseResult.GetValueForOption(_kustomizeTemplateComponentsOption));
         config.UpdateConfig("Spec.KustomizeTemplate.Flows", context.ParseResult.GetValueForOption(_kustomizeTemplateKustomizationsOption));
         config.UpdateConfig("Spec.KustomizeTemplate.Hooks", context.ParseResult.GetValueForOption(_kustomizeTemplateKustomizationHooksOption));
         config.UpdateConfig("Spec.Project.DeploymentTool", context.ParseResult.GetValueForOption(_projectDeploymentToolOption));
@@ -81,7 +79,6 @@ sealed class KSailInitCommand : Command
     AddOption(_projectSecretManagerOption);
     AddOption(_projectTemplateOption);
     AddOption(_fluxDeploymentToolPostBuildVariablesOption);
-    AddOption(_kustomizeTemplateComponentsOption);
     AddOption(_kustomizeTemplateKustomizationHooksOption);
     AddOption(_kustomizeTemplateKustomizationsOption);
   }
