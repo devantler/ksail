@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System.Text;
 using Devantler.ContainerEngineProvisioner.Docker;
 using Devantler.KubernetesProvisioner.Cluster.Core;
@@ -11,7 +12,9 @@ using k8s.Models;
 using KSail.Commands.Down.Handlers;
 using KSail.Commands.Lint.Handlers;
 using KSail.Models;
+using KSail.Models.MirrorRegistry;
 using KSail.Models.Project;
+using KSail.Models.Registry;
 using KSail.Utils;
 
 namespace KSail.Commands.Up.Handlers;
@@ -51,7 +54,6 @@ class KSailUpCommandHandler
 
   internal async Task<int> HandleAsync(CancellationToken cancellationToken = default)
   {
-
     if (!await CheckEngineIsRunning(cancellationToken).ConfigureAwait(false))
     {
       return 1;
@@ -72,8 +74,8 @@ class KSailUpCommandHandler
 
     await ProvisionCluster(cancellationToken).ConfigureAwait(false);
 
+    await BootstrapMirrorRegistries(_config, cancellationToken).ConfigureAwait(false);
     await BootstrapSecretManager(_config, cancellationToken).ConfigureAwait(false);
-
     await BootstrapDeploymentTool(_config, cancellationToken).ConfigureAwait(false);
 
     if (_config.Spec.CLI.Up.Reconcile)
@@ -141,7 +143,6 @@ class KSailUpCommandHandler
   {
     if (config.Spec.Project.MirrorRegistries)
     {
-      // TODO: Fix this
       Console.WriteLine("🧮 Creating mirror registries");
       foreach (var mirrorRegistry in config.Spec.MirrorRegistries)
       {
@@ -170,6 +171,69 @@ class KSailUpCommandHandler
     Console.WriteLine($"🚀 Provisioning cluster '{_config.Spec.Project.Distribution.ToString().ToLower(System.Globalization.CultureInfo.CurrentCulture)}-{_config.Metadata.Name}'");
     await _clusterProvisioner.CreateAsync(_config.Metadata.Name, _config.Spec.Project.DistributionConfigPath, cancellationToken).ConfigureAwait(false);
     Console.WriteLine();
+  }
+
+  async Task BootstrapMirrorRegistries(KSailCluster config, CancellationToken cancellationToken)
+  {
+    if (config.Spec.Project.MirrorRegistries)
+    {
+      switch ((config.Spec.Project.Engine, config.Spec.Project.Distribution))
+      {
+        //  for NODE in $(kind get nodes --name "kube-kraken-${CLUSTER_TYPE}"); do
+        //   docker cp scripts/kind/config/mirror_registry.sh "$NODE":/etc/mirror_registry.sh # copy script inside node
+        //   if [ "$(uname)" == "Darwin" ]; then
+        //     docker exec "$NODE" sh -c "chmod +x /etc/mirror_registry.sh; NO_PROXY=127.0.0.0/8,10.0.0.0/8,172.19.0.0/16,192.168.0.0/16,.local,.svc,.cluster.local /etc/mirror_registry.sh" &
+        //   else
+        //     docker exec "$NODE" sh -c "chmod +x /etc/mirror_registry.sh; /etc/mirror_registry.sh" &
+        //   fi
+        //   pids+=("$!") # Configure every node in background
+        // done
+        // wait "${pids[@]}" # Wait for all configurations to end
+        case (KSailEngine.Docker, KSailKubernetesDistribution.Native):
+          Console.WriteLine("🔼 Bootstrapping mirror registries in containerd");
+          string[] args = [
+            "get",
+            "nodes",
+            $"--name {_config.Metadata.Name}"
+          ];
+          var (_, output) = await Devantler.KindCLI.Kind.RunAsync(args, cancellationToken: cancellationToken).ConfigureAwait(false);
+          if (output.Contains("No kind nodes found for cluster", StringComparison.OrdinalIgnoreCase))
+          {
+            throw new KSailException(output);
+          }
+          string[] nodes = output.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+          foreach (string node in nodes)
+          {
+            foreach (var mirrorRegistry in config.Spec.MirrorRegistries)
+            {
+              string containerName = node;
+              AddMirrorRegistryToContainerd(containerName, mirrorRegistry, cancellationToken);
+            }
+          }
+          break;
+        case (KSailEngine.Docker, KSailKubernetesDistribution.K3s):
+          break;
+        default:
+          break;
+      }
+    }
+
+    void AddMirrorRegistryToContainerd(string containerName, KSailMirrorRegistry mirrorRegistry, CancellationToken cancellationToken)
+    {
+      // https://github.com/containerd/containerd/blob/main/docs/hosts.md
+      string registryDir = $"/etc/containerd/certs.d/{mirrorRegistry.Name}";
+      _engineProvisioner.CreateDirectoryInContainerAsync(containerName, registryDir, true, cancellationToken);
+      string host = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? $"172.17.0.1:{mirrorRegistry.HostPort}" :
+        RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? $"host.docker.internal:{mirrorRegistry.HostPort}" :
+        throw new KSailException("The host OS is not supported.");
+      string hostsToml = $"""
+      server = "{mirrorRegistry.Proxy.Url}"
+
+      [host."{host}"]
+        capabilities = ["pull", "resolve"]
+      """;
+      _engineProvisioner.WriteFileToContainerAsync(containerName, $"{registryDir}/hosts.toml", hostsToml, cancellationToken);
+    }
   }
 
   async Task BootstrapDeploymentTool(KSailCluster config, CancellationToken cancellationToken = default)
