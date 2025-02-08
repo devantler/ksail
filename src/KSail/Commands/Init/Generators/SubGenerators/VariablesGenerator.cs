@@ -52,7 +52,7 @@ class VariablesGenerator
 
   async Task GenerateVariablesSensitiveSecret(string outputPath, string name, CancellationToken cancellationToken = default)
   {
-    string variablesSensitiveSecretPath = Path.Combine(outputPath, "variables-sensitive.sops.yaml");
+    string variablesSensitiveSecretPath = Path.Combine(outputPath, "variables-sensitive.enc.yaml");
     if (File.Exists(variablesSensitiveSecretPath))
     {
       Console.WriteLine($"✔ skipping '{variablesSensitiveSecretPath}', as it already exists.");

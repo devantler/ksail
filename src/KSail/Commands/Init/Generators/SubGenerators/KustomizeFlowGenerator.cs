@@ -59,7 +59,7 @@ class KustomizeFlowGenerator
       {
         Resources = [
           Path.Combine($"variables.yaml"),
-          Path.Combine($"variables-sensitive.sops.yaml")
+          Path.Combine($"variables-sensitive.enc.yaml")
         ]
       };
       if (!string.IsNullOrEmpty(pathToNextFlow))
