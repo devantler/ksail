@@ -104,10 +104,12 @@ These projects are CLI wrappers that provide a C# API for the respective CLI too
 
 - **[devantler/dotnet-age-cli](https://github.com/devantler/dotnet-age-cli)** - A library that embeds and provides an API for the Age CLI.
 - **[devantler/dotnet-flux-cli](https://github.com/devantler/dotnet-flux-cli)** - A library that embeds and provides an API for the Flux CLI.
+- **[devantler/dotnet-helm-cli](https://github.com/devantler/dotnet-helm-cli)** - A library that embeds and provides an API for the Helm CLI.
 - **[devantler/dotnet-k3d-cli](https://github.com/devantler/dotnet-k3d-cli)** - A library that embeds and provides an API for the K3d CLI.
 - **[devantler/dotnet-k9s-cli](https://github.com/devantler/dotnet-k9s-cli)** - A library that embeds and provides an API for the K9s CLI.
 - **[devantler/dotnet-kind-cli](https://github.com/devantler/dotnet-kind-cli)** - A library that embeds and provides an API for the Kind CLI.
 - **[devantler/dotnet-kubeconform-cli](https://github.com/devantler/dotnet-kubeconform-cli)** - A library that embeds and provides an API for the Kubeconform CLI.
+- **[devantler/dotnet-kubectl-cli](https://github.com/devantler/dotnet-kubectl-cli)** - A library that embeds and provides an API for the Kubectl CLI.
 - **[devantler/dotnet-kustomize-cli](https://github.com/devantler/dotnet-kustomize-cli)** - A library that embeds and provides an API for the Kustomize CLI.
 - **[devantler/dotnet-sops-cli](https://github.com/devantler/dotnet-sops-cli)** - A library that embeds and provides an API for the SOPS CLI.
 
@@ -118,11 +120,11 @@ These projects are CLI wrappers that provide a C# API for the respective CLI too
 
 KSail is a powerful tool that can be used in many different ways. Here are some projects that use KSail in their setup:
 
-- **[devantler/homelab](https://github.com/devantler/homelab)** - My personal homelab setup, including an example of how I use KSail.
+- **[devantler/homelab](https://github.com/devantler/homelab)** - My personal homelab setup.
 
 ## Presentations
 
-- **[KSail - a Kubernetes SDK for local GitOps development and CI]()** - A presentation on KSail at KCD2024. Link missing.
+- **[KSail - a Kubernetes SDK for local GitOps development and CI](https://youtu.be/Q-Hfn_-B7p8?si=2Uec_kld--fNw3gm)** - A presentation on KSail at KCD2024.
 
 ## Star History
 
