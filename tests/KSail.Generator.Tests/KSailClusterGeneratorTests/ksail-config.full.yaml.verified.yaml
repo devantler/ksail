@@ -19,7 +19,7 @@ spec:
     secretManager: None
     cni: Default
     editor: Nano
-    mirrorRegistries: false
+    mirrorRegistries: true
   fluxDeploymentTool:
     source:
       url: <url>
