@@ -72,7 +72,7 @@ public class E2ETests : IAsyncLifetime, IDisposable
     Assert.Equal(0, startExitCode);
     int updateExitCode = await ksailUpdateCommand.InvokeAsync("");
     Assert.Equal(0, updateExitCode);
-    int downExitCode = await ksailDownCommand.InvokeAsync("--registries");
+    int downExitCode = await ksailDownCommand.InvokeAsync("");
     Assert.Equal(0, downExitCode);
   }
 
