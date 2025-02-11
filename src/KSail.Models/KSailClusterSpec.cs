@@ -72,7 +72,7 @@ public class KSailClusterSpec
   [Description("The mirror registries to create for the KSail cluster.")]
   public IEnumerable<KSailMirrorRegistry> MirrorRegistries { get; set; } = [
     new KSailMirrorRegistry { Name = "registry.k8s.io", HostPort = 5556, Proxy = new KSailMirrorRegistryProxy { Url = new Uri("https://registry.k8s.io") } },
-    new KSailMirrorRegistry { Name = "docker.io", HostPort = 5557,  Proxy = new KSailMirrorRegistryProxy { Url = new Uri("https://registry-1.docker.io") } },
+    new KSailMirrorRegistry { Name = "registry-1.docker.io", HostPort = 5557,  Proxy = new KSailMirrorRegistryProxy { Url = new Uri("https://registry-1.docker.io") } },
     new KSailMirrorRegistry { Name = "ghcr.io", HostPort = 5558, Proxy = new KSailMirrorRegistryProxy { Url = new Uri("https://ghcr.io") } },
     new KSailMirrorRegistry { Name = "gcr.io", HostPort = 5559, Proxy = new KSailMirrorRegistryProxy { Url = new Uri("https://gcr.io") } },
     new KSailMirrorRegistry { Name = "mcr.microsoft.com", HostPort = 5560, Proxy = new KSailMirrorRegistryProxy { Url = new Uri("https://mcr.microsoft.com") } },
