@@ -196,8 +196,9 @@ class KSailUpCommandHandler
             foreach (var mirrorRegistry in config.Spec.MirrorRegistries)
             {
               string containerName = node;
-              AddMirrorRegistryToContainerd(containerName, mirrorRegistry, cancellationToken);
+              await AddMirrorRegistryToContainerd(containerName, mirrorRegistry, cancellationToken);
             }
+            Console.WriteLine($"✔ '{node}' mirror registries bootstrapped.");
           }
           break;
         case (KSailEngine.Docker, KSailKubernetesDistribution.K3s):
@@ -207,11 +208,11 @@ class KSailUpCommandHandler
       }
     }
 
-    void AddMirrorRegistryToContainerd(string containerName, KSailMirrorRegistry mirrorRegistry, CancellationToken cancellationToken)
+    async Task AddMirrorRegistryToContainerd(string containerName, KSailMirrorRegistry mirrorRegistry, CancellationToken cancellationToken)
     {
       // https://github.com/containerd/containerd/blob/main/docs/hosts.md
       string registryDir = $"/etc/containerd/certs.d/{mirrorRegistry.Name}";
-      _ = _engineProvisioner.CreateDirectoryInContainerAsync(containerName, registryDir, true, cancellationToken);
+      await _engineProvisioner.CreateDirectoryInContainerAsync(containerName, registryDir, true, cancellationToken);
       string host = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? $"172.17.0.1:{mirrorRegistry.HostPort}" :
         RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? $"host.docker.internal:{mirrorRegistry.HostPort}" :
         throw new KSailException("The host OS is not supported.");
@@ -222,7 +223,7 @@ class KSailUpCommandHandler
         capabilities = ["pull", "resolve"]
         skip_verify = true
       """;
-      _ = _engineProvisioner.CreateFileInContainerAsync(containerName, $"{registryDir}/hosts.toml", hostsToml, cancellationToken);
+      await _engineProvisioner.CreateFileInContainerAsync(containerName, $"{registryDir}/hosts.toml", hostsToml, cancellationToken);
     }
   }
 
