@@ -14,7 +14,6 @@ using KSail.Commands.Lint.Handlers;
 using KSail.Models;
 using KSail.Models.MirrorRegistry;
 using KSail.Models.Project;
-using KSail.Models.Registry;
 using KSail.Utils;
 
 namespace KSail.Commands.Up.Handlers;
@@ -212,7 +211,7 @@ class KSailUpCommandHandler
     {
       // https://github.com/containerd/containerd/blob/main/docs/hosts.md
       string registryDir = $"/etc/containerd/certs.d/{mirrorRegistry.Name}";
-      _engineProvisioner.CreateDirectoryInContainerAsync(containerName, registryDir, true, cancellationToken);
+      _ = _engineProvisioner.CreateDirectoryInContainerAsync(containerName, registryDir, true, cancellationToken);
       string host = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? $"172.17.0.1:{mirrorRegistry.HostPort}" :
         RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? $"host.docker.internal:{mirrorRegistry.HostPort}" :
         throw new KSailException("The host OS is not supported.");
@@ -222,7 +221,7 @@ class KSailUpCommandHandler
       [host."{host}"]
         capabilities = ["pull", "resolve"]
       """;
-      _engineProvisioner.WriteFileToContainerAsync(containerName, $"{registryDir}/hosts.toml", hostsToml, cancellationToken);
+      _ = _engineProvisioner.CreateFileInContainerAsync(containerName, $"{registryDir}/hosts.toml", hostsToml, cancellationToken);
     }
   }
 
