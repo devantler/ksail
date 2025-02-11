@@ -103,7 +103,7 @@ class KSailUpCommandHandler
     string engineEmoji = _config.Spec.Project.Engine switch
     {
       KSailEngine.Docker => "🐳",
-      _ => throw new NotSupportedException($"The container engine '{_config.Spec.Project.Engine}' is not supported.")
+      _ => throw new KSailException($"The container engine '{_config.Spec.Project.Engine}' is not supported.")
     };
     Console.WriteLine($"{engineEmoji} Checking {_config.Spec.Project.Engine} is running");
     if (await _engineProvisioner.CheckReadyAsync(cancellationToken).ConfigureAwait(false))
@@ -145,7 +145,7 @@ class KSailUpCommandHandler
       Console.WriteLine("🧮 Creating mirror registries");
       foreach (var mirrorRegistry in config.Spec.MirrorRegistries)
       {
-        Console.WriteLine($"► creating mirror registry '{mirrorRegistry.Name} for '{mirrorRegistry.Proxy?.Url}'");
+        Console.WriteLine($"► creating mirror registry '{mirrorRegistry.Name}' for '{mirrorRegistry.Proxy?.Url}'");
         await _engineProvisioner
          .CreateRegistryAsync(mirrorRegistry.Name, mirrorRegistry.HostPort, mirrorRegistry.Proxy?.Url, cancellationToken).ConfigureAwait(false);
       }
@@ -183,9 +183,9 @@ class KSailUpCommandHandler
           string[] args = [
             "get",
             "nodes",
-            $"--name {_config.Metadata.Name}"
+            "--name", $"{_config.Metadata.Name}"
           ];
-          var (_, output) = await Devantler.KindCLI.Kind.RunAsync(args, cancellationToken: cancellationToken).ConfigureAwait(false);
+          var (_, output) = await Devantler.KindCLI.Kind.RunAsync(args, silent: true, cancellationToken: cancellationToken).ConfigureAwait(false);
           if (output.Contains("No kind nodes found for cluster", StringComparison.OrdinalIgnoreCase))
           {
             throw new KSailException(output);
@@ -218,8 +218,9 @@ class KSailUpCommandHandler
       string hostsToml = $"""
       server = "{mirrorRegistry.Proxy.Url}"
 
-      [host."{host}"]
+      [host."http://{host}"]
         capabilities = ["pull", "resolve"]
+        skip_verify = true
       """;
       _ = _engineProvisioner.CreateFileInContainerAsync(containerName, $"{registryDir}/hosts.toml", hostsToml, cancellationToken);
     }
