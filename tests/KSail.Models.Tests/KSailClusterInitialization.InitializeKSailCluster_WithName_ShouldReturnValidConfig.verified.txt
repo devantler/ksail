@@ -141,7 +141,6 @@
         }
       },
       Up: {
-        Destroy: false,
         Lint: true,
         Reconcile: true
       },

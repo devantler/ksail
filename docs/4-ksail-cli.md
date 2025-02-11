@@ -166,7 +166,6 @@ Usage:
 
 Options:
   -n, --name <name>                               The name of the cluster.
-  --destroy                                       Destroy any existing cluster before provisioning
   -c, --config <config>                           Path to the cluster configuration file
   -d, --distribution <K3d|Kind>                   The distribution to use for the cluster.
   -p, --path <path>                               Path to the manifests directory

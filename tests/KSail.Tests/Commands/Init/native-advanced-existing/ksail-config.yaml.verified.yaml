@@ -87,7 +87,6 @@ spec:
         showSOPSConfigKeysOnly: false
         showPrivateKey: true
     up:
-      destroy: false
       lint: true
       reconcile: true
     update:

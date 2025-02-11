@@ -8,11 +8,6 @@ namespace KSail.Models.CLI.Commands;
 public class KSailCLIUp
 {
   /// <summary>
-  /// Destroy any existing cluster before creating a new one.
-  /// </summary>
-  [Description("Destroy any existing cluster before creating a new one.")]
-  public bool Destroy { get; set; }
-  /// <summary>
   /// Lint the manifests before applying them.
   /// </summary>
   [Description("Lint the manifests before applying them.")]

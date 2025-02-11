@@ -14,7 +14,6 @@ Options:
   -sm, --secret-manager <None|SOPS>                 Configure which secret manager to use.
   -p, --path <path>                                 The directory in which to find the project
   -fsu, --flux-source-url <flux-source-url>         Flux source URL for reconciling GitOps resources
-  --destroy                                         Destroy any existing cluster before provisioning
   -l, --lint                                        Lint manifests before pushing an update
   -r, --reconcile                                   Reconcile manifests after pushing an update
   --version                                         Show version information

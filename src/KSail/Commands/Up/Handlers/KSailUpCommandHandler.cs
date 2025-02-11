@@ -9,7 +9,6 @@ using Devantler.KubernetesProvisioner.Resources.Native;
 using Devantler.SecretManager.SOPS.LocalAge;
 using k8s;
 using k8s.Models;
-using KSail.Commands.Down.Handlers;
 using KSail.Commands.Lint.Handlers;
 using KSail.Models;
 using KSail.Models.MirrorRegistry;
@@ -26,7 +25,6 @@ class KSailUpCommandHandler
   readonly FluxProvisioner _deploymentTool;
   readonly IKubernetesClusterProvisioner _clusterProvisioner;
   readonly KSailCluster _config;
-  readonly KSailDownCommandHandler _ksailDownCommandHandler;
   readonly KSailLintCommandHandler _ksailLintCommandHandler = new();
 
   internal KSailUpCommandHandler(KSailCluster config)
@@ -47,7 +45,6 @@ class KSailUpCommandHandler
       KSailDeploymentTool.Flux => new FluxProvisioner(config.Spec.Connection.Context),
       _ => throw new NotSupportedException($"The Deployment tool '{config.Spec.Project.DeploymentTool}' is not supported.")
     };
-    _ksailDownCommandHandler = new KSailDownCommandHandler(config);
     _config = config;
   }
 
@@ -66,11 +63,6 @@ class KSailUpCommandHandler
       return 1;
     }
 
-    if (!await DestroyExistingCluster(cancellationToken).ConfigureAwait(false))
-    {
-      return 1;
-    }
-
     await ProvisionCluster(cancellationToken).ConfigureAwait(false);
 
     await BootstrapMirrorRegistries(_config, cancellationToken).ConfigureAwait(false);
@@ -84,18 +76,6 @@ class KSailUpCommandHandler
       Console.WriteLine();
     }
     return 0;
-  }
-
-  async Task<bool> DestroyExistingCluster(CancellationToken cancellationToken)
-  {
-    if (_config.Spec.CLI.Up.Destroy)
-    {
-      Console.WriteLine($"🔥 Destroying existing cluster '{_config.Metadata.Name}'");
-      bool success = await _ksailDownCommandHandler.HandleAsync(cancellationToken).ConfigureAwait(false);
-      Console.WriteLine();
-      return success;
-    }
-    return true;
   }
 
   async Task<bool> CheckEngineIsRunning(CancellationToken cancellationToken = default)

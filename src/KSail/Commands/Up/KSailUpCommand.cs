@@ -18,7 +18,6 @@ sealed class KSailUpCommand : Command
   readonly ProjectEngineOption _projectEngineOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly ProjectMirrorRegistriesOption _projectMirrorRegistriesOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly ProjectSecretManagerOption _projectSecretManagerOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly DestroyOption _cliUpDestroyOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly FluxDeploymentToolSourceUrlOption _fluxDeploymentToolSourceUrlOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly LintOption _cliUpLintOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly PathOption _projectDistributionConfigOption = new("Path to the distribution configuration file", ["--distribution-config", "-dc"]) { Arity = ArgumentArity.ZeroOrOne };
@@ -44,7 +43,6 @@ sealed class KSailUpCommand : Command
         config.UpdateConfig("Spec.Project.MirrorRegistries", context.ParseResult.GetValueForOption(_projectMirrorRegistriesOption));
         config.UpdateConfig("Spec.KustomizeTemplate.Root", $"k8s/clusters/{config.Metadata.Name}/flux-system");
         config.UpdateConfig("Spec.FluxDeploymentTool.Source.Url", context.ParseResult.GetValueForOption(_fluxDeploymentToolSourceUrlOption));
-        config.UpdateConfig("Spec.CLI.Up.Destroy", context.ParseResult.GetValueForOption(_cliUpDestroyOption));
         config.UpdateConfig("Spec.CLI.Up.Lint", context.ParseResult.GetValueForOption(_cliUpLintOption));
         config.UpdateConfig("Spec.CLI.Up.Reconcile", context.ParseResult.GetValueForOption(_cliUpReconcileOption));
 
@@ -95,7 +93,6 @@ sealed class KSailUpCommand : Command
     AddOption(_projectSecretManagerOption);
     AddOption(_projectWorkingDirectoryOption);
     AddOption(_fluxDeploymentToolSourceUrlOption);
-    AddOption(_cliUpDestroyOption);
     AddOption(_cliUpLintOption);
     AddOption(_cliUpReconcileOption);
   }
