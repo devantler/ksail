@@ -5,13 +5,15 @@ Usage:
   up [options]
 
 Options:
-  -p, --path <path>                                 The directory in which to find the project
   -n, --name <name>                                 The name of the cluster.
-  -e, --engine <Docker>                             The engine to use for provisioning the cluster.
-  -d, --distribution <K3s|Native>                   The distribution to use for the cluster.
-  -sm, --secret-manager <None|SOPS>                 Configure which secret manager to use.
-  -dc, --distribution-config <distribution-config>  Path to the distribution configuration file
   -t, --timeout <timeout>                           The time to wait for each kustomization to become ready.
+  -dc, --distribution-config <distribution-config>  Path to the distribution configuration file
+  -d, --distribution <K3s|Native>                   The distribution to use for the cluster.
+  -e, --engine <Docker>                             The engine to use for provisioning the cluster.
+  -mr, --mirror-registries                          Enable mirror registries.
+  -sm, --secret-manager <None|SOPS>                 Configure which secret manager to use.
+  -p, --path <path>                                 The directory in which to find the project
+  -fsu, --flux-source-url <flux-source-url>         Flux source URL for reconciling GitOps resources
   --destroy                                         Destroy any existing cluster before provisioning
   -l, --lint                                        Lint manifests before pushing an update
   -r, --reconcile                                   Reconcile manifests after pushing an update

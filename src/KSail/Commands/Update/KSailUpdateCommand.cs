@@ -10,11 +10,11 @@ namespace KSail.Commands.Update;
 sealed class KSailUpdateCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly MetadataNameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly PathOption _workingDirectory = new("Path to the working directory for your project") { Arity = ArgumentArity.ZeroOrOne };
   readonly LintOption _lintOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly ReconcileOption _reconcileOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly TimeoutOption _timeoutOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly ConnectionTimeoutOption _timeoutOption = new() { Arity = ArgumentArity.ZeroOrOne };
   internal KSailUpdateCommand() : base(
     "update",
     "Update a cluster"

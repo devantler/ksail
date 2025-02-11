@@ -11,7 +11,7 @@ namespace KSail.Commands.Lint;
 sealed class KSailLintCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly MetadataNameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly PathOption _workingDirectoryOption = new("Path to the working directory for your project") { Arity = ArgumentArity.ZeroOrOne };
   internal KSailLintCommand() : base(
    "lint", "Lint manifests for a cluster"

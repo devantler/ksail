@@ -2,7 +2,7 @@ using System.CommandLine;
 
 namespace KSail.Options;
 
-class ContextOption() : Option<string>(
+class ConnectionContextOption() : Option<string>(
   ["-c", "--context"],
   "The kubernetes context to use"
 )

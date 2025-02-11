@@ -2,7 +2,7 @@ using System.CommandLine;
 
 namespace KSail.Options;
 
-class KubeconfigOption() : Option<string>(
+class ConnectionKubeconfigOption() : Option<string>(
   ["-k", "--kubeconfig"],
   "Path to kubeconfig file"
 )
