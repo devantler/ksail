@@ -28,7 +28,7 @@ sealed class KSailSecretsGenerateCommand : Command
           return;
         }
 
-        Console.WriteLine($"🔑 Generating new encryption key with '{config.Spec.Project.SecretManager}'");
+        Console.WriteLine($"🔑 Generating a new encryption key with '{config.Spec.Project.SecretManager}'");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         Console.WriteLine();
       }
