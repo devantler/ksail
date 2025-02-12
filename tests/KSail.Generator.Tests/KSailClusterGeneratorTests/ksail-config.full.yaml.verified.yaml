@@ -79,10 +79,10 @@ spec:
       registries: false
     list:
       all: false
-    sops:
+    secrets:
       list:
-        showSOPSConfigKeysOnly: false
-        showPrivateKey: true
+        showProjectKeys: false
+        showPrivateKeys: false
     up:
       lint: true
       reconcile: true

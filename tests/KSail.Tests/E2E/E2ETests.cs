@@ -1,4 +1,5 @@
 using System.CommandLine;
+using Devantler.SecretManager.SOPS.LocalAge;
 using KSail.Commands.Down;
 using KSail.Commands.Init;
 using KSail.Commands.List;
@@ -6,6 +7,7 @@ using KSail.Commands.Start;
 using KSail.Commands.Stop;
 using KSail.Commands.Up;
 using KSail.Commands.Update;
+using KSail.Utils;
 
 namespace KSail.Tests.E2E;
 
@@ -13,30 +15,10 @@ namespace KSail.Tests.E2E;
 /// E2E tests for the various distributions.
 /// </summary>
 [Collection("KSail.Tests")]
-public class E2ETests : IAsyncLifetime, IDisposable
+public class E2ETests : IAsyncLifetime
 {
   /// <inheritdoc/>
-  public Task DisposeAsync() => Task.CompletedTask;
-  /// <inheritdoc/>
   public Task InitializeAsync() => Task.CompletedTask;
-
-  /// <summary>
-  /// Cleanup the test environment.
-  /// </summary>
-  /// <returns></returns>
-  static void Cleanup()
-  {
-    if (Directory.Exists("k8s"))
-      Directory.Delete("k8s", true);
-    if (File.Exists("kind-config.yaml"))
-      File.Delete("kind-config.yaml");
-    if (File.Exists("k3d-config.yaml"))
-      File.Delete("k3d-config.yaml");
-    if (File.Exists("ksail-config.yaml"))
-      File.Delete("ksail-config.yaml");
-    if (File.Exists(".sops.yaml"))
-      File.Delete(".sops.yaml");
-  }
 
   /// <summary>
   /// Tests that the 'ksail up' command is executed successfully with various configurations.
@@ -44,10 +26,10 @@ public class E2ETests : IAsyncLifetime, IDisposable
   [Theory]
   [InlineData("-d native")]
   //TODO: Add back --secret-manager sops
-  [InlineData("--name ksail-advanced-native --distribution native --flux-post-build-variables")]
+  [InlineData("--name ksail-advanced-native --distribution native --secret-manager sops --flux-post-build-variables")]
   [InlineData("-d k3s")]
   //TODO: Add back --secret-manager sops
-  [InlineData("--name ksail-advanced-k3s --distribution k3s --flux-post-build-variables")]
+  [InlineData("--name ksail-advanced-k3s --distribution k3s --secret-manager sops --flux-post-build-variables")]
   public async Task KSailUp_WithVariousConfigurations_Succeeds(string initArgs)
   {
     //Arrange
@@ -77,9 +59,33 @@ public class E2ETests : IAsyncLifetime, IDisposable
   }
 
   /// <inheritdoc/>
-  public void Dispose()
+  public async Task DisposeAsync()
   {
-    Cleanup();
-    GC.SuppressFinalize(this);
+    var secretsManager = new SOPSLocalAgeSecretManager();
+    if (File.Exists(".sops.yaml"))
+    {
+      var sopsConfig = await SopsConfigLoader.LoadAsync();
+      foreach (string? publicKey in sopsConfig.CreationRules.Select(rule => rule.Age))
+      {
+        try
+        {
+          _ = await secretsManager.DeleteKeyAsync(publicKey);
+        }
+        catch (Exception)
+        {
+          //Ignore any exceptions
+        }
+      }
+    }
+    if (Directory.Exists("k8s"))
+      Directory.Delete("k8s", true);
+    if (File.Exists("kind-config.yaml"))
+      File.Delete("kind-config.yaml");
+    if (File.Exists("k3d-config.yaml"))
+      File.Delete("k3d-config.yaml");
+    if (File.Exists("ksail-config.yaml"))
+      File.Delete("ksail-config.yaml");
+    if (File.Exists(".sops.yaml"))
+      File.Delete(".sops.yaml");
   }
 }

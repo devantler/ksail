@@ -6,10 +6,10 @@ namespace KSail.Utils;
 static class SopsConfigLoader
 {
   static readonly SOPSConfigHelper _sopsConfigHelper = new();
-  internal static async Task<SOPSConfig> LoadAsync(CancellationToken cancellationToken)
+  internal static async Task<SOPSConfig> LoadAsync(string? directory = default, CancellationToken cancellationToken = default)
   {
     Console.WriteLine("► searching for a '.sops.yaml' file");
-    string directory = Directory.GetCurrentDirectory();
+    directory ??= Directory.GetCurrentDirectory();
     string sopsConfigPath = string.Empty;
     while (!string.IsNullOrEmpty(directory))
     {

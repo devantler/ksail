@@ -1,4 +1,5 @@
 using System.CommandLine;
+using Devantler.SecretManager.SOPS.LocalAge;
 using KSail.Options;
 using KSail.Utils;
 
@@ -21,13 +22,17 @@ sealed class KSailSecretsDeleteCommand : Command
         config.UpdateConfig("Spec.Project.SecretManager", context.ParseResult.GetValueForOption(_projectSecretManagerOption));
         string publicKey = context.ParseResult.GetValueForArgument(_publicKeyArgument);
         var cancellationToken = context.GetCancellationToken();
-        var handler = new KSailSecretsDeleteCommandHandler(publicKey);
-
-        if (config.Spec.Project.SecretManager == Models.Project.KSailSecretManager.None)
+        KSailSecretsDeleteCommandHandler handler;
+        switch (config.Spec.Project.SecretManager)
         {
-          _ = _exceptionHandler.HandleException(new KSailException("no secret manager configured"));
-          context.ExitCode = 1;
-          return;
+          default:
+          case Models.Project.KSailSecretManager.None:
+            _ = _exceptionHandler.HandleException(new KSailException("no secret manager configured"));
+            context.ExitCode = 1;
+            return;
+          case Models.Project.KSailSecretManager.SOPS:
+            handler = new KSailSecretsDeleteCommandHandler(publicKey, new SOPSLocalAgeSecretManager());
+            break;
         }
 
         Console.WriteLine($"🔑 Removing an existing encryption key with '{config.Spec.Project.SecretManager}'");

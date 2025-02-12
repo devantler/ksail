@@ -310,20 +310,20 @@
                 }
               }
             },
-            "sops": {
-              "description": "The options to use for the \u0027sops\u0027 command.",
+            "secrets": {
+              "description": "The options to use for the \u0027secrets\u0027 command.",
               "type": "object",
               "properties": {
                 "list": {
                   "description": "The options to use for the \u0027list\u0027 command.",
                   "type": "object",
                   "properties": {
-                    "showSOPSConfigKeysOnly": {
-                      "description": "Only show keys found in the SOPS config file.",
+                    "showProjectKeys": {
+                      "description": "Only show keys used in the current project.",
                       "type": "boolean"
                     },
-                    "showPrivateKey": {
-                      "description": "Show the private key in the listed keys.",
+                    "showPrivateKeys": {
+                      "description": "Show private keys in the listed keys.",
                       "type": "boolean"
                     }
                   }

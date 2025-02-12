@@ -1,4 +1,5 @@
 using System.CommandLine;
+using Devantler.SecretManager.SOPS.LocalAge;
 using KSail.Options;
 using KSail.Utils;
 
@@ -19,13 +20,17 @@ sealed class KSailSecretsGenerateCommand : Command
         var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
         config.UpdateConfig("Spec.Project.SecretManager", context.ParseResult.GetValueForOption(_projectSecretManagerOption));
         var cancellationToken = context.GetCancellationToken();
-        var handler = new KSailSecretsGenerateCommandHandler();
-
-        if (config.Spec.Project.SecretManager == Models.Project.KSailSecretManager.None)
+        KSailSecretsGenerateCommandHandler handler;
+        switch (config.Spec.Project.SecretManager)
         {
-          _ = _exceptionHandler.HandleException(new KSailException("no secret manager configured"));
-          context.ExitCode = 1;
-          return;
+          default:
+          case Models.Project.KSailSecretManager.None:
+            _ = _exceptionHandler.HandleException(new KSailException("no secret manager configured"));
+            context.ExitCode = 1;
+            return;
+          case Models.Project.KSailSecretManager.SOPS:
+            handler = new KSailSecretsGenerateCommandHandler(new SOPSLocalAgeSecretManager());
+            break;
         }
 
         Console.WriteLine($"🔑 Generating a new encryption key with '{config.Spec.Project.SecretManager}'");

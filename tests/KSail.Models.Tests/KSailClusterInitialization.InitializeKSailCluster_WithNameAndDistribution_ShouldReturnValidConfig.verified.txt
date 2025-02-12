@@ -134,10 +134,10 @@
       List: {
         All: false
       },
-      Sops: {
+      Secrets: {
         List: {
-          ShowSOPSConfigKeysOnly: false,
-          ShowPrivateKey: true
+          ShowProjectKeys: false,
+          ShowPrivateKeys: false
         }
       },
       Up: {

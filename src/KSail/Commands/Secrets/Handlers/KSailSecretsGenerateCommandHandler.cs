@@ -1,10 +1,9 @@
 using Devantler.Keys.Age;
 using Devantler.SecretManager.Core;
-using Devantler.SecretManager.SOPS.LocalAge;
 
-class KSailSecretsGenerateCommandHandler()
+class KSailSecretsGenerateCommandHandler(ISecretManager<AgeKey> secretManager)
 {
-  readonly ISecretManager<AgeKey> _secretManager = new SOPSLocalAgeSecretManager();
+  readonly ISecretManager<AgeKey> _secretManager = secretManager;
 
   internal async Task<int> HandleAsync(CancellationToken cancellationToken)
   {

@@ -1,22 +1,22 @@
-using Devantler.SecretManager.SOPS.LocalAge;
 using Devantler.Keys.Age;
+using Devantler.SecretManager.Core;
 using KSail.Models;
 using KSail.Utils;
 
-namespace KSail.Commands.SOPS.Handlers;
+namespace KSail.Commands.Secrets.Handlers;
 
-class KSailSOPSListCommandHandler(KSailCluster config)
+class KSailSecretsListCommandHandler(KSailCluster config, ISecretManager<AgeKey> secretManager)
 {
   readonly KSailCluster _config = config;
-  readonly LocalAgeSecretManager _secretManager = new();
+  readonly ISecretManager<AgeKey> _secretManager = secretManager;
 
   internal async Task<bool> HandleAsync(CancellationToken cancellationToken)
   {
     var keys = await _secretManager.ListKeysAsync(cancellationToken).ConfigureAwait(false);
 
-    if (_config.Spec.CLI.SopsOptions.List.ShowSOPSConfigKeysOnly)
+    if (_config.Spec.CLI.Secrets.List.ShowProjectKeys)
     {
-      var sopsConfig = await SopsConfigLoader.LoadAsync(cancellationToken).ConfigureAwait(false);
+      var sopsConfig = await SopsConfigLoader.LoadAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
       if (!keys.Any(key => sopsConfig.CreationRules.Any(rule => rule.Age == key.PublicKey)))
       {
         Console.WriteLine("No keys found");
@@ -24,7 +24,7 @@ class KSailSOPSListCommandHandler(KSailCluster config)
       }
       foreach (var key in keys.Where(key => sopsConfig.CreationRules.Any(rule => rule.Age == key.PublicKey)))
       {
-        if (_config.Spec.CLI.SopsOptions.List.ShowPrivateKey)
+        if (_config.Spec.CLI.Secrets.List.ShowPrivateKeys)
         {
           Console.WriteLine(key);
         }
@@ -44,8 +44,7 @@ class KSailSOPSListCommandHandler(KSailCluster config)
       }
       foreach (var key in keys)
       {
-
-        if (_config.Spec.CLI.SopsOptions.List.ShowPrivateKey)
+        if (_config.Spec.CLI.Secrets.List.ShowPrivateKeys)
         {
           Console.WriteLine(key);
         }

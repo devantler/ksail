@@ -212,13 +212,7 @@ class KSailUpCommandHandler
     Console.WriteLine($"🔼 Bootstrapping {config.Spec.Project.DeploymentTool}");
     Console.WriteLine("► creating 'flux-system' namespace");
     using var resourceProvisioner = new KubernetesResourceProvisioner(config.Spec.Connection.Context);
-    _ = await resourceProvisioner.CreateNamespaceAsync(new V1Namespace
-    {
-      Metadata = new V1ObjectMeta
-      {
-        Name = "flux-system"
-      }
-    }, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await CreateFluxSystemNamespace(resourceProvisioner, cancellationToken).ConfigureAwait(false);
 
     string scheme = config.Spec.FluxDeploymentTool.Source.Url.Scheme;
     string host = "localhost";
@@ -234,13 +228,37 @@ class KSailUpCommandHandler
     Console.WriteLine();
   }
 
+  // TODO: Move to generic method on KubernetesResourceProvisioner
+  static async Task CreateFluxSystemNamespace(KubernetesResourceProvisioner resourceProvisioner, CancellationToken cancellationToken)
+  {
+    var namespaceList = await resourceProvisioner.ListNamespaceAsync(cancellationToken: cancellationToken);
+    bool namespaceExists = namespaceList.Items.Any(x => x.Metadata.Name == "flux-system");
+    if (namespaceExists)
+    {
+      Console.WriteLine("✓ 'flux-system' namespace already exists");
+    }
+    else
+    {
+      _ = await resourceProvisioner.CreateNamespaceAsync(new V1Namespace
+      {
+        Metadata = new V1ObjectMeta
+        {
+          Name = "flux-system"
+        }
+      }, cancellationToken: cancellationToken).ConfigureAwait(false);
+      Console.WriteLine("✔ 'flux-system' namespace created");
+    }
+  }
+
   async Task BootstrapSecretManager(KSailCluster config, CancellationToken cancellationToken)
   {
     using var resourceProvisioner = new KubernetesResourceProvisioner(config.Spec.Connection.Context);
     if (config.Spec.Project.SecretManager == KSailSecretManager.SOPS)
     {
-      var sopsConfig = await SopsConfigLoader.LoadAsync(cancellationToken).ConfigureAwait(false);
+      Console.WriteLine("🔼 Bootstrapping SOPS secret manager");
+      await CreateFluxSystemNamespace(resourceProvisioner, cancellationToken).ConfigureAwait(false);
 
+      var sopsConfig = await SopsConfigLoader.LoadAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
       string publicKey = sopsConfig.CreationRules.First(x => x.PathRegex.Contains(config.Metadata.Name, StringComparison.OrdinalIgnoreCase)).Age.Split(',')[0].Trim();
 
       Console.WriteLine("► getting private key from SOPS_AGE_KEY_FILE or default location");
@@ -257,10 +275,12 @@ class KSailUpCommandHandler
         Type = "Generic",
         Data = new Dictionary<string, byte[]>
         {
-          { "sops.agekey", Encoding.UTF8.GetBytes(ageKey.PrivateKey) }
+          { "age.agekey", Encoding.UTF8.GetBytes(ageKey.PrivateKey) }
         }
       };
+
       _ = await resourceProvisioner.CreateNamespacedSecretAsync(secret, secret.Metadata.NamespaceProperty, cancellationToken: cancellationToken).ConfigureAwait(false);
+      Console.WriteLine("✔ 'sops-age' secret created");
     }
   }
 }
