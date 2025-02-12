@@ -1,7 +1,9 @@
 using System.CommandLine;
 using System.CommandLine.IO;
 using System.Text.RegularExpressions;
+using Devantler.SecretManager.SOPS.LocalAge;
 using KSail.Commands.Init;
+using KSail.Utils;
 
 namespace KSail.Tests.Commands.Init;
 
@@ -9,10 +11,8 @@ namespace KSail.Tests.Commands.Init;
 /// Tests for the <see cref="KSailInitCommand"/> class.
 /// </summary>
 [Collection("KSail.Tests")]
-public partial class KSailInitCommandTests : IAsyncLifetime, IDisposable
+public partial class KSailInitCommandTests : IAsyncLifetime
 {
-  /// <inheritdoc/>
-  public Task DisposeAsync() => Task.CompletedTask;
   /// <inheritdoc/>
   public Task InitializeAsync() => Task.CompletedTask;
 
@@ -141,7 +141,7 @@ public partial class KSailInitCommandTests : IAsyncLifetime, IDisposable
     _ = Directory.CreateDirectory(outputDir);
 
     //Act
-    int exitCode = await ksailCommand.InvokeAsync($"--name ksail-advanced-native --output {outputDir} --flux-post-build-variables --kustomize-hooks clusters/ksail-advanced-native distributions/native shared");
+    int exitCode = await ksailCommand.InvokeAsync($"--name ksail-advanced-native --output {outputDir} --secret-manager sops --flux-post-build-variables --kustomize-hooks clusters/ksail-advanced-native distributions/native shared");
 
     //Assert
     Assert.Equal(0, exitCode);
@@ -175,8 +175,8 @@ public partial class KSailInitCommandTests : IAsyncLifetime, IDisposable
     _ = Directory.CreateDirectory(outputDir);
 
     //Act
-    int exitCodeRun1 = await ksailCommand.InvokeAsync($"--name ksail-advanced-native --output {outputDir} --flux-post-build-variables --kustomize-hooks clusters/ksail-advanced-native distributions/native shared");
-    int exitCodeRun2 = await ksailCommand.InvokeAsync($"--name ksail-advanced-native --output {outputDir} --flux-post-build-variables --kustomize-hooks clusters/ksail-advanced-native distributions/native shared");
+    int exitCodeRun1 = await ksailCommand.InvokeAsync($"--name ksail-advanced-native --output {outputDir} --secret-manager sops --flux-post-build-variables --kustomize-hooks clusters/ksail-advanced-native distributions/native shared");
+    int exitCodeRun2 = await ksailCommand.InvokeAsync($"--name ksail-advanced-native --output {outputDir} --secret-manager sops --flux-post-build-variables --kustomize-hooks clusters/ksail-advanced-native distributions/native shared");
 
     //Assert
     Assert.Equal(0, exitCodeRun1);
@@ -211,8 +211,8 @@ public partial class KSailInitCommandTests : IAsyncLifetime, IDisposable
     _ = Directory.CreateDirectory(outputDir);
 
     //Act
-    int exitCodeRun1 = await ksailCommand.InvokeAsync($"--name cluster1 --output {outputDir} --flux-post-build-variables --distribution native --kustomize-hooks clusters/cluster1 distributions/native shared");
-    int exitCodeRun2 = await ksailCommand.InvokeAsync($"--name cluster2 --output {outputDir} --flux-post-build-variables --distribution k3s --kustomize-hooks clusters/cluster2 distributions/k3s shared");
+    int exitCodeRun1 = await ksailCommand.InvokeAsync($"--name cluster1 --output {outputDir} --secret-manager sops --flux-post-build-variables --distribution native --kustomize-hooks clusters/cluster1 distributions/native shared");
+    int exitCodeRun2 = await ksailCommand.InvokeAsync($"--name cluster2 --output {outputDir} --secret-manager sops --flux-post-build-variables --distribution k3s --kustomize-hooks clusters/cluster2 distributions/k3s shared");
 
     //Assert
     Assert.Equal(0, exitCodeRun1);
@@ -235,9 +235,13 @@ public partial class KSailInitCommandTests : IAsyncLifetime, IDisposable
     }
   }
 
+  [GeneratedRegex("url:.*")]
+  private static partial Regex UrlRegex();
+
   /// <inheritdoc/>
-  public void Dispose()
+  public async Task DisposeAsync()
   {
+    var secretsManager = new SOPSLocalAgeSecretManager();
     string[] directoryPaths =
     [
       Path.Combine(Path.GetTempPath(), "ksail-init-mixed-advanced-multi"),
@@ -249,6 +253,21 @@ public partial class KSailInitCommandTests : IAsyncLifetime, IDisposable
     ];
     foreach (string outputDir in directoryPaths)
     {
+      if (File.Exists(Path.Combine(outputDir, ".sops.yaml")))
+      {
+        var sopsConfig = await SopsConfigLoader.LoadAsync(outputDir);
+        foreach (string? publicKey in sopsConfig.CreationRules.Select(rule => rule.Age))
+        {
+          try
+          {
+            _ = await secretsManager.DeleteKeyAsync(publicKey);
+          }
+          catch (Exception)
+          {
+            //Ignore any exceptions
+          }
+        }
+      }
       if (Directory.Exists(outputDir))
       {
         Directory.Delete(outputDir, true);
@@ -265,9 +284,5 @@ public partial class KSailInitCommandTests : IAsyncLifetime, IDisposable
         File.Delete(outputDir);
       }
     }
-    GC.SuppressFinalize(this);
   }
-
-  [GeneratedRegex("url:.*")]
-  private static partial Regex UrlRegex();
 }

@@ -239,7 +239,7 @@ class KSailUpCommandHandler
     using var resourceProvisioner = new KubernetesResourceProvisioner(config.Spec.Connection.Context);
     if (config.Spec.Project.SecretManager == KSailSecretManager.SOPS)
     {
-      var sopsConfig = await SopsConfigLoader.LoadAsync(cancellationToken).ConfigureAwait(false);
+      var sopsConfig = await SopsConfigLoader.LoadAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
 
       string publicKey = sopsConfig.CreationRules.First(x => x.PathRegex.Contains(config.Metadata.Name, StringComparison.OrdinalIgnoreCase)).Age.Split(',')[0].Trim();
 

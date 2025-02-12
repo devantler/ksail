@@ -16,7 +16,7 @@ class KSailSecretsListCommandHandler(KSailCluster config, ISecretManager<AgeKey>
 
     if (_config.Spec.CLI.Secrets.List.ShowProjectKeys)
     {
-      var sopsConfig = await SopsConfigLoader.LoadAsync(cancellationToken).ConfigureAwait(false);
+      var sopsConfig = await SopsConfigLoader.LoadAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
       if (!keys.Any(key => sopsConfig.CreationRules.Any(rule => rule.Age == key.PublicKey)))
       {
         Console.WriteLine("No keys found");

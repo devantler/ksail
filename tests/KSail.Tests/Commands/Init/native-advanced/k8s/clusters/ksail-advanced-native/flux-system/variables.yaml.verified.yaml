@@ -15,3 +15,7 @@ spec:
     name: flux-system
   path: clusters/ksail-advanced-native/variables
   prune: true
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
