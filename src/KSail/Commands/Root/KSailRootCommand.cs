@@ -6,6 +6,7 @@ using KSail.Commands.Init;
 using KSail.Commands.Lint;
 using KSail.Commands.List;
 using KSail.Commands.Root.Handlers;
+using KSail.Commands.Secrets;
 using KSail.Commands.Start;
 using KSail.Commands.Stop;
 using KSail.Commands.Up;
@@ -49,6 +50,6 @@ sealed class KSailRootCommand : RootCommand
     AddCommand(new KSailStopCommand());
     AddCommand(new KSailDebugCommand());
     AddCommand(new KSailGenCommand(console));
-    // AddCommand(new KSailSecCommand());
+    AddCommand(new KSailSecretsCommand());
   }
 }
