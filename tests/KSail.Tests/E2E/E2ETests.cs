@@ -25,10 +25,8 @@ public class E2ETests : IAsyncLifetime
   /// </summary>
   [Theory]
   [InlineData("-d native")]
-  //TODO: Add back --secret-manager sops
   [InlineData("--name ksail-advanced-native --distribution native --secret-manager sops --flux-post-build-variables")]
   [InlineData("-d k3s")]
-  //TODO: Add back --secret-manager sops
   [InlineData("--name ksail-advanced-k3s --distribution k3s --secret-manager sops --flux-post-build-variables")]
   public async Task KSailUp_WithVariousConfigurations_Succeeds(string initArgs)
   {
