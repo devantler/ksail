@@ -1,19 +1,17 @@
 using System.CommandLine;
 using Devantler.SecretManager.SOPS.LocalAge;
-using KSail.Commands.Secrets.Handlers;
-using KSail.Commands.Secrets.Options;
 using KSail.Options;
 using KSail.Utils;
 
 namespace KSail.Commands.Secrets.Commands;
 
-sealed class KSailSecretsListCommand : Command
+sealed class KSailSecretsExportCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
+  readonly PublicKeyArgument _publicKeyArgument = new() { Arity = ArgumentArity.ExactlyOne };
   readonly ProjectSecretManagerOption _projectSecretManagerOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly ShowPrivateKeysOption _showPrivateKeysOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly ShowProjectKeysOption _showProjectKeysOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  internal KSailSecretsListCommand() : base("list", "List keys")
+  readonly PathOption _outputPathOption = new("Path to the output file", ["--output", "-o"]) { Arity = ArgumentArity.ExactlyOne };
+  internal KSailSecretsExportCommand() : base("export", "Export a key to a file")
   {
     AddOptions();
 
@@ -23,11 +21,11 @@ sealed class KSailSecretsListCommand : Command
       {
         var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
         config.UpdateConfig("Spec.Project.SecretManager", context.ParseResult.GetValueForOption(_projectSecretManagerOption));
-        config.UpdateConfig("Spec.CLI.Secrets.List.ShowPrivateKeys", context.ParseResult.GetValueForOption(_showPrivateKeysOption));
-        config.UpdateConfig("Spec.CLI.Secrets.List.ShowProjectKeys", context.ParseResult.GetValueForOption(_showProjectKeysOption));
+        string publicKey = context.ParseResult.GetValueForArgument(_publicKeyArgument);
+        string outputPath = context.ParseResult.GetValueForOption(_outputPathOption) ?? "./key.txt";
 
         var cancellationToken = context.GetCancellationToken();
-        KSailSecretsListCommandHandler handler;
+        KSailSecretsExportCommandHandler handler;
         switch (config.Spec.Project.SecretManager)
         {
           default:
@@ -36,11 +34,11 @@ sealed class KSailSecretsListCommand : Command
             context.ExitCode = 1;
             return;
           case Models.Project.KSailSecretManager.SOPS:
-            handler = new KSailSecretsListCommandHandler(config, new SOPSLocalAgeSecretManager());
+            handler = new KSailSecretsExportCommandHandler(publicKey, outputPath, new SOPSLocalAgeSecretManager());
             break;
         }
-        Console.WriteLine("🔑 Listing keys");
-        context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;
+        Console.WriteLine($"🔑 Exporting '{config.Spec.Project.SecretManager}' key to '{outputPath}'");
+        context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         Console.WriteLine();
       }
       catch (OperationCanceledException ex)
@@ -53,8 +51,8 @@ sealed class KSailSecretsListCommand : Command
 
   void AddOptions()
   {
+    AddArgument(_publicKeyArgument);
     AddOption(_projectSecretManagerOption);
-    AddOption(_showPrivateKeysOption);
-    AddOption(_showProjectKeysOption);
+    AddOption(_outputPathOption);
   }
 }
