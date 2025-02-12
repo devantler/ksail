@@ -26,9 +26,9 @@
     <PackageReference Include="Devantler.KubernetesGenerator.Flux" Version="1.2.7" />
     <PackageReference Include="Devantler.KubernetesGenerator.K3d" Version="1.2.7" />
     <PackageReference Include="Devantler.KubernetesGenerator.Kind" Version="1.2.7" />
-    <PackageReference Include="Devantler.KubernetesProvisioner.Cluster.K3d" Version="1.2.7" />
-    <PackageReference Include="Devantler.KubernetesProvisioner.Cluster.Kind" Version="1.2.7" />
-    <PackageReference Include="Devantler.KubernetesProvisioner.GitOps.Flux" Version="1.2.7" />
+    <PackageReference Include="Devantler.KubernetesProvisioner.Cluster.K3d" Version="1.2.10" />
+    <PackageReference Include="Devantler.KubernetesProvisioner.Cluster.Kind" Version="1.2.10" />
+    <PackageReference Include="Devantler.KubernetesProvisioner.GitOps.Flux" Version="1.2.10" />
     <PackageReference Include="Devantler.KubernetesValidator.ClientSide.Schemas" Version="1.0.24" />
     <PackageReference Include="Devantler.KubernetesValidator.ClientSide.YamlSyntax" Version="1.0.24" />
     <PackageReference Include="Devantler.SecretManager.SOPS.LocalAge" Version="1.1.57" />
