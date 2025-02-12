@@ -228,6 +228,7 @@ class KSailUpCommandHandler
     Console.WriteLine();
   }
 
+  // TODO: Move to generic method on KubernetesResourceProvisioner
   static async Task CreateFluxSystemNamespace(KubernetesResourceProvisioner resourceProvisioner, CancellationToken cancellationToken)
   {
     var namespaceList = await resourceProvisioner.ListNamespaceAsync(cancellationToken: cancellationToken);
