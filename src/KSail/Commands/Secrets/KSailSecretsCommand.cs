@@ -19,5 +19,6 @@ sealed class KSailSecretsCommand : Command
   {
     AddCommand(new KSailSecretsGenerateCommand());
     AddCommand(new KSailSecretsDeleteCommand());
+    AddCommand(new KSailSecretsListCommand());
   }
 }

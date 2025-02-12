@@ -1,6 +1,6 @@
 using System.ComponentModel;
 using KSail.Models.CLI.Commands;
-using KSail.Models.CLI.Commands.Sops;
+using KSail.Models.CLI.Commands.Secrets;
 
 namespace KSail.Models.CLI;
 
@@ -21,10 +21,10 @@ public class KSailCLI
   public KSailCLIList List { get; set; } = new();
 
   /// <summary>
-  /// The options to use for the 'sops' command.
+  /// The options to use for the 'secrets' command.
   /// </summary>
-  [Description("The options to use for the 'sops' command.")]
-  public KSailCLISops Sops { get; set; } = new();
+  [Description("The options to use for the 'secrets' command.")]
+  public KSailCLISecrets Secrets { get; set; } = new();
 
   /// <summary>
   /// The options to use for the 'up' command.
