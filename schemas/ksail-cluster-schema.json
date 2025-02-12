@@ -334,10 +334,6 @@
               "description": "The options to use for the \u0027up\u0027 command.",
               "type": "object",
               "properties": {
-                "destroy": {
-                  "description": "Destroy any existing cluster before creating a new one.",
-                  "type": "boolean"
-                },
                 "lint": {
                   "description": "Lint the manifests before applying them.",
                   "type": "boolean"

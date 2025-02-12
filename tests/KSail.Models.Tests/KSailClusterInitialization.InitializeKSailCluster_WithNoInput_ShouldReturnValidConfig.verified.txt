@@ -21,7 +21,7 @@
       SecretManager: None,
       CNI: Default,
       Editor: Nano,
-      MirrorRegistries: false
+      MirrorRegistries: true
     },
     FluxDeploymentTool: {
       Source: {
@@ -141,7 +141,6 @@
         }
       },
       Up: {
-        Destroy: false,
         Lint: true,
         Reconcile: true
       },

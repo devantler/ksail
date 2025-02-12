@@ -10,7 +10,7 @@ namespace KSail.Commands.Init;
 sealed class KSailInitCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly NameOption _metadataNameOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly MetadataNameOption _metadataNameOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly PathOption _projectWorkingDirectoryOption = new("The output directory", ["-o", "--output"]) { Arity = ArgumentArity.ZeroOrOne };
   readonly FluxDeploymentToolPostBuildVariablesOption _fluxDeploymentToolPostBuildVariablesOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly KustomizeTemplateFlowsOption _kustomizeTemplateKustomizationsOption = new() { Arity = ArgumentArity.ZeroOrMore, AllowMultipleArgumentsPerToken = true };

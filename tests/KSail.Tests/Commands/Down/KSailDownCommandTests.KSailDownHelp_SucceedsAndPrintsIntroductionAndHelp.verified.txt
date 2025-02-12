@@ -7,7 +7,6 @@ Usage:
 Options:
   -n, --name <name>                The name of the cluster.
   -d, --distribution <K3s|Native>  The distribution to use for the cluster.
-  -r, --registries                 Delete registries
   --version                        Show version information
   -?, -h, --help                   Show help and usage information
 

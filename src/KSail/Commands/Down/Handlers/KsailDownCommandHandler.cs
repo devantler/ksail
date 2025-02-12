@@ -19,24 +19,20 @@ class KSailDownCommandHandler
     _engineProvisioner = _config.Spec.Project.Engine switch
     {
       KSailEngine.Docker => new DockerProvisioner(),
-      _ => throw new NotSupportedException($"Engine '{_config.Spec.Project.Engine}' is not supported.")
+      _ => throw new KSailException($"Engine '{_config.Spec.Project.Engine}' is not supported.")
     };
     _kubernetesDistributionProvisioner = _config.Spec.Project.Distribution switch
     {
       KSailKubernetesDistribution.K3s => new K3dProvisioner(),
       KSailKubernetesDistribution.Native => new KindProvisioner(),
-      _ => throw new NotSupportedException($"Kubernetes distribution '{_config.Spec.Project.Engine}' is not supported.")
+      _ => throw new KSailException($"Kubernetes distribution '{_config.Spec.Project.Engine}' is not supported.")
     };
   }
 
   internal async Task<bool> HandleAsync(CancellationToken cancellationToken = default)
   {
     await _kubernetesDistributionProvisioner.DeleteAsync(_config.Metadata.Name, cancellationToken).ConfigureAwait(false);
-    if (_config.Spec.CLI.Down.Registries)
-    {
-      Console.WriteLine("► deleting registries...");
-      await DeleteRegistriesAsync(cancellationToken).ConfigureAwait(false);
-    }
+    await DeleteRegistriesAsync(cancellationToken).ConfigureAwait(false);
     return true;
   }
 
@@ -45,16 +41,29 @@ class KSailDownCommandHandler
     switch (_config.Spec.Project.DeploymentTool)
     {
       case KSailDeploymentTool.Flux:
-        await _engineProvisioner.DeleteRegistryAsync(_config.Spec.FluxDeploymentTool.Source.Url.Segments.Last(), cancellationToken).ConfigureAwait(false);
+        Console.WriteLine("► Deleting OCI source registry");
+        string containerName = _config.Spec.FluxDeploymentTool.Source.Url.Segments.Last();
+        bool ksailRegistryExists = await _engineProvisioner.CheckContainerExistsAsync(containerName, cancellationToken).ConfigureAwait(false);
+        if (ksailRegistryExists)
+        {
+          await _engineProvisioner.DeleteRegistryAsync(containerName, cancellationToken).ConfigureAwait(false);
+          Console.WriteLine($"✓ '{containerName}' deleted.");
+        }
         break;
       default:
-        throw new NotSupportedException($"deployment tool '{_config.Spec.Project.DeploymentTool}' is not supported.");
+        throw new KSailException($"deployment tool '{_config.Spec.Project.DeploymentTool}' is not supported.");
     }
     if (_config.Spec.Project.MirrorRegistries)
     {
-      foreach (var registry in _config.Spec.MirrorRegistries)
+      Console.WriteLine("► Deleting mirror registries");
+      foreach (var mirrorRegistry in _config.Spec.MirrorRegistries)
       {
-        await _engineProvisioner.DeleteRegistryAsync(registry.Name, cancellationToken).ConfigureAwait(false);
+        bool mirrorRegistryExists = await _engineProvisioner.CheckContainerExistsAsync(mirrorRegistry.Name, cancellationToken).ConfigureAwait(false);
+        if (mirrorRegistryExists)
+        {
+          await _engineProvisioner.DeleteRegistryAsync(mirrorRegistry.Name, cancellationToken).ConfigureAwait(false);
+          Console.WriteLine($"✓ '{mirrorRegistry.Name}' deleted.");
+        }
       }
     }
   }

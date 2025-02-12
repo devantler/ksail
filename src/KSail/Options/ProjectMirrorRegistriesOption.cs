@@ -1,8 +1,8 @@
 using System.CommandLine;
 
-namespace KSail.Commands.Init.Options;
+namespace KSail.Options;
 
-class ProjectMirrorRegistriesOption() : Option<bool>
+class ProjectMirrorRegistriesOption() : Option<bool?>
 (
   ["-mr", "--mirror-registries"],
   "Enable mirror registries."

@@ -78,5 +78,5 @@ public class KSailProject
   /// Whether to set up mirror registries for the project.
   /// </summary>
   [Description("Whether to set up mirror registries for the project.")]
-  public bool MirrorRegistries { get; set; } = false;
+  public bool MirrorRegistries { get; set; } = true;
 }

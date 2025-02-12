@@ -10,8 +10,8 @@ namespace KSail.Commands.Debug;
 sealed class KSailDebugCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly KubeconfigOption _kubeconfigOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly ContextOption _contextOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly ConnectionKubeconfigOption _kubeconfigOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly ConnectionContextOption _contextOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly EditorOption _editorOption = new() { Arity = ArgumentArity.ZeroOrOne };
 
   internal KSailDebugCommand() : base("debug", "Debug a cluster (❤️ K9s)")

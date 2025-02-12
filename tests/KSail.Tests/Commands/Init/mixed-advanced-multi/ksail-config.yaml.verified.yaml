@@ -19,7 +19,7 @@ spec:
     secretManager: SOPS
     cni: Default
     editor: Nano
-    mirrorRegistries: false
+    mirrorRegistries: true
   fluxDeploymentTool:
     source:
       url: <url>
@@ -87,7 +87,6 @@ spec:
         showSOPSConfigKeysOnly: false
         showPrivateKey: true
     up:
-      destroy: false
       lint: true
       reconcile: true
     update:

@@ -2,7 +2,6 @@ using System.CommandLine;
 using Devantler.K3dCLI;
 using Devantler.KindCLI;
 using KSail.Commands.Down.Handlers;
-using KSail.Commands.Down.Options;
 using KSail.Options;
 using KSail.Utils;
 using YamlDotNet.Core;
@@ -12,15 +11,12 @@ namespace KSail.Commands.Down;
 sealed class KSailDownCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly NameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly EngineOption _engineOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly MetadataNameOption _nameOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly ProjectEngineOption _engineOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly ProjectDistributionOption _distributionOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly RegistriesOption _registriesOption = new() { Arity = ArgumentArity.ZeroOrOne };
   internal KSailDownCommand() : base("down", "Destroy a cluster")
   {
-    AddOption(_nameOption);
-    AddOption(_distributionOption);
-    AddOption(_registriesOption);
+    AddOptions();
 
     this.SetHandler(async (context) =>
     {
@@ -30,7 +26,6 @@ sealed class KSailDownCommand : Command
         config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_nameOption));
         config.UpdateConfig("Spec.Project.Engine", context.ParseResult.GetValueForOption(_engineOption));
         config.UpdateConfig("Spec.Project.Distribution", context.ParseResult.GetValueForOption(_distributionOption));
-        config.UpdateConfig("Spec.CLI.Down.Registries", context.ParseResult.GetValueForOption(_registriesOption));
 
         var handler = new KSailDownCommandHandler(config);
         Console.WriteLine($"🔥 Destroying cluster '{config.Spec.Connection.Context}");
@@ -63,5 +58,11 @@ sealed class KSailDownCommand : Command
         context.ExitCode = 1;
       }
     });
+  }
+
+  void AddOptions()
+  {
+    AddOption(_nameOption);
+    AddOption(_distributionOption);
   }
 }
