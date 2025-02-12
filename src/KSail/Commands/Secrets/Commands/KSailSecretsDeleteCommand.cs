@@ -9,7 +9,7 @@ sealed class KSailSecretsDeleteCommand : Command
   readonly ExceptionHandler _exceptionHandler = new();
   readonly PublicKeyArgument _publicKeyArgument = new() { Arity = ArgumentArity.ExactlyOne };
   readonly ProjectSecretManagerOption _projectSecretManagerOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  internal KSailSecretsDeleteCommand() : base("del", "Delete existing encryption key")
+  internal KSailSecretsDeleteCommand() : base("del", "Delete an existing encryption key")
   {
     AddArgument(_publicKeyArgument);
     AddOption(_projectSecretManagerOption);
