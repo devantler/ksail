@@ -16,7 +16,7 @@ spec:
     engine: Docker
     distribution: Native
     deploymentTool: Flux
-    secretManager: SOPS
+    secretManager: None
     cni: Default
     editor: Nano
     mirrorRegistries: true

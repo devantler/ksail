@@ -15,7 +15,3 @@ spec:
     name: flux-system
   path: clusters/cluster2/variables
   prune: true
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age

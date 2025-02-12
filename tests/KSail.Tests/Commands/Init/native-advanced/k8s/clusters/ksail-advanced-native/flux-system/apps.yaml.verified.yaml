@@ -42,7 +42,3 @@ spec:
     - kind: Secret
       name: variables-sensitive-shared
       optional: false
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
