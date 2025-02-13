@@ -5,26 +5,19 @@ using KSail.Utils;
 
 namespace KSail.Commands.Secrets.Commands;
 
-sealed class KSailSecretsExportCommand : Command
+sealed class KSailSecretsImportCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly PublicKeyArgument _publicKeyArgument = new() { Arity = ArgumentArity.ExactlyOne };
   readonly ProjectSecretManagerOption _projectSecretManagerOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly PathOption _outputFilePathOption = new("Path to the output file", ["--output", "-o"]) { Arity = ArgumentArity.ExactlyOne };
-  internal KSailSecretsExportCommand() : base("export", "Export a key to a file")
+  readonly PathOption _inputPathOption = new("Path to the input key file", ["--input", "-i"]) { Arity = ArgumentArity.ExactlyOne };
+  internal KSailSecretsImportCommand() : base("import", "Import a key from a file")
   {
     AddOptions();
-
     AddValidator(commandResult =>
     {
-      string? outputFilePath = commandResult.Children.FirstOrDefault(c => c.Symbol.Name == _outputFilePathOption.Name)?.Tokens[0].Value;
-      if (!commandResult.Children.Any(c => c.Symbol.Name == _outputFilePathOption.Name))
+      if (!commandResult.Children.Any(c => c.Symbol.Name == _inputPathOption.Name))
       {
-        commandResult.ErrorMessage = $"✗ Option '{_outputFilePathOption.Name}' is required";
-      }
-      else if (outputFilePath != null && Path.GetFileName(outputFilePath) == string.Empty)
-      {
-        commandResult.ErrorMessage = $"✗ '{outputFilePath}' is not a valid file path";
+        commandResult.ErrorMessage = $"✗ Option '{_inputPathOption.Name}' is required";
       }
     });
     this.SetHandler(async (context) =>
@@ -33,11 +26,10 @@ sealed class KSailSecretsExportCommand : Command
       {
         var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
         config.UpdateConfig("Spec.Project.SecretManager", context.ParseResult.GetValueForOption(_projectSecretManagerOption));
-        string publicKey = context.ParseResult.GetValueForArgument(_publicKeyArgument);
-        string outputPath = context.ParseResult.GetValueForOption(_outputFilePathOption) ?? throw new KSailException("output path is required");
+        string inputPath = context.ParseResult.GetValueForOption(_inputPathOption) ?? throw new KSailException("input path is required");
 
         var cancellationToken = context.GetCancellationToken();
-        KSailSecretsExportCommandHandler handler;
+        KSailSecretsImportCommandHandler handler;
         switch (config.Spec.Project.SecretManager)
         {
           default:
@@ -46,12 +38,17 @@ sealed class KSailSecretsExportCommand : Command
             context.ExitCode = 1;
             return;
           case Models.Project.KSailSecretManager.SOPS:
-            handler = new KSailSecretsExportCommandHandler(publicKey, outputPath, new SOPSLocalAgeSecretManager());
+            handler = new KSailSecretsImportCommandHandler(inputPath, new SOPSLocalAgeSecretManager());
             break;
         }
-        Console.WriteLine($"🔑 Exporting '{config.Spec.Project.SecretManager}' key to '{outputPath}'");
+        Console.WriteLine($"🔑 Exporting '{config.Spec.Project.SecretManager}' key to '{inputPath}'");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         Console.WriteLine();
+      }
+      catch (FileNotFoundException ex)
+      {
+        _ = _exceptionHandler.HandleException(ex);
+        context.ExitCode = 1;
       }
       catch (OperationCanceledException ex)
       {
@@ -63,8 +60,7 @@ sealed class KSailSecretsExportCommand : Command
 
   void AddOptions()
   {
-    AddArgument(_publicKeyArgument);
     AddOption(_projectSecretManagerOption);
-    AddOption(_outputFilePathOption);
+    AddOption(_inputPathOption);
   }
 }
