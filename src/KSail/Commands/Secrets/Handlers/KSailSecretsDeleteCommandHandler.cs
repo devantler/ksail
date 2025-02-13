@@ -10,7 +10,7 @@ class KSailSecretsDeleteCommandHandler(string publicKey, ISecretManager<AgeKey> 
   {
     Console.WriteLine($"► deleting '{_publicKey}'");
     var key = await _secretManager.DeleteKeyAsync(_publicKey, cancellationToken).ConfigureAwait(false);
-    Console.WriteLine($"✔ removed '{key.PublicKey}'");
+    Console.WriteLine($"✔ key removed successfully");
     return 0;
   }
 }
