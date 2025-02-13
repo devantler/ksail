@@ -1,4 +1,5 @@
 using System.CommandLine;
+using Devantler.SecretManager.Core;
 using Devantler.SecretManager.SOPS.LocalAge;
 using KSail.Options;
 using KSail.Utils;
@@ -38,6 +39,11 @@ sealed class KSailSecretsDeleteCommand : Command
         Console.WriteLine($"🔑 Removing an existing encryption key with '{config.Spec.Project.SecretManager}'");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         Console.WriteLine();
+      }
+      catch (SecretManagerException ex)
+      {
+        _ = _exceptionHandler.HandleException(ex);
+        context.ExitCode = 1;
       }
       catch (OperationCanceledException ex)
       {
