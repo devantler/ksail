@@ -4,7 +4,6 @@ on:
   push:
     tags:
       - "v*.*.*"
-    branches: main
   workflow_dispatch:
 
 jobs:
@@ -14,7 +13,6 @@ jobs:
   publish-binaries:
     name: Publish binaries
     runs-on: macos-latest
-    if: startsWith(github.ref, 'refs/tags/v')
     steps:
       - name: 📑 Checkout
         uses: actions/checkout@v4
