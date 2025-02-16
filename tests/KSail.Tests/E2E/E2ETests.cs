@@ -31,8 +31,8 @@ public class E2ETests : IAsyncLifetime
   [InlineData("--name ksail-advanced-k3s --distribution k3s --secret-manager sops --flux-post-build-variables")]
   public async Task KSailUp_WithVariousConfigurations_Succeeds(string initArgs)
   {
-    // TODO: Add support for Windows and macOS when GitHub Actions runners support dind on Windows and macOS runners.
-    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+    // TODO: Add support for Windows and macOS in GitHub Runners when GitHub Actions runners support dind on Windows and macOS runners.
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && Environment.GetEnvironmentVariable("GITHUB_ACTIONS") == "true"))
     {
       return;
     }
