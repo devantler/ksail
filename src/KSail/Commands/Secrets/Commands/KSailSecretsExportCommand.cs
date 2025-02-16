@@ -10,11 +10,12 @@ namespace KSail.Commands.Secrets.Commands;
 sealed class KSailSecretsExportCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly PublicKeyArgument _publicKeyArgument = new() { Arity = ArgumentArity.ExactlyOne };
+  readonly PublicKeyArgument _publicKeyArgument = new("The public key for the encryption key to export") { Arity = ArgumentArity.ExactlyOne };
   readonly ProjectSecretManagerOption _projectSecretManagerOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly PathOption _outputFilePathOption = new("Path to the output file", ["--output", "-o"]) { Arity = ArgumentArity.ExactlyOne };
   internal KSailSecretsExportCommand() : base("export", "Export a key to a file")
   {
+    AddArguments();
     AddOptions();
 
     AddValidator(commandResult =>
@@ -63,9 +64,10 @@ sealed class KSailSecretsExportCommand : Command
     });
   }
 
+  void AddArguments() => AddArgument(_publicKeyArgument);
+
   void AddOptions()
   {
-    AddArgument(_publicKeyArgument);
     AddOption(_projectSecretManagerOption);
     AddOption(_outputFilePathOption);
   }

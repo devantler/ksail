@@ -2,9 +2,9 @@ using System.CommandLine;
 
 namespace KSail.Commands.Secrets.Arguments;
 
-class PublicKeyArgument() : Argument<string>(
+class PublicKeyArgument(string description) : Argument<string>(
   "public-key",
-  "The public key to delete."
+  description
 )
 {
 }
