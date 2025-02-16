@@ -3,14 +3,16 @@ using Devantler.SecretManager.Core;
 
 namespace KSail.Commands.Secrets.Handlers;
 
-class KSailSecretsGenerateCommandHandler(ISecretManager<AgeKey> secretManager)
+class KSailSecretsEncryptCommandHandler(string path, ISecretManager<AgeKey> secretManager)
 {
+  readonly string _path = path;
   readonly ISecretManager<AgeKey> _secretManager = secretManager;
 
   internal async Task<int> HandleAsync(CancellationToken cancellationToken)
   {
-    var key = await _secretManager.CreateKeyAsync(cancellationToken).ConfigureAwait(false);
-    Console.WriteLine(key);
+    Console.WriteLine($"► encrypting '{_path}'");
+    _ = await 
+    Console.WriteLine($"✔ file encrypted successfully");
     return 0;
   }
 }
