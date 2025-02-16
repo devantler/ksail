@@ -9,7 +9,7 @@ namespace KSail.Commands.Secrets.Commands;
 sealed class KSailSecretsDeleteCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly PublicKeyArgument _publicKeyArgument = new() { Arity = ArgumentArity.ExactlyOne };
+  readonly PublicKeyArgument _publicKeyArgument = new("The public key for the encryption key to delete") { Arity = ArgumentArity.ExactlyOne };
   readonly ProjectSecretManagerOption _projectSecretManagerOption = new() { Arity = ArgumentArity.ZeroOrOne };
   internal KSailSecretsDeleteCommand() : base("del", "Delete an existing encryption key")
   {

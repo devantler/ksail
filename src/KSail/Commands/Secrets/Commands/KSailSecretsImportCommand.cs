@@ -8,25 +8,19 @@ namespace KSail.Commands.Secrets.Commands;
 sealed class KSailSecretsImportCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
+  readonly KeyArgument _keyArgument = new("The encryption key to import") { Arity = ArgumentArity.ExactlyOne };
   readonly ProjectSecretManagerOption _projectSecretManagerOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly PathOption _inputPathOption = new("Path to the input key file", ["--input", "-i"]) { Arity = ArgumentArity.ExactlyOne };
-  internal KSailSecretsImportCommand() : base("import", "Import a key from a file")
+  internal KSailSecretsImportCommand() : base("import", "Import a key from stdin or a file")
   {
+    AddArguments();
     AddOptions();
-    AddValidator(commandResult =>
-    {
-      if (!commandResult.Children.Any(c => c.Symbol.Name == _inputPathOption.Name))
-      {
-        commandResult.ErrorMessage = $"✗ Option '{_inputPathOption.Name}' is required";
-      }
-    });
     this.SetHandler(async (context) =>
     {
       try
       {
         var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
         config.UpdateConfig("Spec.Project.SecretManager", context.ParseResult.GetValueForOption(_projectSecretManagerOption));
-        string inputPath = context.ParseResult.GetValueForOption(_inputPathOption) ?? throw new KSailException("input path is required");
+        string key = context.ParseResult.GetValueForArgument(_keyArgument);
 
         var cancellationToken = context.GetCancellationToken();
         KSailSecretsImportCommandHandler handler;
@@ -38,10 +32,10 @@ sealed class KSailSecretsImportCommand : Command
             context.ExitCode = 1;
             return;
           case Models.Project.KSailSecretManager.SOPS:
-            handler = new KSailSecretsImportCommandHandler(inputPath, new SOPSLocalAgeSecretManager());
+            handler = new KSailSecretsImportCommandHandler(key, new SOPSLocalAgeSecretManager());
             break;
         }
-        Console.WriteLine($"🔑 Exporting '{config.Spec.Project.SecretManager}' key to '{inputPath}'");
+        Console.WriteLine($"🔑 Importing '{key}' to '{config.Spec.Project.SecretManager}'.");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         Console.WriteLine();
       }
@@ -58,9 +52,6 @@ sealed class KSailSecretsImportCommand : Command
     });
   }
 
-  void AddOptions()
-  {
-    AddOption(_projectSecretManagerOption);
-    AddOption(_inputPathOption);
-  }
+  void AddArguments() => AddArgument(_keyArgument);
+  void AddOptions() => AddOption(_projectSecretManagerOption);
 }
