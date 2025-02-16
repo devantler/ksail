@@ -99,6 +99,7 @@ public class KSailLintCommandTests : IAsyncLifetime
     Assert.Equal(1, lintExitCode);
   }
 
+  // TODO: Fix flakyness in this test on Windows, requiring waiting for the active processes to finish.
   /// <inheritdoc/>
   public async Task DisposeAsync()
   {
