@@ -9,11 +9,8 @@ namespace KSail.Tests.Commands.Lint;
 /// Tests for the <see cref="KSailLintCommand"/> class.
 /// </summary>
 [Collection("KSail.Tests")]
-public class KSailLintCommandTests : IAsyncLifetime
+public class KSailLintCommandTests : IDisposable
 {
-  /// <inheritdoc/>
-  public Task InitializeAsync() => Task.CompletedTask;
-
   /// <summary>
   /// Tests that the 'ksail lint --help'
   /// </summary>
@@ -100,7 +97,7 @@ public class KSailLintCommandTests : IAsyncLifetime
   }
 
   /// <inheritdoc/>
-  public Task DisposeAsync()
+  public void Dispose()
   {
     var directories = new List<string> {
       Path.Combine(Path.GetTempPath(), "ksail-lint-test-cluster"),
@@ -114,6 +111,5 @@ public class KSailLintCommandTests : IAsyncLifetime
         Directory.Delete(directory, true);
       }
     }
-    return Task.CompletedTask;
   }
 }
