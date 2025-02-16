@@ -92,7 +92,7 @@ public class KSailLintCommandTests : IAsyncLifetime, IDisposable
           image: my-image
     """;
     _ = Directory.CreateDirectory(path);
-    File.WriteAllText(Path.Combine(path, "invalid.yaml"), invalidYaml);
+    await File.WriteAllTextAsync(Path.Combine(path, "invalid.yaml"), invalidYaml);
 
     //Act
     int lintExitCode = await ksailLintCommand.InvokeAsync($"--path {path}");
