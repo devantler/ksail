@@ -9,8 +9,11 @@ namespace KSail.Tests.Commands.Lint;
 /// Tests for the <see cref="KSailLintCommand"/> class.
 /// </summary>
 [Collection("KSail.Tests")]
-public class KSailLintCommandTests : IDisposable
+public class KSailLintCommandTests : IAsyncLifetime
 {
+  /// <inheritdoc/>
+  public Task InitializeAsync() => Task.CompletedTask;
+
   /// <summary>
   /// Tests that the 'ksail lint --help'
   /// </summary>
@@ -97,7 +100,7 @@ public class KSailLintCommandTests : IDisposable
   }
 
   /// <inheritdoc/>
-  public void Dispose()
+  public async Task DisposeAsync()
   {
     var directories = new List<string> {
       Path.Combine(Path.GetTempPath(), "ksail-lint-test-cluster"),
@@ -108,7 +111,19 @@ public class KSailLintCommandTests : IDisposable
     {
       if (Directory.Exists(directory))
       {
-        Directory.Delete(directory, true);
+        bool directoryDeleted = false;
+        while (!directoryDeleted)
+        {
+          try
+          {
+            Directory.Delete(directory, true);
+            directoryDeleted = true;
+          }
+          catch (IOException)
+          {
+            await Task.Delay(100);
+          }
+        }
       }
     }
   }
