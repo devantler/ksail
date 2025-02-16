@@ -1,20 +1,10 @@
 name: Release
 on:
   workflow_dispatch:
-  release:
-    types: [published]
-  issues:
-    types: [closed]
-  schedule:
-    - cron: "0 */1 * * *"
+  push:
+    branches:
+      - main
+
 jobs:
-  release:
-    runs-on: ubuntu-latest
-    permissions:
-      issues: write
-      contents: read
-    steps:
-      - name: Github Action Notify Release
-        uses: nearform-actions/github-action-notify-release@v1.12.2
-        with:
-          notify-after: 1m
+  call-release-workflow:
+    uses: devantler-tech/.github/.github/workflows/release.yaml@main
