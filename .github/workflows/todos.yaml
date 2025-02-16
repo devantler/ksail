@@ -3,24 +3,7 @@ on:
   push:
     branches: [main]
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  build:
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: "actions/checkout@v4"
-      - name: Generate GitHub App Token
-        uses: actions/create-github-app-token@v1
-        id: app-token
-        with:
-          app-id: ${{ secrets.APP_ID }}
-          private-key: ${{ secrets.APP_PRIVATE_KEY }}
-      - uses: "alstr/todo-to-issue-action@v5"
-        env:
-          AUTO_ASSIGN: true
-          CLOSE_ISSUES: true
-          PROJECT: user/devantler/4
-          PROJECTS_SECRET: ${{ steps.app-token.outputs.token }}
+  call-todos-workflow:
+    uses: devantler-tech/.github/.github/workflows/todos.yaml@main
+    secrets: inherit
