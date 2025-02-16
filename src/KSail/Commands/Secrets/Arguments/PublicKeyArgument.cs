@@ -1,8 +1,8 @@
 using System.CommandLine;
 
-class PublicKeyArgument() : Argument<string>(
+class PublicKeyArgument(string description) : Argument<string>(
   "public-key",
-  "The public key to delete."
+  description
 )
 {
 }
