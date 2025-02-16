@@ -12,5 +12,5 @@ permissions:
   id-token: write
 
 jobs:
-  call-release-workflow:
+  release:
     uses: devantler-tech/.github/.github/workflows/release.yaml@main

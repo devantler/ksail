@@ -1,6 +1,0 @@
-name: Dependabot auto-merge
-on: pull_request
-
-jobs:
-  call-auto-merge-workflow:
-    uses: devantler-tech/.github/.github/workflows/auto-merge.yaml@main

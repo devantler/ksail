@@ -1,0 +1,15 @@
+name: Readme Tree
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  readme-tree:
+    uses: devantler-tech/.github/.github/workflows/readme-tree.yaml@main
+    secrets: inherit

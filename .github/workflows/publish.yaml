@@ -1,14 +1,13 @@
 name: Publish
-
 on:
   push:
     tags:
-      - "v*.*.*"
+      - 'v*'
   workflow_dispatch:
 
 jobs:
-  call-dotnet-publish-workflow:
-    uses: devantler-tech/.github/.github/workflows/dotnet-publish.yaml@main
+  publish:
+    uses: devantler-tech/.github/.github/workflows/dotnet-application-publish.yaml@main
     secrets: inherit
   publish-binaries:
     name: Publish binaries
