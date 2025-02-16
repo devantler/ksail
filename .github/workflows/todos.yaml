@@ -1,5 +1,6 @@
 name: "TODOs"
 on:
+  workflow_dispatch:
   push:
     branches: [main]
 
