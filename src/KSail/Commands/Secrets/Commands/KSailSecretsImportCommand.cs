@@ -10,7 +10,7 @@ sealed class KSailSecretsImportCommand : Command
   readonly ExceptionHandler _exceptionHandler = new();
   readonly KeyArgument _keyArgument = new("The encryption key to import") { Arity = ArgumentArity.ExactlyOne };
   readonly ProjectSecretManagerOption _projectSecretManagerOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  internal KSailSecretsImportCommand() : base("import", "Import a key from a file")
+  internal KSailSecretsImportCommand() : base("import", "Import a key from stdin or a file")
   {
     AddArguments();
     AddOptions();
