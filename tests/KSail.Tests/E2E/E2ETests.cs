@@ -1,4 +1,5 @@
 using System.CommandLine;
+using System.Runtime.InteropServices;
 using Devantler.SecretManager.SOPS.LocalAge;
 using KSail.Commands.Down;
 using KSail.Commands.Init;
@@ -30,6 +31,12 @@ public class E2ETests : IAsyncLifetime
   [InlineData("--name ksail-advanced-k3s --distribution k3s --secret-manager sops --flux-post-build-variables")]
   public async Task KSailUp_WithVariousConfigurations_Succeeds(string initArgs)
   {
+    // TODO: Add support for Windows and macOS in GitHub Runners when GitHub Actions runners support dind on Windows and macOS runners.
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && Environment.GetEnvironmentVariable("GITHUB_ACTIONS") == "true"))
+    {
+      return;
+    }
+
     //Arrange
     var ksailInitCommand = new KSailInitCommand();
     var ksailUpCommand = new KSailUpCommand();

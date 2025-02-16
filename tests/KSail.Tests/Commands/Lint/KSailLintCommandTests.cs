@@ -9,10 +9,8 @@ namespace KSail.Tests.Commands.Lint;
 /// Tests for the <see cref="KSailLintCommand"/> class.
 /// </summary>
 [Collection("KSail.Tests")]
-public class KSailLintCommandTests : IAsyncLifetime, IDisposable
+public class KSailLintCommandTests : IAsyncLifetime
 {
-  /// <inheritdoc/>
-  public Task DisposeAsync() => Task.CompletedTask;
   /// <inheritdoc/>
   public Task InitializeAsync() => Task.CompletedTask;
 
@@ -92,7 +90,7 @@ public class KSailLintCommandTests : IAsyncLifetime, IDisposable
           image: my-image
     """;
     _ = Directory.CreateDirectory(path);
-    File.WriteAllText(Path.Combine(path, "invalid.yaml"), invalidYaml);
+    await File.WriteAllTextAsync(Path.Combine(path, "invalid.yaml"), invalidYaml);
 
     //Act
     int lintExitCode = await ksailLintCommand.InvokeAsync($"--path {path}");
@@ -101,8 +99,9 @@ public class KSailLintCommandTests : IAsyncLifetime, IDisposable
     Assert.Equal(1, lintExitCode);
   }
 
+  // TODO: Fix flakyness in this test on Windows, requiring waiting for the active processes to finish.
   /// <inheritdoc/>
-  public void Dispose()
+  public async Task DisposeAsync()
   {
     var directories = new List<string> {
       Path.Combine(Path.GetTempPath(), "ksail-lint-test-cluster"),
@@ -113,9 +112,20 @@ public class KSailLintCommandTests : IAsyncLifetime, IDisposable
     {
       if (Directory.Exists(directory))
       {
-        Directory.Delete(directory, true);
+        bool directoryDeleted = false;
+        while (!directoryDeleted)
+        {
+          try
+          {
+            Directory.Delete(directory, true);
+            directoryDeleted = true;
+          }
+          catch (IOException)
+          {
+            await Task.Delay(100);
+          }
+        }
       }
     }
-    GC.SuppressFinalize(this);
   }
 }
