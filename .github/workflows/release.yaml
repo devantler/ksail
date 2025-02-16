@@ -5,6 +5,12 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  id-token: write
+
 jobs:
   call-release-workflow:
     uses: devantler-tech/.github/.github/workflows/release.yaml@main
