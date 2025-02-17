@@ -25,9 +25,7 @@ sealed class KSailDownCommand : Command
         config.UpdateConfig("Spec.Project.Distribution", context.ParseResult.GetValueForOption(_distributionOption));
 
         var handler = new KSailDownCommandHandler(config);
-        Console.WriteLine($"🔥 Destroying cluster '{config.Spec.Connection.Context}");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;
-        Console.WriteLine();
       }
       catch (Exception ex)
       {
