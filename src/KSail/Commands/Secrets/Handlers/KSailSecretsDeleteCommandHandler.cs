@@ -13,7 +13,7 @@ class KSailSecretsDeleteCommandHandler(KSailCluster config, string publicKey, IS
   internal async Task<int> HandleAsync(CancellationToken cancellationToken)
   {
     Console.WriteLine($"► deleting '{_publicKey}' from '{_config.Spec.Project.SecretManager}'");
-    _ = await _secretManager.GetKeyAsync(_publicKey, cancellationToken).ConfigureAwait(false);
+    _ = await _secretManager.DeleteKeyAsync(_publicKey, cancellationToken).ConfigureAwait(false);
     Console.WriteLine($"✔ key deleted");
     return 0;
   }
