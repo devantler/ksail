@@ -21,14 +21,10 @@ jobs:
         uses: actions/setup-dotnet@v4.0.0
         with:
           dotnet-version: 9
-      - name: 🔑 Add Cert to Keychain
-        uses: apple-actions/import-codesign-certs@v3
-        with:
-          p12-file-base64: ${{ secrets.CERTIFICATES_P12 }}
-          p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
       - name: 📦 Publish
         run: |
           version=$(echo "${{ github.ref_name }}" | sed -e 's/v//')
+
           dotnet publish -c Release -r osx-x64 src/KSail/KSail.csproj /p:Version=$version
           mv src/KSail/bin/Release/net9.0/osx-x64/publish/ksail ksail-darwin-amd64
 
@@ -43,23 +39,13 @@ jobs:
 
           dotnet publish -c Release -r win-x64 src/KSail/KSail.csproj /p:Version=$version
           mv src/KSail/bin/Release/net9.0/win-x64/publish/ksail.exe ksail-windows-amd64.exe
-      - name: 🔐 Sign binaries
-        run: |
-          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-darwin-amd64 --options=runtime --no-strict --entitlements ./.github/entitlements.xml -f
-          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-darwin-arm64 --options=runtime --no-strict --entitlements ./.github/entitlements.xml -f
-          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-linux-amd64 --options=runtime --no-strict --entitlements ./.github/entitlements.xml -f
-          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-linux-arm64 --options=runtime --no-strict --entitlements ./.github/entitlements.xml -f
-          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-windows-amd64.exe --options=runtime --no-strict --entitlements ./.github/entitlements.xml -f
-      - name: 📜 Notarize
-        run: |
-          echo "Create keychain profile"
-          xcrun notarytool store-credentials "notarytool-profile" --apple-id nikolaiemildamm@icloud.com --team-id F2NXL88V7B --password ${{ secrets.APP_SPECIFIC_PASSWORD }}
-
-          echo "Creating temp notarization archive"
-          zip -r notarization.zip ksail-darwin-amd64 ksail-darwin-arm64
-
-          echo "Notarize app"
-          xcrun notarytool submit "notarization.zip" --keychain-profile "notarytool-profile" --wait
+      # - name: 🔐 Sign binaries
+      #   run: |
+      #     codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-darwin-amd64 --options=runtime --no-strict --entitlements ./.github/entitlements.xml -f
+      #     codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-darwin-arm64 --options=runtime --no-strict --entitlements ./.github/entitlements.xml -f
+      #     codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-linux-amd64 --options=runtime --no-strict --entitlements ./.github/entitlements.xml -f
+      #     codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-linux-arm64 --options=runtime --no-strict --entitlements ./.github/entitlements.xml -f
+      #     codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-windows-amd64.exe --options=runtime --no-strict --entitlements ./.github/entitlements.xml -f
       - name: 📦 Tar binaries
         run: tar -czf ksail.tar.gz ksail-darwin-amd64 ksail-darwin-arm64 ksail-linux-amd64 ksail-linux-arm64 ksail-windows-amd64.exe
       - name: 🎉 Release
