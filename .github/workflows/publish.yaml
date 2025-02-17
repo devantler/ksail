@@ -68,7 +68,7 @@ jobs:
       #    formulae: |
       #      ksail
       - name: 🍺 Brew tap devantler formulas
-        run: brew tap devantler/formulas
+        run: brew tap devantler-tech/formulas
       - name: 🍺 Brew bump devantler formulas
         uses: Homebrew/actions/bump-packages@master
         with:
