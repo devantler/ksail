@@ -33,7 +33,7 @@ sealed class KSailSecretsDeleteCommand : Command
             context.ExitCode = 1;
             return;
           case Models.Project.KSailSecretManager.SOPS:
-            handler = new KSailSecretsDeleteCommandHandler(publicKey, new SOPSLocalAgeSecretManager());
+            handler = new KSailSecretsDeleteCommandHandler(config, publicKey, new SOPSLocalAgeSecretManager());
             break;
         }
 
