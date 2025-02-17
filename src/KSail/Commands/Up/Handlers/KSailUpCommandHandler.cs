@@ -179,6 +179,7 @@ class KSailUpCommandHandler
               await AddMirrorRegistryToContainerd(containerName, mirrorRegistry, cancellationToken);
             }
             Console.WriteLine($"✔ '{node}' mirror registries bootstrapped.");
+            Console.WriteLine();
           }
           break;
         case (KSailEngine.Docker, KSailKubernetesDistribution.K3s):
@@ -281,6 +282,7 @@ class KSailUpCommandHandler
 
       _ = await resourceProvisioner.CreateNamespacedSecretAsync(secret, secret.Metadata.NamespaceProperty, cancellationToken: cancellationToken).ConfigureAwait(false);
       Console.WriteLine("✔ 'sops-age' secret created");
+      Console.WriteLine();
     }
   }
 }
