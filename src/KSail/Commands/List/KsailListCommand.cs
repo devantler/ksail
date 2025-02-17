@@ -21,7 +21,6 @@ sealed class KSailListCommand : Command
         var cancellationToken = context.GetCancellationToken();
         var handler = new KSailListCommandHandler(config);
 
-        Console.WriteLine("📋 Listing clusters");
         _ = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         Console.WriteLine();
       }
