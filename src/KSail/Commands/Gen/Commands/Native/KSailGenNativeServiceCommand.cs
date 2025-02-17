@@ -1,7 +1,7 @@
 
 using System.CommandLine;
 using KSail.Commands.Gen.Handlers.Native;
-using KSail.Commands.Gen.Options;
+using KSail.Options;
 using KSail.Utils;
 
 namespace KSail.Commands.Gen.Commands.Native;
@@ -9,7 +9,7 @@ namespace KSail.Commands.Gen.Commands.Native;
 class KSailGenNativeServiceCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly FileOutputOption _outputOption = new("./service.yaml");
+  readonly OutputOption _outputOption = new("./service.yaml");
   readonly KSailGenNativeServiceCommandHandler _handler = new();
   public KSailGenNativeServiceCommand() : base("service", "Generate a 'core/v1/Service' resource.")
   {

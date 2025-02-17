@@ -1,7 +1,7 @@
 
 using System.CommandLine;
 using KSail.Commands.Gen.Handlers.Native;
-using KSail.Commands.Gen.Options;
+using KSail.Options;
 using KSail.Utils;
 
 namespace KSail.Commands.Gen.Commands.Native;
@@ -9,7 +9,7 @@ namespace KSail.Commands.Gen.Commands.Native;
 class KSailGenNativeResourceQuotaCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly FileOutputOption _outputOption = new("./resource-quota.yaml");
+  readonly OutputOption _outputOption = new("./resource-quota.yaml");
   readonly KSailGenNativeResourceQuotaCommandHandler _handler = new();
   public KSailGenNativeResourceQuotaCommand() : base("resource-quota", "Generate a 'core/v1/ResourceQuota' resource.")
   {

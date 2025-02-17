@@ -1,7 +1,7 @@
 
 using System.CommandLine;
 using KSail.Commands.Gen.Handlers.Native;
-using KSail.Commands.Gen.Options;
+using KSail.Options;
 using KSail.Utils;
 
 namespace KSail.Commands.Gen.Commands.Native;
@@ -9,7 +9,7 @@ namespace KSail.Commands.Gen.Commands.Native;
 class KSailGenNativeIngressCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly FileOutputOption _outputOption = new("./ingress.yaml");
+  readonly OutputOption _outputOption = new("./ingress.yaml");
   readonly KSailGenNativeIngressCommandHandler _handler = new();
   public KSailGenNativeIngressCommand() : base("ingress", "Generate a 'networking.k8s.io/v1/Ingress' resource.")
   {

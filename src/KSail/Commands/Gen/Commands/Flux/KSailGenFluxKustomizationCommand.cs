@@ -1,7 +1,7 @@
 
 using System.CommandLine;
 using KSail.Commands.Gen.Handlers.Flux;
-using KSail.Commands.Gen.Options;
+using KSail.Options;
 using KSail.Utils;
 
 namespace KSail.Commands.Gen.Commands.Flux;
@@ -9,7 +9,7 @@ namespace KSail.Commands.Gen.Commands.Flux;
 sealed class KSailGenFluxKustomizationCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly FileOutputOption _outputOption = new("./flux-kustomization.yaml");
+  readonly OutputOption _outputOption = new("./flux-kustomization.yaml");
   readonly KSailGenFluxKustomizationCommandHandler _handler = new();
   internal KSailGenFluxKustomizationCommand() : base("kustomization", "Generate a 'kustomize.toolkit.fluxcd.io/v1/Kustomization' resource.")
   {

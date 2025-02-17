@@ -2,6 +2,7 @@ using System.CommandLine;
 using Devantler.SecretManager.SOPS.LocalAge;
 using KSail.Commands.Secrets.Arguments;
 using KSail.Commands.Secrets.Handlers;
+using KSail.Commands.Secrets.Options;
 using KSail.Options;
 using KSail.Utils;
 
@@ -11,12 +12,15 @@ sealed class KSailSecretsEncryptCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
   readonly PathArgument _pathArgument = new("The path to the file to encrypt.") { Arity = ArgumentArity.ExactlyOne };
+  readonly PublicKeyOption _publicKeyOption = new("The public key to encrypt the file with.") { Arity = ArgumentArity.ZeroOrOne };
+  readonly InPlaceOption _inPlaceOption = new("Encrypt the file in place.") { Arity = ArgumentArity.ZeroOrOne };
+  readonly OutputOption _outputOption = new(string.Empty, "The path to output the encrypted file.") { Arity = ArgumentArity.ZeroOrOne };
   readonly ProjectSecretManagerOption _projectSecretManagerOption = new() { Arity = ArgumentArity.ZeroOrOne };
 
   internal KSailSecretsEncryptCommand() : base("encrypt", "Encrypt a file")
   {
     AddArgument(_pathArgument);
-    AddOption(_projectSecretManagerOption);
+    AddOptions();
     this.SetHandler(async (context) =>
     {
       try
@@ -24,6 +28,9 @@ sealed class KSailSecretsEncryptCommand : Command
         var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
         config.UpdateConfig("Spec.Project.SecretManager", context.ParseResult.GetValueForOption(_projectSecretManagerOption));
         string path = context.ParseResult.GetValueForArgument(_pathArgument);
+        string? publicKey = context.ParseResult.GetValueForOption(_publicKeyOption);
+        bool inPlace = context.ParseResult.GetValueForOption(_inPlaceOption);
+        string? output = context.ParseResult.GetValueForOption(_outputOption);
         var cancellationToken = context.GetCancellationToken();
         KSailSecretsEncryptCommandHandler handler;
         switch (config.Spec.Project.SecretManager)
@@ -34,7 +41,7 @@ sealed class KSailSecretsEncryptCommand : Command
             context.ExitCode = 1;
             return;
           case Models.Project.KSailSecretManager.SOPS:
-            handler = new KSailSecretsEncryptCommandHandler(path, new SOPSLocalAgeSecretManager());
+            handler = new KSailSecretsEncryptCommandHandler(path, publicKey, inPlace, output, new SOPSLocalAgeSecretManager());
             break;
         }
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
@@ -47,6 +54,12 @@ sealed class KSailSecretsEncryptCommand : Command
       }
     });
   }
+
+  void AddOptions()
+  {
+    AddOption(_projectSecretManagerOption);
+    AddOption(_publicKeyOption);
+    AddOption(_inPlaceOption);
+    AddOption(_outputOption);
+  }
 }
-
-

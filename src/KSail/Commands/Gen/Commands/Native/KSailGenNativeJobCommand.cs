@@ -1,7 +1,7 @@
 
 using System.CommandLine;
 using KSail.Commands.Gen.Handlers.Native;
-using KSail.Commands.Gen.Options;
+using KSail.Options;
 using KSail.Utils;
 
 namespace KSail.Commands.Gen.Commands.Native;
@@ -9,7 +9,7 @@ namespace KSail.Commands.Gen.Commands.Native;
 class KSailGenNativeWorkloadsJobCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly FileOutputOption _outputOption = new("./job.yaml");
+  readonly OutputOption _outputOption = new("./job.yaml");
   readonly KSailGenNativeWorkloadsJobCommandHandler _handler = new();
   public KSailGenNativeWorkloadsJobCommand() : base("job", "Generate a 'batch/v1/Job' resource.")
   {

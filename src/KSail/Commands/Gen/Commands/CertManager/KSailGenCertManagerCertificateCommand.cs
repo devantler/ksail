@@ -1,7 +1,7 @@
 
 using System.CommandLine;
 using KSail.Commands.Gen.Handlers.CertManager;
-using KSail.Commands.Gen.Options;
+using KSail.Options;
 using KSail.Utils;
 
 namespace KSail.Commands.Gen.Commands.CertManager;
@@ -9,7 +9,7 @@ namespace KSail.Commands.Gen.Commands.CertManager;
 class KSailGenCertManagerCertificateCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly FileOutputOption _outputOption = new("./certificate.yaml");
+  readonly OutputOption _outputOption = new("./certificate.yaml");
   public KSailGenCertManagerCertificateCommand() : base("certificate", "Generate a 'cert-manager.io/v1/Certificate' resource.")
   {
     AddOption(_outputOption);
