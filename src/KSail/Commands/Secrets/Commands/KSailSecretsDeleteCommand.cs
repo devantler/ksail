@@ -37,9 +37,7 @@ sealed class KSailSecretsDeleteCommand : Command
             break;
         }
 
-        Console.WriteLine($"🔑 Removing an existing encryption key with '{config.Spec.Project.SecretManager}'");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
-        Console.WriteLine();
       }
       catch (Exception ex)
       {
