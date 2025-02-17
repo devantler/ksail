@@ -33,12 +33,10 @@ sealed class KSailSecretsImportCommand : Command
             context.ExitCode = 1;
             return;
           case Models.Project.KSailSecretManager.SOPS:
-            handler = new KSailSecretsImportCommandHandler(key, new SOPSLocalAgeSecretManager());
+            handler = new KSailSecretsImportCommandHandler(config, key, new SOPSLocalAgeSecretManager());
             break;
         }
-        Console.WriteLine($"🔑 Importing '{key}' to '{config.Spec.Project.SecretManager}'.");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
-        Console.WriteLine();
       }
       catch (Exception ex)
       {

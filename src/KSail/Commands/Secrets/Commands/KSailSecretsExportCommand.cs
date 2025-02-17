@@ -49,7 +49,7 @@ sealed class KSailSecretsExportCommand : Command
             context.ExitCode = 1;
             return;
           case Models.Project.KSailSecretManager.SOPS:
-            handler = new KSailSecretsExportCommandHandler(publicKey, outputPath, new SOPSLocalAgeSecretManager());
+            handler = new KSailSecretsExportCommandHandler(config, publicKey, outputPath, new SOPSLocalAgeSecretManager());
             break;
         }
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);

@@ -19,7 +19,7 @@ class KSailSecretsListCommandHandler(KSailCluster config, ISecretManager<AgeKey>
       var sopsConfig = await SopsConfigLoader.LoadAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
       if (!keys.Any(key => sopsConfig.CreationRules.Any(rule => rule.Age == key.PublicKey)))
       {
-        Console.WriteLine("No keys found");
+        Console.WriteLine("► no keys found");
         return true;
       }
       foreach (var key in keys.Where(key => sopsConfig.CreationRules.Any(rule => rule.Age == key.PublicKey)))
@@ -39,7 +39,7 @@ class KSailSecretsListCommandHandler(KSailCluster config, ISecretManager<AgeKey>
     {
       if (!keys.Any())
       {
-        Console.WriteLine("No keys found");
+        Console.WriteLine("► no keys found");
         return true;
       }
       foreach (var key in keys)
