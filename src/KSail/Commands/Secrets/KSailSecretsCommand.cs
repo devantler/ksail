@@ -17,6 +17,7 @@ sealed class KSailSecretsCommand : Command
 
   void AddCommands()
   {
+    AddCommand(new KSailSecretsEncryptCommand());
     AddCommand(new KSailSecretsGenerateCommand());
     AddCommand(new KSailSecretsDeleteCommand());
     AddCommand(new KSailSecretsListCommand());
