@@ -52,9 +52,7 @@ sealed class KSailSecretsExportCommand : Command
             handler = new KSailSecretsExportCommandHandler(publicKey, outputPath, new SOPSLocalAgeSecretManager());
             break;
         }
-        Console.WriteLine($"🔑 Exporting '{config.Spec.Project.SecretManager}' key to '{outputPath}'");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
-        Console.WriteLine();
       }
       catch (Exception ex)
       {
