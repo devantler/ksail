@@ -39,9 +39,7 @@ sealed class KSailSecretsListCommand : Command
             handler = new KSailSecretsListCommandHandler(config, new SOPSLocalAgeSecretManager());
             break;
         }
-        Console.WriteLine("🔑 Listing keys");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;
-        Console.WriteLine();
       }
       catch (Exception ex)
       {
