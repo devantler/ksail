@@ -5,6 +5,9 @@ on:
       - 'v*'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   publish:
     uses: devantler-tech/.github/.github/workflows/dotnet-application-publish.yaml@main
