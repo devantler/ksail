@@ -25,16 +25,16 @@ sealed class KSailStartCommand : Command
         config.UpdateConfig("Spec.Project.Engine", context.ParseResult.GetValueForOption(_engineOption));
         config.UpdateConfig("Spec.Project.Distribution", context.ParseResult.GetValueForOption(_distributionOption));
 
-        Console.WriteLine($"🟢 Starting cluster '{config.Spec.Connection.Context}'");
+        Console.WriteLine($"► starting cluster '{config.Spec.Connection.Context}'");
         var handler = new KSailStartCommandHandler(config);
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         if (context.ExitCode == 0)
         {
-          Console.WriteLine("✔ Cluster started");
+          Console.WriteLine("✔ cluster started");
         }
         else
         {
-          throw new KSailException("Cluster could not be started");
+          throw new KSailException("cluster could not be started");
         }
       }
       catch (Exception ex)

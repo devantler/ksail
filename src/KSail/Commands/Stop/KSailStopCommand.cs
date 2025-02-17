@@ -26,15 +26,15 @@ sealed class KSailStopCommand : Command
       var handler = new KSailStopCommandHandler(config);
       try
       {
-        Console.WriteLine($"🛑 Stopping cluster '{config.Spec.Connection.Context}'");
+        Console.WriteLine($"► stopping cluster '{config.Spec.Connection.Context}'");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         if (context.ExitCode == 0)
         {
-          Console.WriteLine("✔ Cluster stopped");
+          Console.WriteLine("✔ cluster stopped");
         }
         else
         {
-          throw new KSailException("Cluster could not be stopped");
+          throw new KSailException("cluster could not be stopped");
         }
       }
       catch (Exception ex)
