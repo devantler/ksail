@@ -61,12 +61,6 @@ jobs:
             ksail-windows-amd64.exe
             ksail.tar.gz
           token: ${{ steps.app-token.outputs.token }}
-      #- name: 🍺 Brew bump core formulas
-      #  uses: Homebrew/actions/bump-packages@master
-      #  with:
-      #    token: ${{ steps.app-token.outputs.token }}
-      #    formulae: |
-      #      ksail
       - name: 🍺 Brew tap devantler formulas
         run: brew tap devantler-tech/formulas
       - name: 🍺 Brew bump devantler formulas
@@ -75,6 +69,12 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
           formulae: |
             devantler-tech/formulas/ksail
+      # - name: 🍺 Brew bump core formulas
+      #  uses: Homebrew/actions/bump-packages@master
+      #  with:
+      #    token: ${{ steps.app-token.outputs.token }}
+      #    formulae: |
+      #      ksail
 
   # TODO: Rework docker publish with a generic reusable action
   publish-images:
