@@ -1,6 +1,8 @@
 using Devantler.Keys.Age;
 using Devantler.SecretManager.Core;
 
+namespace KSail.Commands.Secrets.Handlers;
+
 class KSailSecretsGenerateCommandHandler(ISecretManager<AgeKey> secretManager)
 {
   readonly ISecretManager<AgeKey> _secretManager = secretManager;

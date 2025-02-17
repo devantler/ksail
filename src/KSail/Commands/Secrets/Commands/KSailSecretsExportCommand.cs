@@ -1,5 +1,7 @@
 using System.CommandLine;
 using Devantler.SecretManager.SOPS.LocalAge;
+using KSail.Commands.Secrets.Arguments;
+using KSail.Commands.Secrets.Handlers;
 using KSail.Options;
 using KSail.Utils;
 

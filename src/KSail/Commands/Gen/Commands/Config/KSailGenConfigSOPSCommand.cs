@@ -1,7 +1,7 @@
 
 using System.CommandLine;
 using KSail.Commands.Gen.Handlers.Config;
-using KSail.Commands.Gen.Options;
+using KSail.Options;
 using KSail.Utils;
 
 namespace KSail.Commands.Gen.Commands.Config;
@@ -9,7 +9,7 @@ namespace KSail.Commands.Gen.Commands.Config;
 class KSailGenConfigSOPSCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly FileOutputOption _outputOption = new("./.sops.yaml");
+  readonly OutputOption _outputOption = new("./.sops.yaml");
   readonly KSailGenConfigSOPSCommandHandler _handler = new();
   public KSailGenConfigSOPSCommand() : base("sops", "Generate a SOPS configuration file.")
   {

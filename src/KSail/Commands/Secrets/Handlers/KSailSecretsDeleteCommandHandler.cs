@@ -1,6 +1,8 @@
 using Devantler.Keys.Age;
 using Devantler.SecretManager.Core;
 
+namespace KSail.Commands.Secrets.Handlers;
+
 class KSailSecretsDeleteCommandHandler(string publicKey, ISecretManager<AgeKey> secretManager)
 {
   readonly string _publicKey = publicKey;

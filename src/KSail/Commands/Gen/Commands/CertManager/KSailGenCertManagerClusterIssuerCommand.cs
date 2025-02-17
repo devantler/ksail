@@ -1,7 +1,7 @@
 
 using System.CommandLine;
 using KSail.Commands.Gen.Handlers.CertManager;
-using KSail.Commands.Gen.Options;
+using KSail.Options;
 using KSail.Utils;
 
 namespace KSail.Commands.Gen.Commands.CertManager;
@@ -9,7 +9,7 @@ namespace KSail.Commands.Gen.Commands.CertManager;
 class KSailGenCertManagerClusterIssuerCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly FileOutputOption _outputOption = new("./cluster-issuer.yaml");
+  readonly OutputOption _outputOption = new("./cluster-issuer.yaml");
 
   public KSailGenCertManagerClusterIssuerCommand() : base("cluster-issuer", "Generate a 'cert-manager.io/v1/ClusterIssuer' resource.")
   {

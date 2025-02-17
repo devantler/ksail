@@ -1,6 +1,8 @@
 using Devantler.Keys.Age;
 using Devantler.SecretManager.Core;
 
+namespace KSail.Commands.Secrets.Handlers;
+
 class KSailSecretsImportCommandHandler(string key, ISecretManager<AgeKey> secretManager)
 {
   readonly string _key = key;

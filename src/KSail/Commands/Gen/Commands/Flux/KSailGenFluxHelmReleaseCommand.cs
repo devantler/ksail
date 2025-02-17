@@ -1,7 +1,7 @@
 
 using System.CommandLine;
 using KSail.Commands.Gen.Handlers.Flux;
-using KSail.Commands.Gen.Options;
+using KSail.Options;
 using KSail.Utils;
 
 namespace KSail.Commands.Gen.Commands.Flux;
@@ -9,7 +9,7 @@ namespace KSail.Commands.Gen.Commands.Flux;
 class KSailGenFluxHelmReleaseCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly FileOutputOption _outputOption = new("./helm-release.yaml");
+  readonly OutputOption _outputOption = new("./helm-release.yaml");
   readonly KSailGenFluxHelmReleaseCommandHandler _handler = new();
   public KSailGenFluxHelmReleaseCommand() : base("helm-release", "Generate a 'helm.toolkit.fluxcd.io/v2/HelmRelease' resource.")
   {

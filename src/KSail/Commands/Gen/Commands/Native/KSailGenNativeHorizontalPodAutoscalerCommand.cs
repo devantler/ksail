@@ -1,7 +1,7 @@
 
 using System.CommandLine;
 using KSail.Commands.Gen.Handlers.Native;
-using KSail.Commands.Gen.Options;
+using KSail.Options;
 using KSail.Utils;
 
 namespace KSail.Commands.Gen.Commands.Native;
@@ -9,7 +9,7 @@ namespace KSail.Commands.Gen.Commands.Native;
 class KSailGenNativeHorizontalPodAutoscalerCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly FileOutputOption _outputOption = new("./horizontal-pod-autoscaler.yaml");
+  readonly OutputOption _outputOption = new("./horizontal-pod-autoscaler.yaml");
   readonly KSailGenNativeHorizontalPodAutoscalerCommandHandler _handler = new();
   public KSailGenNativeHorizontalPodAutoscalerCommand() : base("horizontal-pod-autoscaler", "Generate a 'autoscaling/v2/HorizontalPodAutoscaler' resource.")
   {

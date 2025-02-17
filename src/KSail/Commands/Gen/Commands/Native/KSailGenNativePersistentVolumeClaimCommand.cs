@@ -1,7 +1,7 @@
 
 using System.CommandLine;
 using KSail.Commands.Gen.Handlers.Native;
-using KSail.Commands.Gen.Options;
+using KSail.Options;
 using KSail.Utils;
 
 namespace KSail.Commands.Gen.Commands.Native;
@@ -9,7 +9,7 @@ namespace KSail.Commands.Gen.Commands.Native;
 class KSailGenNativePersistentVolumeClaimCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly FileOutputOption _outputOption = new("./persistent-volume-claim.yaml");
+  readonly OutputOption _outputOption = new("./persistent-volume-claim.yaml");
   readonly KSailGenNativePersistentVolumeClaimCommandHandler _handler = new();
   public KSailGenNativePersistentVolumeClaimCommand() : base("persistent-volume-claim", "Generate a 'core/v1/PersistentVolumeClaim' resource.")
   {

@@ -1,31 +1,38 @@
 using System.CommandLine;
-using Devantler.SecretManager.Core;
 using Devantler.SecretManager.SOPS.LocalAge;
 using KSail.Commands.Secrets.Arguments;
 using KSail.Commands.Secrets.Handlers;
+using KSail.Commands.Secrets.Options;
 using KSail.Options;
 using KSail.Utils;
 
 namespace KSail.Commands.Secrets.Commands;
 
-sealed class KSailSecretsDeleteCommand : Command
+sealed class KSailSecretsEncryptCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly PublicKeyArgument _publicKeyArgument = new("The public key for the encryption key to delete") { Arity = ArgumentArity.ExactlyOne };
+  readonly PathArgument _pathArgument = new("The path to the file to encrypt.") { Arity = ArgumentArity.ExactlyOne };
+  readonly PublicKeyOption _publicKeyOption = new("The public key to encrypt the file with.") { Arity = ArgumentArity.ZeroOrOne };
+  readonly InPlaceOption _inPlaceOption = new("Encrypt the file in place.") { Arity = ArgumentArity.ZeroOrOne };
+  readonly OutputOption _outputOption = new(string.Empty, "The path to output the encrypted file.") { Arity = ArgumentArity.ZeroOrOne };
   readonly ProjectSecretManagerOption _projectSecretManagerOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  internal KSailSecretsDeleteCommand() : base("del", "Delete an existing encryption key")
+
+  internal KSailSecretsEncryptCommand() : base("encrypt", "Encrypt a file")
   {
-    AddArgument(_publicKeyArgument);
-    AddOption(_projectSecretManagerOption);
+    AddArgument(_pathArgument);
+    AddOptions();
     this.SetHandler(async (context) =>
     {
       try
       {
         var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
         config.UpdateConfig("Spec.Project.SecretManager", context.ParseResult.GetValueForOption(_projectSecretManagerOption));
-        string publicKey = context.ParseResult.GetValueForArgument(_publicKeyArgument);
+        string path = context.ParseResult.GetValueForArgument(_pathArgument);
+        string? publicKey = context.ParseResult.GetValueForOption(_publicKeyOption);
+        bool inPlace = context.ParseResult.GetValueForOption(_inPlaceOption);
+        string? output = context.ParseResult.GetValueForOption(_outputOption);
         var cancellationToken = context.GetCancellationToken();
-        KSailSecretsDeleteCommandHandler handler;
+        KSailSecretsEncryptCommandHandler handler;
         switch (config.Spec.Project.SecretManager)
         {
           default:
@@ -34,18 +41,11 @@ sealed class KSailSecretsDeleteCommand : Command
             context.ExitCode = 1;
             return;
           case Models.Project.KSailSecretManager.SOPS:
-            handler = new KSailSecretsDeleteCommandHandler(publicKey, new SOPSLocalAgeSecretManager());
+            handler = new KSailSecretsEncryptCommandHandler(path, publicKey, inPlace, output, new SOPSLocalAgeSecretManager());
             break;
         }
-
-        Console.WriteLine($"🔑 Removing an existing encryption key with '{config.Spec.Project.SecretManager}'");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         Console.WriteLine();
-      }
-      catch (SecretManagerException ex)
-      {
-        _ = _exceptionHandler.HandleException(ex);
-        context.ExitCode = 1;
       }
       catch (OperationCanceledException ex)
       {
@@ -54,6 +54,12 @@ sealed class KSailSecretsDeleteCommand : Command
       }
     });
   }
+
+  void AddOptions()
+  {
+    AddOption(_projectSecretManagerOption);
+    AddOption(_publicKeyOption);
+    AddOption(_inPlaceOption);
+    AddOption(_outputOption);
+  }
 }
-
-

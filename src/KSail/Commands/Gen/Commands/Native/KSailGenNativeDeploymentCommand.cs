@@ -1,7 +1,7 @@
 
 using System.CommandLine;
 using KSail.Commands.Gen.Handlers.Native;
-using KSail.Commands.Gen.Options;
+using KSail.Options;
 using KSail.Utils;
 
 namespace KSail.Commands.Gen.Commands.Native;
@@ -9,7 +9,7 @@ namespace KSail.Commands.Gen.Commands.Native;
 class KSailGenNativeWorkloadsDeploymentCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly FileOutputOption _outputOption = new("./deployment.yaml");
+  readonly OutputOption _outputOption = new("./deployment.yaml");
   readonly KSailGenNativeWorkloadsDeploymentCommandHandler _handler = new();
   public KSailGenNativeWorkloadsDeploymentCommand() : base("deployment", "Generate a 'apps/v1/Deployment' resource.")
   {
