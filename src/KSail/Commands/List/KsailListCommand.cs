@@ -22,7 +22,6 @@ sealed class KSailListCommand : Command
         var handler = new KSailListCommandHandler(config);
 
         _ = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
-        Console.WriteLine();
       }
       catch (Exception ex)
       {
