@@ -61,15 +61,11 @@ jobs:
             ksail-windows-amd64.exe
             ksail.tar.gz
           token: ${{ steps.app-token.outputs.token }}
-      - name: 🍺 Brew tap devantler formulas
+      - name: 🍺 Brew tap formulas
         run: brew tap devantler-tech/formulas
-      - name: 🍺 Brew bump devantler formulas
-        uses: Homebrew/actions/bump-packages@master
-        with:
-          token: ${{ steps.app-token.outputs.token }}
-          fork: false
-          formulae: |
-            devantler-tech/formulas/ksail
+      - name: 🍺 Brew bump formulas
+        run: |
+          brew bump --no-fork --open-pr --formulae ksail
       # - name: 🍺 Brew bump core formulas
       #  uses: Homebrew/actions/bump-packages@master
       #  with:
