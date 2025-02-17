@@ -45,20 +45,24 @@ Manually:
 
 ### Usage
 
-Getting started with KSail is easy. First, you need a Kubernetes Cluster configuration for your project.
+Getting started with KSail is easy. First, you need to configure what cluster you want KSail to manage.
 
-`> ksail init` - To initialize a new cluster configuration with default configurations.
+`> ksail gen config ksail` - To generate a new KSail configuration file.
+
+Now you can make changes to the configuration file to your liking, and when you are ready to initialize a new cluster, you can run:
+
+`> ksail init` - To initialize a new cluster configuration based on your KSail configuration.
 
 From there, you probably want to ensure that your distribution and ksail is configured to your liking.
 
-- `ksail-config.yaml` - The configuration file for KSail.
 - `kind-config.yaml` - The configuration file for Kind.
+- `k3d-config.yaml` - The configuration file for K3d.
 
 When you are ready to provision your cluster, you can run:
 
 `> ksail up` - To provision your new cluster.
 
-From there, you can make some changes to your manifest files,, and when you are ready to apply them, you can run:
+From there, you can make some changes to your manifest files, and when you are ready to apply them, you can run:
 
 `> ksail update` - To update your cluster.
 
