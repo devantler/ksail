@@ -1,5 +1,5 @@
 ﻿Description:
-  KSail is an SDK for building GitOps enabled clusters.
+  KSail is an SDK for Kubernetes. Ship k8s with ease!
 
 Usage:
   testhost [command] [options]

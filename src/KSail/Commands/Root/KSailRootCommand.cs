@@ -18,7 +18,7 @@ namespace KSail.Commands.Root;
 sealed class KSailRootCommand : RootCommand
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  internal KSailRootCommand(IConsole console) : base("KSail is an SDK for building GitOps enabled clusters.")
+  internal KSailRootCommand(IConsole console) : base("KSail is an SDK for Kubernetes. Ship k8s with ease!")
   {
     AddCommands(console);
 

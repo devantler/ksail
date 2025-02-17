@@ -1,12 +1,12 @@
 ﻿🛥️ 🐳    Welcome to KSail!    🛥️ 🐳
-                                     . . .
-                __/___                 :
-          _____/______|             ___|____     |"\/"|
-  _______/_____\_______\_____     ,'        `.    \  /
-  \                KSail     |    |  ^        \___/  |
-~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^
+                                   . . .
+              __/___                 :
+        _____/______|             ___|____     |"\/"|
+_______/_____\_______\_____     ,'        `.    \  /
+\                KSail     |    |  ^        \___/  |
+~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 Description:
-  KSail is an SDK for building GitOps enabled clusters.
+  KSail is an SDK for Kubernetes. Ship k8s with ease!
 
 Usage:
   testhost [command] [options]
