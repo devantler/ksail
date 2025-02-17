@@ -1,10 +1,7 @@
 using System.CommandLine;
-using Devantler.K3dCLI;
-using Devantler.KindCLI;
 using KSail.Commands.Down.Handlers;
 using KSail.Options;
 using KSail.Utils;
-using YamlDotNet.Core;
 
 namespace KSail.Commands.Down;
 
@@ -32,27 +29,7 @@ sealed class KSailDownCommand : Command
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;
         Console.WriteLine();
       }
-      catch (YamlException ex)
-      {
-        _ = _exceptionHandler.HandleException(ex);
-        context.ExitCode = 1;
-      }
-      catch (KindException ex)
-      {
-        _ = _exceptionHandler.HandleException(ex);
-        context.ExitCode = 1;
-      }
-      catch (K3dException ex)
-      {
-        _ = _exceptionHandler.HandleException(ex);
-        context.ExitCode = 1;
-      }
-      catch (NotSupportedException ex)
-      {
-        _ = _exceptionHandler.HandleException(ex);
-        context.ExitCode = 1;
-      }
-      catch (OperationCanceledException ex)
+      catch (Exception ex)
       {
         _ = _exceptionHandler.HandleException(ex);
         context.ExitCode = 1;

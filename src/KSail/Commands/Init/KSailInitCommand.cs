@@ -3,7 +3,6 @@ using KSail.Commands.Init.Handlers;
 using KSail.Commands.Init.Options;
 using KSail.Options;
 using KSail.Utils;
-using YamlDotNet.Core;
 
 namespace KSail.Commands.Init;
 
@@ -46,22 +45,7 @@ sealed class KSailInitCommand : Command
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         Console.WriteLine();
       }
-      catch (YamlException ex)
-      {
-        _ = _exceptionHandler.HandleException(ex);
-        context.ExitCode = 1;
-      }
-      catch (NotSupportedException ex)
-      {
-        _ = _exceptionHandler.HandleException(ex);
-        context.ExitCode = 1;
-      }
-      catch (OperationCanceledException ex)
-      {
-        _ = _exceptionHandler.HandleException(ex);
-        context.ExitCode = 1;
-      }
-      catch (NullReferenceException ex)
+      catch (Exception ex)
       {
         _ = _exceptionHandler.HandleException(ex);
         context.ExitCode = 1;

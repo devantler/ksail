@@ -1,12 +1,8 @@
 using System.CommandLine;
-using Devantler.FluxCLI;
-using Devantler.K3dCLI;
-using Devantler.KindCLI;
 using KSail.Commands.Up.Handlers;
 using KSail.Commands.Up.Options;
 using KSail.Options;
 using KSail.Utils;
-using YamlDotNet.Core;
 
 namespace KSail.Commands.Up;
 
@@ -49,32 +45,7 @@ sealed class KSailUpCommand : Command
         var handler = new KSailUpCommandHandler(config);
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
       }
-      catch (YamlException ex)
-      {
-        _ = _exceptionHandler.HandleException(ex);
-        context.ExitCode = 1;
-      }
-      catch (KSailException ex)
-      {
-        _ = _exceptionHandler.HandleException(ex);
-        context.ExitCode = 1;
-      }
-      catch (KindException ex)
-      {
-        _ = _exceptionHandler.HandleException(ex);
-        context.ExitCode = 1;
-      }
-      catch (K3dException ex)
-      {
-        _ = _exceptionHandler.HandleException(ex);
-        context.ExitCode = 1;
-      }
-      catch (FluxException ex)
-      {
-        _ = _exceptionHandler.HandleException(ex);
-        context.ExitCode = 1;
-      }
-      catch (OperationCanceledException ex)
+      catch (Exception ex)
       {
         _ = _exceptionHandler.HandleException(ex);
         context.ExitCode = 1;

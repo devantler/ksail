@@ -2,7 +2,6 @@ using System.CommandLine;
 using KSail.Commands.List.Handlers;
 using KSail.Commands.List.Options;
 using KSail.Utils;
-using YamlDotNet.Core;
 
 namespace KSail.Commands.List;
 
@@ -26,12 +25,7 @@ sealed class KSailListCommand : Command
         _ = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         Console.WriteLine();
       }
-      catch (YamlException ex)
-      {
-        _ = _exceptionHandler.HandleException(ex);
-        context.ExitCode = 1;
-      }
-      catch (OperationCanceledException ex)
+      catch (Exception ex)
       {
         _ = _exceptionHandler.HandleException(ex);
         context.ExitCode = 1;

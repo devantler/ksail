@@ -1,10 +1,7 @@
 using System.CommandLine;
-using Devantler.KubernetesValidator.ClientSide.Schemas;
-using Devantler.KubernetesValidator.ClientSide.YamlSyntax;
 using KSail.Commands.Lint.Handlers;
 using KSail.Options;
 using KSail.Utils;
-using YamlDotNet.Core;
 
 namespace KSail.Commands.Lint;
 
@@ -35,22 +32,7 @@ sealed class KSailLintCommand : Command
         context.ExitCode = await handler.HandleAsync(config, context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;
         Console.WriteLine();
       }
-      catch (YamlException ex)
-      {
-        _ = _exceptionHandler.HandleException(ex);
-        context.ExitCode = 1;
-      }
-      catch (YamlSyntaxValidatorException ex)
-      {
-        _ = _exceptionHandler.HandleException(ex);
-        context.ExitCode = 1;
-      }
-      catch (SchemaValidatorException ex)
-      {
-        _ = _exceptionHandler.HandleException(ex);
-        context.ExitCode = 1;
-      }
-      catch (OperationCanceledException ex)
+      catch (Exception ex)
       {
         _ = _exceptionHandler.HandleException(ex);
         context.ExitCode = 1;

@@ -1,9 +1,7 @@
 using System.CommandLine;
-using Devantler.FluxCLI;
 using KSail.Commands.Update.Handlers;
 using KSail.Options;
 using KSail.Utils;
-using YamlDotNet.Core;
 
 namespace KSail.Commands.Update;
 
@@ -36,17 +34,7 @@ sealed class KSailUpdateCommand : Command
         var handler = new KSailUpdateCommandHandler(config);
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;
       }
-      catch (YamlException ex)
-      {
-        _ = _exceptionHandler.HandleException(ex);
-        context.ExitCode = 1;
-      }
-      catch (FluxException ex)
-      {
-        _ = _exceptionHandler.HandleException(ex);
-        context.ExitCode = 1;
-      }
-      catch (OperationCanceledException ex)
+      catch (Exception ex)
       {
         _ = _exceptionHandler.HandleException(ex);
         context.ExitCode = 1;

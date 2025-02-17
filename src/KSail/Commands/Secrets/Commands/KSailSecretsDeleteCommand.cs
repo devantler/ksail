@@ -1,5 +1,4 @@
 using System.CommandLine;
-using Devantler.SecretManager.Core;
 using Devantler.SecretManager.SOPS.LocalAge;
 using KSail.Commands.Secrets.Arguments;
 using KSail.Commands.Secrets.Handlers;
@@ -42,12 +41,7 @@ sealed class KSailSecretsDeleteCommand : Command
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         Console.WriteLine();
       }
-      catch (SecretManagerException ex)
-      {
-        _ = _exceptionHandler.HandleException(ex);
-        context.ExitCode = 1;
-      }
-      catch (OperationCanceledException ex)
+      catch (Exception ex)
       {
         _ = _exceptionHandler.HandleException(ex);
         context.ExitCode = 1;

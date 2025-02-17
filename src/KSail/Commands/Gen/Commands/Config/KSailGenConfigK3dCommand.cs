@@ -23,7 +23,7 @@ class KSailGenConfigK3dCommand : Command
         Console.WriteLine($"✚ generating {outputFile}");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
       }
-      catch (OperationCanceledException ex)
+      catch (Exception ex)
       {
         _ = _exceptionHandler.HandleException(ex);
         context.ExitCode = 1;
