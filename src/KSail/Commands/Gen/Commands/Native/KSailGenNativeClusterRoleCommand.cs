@@ -6,12 +6,12 @@ using KSail.Utils;
 
 namespace KSail.Commands.Gen.Commands.Native;
 
-class KSailGenNativeClusterRoleBindingCommand : Command
+class KSailGenNativeClusterRoleCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly OutputOption _outputOption = new("./cluster-role-binding.yaml");
-  readonly KSailGenNativeClusterRoleBindingCommandHandler _handler = new();
-  public KSailGenNativeClusterRoleBindingCommand() : base("cluster-role-binding", "Generate a 'rbac.authorization.k8s.io/v1/ClusterRoleBinding' resource.")
+  readonly OutputOption _outputOption = new("./cluster-role.yaml");
+  readonly KSailGenNativeClusterRoleCommandHandler _handler = new();
+  public KSailGenNativeClusterRoleCommand() : base("cluster-role", "Generate a 'rbac.authorization.k8s.io/v1/ClusterRole' resource.")
   {
     AddOption(_outputOption);
     this.SetHandler(async (context) =>
@@ -22,7 +22,7 @@ class KSailGenNativeClusterRoleBindingCommand : Command
           Console.WriteLine($"✚ generating {outputFile}");
           context.ExitCode = await _handler.HandleAsync(outputFile, context.GetCancellationToken()).ConfigureAwait(false);
         }
-        catch (OperationCanceledException ex)
+        catch (Exception ex)
         {
           _ = _exceptionHandler.HandleException(ex);
           context.ExitCode = 1;

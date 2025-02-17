@@ -3,7 +3,6 @@ using KSail.Commands.Debug.Handlers;
 using KSail.Commands.Debug.Options;
 using KSail.Options;
 using KSail.Utils;
-using YamlDotNet.Core;
 
 namespace KSail.Commands.Debug;
 
@@ -31,12 +30,7 @@ sealed class KSailDebugCommand : Command
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;
         Console.WriteLine();
       }
-      catch (YamlException ex)
-      {
-        _ = _exceptionHandler.HandleException(ex);
-        context.ExitCode = 1;
-      }
-      catch (OperationCanceledException ex)
+      catch (Exception ex)
       {
         _ = _exceptionHandler.HandleException(ex);
         context.ExitCode = 1;

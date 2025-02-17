@@ -22,7 +22,7 @@ class KSailGenKustomizeKustomizationCommand : Command
           Console.WriteLine($"✚ generating {outputFile}");
           context.ExitCode = await _handler.HandleAsync(outputFile, context.GetCancellationToken()).ConfigureAwait(false);
         }
-        catch (OperationCanceledException ex)
+        catch (Exception ex)
         {
           _ = _exceptionHandler.HandleException(ex);
           context.ExitCode = 1;

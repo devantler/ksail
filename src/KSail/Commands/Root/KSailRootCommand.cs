@@ -29,7 +29,7 @@ sealed class KSailRootCommand : RootCommand
           bool exitCode = KSailRootCommandHandler.Handle(console) && await this.InvokeAsync("--help", console).ConfigureAwait(false) == 0;
           context.ExitCode = exitCode ? 0 : 1;
         }
-        catch (OperationCanceledException ex)
+        catch (Exception ex)
         {
           _ = _exceptionHandler.HandleException(ex);
           context.ExitCode = 1;

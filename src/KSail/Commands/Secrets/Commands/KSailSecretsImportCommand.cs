@@ -40,12 +40,7 @@ sealed class KSailSecretsImportCommand : Command
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         Console.WriteLine();
       }
-      catch (FileNotFoundException ex)
-      {
-        _ = _exceptionHandler.HandleException(ex);
-        context.ExitCode = 1;
-      }
-      catch (OperationCanceledException ex)
+      catch (Exception ex)
       {
         _ = _exceptionHandler.HandleException(ex);
         context.ExitCode = 1;
