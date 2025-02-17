@@ -65,6 +65,8 @@ jobs:
         run: brew tap devantler-tech/formulas
       - name: 🍺 Brew bump devantler formulas
         uses: Homebrew/actions/bump-packages@master
+        env:
+          HOMEBREW_GITHUB_API_TOKEN: ${{ steps.app-token.outputs.token }}
         with:
           token: ${{ steps.app-token.outputs.token }}
           formulae: |
