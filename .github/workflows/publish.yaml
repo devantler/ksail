@@ -48,6 +48,13 @@ jobs:
 
           dotnet publish -c Release -r win-x64 src/KSail/KSail.csproj /p:Version=$version
           mv src/KSail/bin/Release/net9.0/win-x64/publish/ksail.exe ksail-windows-amd64.exe
+      - name: 🔐 Sign binaries
+        run: |
+          codesign --sign - ksail-darwin-amd64 --force --preserve-metadata=entitlements,requirements,flags,runtime
+          codesign --sign - ksail-darwin-arm64 --force --preserve-metadata=entitlements,requirements,flags,runtime
+          codesign --sign - ksail-linux-amd64 --force --preserve-metadata=entitlements,requirements,flags,runtime
+          codesign --sign - ksail-linux-arm64 --force --preserve-metadata=entitlements,requirements,flags,runtime
+          codesign --sign - ksail-windows-amd64.exe --force --preserve-metadata=entitlements,requirements,flags,runtime
       - name: 📦 Tar binaries
         run: tar -czf ksail.tar.gz ksail-darwin-amd64 ksail-darwin-arm64 ksail-linux-amd64 ksail-linux-arm64 ksail-windows-amd64.exe
       - name: 🎉 Release
