@@ -128,9 +128,6 @@
       }
     ],
     CLI: {
-      Down: {
-        Registries: false
-      },
       List: {
         All: false
       },

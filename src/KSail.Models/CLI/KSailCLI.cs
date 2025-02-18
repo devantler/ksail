@@ -10,11 +10,6 @@ namespace KSail.Models.CLI;
 public class KSailCLI
 {
   /// <summary>
-  /// The options to use for the 'down' command.
-  /// </summary>
-  [Description("The options to use for the 'down' command.")]
-  public KSailCLIDown Down { get; set; } = new();
-  /// <summary>
   /// The options to use for the 'list' command.
   /// </summary>
   [Description("The options to use for the 'list' command.")]

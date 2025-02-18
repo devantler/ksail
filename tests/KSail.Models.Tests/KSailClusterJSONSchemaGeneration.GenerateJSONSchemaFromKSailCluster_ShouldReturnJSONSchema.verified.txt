@@ -290,16 +290,6 @@
           "description": "The CLI options.",
           "type": "object",
           "properties": {
-            "down": {
-              "description": "The options to use for the \u0027down\u0027 command.",
-              "type": "object",
-              "properties": {
-                "registries": {
-                  "description": "Remove registries created by ksail (will remove all cached images).",
-                  "type": "boolean"
-                }
-              }
-            },
             "list": {
               "description": "The options to use for the \u0027list\u0027 command.",
               "type": "object",
