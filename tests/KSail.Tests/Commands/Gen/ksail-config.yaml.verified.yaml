@@ -75,8 +75,6 @@ spec:
     hostPort: 5561
     provider: Docker
   cli:
-    down:
-      registries: false
     list:
       all: false
     secrets:
