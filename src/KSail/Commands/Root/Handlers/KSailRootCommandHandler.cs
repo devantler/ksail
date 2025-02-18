@@ -21,52 +21,56 @@ class KSailRootCommandHandler
   {
     string[] lines =
     [
-      @"🛥️ 🐳    Welcome to KSail!    🛥️ 🐳",
+      @"                    __ ______     _ __",
+      @"                   / //_/ __/__ _(_) /",
+      @"                  / ,< _\ \/ _ `/ / /",
+      @"                 /_/|_/___/\_,_/_/_/",
       @"                                   . . .",
       @"              __/___                 :",
       @"        _____/______|             ___|____     |""\/""|",
       @"_______/_____\_______\_____     ,'        `.    \  /",
-      @"\               KSail      |    |  ^        \___/  |",
-      @"~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~"
+      @"\   -----       -\-\-\-    |    |  ^        \___/  |",
+      @"~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~",
+      @""
     ];
 
+    Console.ForegroundColor = ConsoleColor.Yellow;
     console.WriteLine(lines[0]);
-
-    Console.ForegroundColor = ConsoleColor.Blue;
     console.WriteLine(lines[1]);
+    console.WriteLine(lines[2]);
+    console.WriteLine(lines[3]);
 
-    Console.ForegroundColor = ConsoleColor.Gray;
-    console.Write(lines[2][..(lines[2].IndexOf("/__") + 4)]);
     Console.ForegroundColor = ConsoleColor.Blue;
-    console.WriteLine(lines[2][(lines[2].IndexOf("/__") + 4)..]);
+    console.WriteLine(lines[4]);
+    Console.ForegroundColor = ConsoleColor.DarkGreen;
+    console.Write(lines[5][..(lines[5].IndexOf("/__") + 4)]);
+    Console.ForegroundColor = ConsoleColor.DarkBlue;
+    console.WriteLine(lines[5][(lines[5].IndexOf("/__") + 4)..]);
 
-    Console.ForegroundColor = ConsoleColor.Gray;
-    console.Write(lines[3][..(lines[3].IndexOf('|') + 1)]);
-    Console.ForegroundColor = ConsoleColor.Cyan;
-    console.Write(lines[3][(lines[3].IndexOf('|') + 1)..(lines[3].IndexOf("_|_") + 1)]);
-    Console.ForegroundColor = ConsoleColor.Blue;
-    console.Write(lines[3][(lines[3].IndexOf("_|_") + 1)..(lines[3].IndexOf("_|_") + 2)]);
-    Console.ForegroundColor = ConsoleColor.Cyan;
-    console.WriteLine(lines[3][(lines[3].IndexOf("_|_") + 2)..]);
 
-    Console.ForegroundColor = ConsoleColor.Gray;
-    console.Write(lines[4][..lines[4].IndexOf(',')]);
-    Console.ForegroundColor = ConsoleColor.Cyan;
-    console.WriteLine(lines[4][lines[4].IndexOf(',')..]);
+    Console.ForegroundColor = ConsoleColor.DarkGreen;
+    console.Write(lines[6][..(lines[6].IndexOf('|') + 1)]);
+    Console.ForegroundColor = ConsoleColor.DarkCyan;
+    console.Write(lines[6][(lines[6].IndexOf('|') + 1)..(lines[6].IndexOf("_|_") + 1)]);
+    Console.ForegroundColor = ConsoleColor.DarkBlue;
+    console.Write(lines[6][(lines[6].IndexOf("_|_") + 1)..(lines[6].IndexOf("_|_") + 2)]);
+    Console.ForegroundColor = ConsoleColor.DarkCyan;
+    console.WriteLine(lines[6][(lines[6].IndexOf("_|_") + 2)..]);
 
-    Console.ForegroundColor = ConsoleColor.Gray;
-    console.Write(lines[5][..lines[5].IndexOf("KSail")]);
-    Console.BackgroundColor = ConsoleColor.Black;
-    Console.ForegroundColor = ConsoleColor.Green;
-    console.Write(lines[5][lines[5].IndexOf(" KSail ")..(lines[5].IndexOf(" KSail ") + 7)]);
-    Console.ResetColor();
-    Console.ForegroundColor = ConsoleColor.Gray;
-    console.Write(lines[5][(lines[5].IndexOf(" KSail ") + 8)..lines[5].IndexOf("|  ^")]);
-    Console.ForegroundColor = ConsoleColor.Cyan;
-    console.WriteLine(lines[5][lines[5].IndexOf("|  ^")..]);
+    Console.ForegroundColor = ConsoleColor.DarkGreen;
+    console.Write(lines[7][..lines[7].IndexOf(',')]);
+    Console.ForegroundColor = ConsoleColor.DarkCyan;
+    console.WriteLine(lines[7][lines[7].IndexOf(',')..]);
+
+
+    Console.ForegroundColor = ConsoleColor.DarkGreen;
+    console.Write(lines[8][..lines[8].IndexOf("|  ^")]);
+    Console.ForegroundColor = ConsoleColor.DarkCyan;
+    console.WriteLine(lines[8][lines[8].IndexOf("|  ^")..]);
 
     Console.ForegroundColor = ConsoleColor.DarkBlue;
-    console.WriteLine(lines[6]);
+    console.WriteLine(lines[9]);
+    console.WriteLine(lines[10]);
 
     Console.ResetColor();
   }
