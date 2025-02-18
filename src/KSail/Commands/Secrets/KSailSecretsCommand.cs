@@ -21,8 +21,8 @@ sealed class KSailSecretsCommand : Command
     AddCommand(new KSailSecretsDecryptCommand());
     // TODO: Include `ksail secrets edit` command when pseudo-terminal support is added to CLIWrap. See https://github.com/Tyrrrz/CliWrap/issues/225.
     //AddCommand(new KSailSecretsEditCommand());
-    AddCommand(new KSailSecretsGenerateCommand());
-    AddCommand(new KSailSecretsDeleteCommand());
+    AddCommand(new KSailSecretsAddCommand());
+    AddCommand(new KSailSecretsRemoveCommand());
     AddCommand(new KSailSecretsListCommand());
     AddCommand(new KSailSecretsImportCommand());
     AddCommand(new KSailSecretsExportCommand());

@@ -6,12 +6,12 @@ using KSail.Utils;
 
 namespace KSail.Commands.Secrets.Commands;
 
-sealed class KSailSecretsGenerateCommand : Command
+sealed class KSailSecretsAddCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
   readonly ProjectSecretManagerOption _projectSecretManagerOption = new() { Arity = ArgumentArity.ZeroOrOne };
 
-  internal KSailSecretsGenerateCommand() : base("gen", "Generate a new encryption key")
+  internal KSailSecretsAddCommand() : base("add", "Add a new encryption key")
   {
     AddOption(_projectSecretManagerOption);
     this.SetHandler(async (context) =>
@@ -21,7 +21,7 @@ sealed class KSailSecretsGenerateCommand : Command
         var config = await KSailClusterConfigLoader.LoadAsync().ConfigureAwait(false);
         config.UpdateConfig("Spec.Project.SecretManager", context.ParseResult.GetValueForOption(_projectSecretManagerOption));
         var cancellationToken = context.GetCancellationToken();
-        KSailSecretsGenerateCommandHandler handler;
+        KSailSecretsAddCommandHandler handler;
         switch (config.Spec.Project.SecretManager)
         {
           default:
@@ -30,7 +30,7 @@ sealed class KSailSecretsGenerateCommand : Command
             context.ExitCode = 1;
             return;
           case Models.Project.KSailSecretManager.SOPS:
-            handler = new KSailSecretsGenerateCommandHandler(new SOPSLocalAgeSecretManager());
+            handler = new KSailSecretsAddCommandHandler(new SOPSLocalAgeSecretManager());
             break;
         }
 

@@ -3,7 +3,7 @@ using Devantler.SecretManager.Core;
 
 namespace KSail.Commands.Secrets.Handlers;
 
-class KSailSecretsGenerateCommandHandler(ISecretManager<AgeKey> secretManager)
+class KSailSecretsAddCommandHandler(ISecretManager<AgeKey> secretManager)
 {
   readonly ISecretManager<AgeKey> _secretManager = secretManager;
 

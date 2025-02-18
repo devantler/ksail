@@ -7,12 +7,12 @@ using KSail.Utils;
 
 namespace KSail.Commands.Secrets.Commands;
 
-sealed class KSailSecretsDeleteCommand : Command
+sealed class KSailSecretsRemoveCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly PublicKeyArgument _publicKeyArgument = new("The public key for the encryption key to delete") { Arity = ArgumentArity.ExactlyOne };
+  readonly PublicKeyArgument _publicKeyArgument = new("Public key matching existing encryption key") { Arity = ArgumentArity.ExactlyOne };
   readonly ProjectSecretManagerOption _projectSecretManagerOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  internal KSailSecretsDeleteCommand() : base("del", "Delete an existing encryption key")
+  internal KSailSecretsRemoveCommand() : base("rm", "Remove an existing encryption key")
   {
     AddArgument(_publicKeyArgument);
     AddOption(_projectSecretManagerOption);
@@ -24,7 +24,7 @@ sealed class KSailSecretsDeleteCommand : Command
         config.UpdateConfig("Spec.Project.SecretManager", context.ParseResult.GetValueForOption(_projectSecretManagerOption));
         string publicKey = context.ParseResult.GetValueForArgument(_publicKeyArgument);
         var cancellationToken = context.GetCancellationToken();
-        KSailSecretsDeleteCommandHandler handler;
+        KSailSecretsRemoveCommandHandler handler;
         switch (config.Spec.Project.SecretManager)
         {
           default:
@@ -33,7 +33,7 @@ sealed class KSailSecretsDeleteCommand : Command
             context.ExitCode = 1;
             return;
           case Models.Project.KSailSecretManager.SOPS:
-            handler = new KSailSecretsDeleteCommandHandler(config, publicKey, new SOPSLocalAgeSecretManager());
+            handler = new KSailSecretsRemoveCommandHandler(config, publicKey, new SOPSLocalAgeSecretManager());
             break;
         }
 
