@@ -20,7 +20,7 @@ sealed class KSailUpCommand : Command
   readonly PathOption _projectWorkingDirectoryOption = new("The directory in which to find the project") { Arity = ArgumentArity.ZeroOrOne };
   readonly ReconcileOption _cliUpReconcileOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly ConnectionTimeoutOption _connectionTimeoutOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  internal KSailUpCommand() : base("up", "Provision a cluster")
+  internal KSailUpCommand() : base("up", "Create a cluster")
   {
     AddOptions();
 

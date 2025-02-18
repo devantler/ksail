@@ -1,5 +1,5 @@
 ﻿Description:
-  Provision a cluster
+  Create a cluster
 
 Usage:
   up [options]

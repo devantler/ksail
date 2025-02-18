@@ -14,16 +14,16 @@ Options:
   -?, -h, --help  Show help and usage information
 
 Commands:
-  debug   Debug a cluster (❤️ K9s)
+  up      Create a cluster
+  update  Update a cluster
+  start   Start a cluster
+  stop    Stop a cluster
   down    Destroy a cluster
-  gen     Generate a resource.
   init    Initialize a cluster
   lint    Lint manifests for a cluster
   list    List active clusters
-  start   Start a cluster
-  stop    Stop a cluster
-  up      Provision a cluster
-  update  Update a cluster
+  debug   Debug a cluster (❤️ K9s)
+  gen     Generate a resource.
 ```
 
 ## `ksail debug`
@@ -159,7 +159,7 @@ Options:
 
 ```txt
 Description:
-  Provision a cluster
+  Create a cluster
 
 Usage:
   ksail up [options]

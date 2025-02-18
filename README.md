@@ -54,9 +54,9 @@ From there, you probably want to ensure that your distribution and ksail is conf
 - `kind-config.yaml` - The configuration file for Kind.
 - `k3d-config.yaml` - The configuration file for K3d.
 
-When you are ready to provision your cluster, you can run:
+When you are ready to create your cluster, you can run:
 
-`> ksail up` - To provision your new cluster.
+`> ksail up` - To create your new cluster.
 
 From there, you can make some changes to your manifest files, and when you are ready to apply them, you can run:
 

@@ -9,14 +9,14 @@ Options:
   -?, -h, --help  Show help and usage information
 
 Commands:
-  init     Initialize a cluster
-  lint     Lint manifests for a cluster
-  list     List active clusters
-  up       Provision a cluster
+  up       Create a cluster
   down     Destroy a cluster
   update   Update a cluster
   start    Start a cluster
   stop     Stop a cluster
+  init     Initialize a cluster
+  lint     Lint manifests for a cluster
+  list     List active clusters
   debug    Debug a cluster (❤️ K9s)
   gen      Generate a resource.
   secrets  Manage secrets
