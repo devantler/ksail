@@ -71,7 +71,7 @@ jobs:
           zip -r notarization.zip ksail-darwin-amd64 ksail-darwin-arm64
 
           echo "Notarize app and retrieve logs"
-          id=$(xcrun notarytool submit "notarization.zip" --keychain-profile "notarytool-profile" --wait | grep 'id:' | awk '{print $2}')
+          id=$(xcrun notarytool submit "notarization.zip" --keychain-profile "notarytool-profile" --wait | grep 'id:' | awk '{print $2}' | head -n 1)
           echo "$id"
           xcrun notarytool log $id --keychain-profile "notarytool-profile" developer_log.json
           cat developer_log.json
