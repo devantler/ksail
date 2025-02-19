@@ -50,6 +50,7 @@ jobs:
       # https://docs.github.com/en/actions/use-cases-and-examples/deploying/installing-an-apple-certificate-on-macos-runners-for-xcode-development#creating-secrets-for-your-certificate-and-provisioning-profile
       - name: 🔑 Add Cert to Keychain
         uses: apple-actions/import-codesign-certs@v3
+        id: import-codesign-certs
         with:
           p12-file-base64: ${{ secrets.APPLE_CERT_P12_BASE64 }}
           p12-password: ${{ secrets.APPLE_CERT_P12_PASSWORD }}
@@ -69,8 +70,11 @@ jobs:
           echo "Creating temp notarization archive"
           zip -r notarization.zip ksail-darwin-amd64 ksail-darwin-arm64
 
-          echo "Notarize app"
-          xcrun notarytool submit "notarization.zip" --keychain-profile "notarytool-profile" --wait
+          echo "Notarize app and retrieve logs"
+          id=$(xcrun notarytool submit "notarization.zip" --keychain-profile "notarytool-profile" --wait | grep 'id:' | awk '{print $2}')
+          echo "$id"
+          xcrun notarytool log $id --keychain-profile "notarytool-profile" developer_log.json
+          cat developer_log.json
       - name: 📦 Tar binaries
         run: tar -czf ksail.tar.gz ksail-darwin-amd64 ksail-darwin-arm64 ksail-linux-amd64 ksail-linux-arm64
       - name: 🎉 Release
