@@ -48,17 +48,17 @@ jobs:
           dotnet publish -c Release -r linux-arm64 src/KSail/KSail.csproj /p:Version=$version
           mv src/KSail/bin/Release/net9.0/linux-arm64/publish/ksail ksail-linux-arm64
       # https://docs.github.com/en/actions/use-cases-and-examples/deploying/installing-an-apple-certificate-on-macos-runners-for-xcode-development#creating-secrets-for-your-certificate-and-provisioning-profile
-      - name: 🔐 Sign binaries
-        run: |
-          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-darwin-amd64 --options=runtime --no-strict --entitlements entitlements.xml -f
-          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-darwin-arm64 --options=runtime --no-strict --entitlements entitlements.xml -f
-          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-linux-amd64 --options=runtime --no-strict --entitlements entitlements.xml -f
-          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-linux-arm64 --options=runtime --no-strict --entitlements entitlements.xml -f
       - name: 🔑 Add Cert to Keychain
         uses: apple-actions/import-codesign-certs@v3
         with:
           p12-file-base64: ${{ secrets.APPLE_CERT_P12_BASE64 }}
           p12-password: ${{ secrets.APPLE_CERT_P12_PASSWORD }}
+      - name: 🔐 Sign
+        run: |
+          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-darwin-amd64 --options=runtime --no-strict --entitlements entitlements.xml -f
+          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-darwin-arm64 --options=runtime --no-strict --entitlements entitlements.xml -f
+          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-linux-amd64 --options=runtime --no-strict --entitlements entitlements.xml -f
+          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-linux-arm64 --options=runtime --no-strict --entitlements entitlements.xml -f
       - name: 📜 Notarize
         run: |
           echo "Create keychain profile"
