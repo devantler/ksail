@@ -48,54 +48,27 @@ jobs:
           dotnet publish -c Release -r linux-arm64 src/KSail/KSail.csproj /p:Version=$version
           mv src/KSail/bin/Release/net9.0/linux-arm64/publish/ksail ksail-linux-arm64
       # https://docs.github.com/en/actions/use-cases-and-examples/deploying/installing-an-apple-certificate-on-macos-runners-for-xcode-development#creating-secrets-for-your-certificate-and-provisioning-profile
-      - name: 🔐 Sign binary (ksail-darwin-amd64)
-        uses: lando/code-sign-action@v3
+      - name: 🔐 Sign binaries
+        run: |
+          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-darwin-amd64 --options=runtime --no-strict --entitlements entitlements.xml -f
+          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-darwin-arm64 --options=runtime --no-strict --entitlements entitlements.xml -f
+          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-linux-amd64 --options=runtime --no-strict --entitlements entitlements.xml -f
+          codesign --timestamp --sign "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)" ksail-linux-arm64 --options=runtime --no-strict --entitlements entitlements.xml -f
+      - name: 🔑 Add Cert to Keychain
+        uses: apple-actions/import-codesign-certs@v3
         with:
-          file: ksail-darwin-amd64
-          certificate-id: ${{ env.APPLE_TEAM_ID }}
-          certificate-data: ${{ secrets.APPLE_CERT_P12_BASE64 }}
-          certificate-password: ${{ secrets.APPLE_CERT_P12_PASSWORD }}
-          apple-notary-user: ${{ secrets.APPLE_NOTARY_USER }}
-          apple-notary-password: ${{ secrets.APPLE_NOTARY_PASSWORD }}
-          apple-notary-tool: notarytool
-          apple-product-id: devantler-tech.ksail
-          options: --options runtime --entitlements entitlements.xml
-      - name: 🔐 Sign binary (ksail-darwin-arm64)
-        uses: lando/code-sign-action@v3
-        with:
-          file: ksail-darwin-arm64
-          certificate-id: ${{ env.APPLE_TEAM_ID }}
-          certificate-data: ${{ secrets.APPLE_CERT_P12_BASE64 }}
-          certificate-password: ${{ secrets.APPLE_CERT_P12_PASSWORD }}
-          apple-notary-user: ${{ secrets.APPLE_NOTARY_USER }}
-          apple-notary-password: ${{ secrets.APPLE_NOTARY_PASSWORD }}
-          apple-notary-tool: notarytool
-          apple-product-id: devantler-tech.ksail
-          options: --options runtime --entitlements entitlements.xml
-      - name: 🔐 Sign binary (ksail-linux-amd64)
-        uses: lando/code-sign-action@v3
-        with:
-          file: ksail-linux-amd64
-          certificate-id: ${{ env.APPLE_TEAM_ID }}
-          certificate-data: ${{ secrets.APPLE_CERT_P12_BASE64 }}
-          certificate-password: ${{ secrets.APPLE_CERT_P12_PASSWORD }}
-          apple-notary-user: ${{ secrets.APPLE_NOTARY_USER }}
-          apple-notary-password: ${{ secrets.APPLE_NOTARY_PASSWORD }}
-          apple-notary-tool: notarytool
-          apple-product-id: devantler-tech.ksail
-          options: --options runtime --entitlements entitlements.xml
-      - name: 🔐 Sign binary (ksail-linux-arm64)
-        uses: lando/code-sign-action@v3
-        with:
-          file: ksail-linux-arm64
-          certificate-id: ${{ env.APPLE_TEAM_ID }}
-          certificate-data: ${{ secrets.APPLE_CERT_P12_BASE64 }}
-          certificate-password: ${{ secrets.APPLE_CERT_P12_PASSWORD }}
-          apple-notary-user: ${{ secrets.APPLE_NOTARY_USER }}
-          apple-notary-password: ${{ secrets.APPLE_NOTARY_PASSWORD }}
-          apple-notary-tool: notarytool
-          apple-product-id: devantler-tech.ksail
-          options: --options runtime --entitlements entitlements.xml
+          p12-file-base64: ${{ secrets.APPLE_CERT_P12_BASE64 }}
+          p12-password: ${{ secrets.APPLE_CERT_P12_PASSWORD }}
+      - name: 📜 Notarize
+        run: |
+          echo "Create keychain profile"
+          xcrun notarytool store-credentials "notarytool-profile" --apple-id ${{ secrets.APPLE_NOTARY_USER }} --team-id F2NXL88V7B --password ${{ secrets.APPLE_NOTARY_PASSWORD }}
+
+          echo "Creating temp notarization archive"
+          zip -r notarization.zip ksail-darwin-amd64 ksail-darwin-arm64
+
+          echo "Notarize app"
+          xcrun notarytool submit "notarization.zip" --keychain-profile "notarytool-profile" --wait
       - name: 📦 Tar binaries
         run: tar -czf ksail.tar.gz ksail-darwin-amd64 ksail-darwin-arm64 ksail-linux-amd64 ksail-linux-arm64 ksail-windows-amd64.exe
       - name: 🎉 Release
