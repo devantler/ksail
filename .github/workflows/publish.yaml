@@ -56,7 +56,7 @@ jobs:
           p12-password: ${{ secrets.APPLE_CERT_P12_PASSWORD }}
       - name: 🔐 Sign
         env:
-          APPLE_CERT_NAME: "Apple Distribution: Nikolai Emil Damm (F2NXL88V7B)"
+          APPLE_CERT_NAME: "Developer ID Application: Nikolai Emil Damm (F2NXL88V7B)"
         run: |
           codesign --timestamp --sign "${{ env.APPLE_CERT_NAME }}" ksail-darwin-amd64 --options=runtime --no-strict --entitlements entitlements.xml -f
           codesign --timestamp --sign "${{ env.APPLE_CERT_NAME }}" ksail-darwin-arm64 --options=runtime --no-strict --entitlements entitlements.xml -f
