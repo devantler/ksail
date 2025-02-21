@@ -13,12 +13,12 @@ class KSailSecretsImportCommandHandler(KSailCluster config, string key, ISecretM
   internal async Task<int> HandleAsync(CancellationToken cancellationToken)
   {
     Console.WriteLine($"► importing '{_key}' to '{_config.Spec.Project.SecretManager}'");
-    string key = File.ReadAllText(_key);
+    string key = _key;
     if (File.Exists(key))
     {
       key = File.ReadAllText(key);
     }
-    var ageKey = new AgeKey(key);
+    var ageKey = new AgeKey(key.Trim());
     _ = await _secretManager.ImportKeyAsync(ageKey, cancellationToken).ConfigureAwait(false);
     Console.WriteLine("✔ key imported");
     return 0;
