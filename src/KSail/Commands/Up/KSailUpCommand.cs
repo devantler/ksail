@@ -19,6 +19,8 @@ sealed class KSailUpCommand : Command
   readonly PathOption _projectDistributionConfigOption = new("Path to the distribution configuration file", ["--distribution-config", "-dc"]) { Arity = ArgumentArity.ZeroOrOne };
   readonly PathOption _projectWorkingDirectoryOption = new("The directory in which to find the project") { Arity = ArgumentArity.ZeroOrOne };
   readonly ReconcileOption _cliUpReconcileOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly ConnectionKubeconfigOption _connectionKubeconfigOption = new() { Arity = ArgumentArity.ZeroOrOne };
+  readonly ConnectionContextOption _connectionContextOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly ConnectionTimeoutOption _connectionTimeoutOption = new() { Arity = ArgumentArity.ZeroOrOne };
   internal KSailUpCommand() : base("up", "Create a cluster")
   {
@@ -30,6 +32,8 @@ sealed class KSailUpCommand : Command
       {
         var config = await KSailClusterConfigLoader.LoadAsync(context.ParseResult.GetValueForOption(_projectWorkingDirectoryOption), context.ParseResult.GetValueForOption(_metadataNameOption), context.ParseResult.GetValueForOption(_projectDistributionOption)).ConfigureAwait(false);
         config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_metadataNameOption));
+        config.UpdateConfig("Spec.Connection.Kubeconfig", context.ParseResult.GetValueForOption(_connectionKubeconfigOption));
+        config.UpdateConfig("Spec.Connection.Context", context.ParseResult.GetValueForOption(_connectionContextOption));
         config.UpdateConfig("Spec.Connection.Timeout", context.ParseResult.GetValueForOption(_connectionTimeoutOption));
         config.UpdateConfig("Spec.Project.WorkingDirectory", context.ParseResult.GetValueForOption(_projectWorkingDirectoryOption));
         config.UpdateConfig("Spec.Project.DistributionConfigPath", context.ParseResult.GetValueForOption(_projectDistributionConfigOption));
@@ -56,6 +60,8 @@ sealed class KSailUpCommand : Command
   void AddOptions()
   {
     AddOption(_metadataNameOption);
+    AddOption(_connectionKubeconfigOption);
+    AddOption(_connectionContextOption);
     AddOption(_connectionTimeoutOption);
     AddOption(_projectDistributionConfigOption);
     AddOption(_projectDistributionOption);
