@@ -11,6 +11,7 @@ using KSail.Commands.Start;
 using KSail.Commands.Stop;
 using KSail.Commands.Up;
 using KSail.Commands.Update;
+using KSail.Options;
 using KSail.Utils;
 
 namespace KSail.Commands.Root;
@@ -18,10 +19,11 @@ namespace KSail.Commands.Root;
 sealed class KSailRootCommand : RootCommand
 {
   readonly ExceptionHandler _exceptionHandler = new();
+  readonly GlobalOptions _globalOptions = new();
   internal KSailRootCommand(IConsole console) : base("KSail is an SDK for Kubernetes. Ship k8s with ease!")
   {
+    AddGlobalOptions();
     AddCommands(console);
-
     this.SetHandler(async (context) =>
       {
         try
@@ -38,18 +40,44 @@ sealed class KSailRootCommand : RootCommand
     );
   }
 
+  internal void AddGlobalOptions()
+  {
+    var globalOptions = new Option[]
+    {
+      _globalOptions.ConnectionContextOption,
+      _globalOptions.ConnectionKubeconfigOption,
+      _globalOptions.ConnectionTimeoutOption,
+      _globalOptions.MetadataNameOption,
+      _globalOptions.ProjectConfigOption,
+      _globalOptions.ProjectDistributionConfigOption,
+      _globalOptions.ProjectDistributionOption,
+      _globalOptions.ProjectEditorOption,
+      _globalOptions.ProjectEngineOption,
+      _globalOptions.ProjectMirrorRegistriesOption,
+      _globalOptions.ProjectSecretManagerOption,
+      _globalOptions.ProjectTemplateOption,
+      _globalOptions.ProjectWorkingDirectoryOption
+    };
+
+    foreach (var option in globalOptions)
+    {
+      AddGlobalOption(option);
+    }
+  }
+
   void AddCommands(IConsole console)
   {
-    AddCommand(new KSailUpCommand());
-    AddCommand(new KSailDownCommand());
-    AddCommand(new KSailUpdateCommand());
-    AddCommand(new KSailStartCommand());
-    AddCommand(new KSailStopCommand());
-    AddCommand(new KSailInitCommand());
-    AddCommand(new KSailLintCommand());
-    AddCommand(new KSailListCommand());
-    AddCommand(new KSailDebugCommand());
+    AddCommand(new KSailUpCommand(_globalOptions));
+    AddCommand(new KSailDownCommand(_globalOptions));
+    AddCommand(new KSailUpdateCommand(_globalOptions));
+    AddCommand(new KSailStartCommand(_globalOptions));
+    AddCommand(new KSailStopCommand(_globalOptions));
+    AddCommand(new KSailInitCommand(_globalOptions));
+    AddCommand(new KSailLintCommand(_globalOptions));
+    AddCommand(new KSailListCommand(_globalOptions));
+    AddCommand(new KSailDebugCommand(_globalOptions));
     AddCommand(new KSailGenCommand(console));
-    AddCommand(new KSailSecretsCommand());
+    AddCommand(new KSailSecretsCommand(_globalOptions, console));
   }
+
 }
