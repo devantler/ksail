@@ -2,15 +2,24 @@
   Update a cluster
 
 Usage:
-  update [options]
+  testhost update [options]
 
 Options:
-  -n, --name <name>        The name of the cluster.
-  -p, --path <path>        Path to the working directory for your project
-  -l, --lint               Lint manifests before pushing an update
-  -r, --reconcile          Reconcile manifests after pushing an update
-  -t, --timeout <timeout>  The time to wait for each kustomization to become ready.
-  --version                Show version information
-  -?, -h, --help           Show help and usage information
+  -l, --lint                                        Lint manifests before pushing an update
+  -r, --reconcile                                   Reconcile manifests after pushing an update
+  -c, --context <context>                           The kubernetes context to use
+  -k, --kubeconfig <kubeconfig>                     Path to kubeconfig file
+  -t, --timeout <timeout>                           The time to wait for each kustomization to become ready.
+  -n, --name <name>                                 The name of the cluster.
+  -kc, --ksail-config <ksail-config>                The path to the ksail configuration file
+  -dc, --distribution-config <distribution-config>  Path to the distribution configuration file
+  -d, --distribution <K3s|Native>                   The distribution to use for the cluster.
+  -e, --editor <Nano|Vim>                           Editor to use
+  -e, --engine <Docker>                             The engine to use for provisioning the cluster.
+  -mr, --mirror-registries                          Enable mirror registries.
+  -sm, --secret-manager <None|SOPS>                 Configure which secret manager to use.
+  -t, --template <Kustomize>                        The template to use for the initialized cluster.
+  -wd, --working-directory <working-directory>      The root directory of the project
+  -?, -h, --help                                    Show help and usage information
 
 

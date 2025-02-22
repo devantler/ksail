@@ -3,6 +3,7 @@ using System.CommandLine.IO;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using KSail.Commands.Gen;
+using KSail.Commands.Root;
 
 namespace KSail.Tests.Commands.Gen;
 
@@ -26,14 +27,14 @@ public partial class KSailGenCommandTests : IAsyncLifetime
   {
     //Arrange
     var console = new TestConsole();
-    var ksailCommand = new KSailGenCommand(console);
+    var ksailCommand = new KSailRootCommand(console);
 
     //Act
     int exitCode = await ksailCommand.InvokeAsync(command, console);
 
     //Assert
     Assert.Equal(0, exitCode);
-    _ = await Verify(console.Error.ToString() + console.Out).UseFileName($"ksail gen {command}");
+    _ = await Verify(console.Error.ToString() + console.Out).UseFileName($"ksail {command}");
   }
 
   /// <summary>
@@ -49,7 +50,8 @@ public partial class KSailGenCommandTests : IAsyncLifetime
   public async Task KSailGen_SucceedsAndGeneratesAResource(string command, string fileName)
   {
     //Arrange
-    var ksailCommand = new KSailGenCommand();
+    var console = new TestConsole();
+    var ksailCommand = new KSailRootCommand(console);
 
     //Act
     string outputPath = Path.Combine(Path.GetTempPath(), fileName);

@@ -1,8 +1,8 @@
 ﻿Description:
-  Generate a CertManager resource.
+  Generate a resource.
 
 Usage:
-  testhost gen cert-manager [command] [options]
+  testhost gen [command] [options]
 
 Options:
   --version                                         Show version information
@@ -22,6 +22,9 @@ Options:
   -wd, --working-directory <working-directory>      The root directory of the project
 
 Commands:
-  certificate     Generate a 'cert-manager.io/v1/Certificate' resource.
-  cluster-issuer  Generate a 'cert-manager.io/v1/ClusterIssuer' resource.
+  cert-manager  Generate a CertManager resource.
+  config        Generate a configuration file.
+  flux          Generate a Flux resource.
+  kustomize     Generate a Kustomize resource.
+  native        Generate a native Kubernetes resource.
 
