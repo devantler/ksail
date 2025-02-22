@@ -108,12 +108,11 @@ class KSailUpCommandHandler
     if (config.Spec.Project.Engine == KSailEngine.Docker && config.Spec.Project.DeploymentTool == KSailDeploymentTool.Flux)
     {
       Console.WriteLine("📥 Create OCI source registry");
-      int port = config.Spec.FluxDeploymentTool.Source.Url.Port;
       Console.WriteLine($"► creating '{config.Spec.FluxDeploymentTool.Source.Url}' as OCI source registry");
       await _engineProvisioner
        .CreateRegistryAsync(
-        config.Spec.FluxDeploymentTool.Source.Url.Segments.Last(),
-        port,
+        config.Spec.KSailRegistry.Name,
+        config.Spec.KSailRegistry.HostPort,
         cancellationToken: cancellationToken
       ).ConfigureAwait(false);
       Console.WriteLine("✔ OCI source registry created");
