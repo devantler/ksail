@@ -262,7 +262,7 @@ class KSailUpCommandHandler
     string scheme = config.Spec.FluxDeploymentTool.Source.Url.Scheme;
     string host = "localhost";
     string absolutePath = config.Spec.FluxDeploymentTool.Source.Url.AbsolutePath;
-    var sourceUrlFromHost = new Uri($"{scheme}://{host}:{config.Spec.FluxDeploymentTool.Source.Url.Port}{absolutePath}");
+    var sourceUrlFromHost = new Uri($"{scheme}://{host}:{config.Spec.KSailRegistry.HostPort}{absolutePath}");
     await _deploymentTool.PushManifestsAsync(sourceUrlFromHost, "k8s", cancellationToken: cancellationToken).ConfigureAwait(false);
     await _deploymentTool.BootstrapAsync(
       config.Spec.FluxDeploymentTool.Source.Url,
