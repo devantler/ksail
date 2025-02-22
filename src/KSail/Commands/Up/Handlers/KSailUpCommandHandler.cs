@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using System.Text;
 using Devantler.ContainerEngineProvisioner.Docker;
 using Devantler.KubernetesProvisioner.Cluster.Core;
@@ -7,6 +6,7 @@ using Devantler.KubernetesProvisioner.Cluster.Kind;
 using Devantler.KubernetesProvisioner.GitOps.Flux;
 using Devantler.KubernetesProvisioner.Resources.Native;
 using Devantler.SecretManager.SOPS.LocalAge;
+using Docker.DotNet.Models;
 using k8s;
 using k8s.Models;
 using KSail.Commands.Lint.Handlers;
@@ -50,6 +50,11 @@ class KSailUpCommandHandler
 
   internal async Task<int> HandleAsync(CancellationToken cancellationToken = default)
   {
+    if (!await Lint(_config, cancellationToken).ConfigureAwait(false))
+    {
+      return 1;
+    }
+
     if (!await CheckEngineIsRunning(cancellationToken).ConfigureAwait(false))
     {
       return 1;
@@ -58,13 +63,9 @@ class KSailUpCommandHandler
     await CreateOCISourceRegistry(_config, cancellationToken).ConfigureAwait(false);
     await CreateMirrorRegistries(_config, cancellationToken).ConfigureAwait(false);
 
-    if (!await Lint(_config, cancellationToken).ConfigureAwait(false))
-    {
-      return 1;
-    }
-
     await ProvisionCluster(cancellationToken).ConfigureAwait(false);
 
+    await BootstrapOCISourceRegistry(_config, cancellationToken).ConfigureAwait(false);
     await BootstrapMirrorRegistries(_config, cancellationToken).ConfigureAwait(false);
     await BootstrapSecretManager(_config, cancellationToken).ConfigureAwait(false);
     await BootstrapDeploymentTool(_config, cancellationToken).ConfigureAwait(false);
@@ -86,18 +87,20 @@ class KSailUpCommandHandler
       _ => throw new KSailException($"The container engine '{_config.Spec.Project.Engine}' is not supported.")
     };
     Console.WriteLine($"{engineEmoji} Checking {_config.Spec.Project.Engine} is running");
-    if (await _engineProvisioner.CheckReadyAsync(cancellationToken).ConfigureAwait(false))
+
+    for (int i = 0; i < 5; i++)
     {
-      Console.WriteLine($"✔ {_config.Spec.Project.Engine} is running");
-      Console.WriteLine();
-      return true;
+      Console.WriteLine($"► pinging {_config.Spec.Project.Engine} engine (try {i + 1})");
+      if (await _engineProvisioner.CheckReadyAsync(cancellationToken).ConfigureAwait(false))
+      {
+        Console.WriteLine($"✔ {_config.Spec.Project.Engine} is running");
+        Console.WriteLine();
+        return true;
+      }
+      await Task.Delay(1000, cancellationToken);
     }
-    else
-    {
-      Console.WriteLine($"✗ {_config.Spec.Project.Engine} is not running");
-      Console.WriteLine();
-      return false;
-    }
+    Console.WriteLine();
+    throw new KSailException($"{_config.Spec.Project.Engine} is not running after multiple attempts.");
   }
 
   async Task CreateOCISourceRegistry(KSailCluster config, CancellationToken cancellationToken = default)
@@ -106,14 +109,14 @@ class KSailUpCommandHandler
     {
       Console.WriteLine("📥 Create OCI source registry");
       int port = config.Spec.FluxDeploymentTool.Source.Url.Port;
-      Console.WriteLine($"► creating '{config.Spec.FluxDeploymentTool.Source.Url}' as Flux OCI source registry");
+      Console.WriteLine($"► creating '{config.Spec.FluxDeploymentTool.Source.Url}' as OCI source registry");
       await _engineProvisioner
        .CreateRegistryAsync(
         config.Spec.FluxDeploymentTool.Source.Url.Segments.Last(),
         port,
         cancellationToken: cancellationToken
       ).ConfigureAwait(false);
-
+      Console.WriteLine("✔ OCI source registry created");
       Console.WriteLine();
     }
   }
@@ -129,6 +132,7 @@ class KSailUpCommandHandler
         await _engineProvisioner
          .CreateRegistryAsync(mirrorRegistry.Name, mirrorRegistry.HostPort, mirrorRegistry.Proxy?.Url, cancellationToken).ConfigureAwait(false);
       }
+      Console.WriteLine("✔ mirror registries created");
       Console.WriteLine();
     }
   }
@@ -152,6 +156,31 @@ class KSailUpCommandHandler
     Console.WriteLine();
   }
 
+  async Task BootstrapOCISourceRegistry(KSailCluster config, CancellationToken cancellationToken)
+  {
+    switch ((config.Spec.Project.Engine, config.Spec.Project.Distribution))
+    {
+      case (KSailEngine.Docker, KSailKubernetesDistribution.Native):
+        Console.WriteLine("🔼 Botstrapping OCI source registry");
+        Console.WriteLine($"► connect OCI source registry to 'kind-{config.Metadata.Name}' network");
+        var dockerClient = _engineProvisioner.Client;
+        var dockerNetworks = await dockerClient.Networks.ListNetworksAsync(cancellationToken: cancellationToken);
+        var kindNetworks = dockerNetworks.Where(x => x.Name.StartsWith("kind-", StringComparison.OrdinalIgnoreCase));
+        foreach (var kindNetwork in kindNetworks)
+        {
+          await dockerClient.Networks.ConnectNetworkAsync(kindNetwork.ID, new NetworkConnectParameters
+          {
+            Container = config.Spec.FluxDeploymentTool.Source.Url.Segments.Last()
+          }, cancellationToken).ConfigureAwait(false);
+        }
+        Console.WriteLine("✔ OCI source registry connected to 'kind' networks");
+        break;
+      default:
+        break;
+    }
+    Console.WriteLine();
+  }
+
   async Task BootstrapMirrorRegistries(KSailCluster config, CancellationToken cancellationToken)
   {
     if (config.Spec.Project.MirrorRegistries)
@@ -159,9 +188,9 @@ class KSailUpCommandHandler
       switch ((config.Spec.Project.Engine, config.Spec.Project.Distribution))
       {
         case (KSailEngine.Docker, KSailKubernetesDistribution.Native):
-          Console.WriteLine("🔼 Bootstrapping mirror registries in containerd");
+          Console.WriteLine("🔼 Bootstrapping mirror registries");
           string[] args = [
-            "get",
+          "get",
             "nodes",
             "--name", $"{_config.Metadata.Name}"
           ];
@@ -176,11 +205,27 @@ class KSailUpCommandHandler
             foreach (var mirrorRegistry in config.Spec.MirrorRegistries)
             {
               string containerName = node;
+              Console.WriteLine($"► adding '{mirrorRegistry.Name}' as containerd mirror registry to '{node}'");
               await AddMirrorRegistryToContainerd(containerName, mirrorRegistry, cancellationToken);
             }
-            Console.WriteLine($"✔ '{node}' mirror registries bootstrapped.");
-            Console.WriteLine();
+            Console.WriteLine($"✔ '{node}' containerd mirror registries bootstrapped.");
           }
+          foreach (var mirrorRegistry in config.Spec.MirrorRegistries)
+          {
+            Console.WriteLine($"► connect '{mirrorRegistry.Name}' to 'kind-{config.Metadata.Name}' network");
+            var dockerClient = _engineProvisioner.Client;
+            var dockerNetworks = await dockerClient.Networks.ListNetworksAsync(cancellationToken: cancellationToken);
+            var kindNetworks = dockerNetworks.Where(x => x.Name.StartsWith("kind-", StringComparison.OrdinalIgnoreCase));
+            foreach (var kindNetwork in kindNetworks)
+            {
+              await dockerClient.Networks.ConnectNetworkAsync(kindNetwork.ID, new NetworkConnectParameters
+              {
+                Container = mirrorRegistry.Name
+              }, cancellationToken).ConfigureAwait(false);
+            }
+          }
+          Console.WriteLine($"✔ mirror registries connected to 'kind' networks");
+          Console.WriteLine();
           break;
         case (KSailEngine.Docker, KSailKubernetesDistribution.K3s):
           break;
@@ -194,9 +239,7 @@ class KSailUpCommandHandler
       // https://github.com/containerd/containerd/blob/main/docs/hosts.md
       string registryDir = $"/etc/containerd/certs.d/{mirrorRegistry.Name}";
       await _engineProvisioner.CreateDirectoryInContainerAsync(containerName, registryDir, true, cancellationToken);
-      string host = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? $"172.17.0.1:{mirrorRegistry.HostPort}" :
-        RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? $"host.docker.internal:{mirrorRegistry.HostPort}" :
-        throw new KSailException("The host OS is not supported.");
+      string host = $"{mirrorRegistry.Name}:{mirrorRegistry.HostPort}";
       string hostsToml = $"""
       server = "{mirrorRegistry.Proxy.Url}"
 
