@@ -165,12 +165,13 @@ class KSailUpCommandHandler
         Console.WriteLine($"► connect OCI source registry to 'kind-{config.Metadata.Name}' network");
         var dockerClient = _engineProvisioner.Client;
         var dockerNetworks = await dockerClient.Networks.ListNetworksAsync(cancellationToken: cancellationToken);
-        var kindNetworks = dockerNetworks.Where(x => x.Name.StartsWith("kind-", StringComparison.OrdinalIgnoreCase));
+        var kindNetworks = dockerNetworks.Where(x => x.Name.Contains("kind", StringComparison.OrdinalIgnoreCase));
         foreach (var kindNetwork in kindNetworks)
         {
+          string containerId = await _engineProvisioner.GetContainerIdAsync(config.Spec.FluxDeploymentTool.Source.Url.Segments.Last(), cancellationToken);
           await dockerClient.Networks.ConnectNetworkAsync(kindNetwork.ID, new NetworkConnectParameters
           {
-            Container = config.Spec.FluxDeploymentTool.Source.Url.Segments.Last()
+            Container = containerId
           }, cancellationToken).ConfigureAwait(false);
         }
         Console.WriteLine("✔ OCI source registry connected to 'kind' networks");
@@ -215,12 +216,13 @@ class KSailUpCommandHandler
             Console.WriteLine($"► connect '{mirrorRegistry.Name}' to 'kind-{config.Metadata.Name}' network");
             var dockerClient = _engineProvisioner.Client;
             var dockerNetworks = await dockerClient.Networks.ListNetworksAsync(cancellationToken: cancellationToken);
-            var kindNetworks = dockerNetworks.Where(x => x.Name.StartsWith("kind-", StringComparison.OrdinalIgnoreCase));
+            var kindNetworks = dockerNetworks.Where(x => x.Name.Contains("kind", StringComparison.OrdinalIgnoreCase));
             foreach (var kindNetwork in kindNetworks)
             {
+              string containerId = await _engineProvisioner.GetContainerIdAsync(mirrorRegistry.Name, cancellationToken);
               await dockerClient.Networks.ConnectNetworkAsync(kindNetwork.ID, new NetworkConnectParameters
               {
-                Container = mirrorRegistry.Name
+                Container = containerId
               }, cancellationToken).ConfigureAwait(false);
             }
           }
