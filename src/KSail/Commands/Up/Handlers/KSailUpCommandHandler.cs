@@ -241,7 +241,7 @@ class KSailUpCommandHandler
       // https://github.com/containerd/containerd/blob/main/docs/hosts.md
       string registryDir = $"/etc/containerd/certs.d/{mirrorRegistry.Name}";
       await _engineProvisioner.CreateDirectoryInContainerAsync(containerName, registryDir, true, cancellationToken);
-      string host = $"{mirrorRegistry.Name}:{mirrorRegistry.HostPort}";
+      string host = $"{mirrorRegistry.Name}:5000";
       string hostsToml = $"""
       server = "{mirrorRegistry.Proxy.Url}"
 
