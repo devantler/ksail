@@ -25,16 +25,8 @@ static class KSailClusterConfigLoader
 
     // Locate KSail YAML file
     directory ??= Directory.GetCurrentDirectory();
-    string? ksailYaml = FindConfigFile(directory, [
-      "ksail-cluster.yaml",
-      "ksail-cluster.yml",
-      "ksail-config.yaml",
-      "ksail-config.yml",
-      "ksail.yaml",
-      "ksail.yml",
-      ".ksail.yaml",
-      ".ksail.yml"
-    ]);
+    string[] possibleFiles = [.. Directory.EnumerateFiles(directory, "*ksail*.y*ml", SearchOption.AllDirectories)];
+    string? ksailYaml = FindConfigFile(directory, possibleFiles);
 
     // If no KSail YAML file is found, return the default KSailClusterConfig
     if (ksailYaml == null)
