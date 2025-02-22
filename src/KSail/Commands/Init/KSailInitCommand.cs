@@ -14,6 +14,7 @@ sealed class KSailInitCommand : Command
   readonly FluxDeploymentToolPostBuildVariablesOption _fluxDeploymentToolPostBuildVariablesOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly KustomizeTemplateFlowsOption _kustomizeTemplateKustomizationsOption = new() { Arity = ArgumentArity.ZeroOrMore, AllowMultipleArgumentsPerToken = true };
   readonly KustomizeTemplateHooksOption _kustomizeTemplateKustomizationHooksOption = new() { Arity = ArgumentArity.ZeroOrMore, AllowMultipleArgumentsPerToken = true };
+  readonly PathOption _projectConfigOption = new("The path to the ksail configuration file", ["--ksail-config", "-kc"]) { Arity = ArgumentArity.ZeroOrOne };
   readonly ProjectDeploymentToolOption _projectDeploymentToolOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly ProjectDistributionOption _projectDistributionOption = new() { Arity = ArgumentArity.ZeroOrOne };
   readonly ProjectMirrorRegistriesOption _projectMirrorRegistriesOption = new() { Arity = ArgumentArity.ZeroOrOne };
@@ -28,7 +29,12 @@ sealed class KSailInitCommand : Command
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadAsync(name: context.ParseResult.GetValueForOption(_metadataNameOption), distribution: context.ParseResult.GetValueForOption(_projectDistributionOption)).ConfigureAwait(false);
+        var config = await KSailClusterConfigLoader.LoadAsync(
+          context.ParseResult.GetValueForOption(_projectConfigOption),
+          context.ParseResult.GetValueForOption(_projectWorkingDirectoryOption),
+          context.ParseResult.GetValueForOption(_metadataNameOption),
+          context.ParseResult.GetValueForOption(_projectDistributionOption)
+        ).ConfigureAwait(false);
         config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(_metadataNameOption));
         config.UpdateConfig("Spec.FluxDeploymentTool.PostBuildVariables", context.ParseResult.GetValueForOption(_fluxDeploymentToolPostBuildVariablesOption));
         config.UpdateConfig("Spec.KustomizeTemplate.Flows", context.ParseResult.GetValueForOption(_kustomizeTemplateKustomizationsOption));
@@ -57,6 +63,7 @@ sealed class KSailInitCommand : Command
   {
     AddOption(_metadataNameOption);
     AddOption(_projectWorkingDirectoryOption);
+    AddOption(_projectConfigOption);
     AddOption(_projectDeploymentToolOption);
     AddOption(_projectDistributionOption);
     AddOption(_projectMirrorRegistriesOption);
