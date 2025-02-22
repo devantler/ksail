@@ -16,7 +16,7 @@ static class KSailClusterConfigLoader
       .WithTypeConverter(new ResourceQuantityTypeConverter())
       .WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
 
-  internal static async Task<KSailCluster> LoadAsync(string? directory = default, string? name = default, KSailKubernetesDistribution distribution = default)
+  internal static async Task<KSailCluster> LoadAsync(string? configFilePath = "ksail-config.yaml", string? directory = default, string? name = default, KSailKubernetesDistribution distribution = default)
   {
     // Create default KSailClusterConfig
     var ksailClusterConfig = string.IsNullOrEmpty(name) ?
@@ -24,9 +24,11 @@ static class KSailClusterConfigLoader
       new KSailCluster(name, distribution: distribution);
 
     // Locate KSail YAML file
-    directory ??= Directory.GetCurrentDirectory();
-    string[] possibleFiles = [.. Directory.EnumerateFiles(directory, "*ksail*.y*ml", SearchOption.AllDirectories)];
-    string? ksailYaml = FindConfigFile(directory, possibleFiles);
+    string startDirectory = directory ?? Directory.GetCurrentDirectory();
+    string? ksailYaml = string.IsNullOrEmpty(configFilePath) ?
+      FindConfigFile(startDirectory, "ksail-config.yaml") :
+      FindConfigFile(startDirectory, configFilePath);
+
 
     // If no KSail YAML file is found, return the default KSailClusterConfig
     if (ksailYaml == null)
@@ -40,17 +42,18 @@ static class KSailClusterConfigLoader
     return ksailClusterConfig;
   }
 
-  static string? FindConfigFile(string startDirectory, string[] possibleFiles)
+  static string? FindConfigFile(string startDirectory, string configFilePath)
   {
+    if (Path.IsPathRooted(configFilePath))
+    {
+      return File.Exists(configFilePath) ? configFilePath : null;
+    }
     string? currentDirectory = startDirectory;
     while (currentDirectory != null)
     {
-      foreach (string file in possibleFiles)
-      {
-        string filePath = Path.Combine(currentDirectory, file);
-        if (File.Exists(filePath))
-          return filePath;
-      }
+      string filePath = Path.Combine(currentDirectory, configFilePath);
+      if (File.Exists(filePath))
+        return filePath;
       var parentDirectory = Directory.GetParent(currentDirectory);
       currentDirectory = parentDirectory?.FullName;
     }
