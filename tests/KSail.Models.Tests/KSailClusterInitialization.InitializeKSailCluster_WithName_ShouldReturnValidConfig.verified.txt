@@ -12,7 +12,7 @@
     },
     Project: {
       WorkingDirectory: .,
-      KSailConfigPath: ksail-config.yaml,
+      ConfigPath: ksail-config.yaml,
       DistributionConfigPath: kind-config.yaml,
       Template: Kustomize,
       Engine: Docker,
@@ -55,7 +55,7 @@
           Password: null,
           Insecure: false
         },
-        Name: registry.k8s.io,
+        Name: registry.k8s.io-proxy,
         HostPort: 5556,
         Username: null,
         Password: null,
@@ -68,7 +68,7 @@
           Password: null,
           Insecure: false
         },
-        Name: docker.io,
+        Name: docker.io-proxy,
         HostPort: 5557,
         Username: null,
         Password: null,
@@ -81,7 +81,7 @@
           Password: null,
           Insecure: false
         },
-        Name: ghcr.io,
+        Name: ghcr.io-proxy,
         HostPort: 5558,
         Username: null,
         Password: null,
@@ -94,7 +94,7 @@
           Password: null,
           Insecure: false
         },
-        Name: gcr.io,
+        Name: gcr.io-proxy,
         HostPort: 5559,
         Username: null,
         Password: null,
@@ -107,7 +107,7 @@
           Password: null,
           Insecure: false
         },
-        Name: mcr.microsoft.com,
+        Name: mcr.microsoft.com-proxy,
         HostPort: 5560,
         Username: null,
         Password: null,
@@ -120,7 +120,7 @@
           Password: null,
           Insecure: false
         },
-        Name: quay.io,
+        Name: quay.io-proxy,
         HostPort: 5561,
         Username: null,
         Password: null,

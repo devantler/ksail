@@ -37,7 +37,7 @@ class KSailUpdateCommandHandler
       case KSailDeploymentTool.Flux:
         string scheme = _config.Spec.FluxDeploymentTool.Source.Url.Scheme;
         string host = "localhost";
-        int port = _config.Spec.FluxDeploymentTool.Source.Url.Port;
+        int port = _config.Spec.KSailRegistry.HostPort;
         string absolutePath = _config.Spec.FluxDeploymentTool.Source.Url.AbsolutePath;
         var ociRegistryFromHost = new Uri($"{scheme}://{host}:{port}{absolutePath}");
         Console.WriteLine($"📥 Pushing manifests to '{ociRegistryFromHost}'");
