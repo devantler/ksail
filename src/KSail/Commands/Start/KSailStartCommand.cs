@@ -15,7 +15,7 @@ sealed class KSailStartCommand : Command
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadWithGlobalOptions(globalOptions, context);
+        var config = await KSailClusterConfigLoader.LoadWithGlobalOptionsAsync(globalOptions, context);
 
         Console.WriteLine($"► starting cluster '{config.Spec.Connection.Context}'");
         var handler = new KSailStartCommandHandler(config);

@@ -16,7 +16,7 @@ sealed class KSailLintCommand : Command
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadWithGlobalOptions(globalOptions, context);
+        var config = await KSailClusterConfigLoader.LoadWithGlobalOptionsAsync(globalOptions, context);
 
         Console.WriteLine("🧹 Linting manifest files");
         var handler = new KSailLintCommandHandler();

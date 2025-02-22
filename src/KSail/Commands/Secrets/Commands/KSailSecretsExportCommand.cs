@@ -33,7 +33,7 @@ sealed class KSailSecretsExportCommand : Command
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadWithGlobalOptions(globalOptions, context);
+        var config = await KSailClusterConfigLoader.LoadWithGlobalOptionsAsync(globalOptions, context);
         string publicKey = context.ParseResult.GetValueForArgument(_publicKeyArgument);
         string outputPath = context.ParseResult.GetValueForOption(_outputFilePathOption) ?? throw new KSailException("output path is required");
 

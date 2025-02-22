@@ -1,4 +1,5 @@
 using System.CommandLine;
+using System.CommandLine.Parsing;
 using KSail.Commands.Debug;
 using KSail.Commands.Down;
 using KSail.Commands.Gen;
@@ -42,24 +43,7 @@ sealed class KSailRootCommand : RootCommand
 
   internal void AddGlobalOptions()
   {
-    var globalOptions = new Option[]
-    {
-      _globalOptions.ConnectionContextOption,
-      _globalOptions.ConnectionKubeconfigOption,
-      _globalOptions.ConnectionTimeoutOption,
-      _globalOptions.MetadataNameOption,
-      _globalOptions.ProjectConfigOption,
-      _globalOptions.ProjectDistributionConfigOption,
-      _globalOptions.ProjectDistributionOption,
-      _globalOptions.ProjectEditorOption,
-      _globalOptions.ProjectEngineOption,
-      _globalOptions.ProjectMirrorRegistriesOption,
-      _globalOptions.ProjectSecretManagerOption,
-      _globalOptions.ProjectTemplateOption,
-      _globalOptions.ProjectWorkingDirectoryOption
-    };
-
-    foreach (var option in globalOptions)
+    foreach (var option in _globalOptions.Options)
     {
       AddGlobalOption(option);
     }
@@ -79,5 +63,4 @@ sealed class KSailRootCommand : RootCommand
     AddCommand(new KSailGenCommand(console));
     AddCommand(new KSailSecretsCommand(_globalOptions, console));
   }
-
 }

@@ -23,7 +23,7 @@ sealed class KSailSecretsDecryptCommand : Command
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadWithGlobalOptions(globalOptions, context);
+        var config = await KSailClusterConfigLoader.LoadWithGlobalOptionsAsync(globalOptions, context);
         string path = context.ParseResult.GetValueForArgument(_pathArgument);
         bool inPlace = context.ParseResult.GetValueForOption(_inPlaceOption);
         string? output = context.ParseResult.GetValueForOption(_outputOption);

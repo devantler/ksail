@@ -20,7 +20,7 @@ sealed class KSailUpCommand : Command
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadWithGlobalOptions(globalOptions, context);
+        var config = await KSailClusterConfigLoader.LoadWithGlobalOptionsAsync(globalOptions, context);
 
         config.UpdateConfig("Spec.KustomizeTemplate.Root", $"k8s/clusters/{config.Metadata.Name}/flux-system");
         config.UpdateConfig("Spec.FluxDeploymentTool.Source.Url", context.ParseResult.GetValueForOption(_fluxDeploymentToolSourceUrlOption));

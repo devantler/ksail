@@ -21,7 +21,7 @@ sealed class KSailUpdateCommand : Command
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadWithGlobalOptions(globalOptions, context);
+        var config = await KSailClusterConfigLoader.LoadWithGlobalOptionsAsync(globalOptions, context);
         config.UpdateConfig("Spec.CLI.Update.Lint", context.ParseResult.GetValueForOption(_lintOption));
         config.UpdateConfig("Spec.CLI.Update.Reconcile", context.ParseResult.GetValueForOption(_reconcileOption));
 

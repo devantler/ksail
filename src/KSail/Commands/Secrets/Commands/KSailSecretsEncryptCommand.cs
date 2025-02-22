@@ -24,7 +24,7 @@ sealed class KSailSecretsEncryptCommand : Command
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadWithGlobalOptions(globalOptions, context);
+        var config = await KSailClusterConfigLoader.LoadWithGlobalOptionsAsync(globalOptions, context);
         string path = context.ParseResult.GetValueForArgument(_pathArgument);
         string? publicKey = context.ParseResult.GetValueForOption(_publicKeyOption);
         bool inPlace = context.ParseResult.GetValueForOption(_inPlaceOption);

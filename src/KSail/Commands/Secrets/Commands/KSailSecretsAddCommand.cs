@@ -16,7 +16,7 @@ sealed class KSailSecretsAddCommand : Command
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadWithGlobalOptions(globalOptions, context);
+        var config = await KSailClusterConfigLoader.LoadWithGlobalOptionsAsync(globalOptions, context);
         var cancellationToken = context.GetCancellationToken();
         KSailSecretsAddCommandHandler handler;
         switch (config.Spec.Project.SecretManager)

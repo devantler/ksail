@@ -13,7 +13,7 @@ sealed class KSailStopCommand : Command
   {
     this.SetHandler(async (context) =>
     {
-      var config = await KSailClusterConfigLoader.LoadWithGlobalOptions(globalOptions, context);
+      var config = await KSailClusterConfigLoader.LoadWithGlobalOptionsAsync(globalOptions, context);
 
       var handler = new KSailStopCommandHandler(config);
       try
