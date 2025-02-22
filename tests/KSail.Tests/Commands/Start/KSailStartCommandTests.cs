@@ -26,7 +26,7 @@ public class KSailStartCommandTests : IAsyncLifetime
     var ksailCommand = new KSailRootCommand(console);
 
     //Act
-    int exitCode = await ksailCommand.InvokeAsync("start --help", console);
+    int exitCode = await ksailCommand.InvokeAsync(["start", "--help"], console);
 
     //Assert
     Assert.Equal(0, exitCode);

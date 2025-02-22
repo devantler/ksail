@@ -18,18 +18,27 @@ public class KSailSecretsCommandTests : IAsyncLifetime
   /// <summary>
   /// Tests that the 'ksail up --help'
   /// </summary>
-  [Fact]
-  public async Task KSailSecretsHelp_SucceedsAndPrintsIntroductionAndHelp()
+  [Theory]
+  [InlineData(["secrets", "--help"])]
+  [InlineData(["secrets", "encrypt", "--help"])]
+  [InlineData(["secrets", "decrypt", "--help"])]
+  [InlineData(["secrets", "add", "--help"])]
+  [InlineData(["secrets", "rm", "--help"])]
+  [InlineData(["secrets", "list", "--help"])]
+  [InlineData(["secrets", "import", "--help"])]
+  [InlineData(["secrets", "export", "--help"])]
+  public async Task KSailSecretsHelp_SucceedsAndPrintsIntroductionAndHelp(params string[] args)
   {
     //Arrange
     var console = new TestConsole();
     var ksailCommand = new KSailRootCommand(console);
 
     //Act
-    int exitCode = await ksailCommand.InvokeAsync("secrets --help", console);
+    int exitCode = await ksailCommand.InvokeAsync(args, console);
 
     //Assert
     Assert.Equal(0, exitCode);
-    _ = await Verify(console.Error.ToString() + console.Out);
+    _ = await Verify(console.Error.ToString() + console.Out)
+      .UseFileName($"ksail {string.Join(" ", args)}");
   }
 }

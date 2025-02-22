@@ -20,11 +20,11 @@ public class E2ETests : IAsyncLifetime
   /// Tests that the 'ksail up' command is executed successfully with various configurations.
   /// </summary>
   [Theory]
-  [InlineData("init -d native")]
-  [InlineData("init --name ksail-advanced-native --distribution native --secret-manager sops --flux-post-build-variables")]
-  [InlineData("init -d k3s")]
-  [InlineData("init --name ksail-advanced-k3s --distribution k3s --secret-manager sops --flux-post-build-variables")]
-  public async Task KSailUp_WithVariousConfigurations_Succeeds(string initArgs)
+  [InlineData(["init", "-d", "native"])]
+  [InlineData(["init", "--name", "ksail-advanced-native", "--distribution", "native", "--secret-manager", "sops", "--flux-post-build-variables"])]
+  [InlineData(["init", "-d", "k3s"])]
+  [InlineData(["init", "--name", "ksail-advanced-k3s", "--distribution", "k3s", "--secret-manager", "sops", "--flux-post-build-variables"])]
+  public async Task KSailUp_WithVariousConfigurations_Succeeds(params string[] initArgs)
   {
     // TODO: Add support for Windows and macOS in GitHub Runners when GitHub Actions runners support dind on Windows and macOS runners.
     if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && Environment.GetEnvironmentVariable("GITHUB_ACTIONS") == "true"))
@@ -39,17 +39,17 @@ public class E2ETests : IAsyncLifetime
     //Act & Assert
     int initExitCode = await ksailCommand.InvokeAsync(initArgs);
     Assert.Equal(0, initExitCode);
-    int upExitCode = await ksailCommand.InvokeAsync("up");
+    int upExitCode = await ksailCommand.InvokeAsync(["up"], console);
     Assert.Equal(0, upExitCode);
-    int listExitCode = await ksailCommand.InvokeAsync("list");
+    int listExitCode = await ksailCommand.InvokeAsync(["list"], console);
     Assert.Equal(0, listExitCode);
-    int stopExitCode = await ksailCommand.InvokeAsync("stop");
+    int stopExitCode = await ksailCommand.InvokeAsync(["stop"], console);
     Assert.Equal(0, stopExitCode);
-    int startExitCode = await ksailCommand.InvokeAsync("start");
+    int startExitCode = await ksailCommand.InvokeAsync(["start"], console);
     Assert.Equal(0, startExitCode);
-    int updateExitCode = await ksailCommand.InvokeAsync("update");
+    int updateExitCode = await ksailCommand.InvokeAsync(["update"], console);
     Assert.Equal(0, updateExitCode);
-    int downExitCode = await ksailCommand.InvokeAsync("down");
+    int downExitCode = await ksailCommand.InvokeAsync(["down"], console);
     Assert.Equal(0, downExitCode);
   }
 

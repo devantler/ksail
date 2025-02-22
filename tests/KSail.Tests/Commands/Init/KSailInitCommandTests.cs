@@ -28,7 +28,7 @@ public partial class KSailInitCommandTests : IAsyncLifetime
     var ksailCommand = new KSailRootCommand(console);
 
     //Act
-    int exitCode = await ksailCommand.InvokeAsync("init --help", console);
+    int exitCode = await ksailCommand.InvokeAsync(["init", "--help"], console);
 
     //Assert
     Assert.Equal(0, exitCode);
@@ -54,7 +54,9 @@ public partial class KSailInitCommandTests : IAsyncLifetime
     _ = Directory.CreateDirectory(outputDir);
 
     //Act
-    int exitCode = await ksailCommand.InvokeAsync($"init --working-directory {outputDir}");
+    int exitCode = await ksailCommand.InvokeAsync(["init",
+      "--working-directory", outputDir
+    ]);
 
     //Assert
     Assert.Equal(0, exitCode);
@@ -91,8 +93,12 @@ public partial class KSailInitCommandTests : IAsyncLifetime
     _ = Directory.CreateDirectory(outputDir);
 
     //Act
-    int exitCodeRun1 = await ksailCommand.InvokeAsync($"init --working-directory {outputDir}");
-    int exitCodeRun2 = await ksailCommand.InvokeAsync($"init --working-directory {outputDir}");
+    int exitCodeRun1 = await ksailCommand.InvokeAsync(["init",
+      "--working-directory", outputDir
+    ]);
+    int exitCodeRun2 = await ksailCommand.InvokeAsync(["init",
+      "--working-directory", outputDir
+    ]);
 
     //Assert
     Assert.Equal(0, exitCodeRun1);
@@ -130,8 +136,16 @@ public partial class KSailInitCommandTests : IAsyncLifetime
     _ = Directory.CreateDirectory(outputDir);
 
     //Act
-    int exitCodeRun1 = await ksailCommand.InvokeAsync($"init --name cluster1 --distribution native --working-directory {outputDir}");
-    int exitCodeRun2 = await ksailCommand.InvokeAsync($"init --name cluster2 --distribution k3s --working-directory {outputDir}");
+    int exitCodeRun1 = await ksailCommand.InvokeAsync(["init",
+      "--name", "cluster1",
+      "--distribution", "native",
+      "--working-directory", outputDir
+    ]);
+    int exitCodeRun2 = await ksailCommand.InvokeAsync(["init",
+      "--name", "cluster2",
+      "--distribution", "k3s",
+      "--working-directory", outputDir
+    ]);
 
     //Assert
     Assert.Equal(0, exitCodeRun1);
@@ -170,7 +184,13 @@ public partial class KSailInitCommandTests : IAsyncLifetime
     _ = Directory.CreateDirectory(outputDir);
 
     //Act
-    int exitCode = await ksailCommand.InvokeAsync($"init --name ksail-advanced-native --working-directory {outputDir} --secret-manager sops --flux-post-build-variables --kustomize-hooks clusters/ksail-advanced-native distributions/native shared");
+    int exitCode = await ksailCommand.InvokeAsync(["init",
+      "--name", "ksail-advanced-native",
+      "--working-directory", outputDir,
+      "--secret-manager", "sops",
+      "--flux-post-build-variables",
+      "--kustomize-hooks", "clusters/ksail-advanced-native", "distributions/native", "shared"
+    ]);
 
     //Assert
     Assert.Equal(0, exitCode);
@@ -211,8 +231,19 @@ public partial class KSailInitCommandTests : IAsyncLifetime
     _ = Directory.CreateDirectory(outputDir);
 
     //Act
-    int exitCodeRun1 = await ksailCommand.InvokeAsync($"init --name ksail-advanced-native --working-directory {outputDir} --secret-manager sops --flux-post-build-variables --kustomize-hooks clusters/ksail-advanced-native distributions/native shared");
-    int exitCodeRun2 = await ksailCommand.InvokeAsync($"init --name ksail-advanced-native --working-directory {outputDir} --secret-manager sops --flux-post-build-variables --kustomize-hooks clusters/ksail-advanced-native distributions/native shared");
+    int exitCodeRun1 = await ksailCommand.InvokeAsync(["init",
+      "--name", "ksail-advanced-native",
+      "--working-directory", outputDir,
+      "--secret-manager", "sops",
+      "--flux-post-build-variables",
+      "--kustomize-hooks", "clusters/ksail-advanced-native", "distributions/native", "shared"
+    ]);
+    int exitCodeRun2 = await ksailCommand.InvokeAsync(["init",
+      "--name", "ksail-advanced-native",
+      "--working-directory", outputDir, "--secret-manager", "sops",
+      "--flux-post-build-variables",
+      "--kustomize-hooks", "clusters/ksail-advanced-native","distributions/native", "shared"
+    ]);
 
     //Assert
     Assert.Equal(0, exitCodeRun1);
@@ -254,8 +285,22 @@ public partial class KSailInitCommandTests : IAsyncLifetime
     _ = Directory.CreateDirectory(outputDir);
 
     //Act
-    int exitCodeRun1 = await ksailCommand.InvokeAsync($"init --name cluster1 --working-directory {outputDir} --secret-manager sops --flux-post-build-variables --distribution native --kustomize-hooks clusters/cluster1 distributions/native shared");
-    int exitCodeRun2 = await ksailCommand.InvokeAsync($"init --name cluster2 --working-directory {outputDir} --secret-manager sops --flux-post-build-variables --distribution k3s --kustomize-hooks clusters/cluster2 distributions/k3s shared");
+    int exitCodeRun1 = await ksailCommand.InvokeAsync(["init",
+      "--name", "cluster1",
+      "--working-directory", outputDir,
+      "--secret-manager", "sops",
+      "--flux-post-build-variables",
+      "--distribution", "native",
+      "--kustomize-hooks", "clusters/cluster1", "distributions/native", "shared"
+    ]);
+    int exitCodeRun2 = await ksailCommand.InvokeAsync(["init",
+      "--name", "cluster2",
+      "--working-directory", outputDir,
+      "--secret-manager", "sops",
+      "--flux-post-build-variables",
+      "--distribution", "k3s",
+      "--kustomize-hooks", "clusters/cluster2", "distributions/k3s", "shared"
+    ]);
 
     //Assert
     Assert.Equal(0, exitCodeRun1);
