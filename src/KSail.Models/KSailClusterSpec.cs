@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Runtime.InteropServices;
 using KSail.Models.CLI;
 using KSail.Models.CNI;
 using KSail.Models.Connection;
@@ -146,14 +145,7 @@ public class KSailClusterSpec
     switch (distribution)
     {
       case KSailKubernetesDistribution.Native:
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-        {
-          FluxDeploymentTool = new KSailFluxDeploymentTool(new Uri("oci://172.17.0.1:5555/ksail-registry"));
-        }
-        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-        {
-          FluxDeploymentTool = new KSailFluxDeploymentTool(new Uri("oci://host.docker.internal:5555/ksail-registry"));
-        }
+        FluxDeploymentTool = new KSailFluxDeploymentTool(new Uri("oci://ksail-registry:5555/ksail-registry"));
         break;
       case KSailKubernetesDistribution.K3s:
         FluxDeploymentTool = new KSailFluxDeploymentTool(new Uri("oci://host.k3d.internal:5555/ksail-registry"));
