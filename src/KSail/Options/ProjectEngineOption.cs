@@ -3,7 +3,10 @@ using KSail.Models.Project;
 
 namespace KSail.Options;
 
-sealed class ProjectEngineOption()
+/// <summary>
+/// The engine to use for provisioning the cluster.
+/// </summary>
+public class ProjectEngineOption()
  : Option<KSailEngine>(
     ["-e", "--engine"],
     "The engine to use for provisioning the cluster."
