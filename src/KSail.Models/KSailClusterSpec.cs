@@ -142,16 +142,11 @@ public class KSailClusterSpec
 
   void SetOCISourceUri(KSailKubernetesDistribution distribution = KSailKubernetesDistribution.Native)
   {
-    switch (distribution)
+    FluxDeploymentTool = distribution switch
     {
-      case KSailKubernetesDistribution.Native:
-        FluxDeploymentTool = new KSailFluxDeploymentTool(new Uri("oci://ksail-registry:5000/ksail-registry"));
-        break;
-      case KSailKubernetesDistribution.K3s:
-        FluxDeploymentTool = new KSailFluxDeploymentTool(new Uri("oci://host.k3d.internal:5555/ksail-registry"));
-        break;
-      default:
-        break;
-    }
+      KSailKubernetesDistribution.Native => new KSailFluxDeploymentTool(new Uri("oci://ksail-registry:5000/ksail-registry")),
+      KSailKubernetesDistribution.K3s => new KSailFluxDeploymentTool(new Uri("oci://host.k3d.internal:5555/ksail-registry")),
+      _ => new KSailFluxDeploymentTool(new Uri("oci://ksail-registry:5000/ksail-registry")),
+    };
   }
 }
