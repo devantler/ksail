@@ -16,12 +16,6 @@ class KSailLintCommandHandler()
       throw new KSailException($"no manifest files found in '{kubernetesDirectory}'.");
     }
 
-    if (!Directory.Exists(kubernetesDirectory) || Directory.GetFiles(kubernetesDirectory, "*.yaml", SearchOption.AllDirectories).Length == 0)
-    {
-      Console.WriteLine($"✔ skipping, as '{kubernetesDirectory}' directory does not exist or is empty");
-      return true;
-    }
-
     Console.WriteLine("► validating yaml syntax");
     bool yamlIsValid = await _yamlSyntaxValidator.ValidateAsync(kubernetesDirectory, cancellationToken).ConfigureAwait(false);
     Console.WriteLine("✔ yaml syntax is valid");
