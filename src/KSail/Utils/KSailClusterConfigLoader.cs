@@ -25,7 +25,6 @@ static class KSailClusterConfigLoader
     var projectDistributionOption = (ProjectDistributionOption)globalOptions.Options.First(o => o is ProjectDistributionOption);
     var config = await LoadAsync(
       context.ParseResult.GetValueForOption(projectConfigOption),
-      "./",
       context.ParseResult.GetValueForOption(metadataNameOption),
       context.ParseResult.GetValueForOption(projectDistributionOption)
     ).ConfigureAwait(false);
@@ -44,7 +43,7 @@ static class KSailClusterConfigLoader
     return config;
   }
 
-  internal static async Task<KSailCluster> LoadAsync(string? configFilePath = "ksail-config.yaml", string? directory = default, string? name = default, KSailKubernetesDistribution distribution = default)
+  internal static async Task<KSailCluster> LoadAsync(string? configFilePath = "ksail-config.yaml", string? name = default, KSailKubernetesDistribution distribution = default)
   {
     // Create default KSailClusterConfig
     var ksailClusterConfig = string.IsNullOrEmpty(name) ?
@@ -52,7 +51,7 @@ static class KSailClusterConfigLoader
       new KSailCluster(name, distribution: distribution);
 
     // Locate KSail YAML file
-    string startDirectory = directory ?? Directory.GetCurrentDirectory();
+    string startDirectory = Directory.GetCurrentDirectory();
     string? ksailYaml = string.IsNullOrEmpty(configFilePath) ?
       FindConfigFile(startDirectory, "ksail-config.yaml") :
       FindConfigFile(startDirectory, configFilePath);
