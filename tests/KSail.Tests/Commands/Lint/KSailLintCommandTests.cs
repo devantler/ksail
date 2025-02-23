@@ -42,10 +42,12 @@ public class KSailLintCommandTests : IAsyncLifetime
     string path = Path.Combine(Path.GetTempPath(), "ksail-lint-test-cluster");
     var console = new TestConsole();
     var ksailCommand = new KSailRootCommand(console);
+    _ = Directory.CreateDirectory(path);
+    Directory.SetCurrentDirectory(path);
 
     //Act
-    int initExitCode = await ksailCommand.InvokeAsync(["init", "--name", "test-cluster", "--working-directory", path], console);
-    int lintExitCode = await ksailCommand.InvokeAsync(["lint", "--working-directory", path], console);
+    int initExitCode = await ksailCommand.InvokeAsync(["init", "--name", "test-cluster"], console);
+    int lintExitCode = await ksailCommand.InvokeAsync(["lint"], console);
 
     //Assert
     Assert.Equal(0, initExitCode);
@@ -65,7 +67,8 @@ public class KSailLintCommandTests : IAsyncLifetime
     _ = Directory.CreateDirectory(path);
 
     //Act
-    int lintExitCode = await ksailCommand.InvokeAsync(["lint", "--working-directory", path], console);
+    Directory.SetCurrentDirectory(path);
+    int lintExitCode = await ksailCommand.InvokeAsync(["lint"], console);
 
     //Assert
     Assert.Equal(0, lintExitCode);
@@ -95,7 +98,8 @@ public class KSailLintCommandTests : IAsyncLifetime
     await File.WriteAllTextAsync(Path.Combine(path, "invalid.yaml"), invalidYaml);
 
     //Act
-    int lintExitCode = await ksailCommand.InvokeAsync(["lint", "--working-directory", path], console);
+    Directory.SetCurrentDirectory(path);
+    int lintExitCode = await ksailCommand.InvokeAsync(["lint"], console);
 
     //Assert
     Assert.Equal(1, lintExitCode);
