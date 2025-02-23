@@ -8,7 +8,7 @@ class KSailClusterConfigGenerator
   readonly KSailClusterGenerator _ksailClusterGenerator = new();
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    string ksailConfigPath = Path.Combine(config.Spec.Project.WorkingDirectory, "ksail-config.yaml");
+    string ksailConfigPath = Path.Combine(Directory.GetCurrentDirectory(), "ksail-config.yaml");
     if (File.Exists(ksailConfigPath))
     {
       Console.WriteLine($"✔ skipping '{ksailConfigPath}', as it already exists.");

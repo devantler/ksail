@@ -9,7 +9,6 @@ spec:
     context: kind-cluster1
     timeout: 5m
   project:
-    workingDirectory: {TempPath}ksail-init-mixed-advanced-multi
     configPath: ksail-config.yaml
     distributionConfigPath: kind-config.yaml
     template: Kustomize

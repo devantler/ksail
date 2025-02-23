@@ -23,10 +23,8 @@ static class KSailClusterConfigLoader
     var metadataNameOption = (MetadataNameOption)globalOptions.Options.First(o => o is MetadataNameOption);
     var projectConfigOption = (PathOption)globalOptions.Options.First(o => o is PathOption && o.Aliases.Contains("--config"));
     var projectDistributionOption = (ProjectDistributionOption)globalOptions.Options.First(o => o is ProjectDistributionOption);
-    var projectWorkingDirectoryOption = (PathOption)globalOptions.Options.First(o => o is PathOption && o.Aliases.Contains("--working-directory"));
     var config = await LoadAsync(
       context.ParseResult.GetValueForOption(projectConfigOption),
-      context.ParseResult.GetValueForOption(projectWorkingDirectoryOption),
       context.ParseResult.GetValueForOption(metadataNameOption),
       context.ParseResult.GetValueForOption(projectDistributionOption)
     ).ConfigureAwait(false);
@@ -34,7 +32,6 @@ static class KSailClusterConfigLoader
     config.UpdateConfig("Spec.Connection.Kubeconfig", context.ParseResult.GetValueForOption((ConnectionKubeconfigOption)globalOptions.Options.First(o => o is ConnectionKubeconfigOption)));
     config.UpdateConfig("Spec.Connection.Context", context.ParseResult.GetValueForOption((ConnectionContextOption)globalOptions.Options.First(o => o is ConnectionContextOption)));
     config.UpdateConfig("Spec.Connection.Timeout", context.ParseResult.GetValueForOption((ConnectionTimeoutOption)globalOptions.Options.First(o => o is ConnectionTimeoutOption)));
-    config.UpdateConfig("Spec.Project.WorkingDirectory", context.ParseResult.GetValueForOption(projectWorkingDirectoryOption));
     config.UpdateConfig("Spec.Project.ConfigPath", context.ParseResult.GetValueForOption(projectConfigOption));
     config.UpdateConfig("Spec.Project.Distribution", context.ParseResult.GetValueForOption(projectDistributionOption));
     config.UpdateConfig("Spec.Project.DistributionConfigPath", context.ParseResult.GetValueForOption((PathOption)globalOptions.Options.First(o => o is PathOption && o.Aliases.Contains("--distribution-config"))));
@@ -46,7 +43,7 @@ static class KSailClusterConfigLoader
     return config;
   }
 
-  internal static async Task<KSailCluster> LoadAsync(string? configFilePath = "ksail-config.yaml", string? directory = default, string? name = default, KSailKubernetesDistribution distribution = default)
+  internal static async Task<KSailCluster> LoadAsync(string? configFilePath = "ksail-config.yaml", string? name = default, KSailKubernetesDistribution distribution = default)
   {
     // Create default KSailClusterConfig
     var ksailClusterConfig = string.IsNullOrEmpty(name) ?
@@ -54,7 +51,7 @@ static class KSailClusterConfigLoader
       new KSailCluster(name, distribution: distribution);
 
     // Locate KSail YAML file
-    string startDirectory = directory ?? Directory.GetCurrentDirectory();
+    string startDirectory = Directory.GetCurrentDirectory();
     string? ksailYaml = string.IsNullOrEmpty(configFilePath) ?
       FindConfigFile(startDirectory, "ksail-config.yaml") :
       FindConfigFile(startDirectory, configFilePath);

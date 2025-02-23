@@ -16,19 +16,19 @@ public class GlobalOptions : IReadOnlyList<Option>
   /// </summary>
   public List<Option> Options { get; } =
   [
+    new ConnectionContextOption(new()) { Arity = ArgumentArity.ZeroOrOne },
+    new ConnectionKubeconfigOption(new()) { Arity = ArgumentArity.ZeroOrOne },
+    new ConnectionTimeoutOption(new()) { Arity = ArgumentArity.ZeroOrOne },
     new MetadataNameOption(new()) { Arity = ArgumentArity.ZeroOrOne },
+    new PathOption("The path to the ksail configuration file. Default: 'ksail-config.yaml' (G)", ["--config", "-c"]) { Arity = ArgumentArity.ZeroOrOne },
+    new ProjectDeploymentToolOption(new()) { Arity = ArgumentArity.ZeroOrOne },
     new ProjectDistributionOption(new()) { Arity = ArgumentArity.ZeroOrOne },
+    new PathOption($"Path to the distribution configuration file. Default: 'kind-config.yaml' (G)", ["--distribution-config", "-dc"]) { Arity = ArgumentArity.ZeroOrOne },
+    new ProjectEditorOption(new()) { Arity = ArgumentArity.ZeroOrOne },
     new ProjectEngineOption(new()) { Arity = ArgumentArity.ZeroOrOne },
     new ProjectMirrorRegistriesOption(new()) { Arity = ArgumentArity.ZeroOrOne },
     new ProjectSecretManagerOption(new()) { Arity = ArgumentArity.ZeroOrOne },
-    new PathOption($"Path to the distribution configuration file. Default: 'kind-config.yaml' (G)", ["--distribution-config", "-dc"]) { Arity = ArgumentArity.ZeroOrOne },
-    new PathOption("The root directory of the project. Default: '.' (G)", ["--working-directory", "-wd"]) { Arity = ArgumentArity.ZeroOrOne },
-    new PathOption("The path to the ksail configuration file. Default: 'ksail-config.yaml' (G)", ["--config", "-c"]) { Arity = ArgumentArity.ZeroOrOne },
-    new ProjectTemplateOption(new()) { Arity = ArgumentArity.ZeroOrOne },
-    new ProjectEditorOption(new()) { Arity = ArgumentArity.ZeroOrOne },
-    new ConnectionKubeconfigOption(new()) { Arity = ArgumentArity.ZeroOrOne },
-    new ConnectionContextOption(new()) { Arity = ArgumentArity.ZeroOrOne },
-    new ConnectionTimeoutOption(new()) { Arity = ArgumentArity.ZeroOrOne }
+    new ProjectTemplateOption(new()) { Arity = ArgumentArity.ZeroOrOne }
   ];
 
 

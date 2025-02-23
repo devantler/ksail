@@ -5,6 +5,7 @@ namespace KSail.Tests.Utils;
 /// <summary>
 /// Tests for <see cref="SopsConfigLoader"/>.
 /// </summary>
+[Collection("KSail.Tests")]
 public class SopsConfigLoaderTest
 {
   /// <summary>
@@ -14,20 +15,10 @@ public class SopsConfigLoaderTest
   [Fact]
   public async Task LoadAsync_NoSopsYamlFile_ThrowsKSailException()
   {
-    // Arrange
-    string testDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-    _ = Directory.CreateDirectory(testDirectory);
+    // Act
+    var exception = await Assert.ThrowsAsync<KSailException>(() => SopsConfigLoader.LoadAsync());
 
-    try
-    {
-      // Act & Assert
-      var exception = await Assert.ThrowsAsync<KSailException>(() => SopsConfigLoader.LoadAsync(testDirectory));
-      Assert.Equal("'.sops.yaml' file not found in the current or parent directories", exception.Message);
-    }
-    finally
-    {
-      // Cleanup
-      Directory.Delete(testDirectory, true);
-    }
+    // Assert
+    Assert.Equal("'.sops.yaml' file not found in the current or parent directories", exception.Message);
   }
 }

@@ -141,7 +141,7 @@ class KSailUpCommandHandler
     if (config.Spec.CLI.Up.Lint)
     {
       Console.WriteLine("🔍 Linting manifests");
-      bool success = await _ksailLintCommandHandler.HandleAsync(config, cancellationToken).ConfigureAwait(false);
+      bool success = await _ksailLintCommandHandler.HandleAsync(cancellationToken).ConfigureAwait(false);
       Console.WriteLine();
       return success;
     }

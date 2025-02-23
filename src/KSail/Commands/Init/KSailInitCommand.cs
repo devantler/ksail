@@ -26,7 +26,7 @@ sealed class KSailInitCommand : Command
         config.UpdateConfig("Spec.KustomizeTemplate.Flows", context.ParseResult.GetValueForOption(_kustomizeTemplateKustomizationsOption));
         config.UpdateConfig("Spec.KustomizeTemplate.Hooks", context.ParseResult.GetValueForOption(_kustomizeTemplateKustomizationHooksOption));
         var handler = new KSailInitCommandHandler(config);
-        Console.WriteLine($"📁 Initializing new cluster '{config.Metadata.Name}' in '{config.Spec.Project.WorkingDirectory}' with the '{config.Spec.Project.Template}' template.");
+        Console.WriteLine($"📁 Initializing new cluster '{config.Metadata.Name}' in './' with the '{config.Spec.Project.Template}' template.");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         Console.WriteLine();
       }

@@ -51,10 +51,6 @@
           "description": "The options for the KSail project.",
           "type": "object",
           "properties": {
-            "workingDirectory": {
-              "description": "The working directory for the project.",
-              "type": "string"
-            },
             "configPath": {
               "description": "The path to the ksail configuration file.",
               "type": "string"
