@@ -32,7 +32,7 @@ class KustomizeFlowGenerator
 
   async Task GenerateKustomizeFlowHook(KSailCluster config, string currentHook, string currentFlow, CancellationToken cancellationToken = default)
   {
-    string outputPath = Path.Combine(config.Spec.Project.WorkingDirectory, "k8s", currentHook, currentFlow);
+    string outputPath = Path.Combine("k8s", currentHook, currentFlow);
     if (!Directory.Exists(outputPath))
       _ = Directory.CreateDirectory(outputPath);
     string outputDirectory = Path.Combine(outputPath, "kustomization.yaml");

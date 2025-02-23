@@ -27,7 +27,7 @@ class KSailUpdateCommandHandler
     {
       return false;
     }
-    string manifestDirectory = Path.Combine(_config.Spec.Project.WorkingDirectory, "k8s");
+    string manifestDirectory = "k8s";
     if (!Directory.Exists(manifestDirectory) || Directory.GetFiles(manifestDirectory, "*.yaml", SearchOption.AllDirectories).Length == 0)
     {
       throw new KSailException($"a '{manifestDirectory}' directory does not exist or is empty.");
@@ -42,7 +42,7 @@ class KSailUpdateCommandHandler
         var ociRegistryFromHost = new Uri($"{scheme}://{host}:{port}{absolutePath}");
         Console.WriteLine($"📥 Pushing manifests to '{ociRegistryFromHost}'");
         // TODO: Make some form of abstraction around GitOps tools, so it is easier to support apply-based tools like kubectl
-        await _deploymentTool.PushManifestsAsync(ociRegistryFromHost, Path.Combine(_config.Spec.Project.WorkingDirectory, "k8s"), cancellationToken: cancellationToken).ConfigureAwait(false);
+        await _deploymentTool.PushManifestsAsync(ociRegistryFromHost, "k8s", cancellationToken: cancellationToken).ConfigureAwait(false);
         Console.WriteLine();
         if (_config.Spec.CLI.Update.Reconcile)
         {
@@ -64,7 +64,7 @@ class KSailUpdateCommandHandler
     if (config.Spec.CLI.Update.Lint)
     {
       Console.WriteLine("🔍 Linting manifests");
-      bool success = await _ksailLintCommandHandler.HandleAsync(config, cancellationToken).ConfigureAwait(false);
+      bool success = await _ksailLintCommandHandler.HandleAsync(cancellationToken).ConfigureAwait(false);
       Console.WriteLine();
       return success;
     }

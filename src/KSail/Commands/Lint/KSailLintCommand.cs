@@ -20,7 +20,7 @@ sealed class KSailLintCommand : Command
 
         Console.WriteLine("🧹 Linting manifest files");
         var handler = new KSailLintCommandHandler();
-        context.ExitCode = await handler.HandleAsync(config, context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;
+        context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;
         Console.WriteLine();
       }
       catch (Exception ex)

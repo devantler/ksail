@@ -10,12 +10,6 @@ namespace KSail.Models.Project;
 public class KSailProject
 {
   /// <summary>
-  /// The working directory for the project.
-  /// </summary>
-  [Description("The working directory for the project.")]
-  public string WorkingDirectory { get; set; } = ".";
-
-  /// <summary>
   /// The path to the ksail configuration file.
   /// </summary>
   [Description("The path to the ksail configuration file.")]

@@ -12,7 +12,7 @@ class VariablesGenerator
   {
     foreach (string hook in config.Spec.KustomizeTemplate.Hooks)
     {
-      string hookPath = Path.Combine(config.Spec.Project.WorkingDirectory, "k8s", hook, "variables");
+      string hookPath = Path.Combine("k8s", hook, "variables");
       string name = hook.Replace("/", "-", StringComparison.Ordinal);
       await GenerateVariables(hookPath, name, cancellationToken).ConfigureAwait(false);
     }

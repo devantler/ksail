@@ -14,7 +14,7 @@ class FluxSystemGenerator
   readonly FluxKustomizationGenerator _fluxKustomizationGenerator = new();
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    string outputDirectory = Path.Combine(config.Spec.Project.WorkingDirectory, "k8s", "clusters", config.Metadata.Name, "flux-system");
+    string outputDirectory = Path.Combine("k8s", "clusters", config.Metadata.Name, "flux-system");
     if (!Directory.Exists(outputDirectory))
       _ = Directory.CreateDirectory(outputDirectory);
     await GenerateFluxSystemKustomization(config, outputDirectory, cancellationToken).ConfigureAwait(false);
