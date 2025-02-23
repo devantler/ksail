@@ -23,10 +23,9 @@ static class KSailClusterConfigLoader
     var metadataNameOption = (MetadataNameOption)globalOptions.Options.First(o => o is MetadataNameOption);
     var projectConfigOption = (PathOption)globalOptions.Options.First(o => o is PathOption && o.Aliases.Contains("--config"));
     var projectDistributionOption = (ProjectDistributionOption)globalOptions.Options.First(o => o is ProjectDistributionOption);
-    var projectWorkingDirectoryOption = (PathOption)globalOptions.Options.First(o => o is PathOption && o.Aliases.Contains("--working-directory"));
     var config = await LoadAsync(
       context.ParseResult.GetValueForOption(projectConfigOption),
-      context.ParseResult.GetValueForOption(projectWorkingDirectoryOption),
+      "./",
       context.ParseResult.GetValueForOption(metadataNameOption),
       context.ParseResult.GetValueForOption(projectDistributionOption)
     ).ConfigureAwait(false);
@@ -34,7 +33,6 @@ static class KSailClusterConfigLoader
     config.UpdateConfig("Spec.Connection.Kubeconfig", context.ParseResult.GetValueForOption((ConnectionKubeconfigOption)globalOptions.Options.First(o => o is ConnectionKubeconfigOption)));
     config.UpdateConfig("Spec.Connection.Context", context.ParseResult.GetValueForOption((ConnectionContextOption)globalOptions.Options.First(o => o is ConnectionContextOption)));
     config.UpdateConfig("Spec.Connection.Timeout", context.ParseResult.GetValueForOption((ConnectionTimeoutOption)globalOptions.Options.First(o => o is ConnectionTimeoutOption)));
-    config.UpdateConfig("Spec.Project.WorkingDirectory", context.ParseResult.GetValueForOption(projectWorkingDirectoryOption));
     config.UpdateConfig("Spec.Project.ConfigPath", context.ParseResult.GetValueForOption(projectConfigOption));
     config.UpdateConfig("Spec.Project.Distribution", context.ParseResult.GetValueForOption(projectDistributionOption));
     config.UpdateConfig("Spec.Project.DistributionConfigPath", context.ParseResult.GetValueForOption((PathOption)globalOptions.Options.First(o => o is PathOption && o.Aliases.Contains("--distribution-config"))));
