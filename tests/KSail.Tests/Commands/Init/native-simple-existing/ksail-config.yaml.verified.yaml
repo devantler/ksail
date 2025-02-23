@@ -9,7 +9,6 @@ spec:
     context: kind-ksail-default
     timeout: 5m
   project:
-    workingDirectory: {TempPath}ksail-init-native-simple-existing
     configPath: ksail-config.yaml
     distributionConfigPath: kind-config.yaml
     template: Kustomize

@@ -10,7 +10,7 @@ class KSailLintCommandHandler()
 
   internal async Task<bool> HandleAsync(CancellationToken cancellationToken = default)
   {
-    string kubernetesDirectory = "k8s";
+    string kubernetesDirectory = Path.Combine(Directory.GetCurrentDirectory(), "k8s");
     if (!Directory.Exists(kubernetesDirectory) || Directory.GetFiles(kubernetesDirectory, "*.yaml", SearchOption.AllDirectories).Length == 0)
     {
       throw new KSailException($"no manifest files found in '{kubernetesDirectory}'.");

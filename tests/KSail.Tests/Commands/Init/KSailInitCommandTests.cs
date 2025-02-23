@@ -48,22 +48,18 @@ public partial class KSailInitCommandTests : IAsyncLifetime
     }
 
     //Arrange
-    string outputDir = Path.Combine(Path.GetTempPath(), "ksail-init-native-simple");
     var console = new TestConsole();
     var ksailCommand = new KSailRootCommand(console);
-    _ = Directory.CreateDirectory(outputDir);
 
     //Act
-    Directory.SetCurrentDirectory(outputDir);
     int exitCode = await ksailCommand.InvokeAsync(["init"]);
 
     //Assert
     Assert.Equal(0, exitCode);
-    Assert.True(Directory.Exists(outputDir));
-    foreach (string file in Directory.GetFiles(outputDir, "*", SearchOption.AllDirectories))
+    foreach (string file in Directory.GetFiles(Directory.GetCurrentDirectory(), "*", SearchOption.AllDirectories))
     {
       string fileName = Path.GetFileName(file);
-      string relativefilePath = file.Replace(outputDir, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
+      string relativefilePath = file.Replace(Directory.GetCurrentDirectory(), "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
       relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
       string? directoryPath = Path.GetDirectoryName(relativefilePath);
       _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml")
@@ -324,46 +320,39 @@ public partial class KSailInitCommandTests : IAsyncLifetime
   public async Task DisposeAsync()
   {
     var secretsManager = new SOPSLocalAgeSecretManager();
-    string[] directoryPaths =
-    [
-      Path.Combine(Path.GetTempPath(), "ksail-init-mixed-advanced-multi"),
-      Path.Combine(Path.GetTempPath(), "ksail-init-mixed-simple-multi"),
-      Path.Combine(Path.GetTempPath(), "ksail-init-native-advanced-existing"),
-      Path.Combine(Path.GetTempPath(), "ksail-init-native-advanced"),
-      Path.Combine(Path.GetTempPath(), "ksail-init-native-simple-existing"),
-      Path.Combine(Path.GetTempPath(), "ksail-init-native-simple")
-    ];
-    foreach (string outputDir in directoryPaths)
+
+    if (File.Exists(".sops.yaml"))
     {
-      if (File.Exists(Path.Combine(outputDir, ".sops.yaml")))
+      var sopsConfig = await SopsConfigLoader.LoadAsync();
+      foreach (string? publicKey in sopsConfig.CreationRules.Select(rule => rule.Age))
       {
-        var sopsConfig = await SopsConfigLoader.LoadAsync(outputDir);
-        foreach (string? publicKey in sopsConfig.CreationRules.Select(rule => rule.Age))
+        try
         {
-          try
-          {
-            _ = await secretsManager.DeleteKeyAsync(publicKey);
-          }
-          catch (Exception)
-          {
-            //Ignore any exceptions
-          }
+          _ = await secretsManager.DeleteKeyAsync(publicKey);
+        }
+        catch (Exception)
+        {
+          //Ignore any exceptions
         }
       }
-      if (Directory.Exists(outputDir))
-      {
-        Directory.Delete(outputDir, true);
-      }
     }
+    if (Directory.Exists("k8s"))
+    {
+      Directory.Delete("k8s", true);
+    }
+
     string[] filePaths =
     [
-      "ksail-config.yaml"
+      "ksail-config.yaml",
+      "kind-config.yaml",
+      "k3d-config.yaml",
+      ".sops.yaml"
     ];
-    foreach (string outputDir in filePaths)
+    foreach (string filePath in filePaths)
     {
-      if (File.Exists(outputDir))
+      if (File.Exists(filePath))
       {
-        File.Delete(outputDir);
+        File.Delete(filePath);
       }
     }
   }
