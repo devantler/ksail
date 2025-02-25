@@ -9,7 +9,7 @@ namespace KSail.Commands.Gen.Commands.Native;
 class KSailGenNativeClusterRoleBindingCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly OutputOption _outputOption = new("./cluster-role-binding.yaml");
+  readonly GenericPathOption _outputOption = new("./cluster-role-binding.yaml");
   readonly KSailGenNativeClusterRoleBindingCommandHandler _handler = new();
   public KSailGenNativeClusterRoleBindingCommand() : base("cluster-role-binding", "Generate a 'rbac.authorization.k8s.io/v1/ClusterRoleBinding' resource.")
   {

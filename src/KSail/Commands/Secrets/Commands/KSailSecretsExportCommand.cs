@@ -2,6 +2,7 @@ using System.CommandLine;
 using Devantler.SecretManager.SOPS.LocalAge;
 using KSail.Commands.Secrets.Arguments;
 using KSail.Commands.Secrets.Handlers;
+using KSail.Models.Project.Enums;
 using KSail.Options;
 using KSail.Utils;
 
@@ -11,8 +12,8 @@ sealed class KSailSecretsExportCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
   readonly PublicKeyArgument _publicKeyArgument = new("The public key for the encryption key to export") { Arity = ArgumentArity.ExactlyOne };
-  readonly PathOption _outputFilePathOption = new("Path to the output file", ["--output", "-o"]) { Arity = ArgumentArity.ExactlyOne };
-  internal KSailSecretsExportCommand(GlobalOptions globalOptions) : base("export", "Export a key to a file")
+  readonly GenericPathOption _outputFilePathOption = new(aliases: ["--output", "-o"]) { Arity = ArgumentArity.ExactlyOne };
+  internal KSailSecretsExportCommand() : base("export", "Export a key to a file")
   {
     AddArguments();
     AddOptions();
@@ -33,7 +34,7 @@ sealed class KSailSecretsExportCommand : Command
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadWithGlobalOptionsAsync(globalOptions, context);
+        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context);
         string publicKey = context.ParseResult.GetValueForArgument(_publicKeyArgument);
         string outputPath = context.ParseResult.GetValueForOption(_outputFilePathOption) ?? throw new KSailException("output path is required");
 
@@ -42,11 +43,11 @@ sealed class KSailSecretsExportCommand : Command
         switch (config.Spec.Project.SecretManager)
         {
           default:
-          case Models.Project.KSailSecretManager.None:
+          case KSailSecretManagerType.None:
             _ = _exceptionHandler.HandleException(new KSailException("no secret manager configured"));
             context.ExitCode = 1;
             return;
-          case Models.Project.KSailSecretManager.SOPS:
+          case KSailSecretManagerType.SOPS:
             handler = new KSailSecretsExportCommandHandler(config, publicKey, outputPath, new SOPSLocalAgeSecretManager());
             break;
         }

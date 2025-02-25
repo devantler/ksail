@@ -5,22 +5,16 @@ Usage:
   testhost init [options]
 
 Options:
-  -fpbv, --flux-post-build-variables                Generate ConfigMaps and Secrets for flux post-build-variables.
-  -kh, --kustomize-hooks <kustomize-hooks>          The kustomize hooks to include in the initialized cluster.
-  -kf, --kustomize-flows <kustomize-flows>          The flows to include. The first depends on the next, and so on.
-  -c, --context <context>                           The kubernetes context to use. Default: 'kind-ksail-default' (G)
-  -k, --kubeconfig <kubeconfig>                     Path to kubeconfig file. Default: '~/.kube/config' (G)
-  -t, --timeout <timeout>                           The time to wait for each kustomization to become ready. Default: '5m' (G)
-  -n, --name <name>                                 The name of the cluster. Default: 'ksail-default' (G)
-  -c, --config <config>                             The path to the ksail configuration file. Default: 'ksail-config.yaml' (G)
-  -dt, --deployment-tool <Flux>                     The Deployment tool to use for updating the state of the cluster. Default: 'Flux' (G)
-  -d, --distribution <K3s|Native>                   The distribution to use for the cluster. Default: 'Native' (G)
-  -dc, --distribution-config <distribution-config>  Path to the distribution configuration file. Default: 'kind-config.yaml' (G)
-  -e, --editor <Nano|Vim>                           Editor to use. Default: 'Nano' (G)
-  -e, --engine <Docker>                             The engine to use for provisioning the cluster. Default: 'Docker' (G)
-  -mr, --mirror-registries                          Enable mirror registries. Default: 'True' (G)
-  -sm, --secret-manager <None|SOPS>                 Configure which secret manager to use. Default: 'None' (G)
-  -t, --template <Kustomize>                        The template to use for the initialized cluster. Default: 'Kustomize' (G)
+  -fpbv, --flux-post-build-variables                Enable support for flux post-build variables. [default: False]
+  -n, --name <name>                                 The name of the cluster. [default: ksail-default]
+  -dc, --distribution-config <distribution-config>  Path to the distribution configuration file. [default: kind-config.yaml]
+  -d, --distribution <K3s|Native>                   The distribution to use for the cluster. [default: Native]
+  -e, --engine <Docker>                             The engine to use for provisioning the cluster. [default: Docker]
+  -mr, --mirror-registries                          Enable mirror registries. [default: True]
+  -sm, --secret-manager <None|SOPS>                 Configure which secret manager to use. [default: None]
+  -kf, --kustomize-flow <kustomize-flow>            The flows to include. [default: [apps, infrastructure/configs, infrastructure/controllers]]
+  -kh, --kustomize-hook <kustomize-hook>            The kustomize hooks. [default: []]
+  -kr, --kustomize-root <kustomize-root>            The kustomize root file. [default: k8s/clusters/ksail-default/flux-system]
   -?, -h, --help                                    Show help and usage information
 
 

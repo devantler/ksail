@@ -9,7 +9,7 @@ namespace KSail.Commands.Gen.Commands.Native;
 class KSailGenNativeAccountCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly OutputOption _outputOption = new("./service-account.yaml");
+  readonly GenericPathOption _outputOption = new("./service-account.yaml");
   readonly KSailGenNativeAccountCommandHandler _handler = new();
   public KSailGenNativeAccountCommand() : base("service-account", "Generate a 'core/v1/ServiceAccount' resource.")
   {

@@ -9,7 +9,7 @@ namespace KSail.Commands.Gen.Commands.Config;
 class KSailGenConfigKSailCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly OutputOption _outputOption = new("./ksail-config.yaml");
+  readonly GenericPathOption _outputOption = new("./ksail-config.yaml");
   readonly KSailGenConfigKSailCommandHandler _handler = new();
   public KSailGenConfigKSailCommand() : base("ksail", "Generate a 'ksail.io/v1alpha1/Cluster' resource.")
   {

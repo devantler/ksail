@@ -19,23 +19,33 @@ spec:
     cni: Default
     editor: Nano
     mirrorRegistries: true
-  fluxDeploymentTool:
-    source:
-      url: <url>
-    postBuildVariables: true
-  kustomizeTemplate:
-    root: k8s/clusters/ksail-advanced-native/flux-system
-    flows:
-    - apps
-    - infrastructure/configs
-    - infrastructure/controllers
-    hooks:
-    - clusters/ksail-advanced-native
-    - distributions/native
-    - shared
-  sopsSecretManager: {}
-  ciliumCNI: {}
-  ksailRegistry:
+  deploymentTool:
+    flux:
+      source:
+        url: <url>
+      postBuildVariables: true
+  distribution:
+    showAllClustersInListings: false
+  template:
+    kustomize:
+      root: k8s/clusters/ksail-advanced-native/flux-system
+      flows:
+      - apps
+      - infrastructure/configs
+      - infrastructure/controllers
+      hooks:
+      - clusters/ksail-advanced-native
+      - distributions/native
+      - shared
+  secretManager:
+    sops:
+      inPlace: false
+      showAllKeysInListings: false
+      showPrivateKeysInListings: false
+  cni: Default
+  ingressController: {}
+  waypointController: {}
+  localRegistry:
     name: ksail-registry
     hostPort: 5555
     provider: Docker
@@ -76,16 +86,8 @@ spec:
     name: quay.io-proxy
     hostPort: 5561
     provider: Docker
-  cli:
-    list:
-      all: false
-    secrets:
-      list:
-        showProjectKeys: false
-        showPrivateKeys: false
-    up:
-      lint: true
-      reconcile: true
-    update:
-      lint: true
-      reconcile: true
+  validation:
+    lintOnUp: true
+    reconcileOnUp: true
+    lintOnUpdate: true
+    reconcileOnUpdate: true

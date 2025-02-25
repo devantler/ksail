@@ -9,13 +9,14 @@ sealed class KSailDebugCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
 
-  internal KSailDebugCommand(GlobalOptions globalOptions) : base("debug", "Debug a cluster (❤️ K9s)")
+  internal KSailDebugCommand() : base("debug", "Debug a cluster (❤️ K9s)")
   {
+    AddOptions();
     this.SetHandler(async (context) =>
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadWithGlobalOptionsAsync(globalOptions, context);
+        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context);
         var handler = new KSailDebugCommandHandler(config);
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;
         Console.WriteLine();
@@ -27,4 +28,7 @@ sealed class KSailDebugCommand : Command
       }
     });
   }
+
+  internal void AddOptions() => AddGlobalOption(CLIOptions.Project.EditorOption);
+
 }

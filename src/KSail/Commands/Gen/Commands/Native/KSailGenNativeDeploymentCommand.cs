@@ -9,7 +9,7 @@ namespace KSail.Commands.Gen.Commands.Native;
 class KSailGenNativeWorkloadsDeploymentCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly OutputOption _outputOption = new("./deployment.yaml");
+  readonly GenericPathOption _outputOption = new("./deployment.yaml");
   readonly KSailGenNativeWorkloadsDeploymentCommandHandler _handler = new();
   public KSailGenNativeWorkloadsDeploymentCommand() : base("deployment", "Generate a 'apps/v1/Deployment' resource.")
   {

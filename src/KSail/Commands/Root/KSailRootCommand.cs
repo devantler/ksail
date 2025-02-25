@@ -12,7 +12,6 @@ using KSail.Commands.Start;
 using KSail.Commands.Stop;
 using KSail.Commands.Up;
 using KSail.Commands.Update;
-using KSail.Options;
 using KSail.Utils;
 
 namespace KSail.Commands.Root;
@@ -20,10 +19,8 @@ namespace KSail.Commands.Root;
 sealed class KSailRootCommand : RootCommand
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly GlobalOptions _globalOptions = new();
   internal KSailRootCommand(IConsole console) : base("KSail is an SDK for Kubernetes. Ship k8s with ease!")
   {
-    AddGlobalOptions();
     AddCommands(console);
     this.SetHandler(async (context) =>
       {
@@ -41,26 +38,18 @@ sealed class KSailRootCommand : RootCommand
     );
   }
 
-  internal void AddGlobalOptions()
-  {
-    foreach (var option in _globalOptions.Options)
-    {
-      AddGlobalOption(option);
-    }
-  }
-
   void AddCommands(IConsole console)
   {
-    AddCommand(new KSailUpCommand(_globalOptions));
-    AddCommand(new KSailDownCommand(_globalOptions));
-    AddCommand(new KSailUpdateCommand(_globalOptions));
-    AddCommand(new KSailStartCommand(_globalOptions));
-    AddCommand(new KSailStopCommand(_globalOptions));
-    AddCommand(new KSailInitCommand(_globalOptions));
-    AddCommand(new KSailLintCommand(_globalOptions));
-    AddCommand(new KSailListCommand(_globalOptions));
-    AddCommand(new KSailDebugCommand(_globalOptions));
+    AddCommand(new KSailUpCommand());
+    AddCommand(new KSailDownCommand());
+    AddCommand(new KSailUpdateCommand());
+    AddCommand(new KSailStartCommand());
+    AddCommand(new KSailStopCommand());
+    AddCommand(new KSailInitCommand());
+    AddCommand(new KSailLintCommand());
+    AddCommand(new KSailListCommand());
+    AddCommand(new KSailDebugCommand());
     AddCommand(new KSailGenCommand(console));
-    AddCommand(new KSailSecretsCommand(_globalOptions, console));
+    AddCommand(new KSailSecretsCommand(console));
   }
 }

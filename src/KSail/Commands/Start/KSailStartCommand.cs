@@ -9,25 +9,16 @@ sealed class KSailStartCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
 
-  internal KSailStartCommand(GlobalOptions globalOptions) : base("start", "Start a cluster")
+  internal KSailStartCommand() : base("start", "Start a cluster")
   {
+    AddOptions();
     this.SetHandler(async (context) =>
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadWithGlobalOptionsAsync(globalOptions, context);
-
-        Console.WriteLine($"► starting cluster '{config.Spec.Connection.Context}'");
+        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context);
         var handler = new KSailStartCommandHandler(config);
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
-        if (context.ExitCode == 0)
-        {
-          Console.WriteLine("✔ cluster started");
-        }
-        else
-        {
-          throw new KSailException("cluster could not be started");
-        }
       }
       catch (Exception ex)
       {
@@ -35,5 +26,13 @@ sealed class KSailStartCommand : Command
         context.ExitCode = 1;
       }
     });
+  }
+
+  internal void AddOptions()
+  {
+    AddOption(CLIOptions.Connection.ContextOption);
+    AddOption(CLIOptions.Metadata.NameOption);
+    AddOption(CLIOptions.Project.DistributionOption);
+    AddOption(CLIOptions.Project.EngineOption);
   }
 }

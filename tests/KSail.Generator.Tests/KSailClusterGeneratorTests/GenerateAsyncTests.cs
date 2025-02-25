@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 using KSail.Models;
-using KSail.Models.Project;
+using KSail.Models.Project.Enums;
 
 namespace KSail.Generator.Tests.KSailClusterGeneratorTests;
 
@@ -17,7 +17,7 @@ public partial class GenerateAsyncTests
   public async Task GenerateAsync_WithPropertiesSet_ShouldGenerateAValidKSailClusterFile()
   {
     // Arrange
-    var cluster = new KSailCluster("my-cluster", KSailKubernetesDistribution.K3s);
+    var cluster = new KSailCluster("my-cluster", KSailKubernetesDistributionType.K3s);
 
     // Act
     string outputPath = Path.Combine(Path.GetTempPath(), "ksail-config.yaml");

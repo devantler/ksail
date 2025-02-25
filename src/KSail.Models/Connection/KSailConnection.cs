@@ -3,7 +3,7 @@ using System.ComponentModel;
 namespace KSail.Models.Connection;
 
 /// <summary>
-/// The options to use for the connection.
+/// Options to use for the connection.
 /// </summary>
 public class KSailConnection
 {

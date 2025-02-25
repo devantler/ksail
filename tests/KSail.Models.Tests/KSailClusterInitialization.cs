@@ -1,5 +1,5 @@
 using Argon;
-using KSail.Models.Project;
+using KSail.Models.Project.Enums;
 
 namespace KSail.Models.Tests;
 
@@ -18,7 +18,7 @@ public class KSailClusterInitialization
     var cluster = new KSailCluster();
 
     // Act & Assert
-    cluster.Spec.FluxDeploymentTool.Source.Url = new Uri("oci://testhost:5555/ksail-registry");
+    cluster.Spec.DeploymentTool.Flux.Source.Url = new Uri("oci://testhost:5555/ksail-registry");
     var settings = new VerifySettings();
     settings.AddExtraSettings(s => s.DefaultValueHandling = DefaultValueHandling.Include);
     settings.DontIgnoreEmptyCollections();
@@ -41,7 +41,7 @@ public class KSailClusterInitialization
     {
       s.DefaultValueHandling = DefaultValueHandling.Include;
     });
-    cluster.Spec.FluxDeploymentTool.Source.Url = new Uri("oci://testhost:5555/ksail-registry");
+    cluster.Spec.DeploymentTool.Flux.Source.Url = new Uri("oci://testhost:5555/ksail-registry");
     settings.DontIgnoreEmptyCollections();
     _ = await Verify(cluster, settings);
   }
@@ -53,7 +53,7 @@ public class KSailClusterInitialization
   public async Task InitializeKSailCluster_WithDistribution_ShouldReturnValidConfig()
   {
     // Arrange
-    var cluster = new KSailCluster(KSailKubernetesDistribution.K3s);
+    var cluster = new KSailCluster(KSailKubernetesDistributionType.K3s);
 
     // Act & Assert
     var settings = new VerifySettings();
@@ -61,7 +61,7 @@ public class KSailClusterInitialization
     {
       s.DefaultValueHandling = DefaultValueHandling.Include;
     });
-    cluster.Spec.FluxDeploymentTool.Source.Url = new Uri("oci://testhost:5555/ksail-registry");
+    cluster.Spec.DeploymentTool.Flux.Source.Url = new Uri("oci://testhost:5555/ksail-registry");
     settings.DontIgnoreEmptyCollections();
     _ = await Verify(cluster, settings);
   }
@@ -73,7 +73,7 @@ public class KSailClusterInitialization
   public async Task InitializeKSailCluster_WithNameAndDistribution_ShouldReturnValidConfig()
   {
     // Arrange
-    var cluster = new KSailCluster("my-cluster", KSailKubernetesDistribution.K3s);
+    var cluster = new KSailCluster("my-cluster", KSailKubernetesDistributionType.K3s);
 
     // Act & Assert
     var settings = new VerifySettings();
@@ -81,7 +81,7 @@ public class KSailClusterInitialization
     {
       s.DefaultValueHandling = DefaultValueHandling.Include;
     });
-    cluster.Spec.FluxDeploymentTool.Source.Url = new Uri("oci://testhost:5555/ksail-registry");
+    cluster.Spec.DeploymentTool.Flux.Source.Url = new Uri("oci://testhost:5555/ksail-registry");
     settings.DontIgnoreEmptyCollections();
     _ = await Verify(cluster, settings);
   }

@@ -2,7 +2,7 @@ using System.CommandLine.Invocation;
 using Devantler.KubernetesGenerator.Core.Converters;
 using Devantler.KubernetesGenerator.Core.Inspectors;
 using KSail.Models;
-using KSail.Models.Project;
+using KSail.Models.Project.Enums;
 using KSail.Options;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -18,32 +18,74 @@ static class KSailClusterConfigLoader
       .WithTypeConverter(new ResourceQuantityTypeConverter())
       .WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
 
-  internal static async Task<KSailCluster> LoadWithGlobalOptionsAsync(GlobalOptions globalOptions, InvocationContext context)
+  internal static async Task<KSailCluster> LoadWithoptionsAsync(InvocationContext context)
   {
-    var metadataNameOption = (MetadataNameOption)globalOptions.Options.First(o => o is MetadataNameOption);
-    var projectConfigOption = (PathOption)globalOptions.Options.First(o => o is PathOption && o.Aliases.Contains("--config"));
-    var projectDistributionOption = (ProjectDistributionOption)globalOptions.Options.First(o => o is ProjectDistributionOption);
     var config = await LoadAsync(
-      context.ParseResult.GetValueForOption(projectConfigOption),
-      context.ParseResult.GetValueForOption(metadataNameOption),
-      context.ParseResult.GetValueForOption(projectDistributionOption)
+      context.ParseResult.GetValueForOption(CLIOptions.Project.ConfigPathOption),
+      context.ParseResult.GetValueForOption(CLIOptions.Metadata.NameOption),
+      context.ParseResult.GetValueForOption(CLIOptions.Project.DistributionOption)
     ).ConfigureAwait(false);
-    config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(metadataNameOption));
-    config.UpdateConfig("Spec.Connection.Kubeconfig", context.ParseResult.GetValueForOption((ConnectionKubeconfigOption)globalOptions.Options.First(o => o is ConnectionKubeconfigOption)));
-    config.UpdateConfig("Spec.Connection.Context", context.ParseResult.GetValueForOption((ConnectionContextOption)globalOptions.Options.First(o => o is ConnectionContextOption)));
-    config.UpdateConfig("Spec.Connection.Timeout", context.ParseResult.GetValueForOption((ConnectionTimeoutOption)globalOptions.Options.First(o => o is ConnectionTimeoutOption)));
-    config.UpdateConfig("Spec.Project.ConfigPath", context.ParseResult.GetValueForOption(projectConfigOption));
-    config.UpdateConfig("Spec.Project.Distribution", context.ParseResult.GetValueForOption(projectDistributionOption));
-    config.UpdateConfig("Spec.Project.DistributionConfigPath", context.ParseResult.GetValueForOption((PathOption)globalOptions.Options.First(o => o is PathOption && o.Aliases.Contains("--distribution-config"))));
-    config.UpdateConfig("Spec.Project.Engine", context.ParseResult.GetValueForOption((ProjectEngineOption)globalOptions.Options.First(o => o is ProjectEngineOption)));
-    config.UpdateConfig("Spec.Project.MirrorRegistries", context.ParseResult.GetValueForOption((ProjectMirrorRegistriesOption)globalOptions.Options.First(o => o is ProjectMirrorRegistriesOption)));
-    config.UpdateConfig("Spec.Project.SecretManager", context.ParseResult.GetValueForOption((ProjectSecretManagerOption)globalOptions.Options.First(o => o is ProjectSecretManagerOption)));
-    config.UpdateConfig("Spec.Project.Template", context.ParseResult.GetValueForOption((ProjectTemplateOption)globalOptions.Options.First(o => o is ProjectTemplateOption)));
-    config.UpdateConfig("Spec.Project.Editor", context.ParseResult.GetValueForOption((ProjectEditorOption)globalOptions.Options.First(o => o is ProjectEditorOption)));
+    // Metadata
+    config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(CLIOptions.Metadata.NameOption));
+
+    // CNI
+    // TODO: Implement CNI CLIOptions
+
+    // Connection
+    config.UpdateConfig("Spec.Connection.Context", context.ParseResult.GetValueForOption(CLIOptions.Connection.ContextOption));
+    config.UpdateConfig("Spec.Connection.Kubeconfig", context.ParseResult.GetValueForOption(CLIOptions.Connection.KubeconfigOption));
+    config.UpdateConfig("Spec.Connection.Timeout", context.ParseResult.GetValueForOption(CLIOptions.Connection.TimeoutOption));
+
+    // DeploymentTool
+    config.UpdateConfig("Spec.DeploymentTool.Flux.PostBuildVariables", context.ParseResult.GetValueForOption(CLIOptions.DeploymentTool.Flux.PostBuildVariablesOption));
+    config.UpdateConfig("Spec.DeploymentTool.Flux.Source", context.ParseResult.GetValueForOption(CLIOptions.DeploymentTool.Flux.SourceOption));
+
+    // Distribution
+    config.UpdateConfig("Spec.Distribution.ShowAllClustersInListings", context.ParseResult.GetValueForOption(CLIOptions.Distribution.ShowAllClustersInListings));
+
+    // IngressController
+    // TODO: Implement IngressController CLIOptions
+
+    // LocalRegistry
+    // TODO: Implement LocalRegistry CLIOptions
+
+    // MirrorRegistries
+    // TODO: Implement MirrorRegistries CLIOptions
+
+    // Project
+    config.UpdateConfig("Spec.Project.ConfigPath", context.ParseResult.GetValueForOption(CLIOptions.Project.ConfigPathOption));
+    config.UpdateConfig("Spec.Project.DeploymentTool", context.ParseResult.GetValueForOption(CLIOptions.Project.DeploymentToolOption));
+    config.UpdateConfig("Spec.Project.Distribution", context.ParseResult.GetValueForOption(CLIOptions.Project.DistributionOption));
+    config.UpdateConfig("Spec.Project.DistributionConfigPath", context.ParseResult.GetValueForOption(CLIOptions.Project.DistributionConfigPathOption));
+    config.UpdateConfig("Spec.Project.Editor", context.ParseResult.GetValueForOption(CLIOptions.Project.EditorOption));
+    config.UpdateConfig("Spec.Project.Engine", context.ParseResult.GetValueForOption(CLIOptions.Project.EngineOption));
+    config.UpdateConfig("Spec.Project.MirrorRegistries", context.ParseResult.GetValueForOption(CLIOptions.Project.MirrorRegistriesOption));
+    config.UpdateConfig("Spec.Project.SecretManager", context.ParseResult.GetValueForOption(CLIOptions.Project.SecretManagerOption));
+    config.UpdateConfig("Spec.Project.Template", context.ParseResult.GetValueForOption(CLIOptions.Project.TemplateOption));
+
+    // SecretManager
+    config.UpdateConfig("Spec.SecretManager.SOPS.InPlace", context.ParseResult.GetValueForOption(CLIOptions.SecretManager.SOPS.InPlaceOption));
+    config.UpdateConfig("Spec.SecretManager.SOPS.PublicKey", context.ParseResult.GetValueForOption(CLIOptions.SecretManager.SOPS.PublicKeyOption));
+    config.UpdateConfig("Spec.SecretManager.SOPS.ShowAllKeysInListings", context.ParseResult.GetValueForOption(CLIOptions.SecretManager.SOPS.ShowAllKeysInListingsOption));
+    config.UpdateConfig("Spec.SecretManager.SOPS.ShowPrivateKeysInListings", context.ParseResult.GetValueForOption(CLIOptions.SecretManager.SOPS.ShowPrivateKeysInListingsOption));
+
+    // Template
+    config.UpdateConfig("Spec.Template.Kustomize.Flows", context.ParseResult.GetValueForOption(CLIOptions.Template.Kustomize.FlowOption));
+    config.UpdateConfig("Spec.Template.Kustomize.Hooks", context.ParseResult.GetValueForOption(CLIOptions.Template.Kustomize.HookOption));
+    config.UpdateConfig("Spec.Template.Kustomize.Root", context.ParseResult.GetValueForOption(CLIOptions.Template.Kustomize.RootOption));
+
+    // Validation
+    config.UpdateConfig("Spec.Validation.LintOnUp", context.ParseResult.GetValueForOption(CLIOptions.Validation.LintOnUpOption));
+    config.UpdateConfig("Spec.Validation.LintOnUpdate", context.ParseResult.GetValueForOption(CLIOptions.Validation.LintOnUpdateOption));
+    config.UpdateConfig("Spec.Validation.ReconcileOnUp", context.ParseResult.GetValueForOption(CLIOptions.Validation.ReconcileOnUpOption));
+    config.UpdateConfig("Spec.Validation.ReconcileOnUpdate", context.ParseResult.GetValueForOption(CLIOptions.Validation.ReconcileOnUpdateOption));
+
+    // WaypointController
+    // TODO: Implement WaypointController CLIOptions
     return config;
   }
 
-  internal static async Task<KSailCluster> LoadAsync(string? configFilePath = "ksail-config.yaml", string? name = default, KSailKubernetesDistribution distribution = default)
+  internal static async Task<KSailCluster> LoadAsync(string? configFilePath = "ksail-config.yaml", string? name = default, KSailKubernetesDistributionType distribution = default)
   {
     // Create default KSailClusterConfig
     var ksailClusterConfig = string.IsNullOrEmpty(name) ?

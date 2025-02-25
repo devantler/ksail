@@ -1,7 +1,7 @@
 using Devantler.KubernetesProvisioner.Cluster.K3d;
 using Devantler.KubernetesProvisioner.Cluster.Kind;
 using KSail.Models;
-using KSail.Models.Project;
+using KSail.Models.Project.Enums;
 
 namespace KSail.Commands.List.Handlers;
 
@@ -13,7 +13,7 @@ sealed class KSailListCommandHandler(KSailCluster config)
 
   internal async Task<IEnumerable<string>> HandleAsync(CancellationToken cancellationToken = default)
   {
-    if (_config.Spec.CLI.List.All)
+    if (_config.Spec.Distribution.ShowAllClustersInListings)
     {
       IEnumerable<string> clusters = [];
       Console.WriteLine("---- K3d ----");
@@ -29,8 +29,8 @@ sealed class KSailListCommandHandler(KSailCluster config)
     {
       return (_config.Spec.Project.Engine, _config.Spec.Project.Distribution) switch
       {
-        (KSailEngine.Docker, KSailKubernetesDistribution.K3s) => await _k3dProvisioner.ListAsync(cancellationToken).ConfigureAwait(false),
-        (KSailEngine.Docker, KSailKubernetesDistribution.Native) => await _kindProvisioner.ListAsync(cancellationToken).ConfigureAwait(false),
+        (KSailEngineType.Docker, KSailKubernetesDistributionType.K3s) => await _k3dProvisioner.ListAsync(cancellationToken).ConfigureAwait(false),
+        (KSailEngineType.Docker, KSailKubernetesDistributionType.Native) => await _kindProvisioner.ListAsync(cancellationToken).ConfigureAwait(false),
         _ => throw new NotSupportedException($"The container engine '{_config.Spec.Project.Engine}' and distribution '{_config.Spec.Project.Distribution}' combination is not supported.")
       };
     }

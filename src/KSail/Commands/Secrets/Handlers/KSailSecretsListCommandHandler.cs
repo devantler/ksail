@@ -14,7 +14,7 @@ class KSailSecretsListCommandHandler(KSailCluster config, ISecretManager<AgeKey>
   {
     var keys = await _secretManager.ListKeysAsync(cancellationToken).ConfigureAwait(false);
 
-    if (_config.Spec.CLI.Secrets.List.ShowProjectKeys)
+    if (!_config.Spec.SecretManager.SOPS.ShowAllKeysInListings)
     {
       var sopsConfig = await SopsConfigLoader.LoadAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
       if (!keys.Any(key => sopsConfig.CreationRules.Any(rule => rule.Age == key.PublicKey)))
@@ -24,7 +24,7 @@ class KSailSecretsListCommandHandler(KSailCluster config, ISecretManager<AgeKey>
       }
       foreach (var key in keys.Where(key => sopsConfig.CreationRules.Any(rule => rule.Age == key.PublicKey)))
       {
-        if (_config.Spec.CLI.Secrets.List.ShowPrivateKeys)
+        if (_config.Spec.SecretManager.SOPS.ShowPrivateKeysInListings)
         {
           Console.WriteLine(key);
         }
@@ -44,7 +44,7 @@ class KSailSecretsListCommandHandler(KSailCluster config, ISecretManager<AgeKey>
       }
       foreach (var key in keys)
       {
-        if (_config.Spec.CLI.Secrets.List.ShowPrivateKeys)
+        if (_config.Spec.SecretManager.SOPS.ShowPrivateKeysInListings)
         {
           Console.WriteLine(key);
         }
