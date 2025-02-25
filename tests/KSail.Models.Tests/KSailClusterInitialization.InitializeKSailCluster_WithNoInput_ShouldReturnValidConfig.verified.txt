@@ -22,24 +22,40 @@
       Editor: Nano,
       MirrorRegistries: true
     },
-    FluxDeploymentTool: {
-      Source: {
-        Url: oci://testhost:5555/ksail-registry
-      },
-      PostBuildVariables: false
+    DeploymentTool: {
+      Flux: {
+        Source: {
+          Url: oci://testhost:5555/ksail-registry
+        },
+        PostBuildVariables: false
+      }
     },
-    KustomizeTemplate: {
-      Root: k8s/clusters/ksail-default/flux-system,
-      Flows: [
-        apps,
-        infrastructure/configs,
-        infrastructure/controllers
-      ],
-      Hooks: []
+    Distribution: {
+      ShowAllClustersInListings: false
     },
-    SOPSSecretManager: {},
-    CiliumCNI: {},
-    KSailRegistry: {
+    Template: {
+      Kustomize: {
+        Root: k8s/clusters/ksail-default/flux-system,
+        Flows: [
+          apps,
+          infrastructure/configs,
+          infrastructure/controllers
+        ],
+        Hooks: []
+      }
+    },
+    SecretManager: {
+      SOPS: {
+        PublicKey: null,
+        InPlace: false,
+        ShowAllKeysInListings: false,
+        ShowPrivateKeysInListings: false
+      }
+    },
+    CNI: Default,
+    IngressController: {},
+    WaypointController: {},
+    LocalRegistry: {
       Name: ksail-registry,
       HostPort: 5555,
       Username: null,
@@ -126,24 +142,11 @@
         Provider: Docker
       }
     ],
-    CLI: {
-      List: {
-        All: false
-      },
-      Secrets: {
-        List: {
-          ShowProjectKeys: false,
-          ShowPrivateKeys: false
-        }
-      },
-      Up: {
-        Lint: true,
-        Reconcile: true
-      },
-      Update: {
-        Lint: true,
-        Reconcile: true
-      }
+    Validation: {
+      LintOnUp: true,
+      ReconcileOnUp: true,
+      LintOnUpdate: true,
+      ReconcileOnUpdate: true
     }
   }
 }

@@ -110,67 +110,123 @@
             }
           }
         },
-        "fluxDeploymentTool": {
-          "description": "The options for the Flux deployment tool.",
+        "deploymentTool": {
+          "description": "The options for the deployment tool.",
           "type": "object",
           "properties": {
-            "source": {
-              "description": "The source for reconciling GitOps resources.",
+            "flux": {
               "type": "object",
               "properties": {
-                "url": {
-                  "description": "The URL of the repository.",
-                  "type": "string",
-                  "format": "uri"
+                "source": {
+                  "description": "The source for reconciling GitOps resources.",
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "description": "The URL of the repository.",
+                      "type": "string",
+                      "format": "uri"
+                    }
+                  }
+                },
+                "postBuildVariables": {
+                  "description": "Enable Flux post-build variables.",
+                  "type": "boolean"
                 }
               }
-            },
-            "postBuildVariables": {
-              "description": "Enable Flux post-build variables.",
+            }
+          }
+        },
+        "distribution": {
+          "type": "object",
+          "properties": {
+            "showAllClustersInListings": {
+              "description": "Show clusters from all supported distributions.",
               "type": "boolean"
             }
           }
         },
-        "kustomizeTemplate": {
-          "description": "The options for the Kustomize template.",
+        "template": {
+          "description": "The options for the template.",
           "type": "object",
           "properties": {
-            "root": {
-              "description": "The root directory.",
-              "type": "string"
-            },
-            "flows": {
-              "description": "The flows to include. The first depends on the next, and so on.",
-              "type": "array",
-              "items": {
-                "type": [
-                  "string",
-                  "null"
-                ]
-              }
-            },
-            "hooks": {
-              "description": "The kustomization hooks to use. Each kustomization hook includes an extension to the kustomization allowing you to customize that kustomization at a specific point in the kustomize build process.",
-              "type": "array",
-              "items": {
-                "type": [
-                  "string",
-                  "null"
-                ]
+            "kustomize": {
+              "type": "object",
+              "properties": {
+                "root": {
+                  "description": "The root directory.",
+                  "type": "string"
+                },
+                "flows": {
+                  "description": "The flows to include. The first depends on the next, and so on.",
+                  "type": "array",
+                  "items": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                },
+                "hooks": {
+                  "description": "The kustomization hooks to use. Each kustomization hook includes an extension to the kustomization allowing you to customize that kustomization at a specific point in the kustomize build process.",
+                  "type": "array",
+                  "items": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                }
               }
             }
           }
         },
-        "sopsSecretManager": {
-          "description": "The options for the SOPS Secret Manager.",
+        "secretManager": {
+          "description": "The options for the Secret Manager.",
+          "type": "object",
+          "properties": {
+            "sops": {
+              "description": "The options for the SOPS secret manager.",
+              "type": "object",
+              "properties": {
+                "publicKey": {
+                  "description": "Public key used for encryption.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "inPlace": {
+                  "description": "Use in-place decryption/encryption.",
+                  "type": "boolean"
+                },
+                "showAllKeysInListings": {
+                  "description": "Show all keys in the listed keys.",
+                  "type": "boolean"
+                },
+                "showPrivateKeysInListings": {
+                  "description": "Show private keys in the listed keys.",
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "cni": {
+          "description": "The options for the CNI.",
+          "enum": [
+            "Default"
+          ]
+        },
+        "ingressController": {
+          "description": "The options for the Ingress Controller.",
           "type": "object"
         },
-        "ciliumCNI": {
-          "description": "The options for the Cilium CNI.",
+        "waypointController": {
+          "description": "The options for the Waypoint Controller.",
           "type": "object"
         },
-        "kSailRegistry": {
-          "description": "The ksail registry for storing deployment artifacts.",
+        "localRegistry": {
+          "description": "The local registry for storing deployment artifacts.",
           "type": "object",
           "properties": {
             "name": {
@@ -282,67 +338,25 @@
             ]
           }
         },
-        "cli": {
-          "description": "The CLI options.",
+        "validation": {
+          "description": "Options for validating the KSail cluster.",
           "type": "object",
           "properties": {
-            "list": {
-              "description": "The options to use for the \u0027list\u0027 command.",
-              "type": "object",
-              "properties": {
-                "all": {
-                  "description": "List clusters from all supported distributions.",
-                  "type": "boolean"
-                }
-              }
+            "lintOnUp": {
+              "description": "Lint the manifests before applying them to a new cluster.",
+              "type": "boolean"
             },
-            "secrets": {
-              "description": "The options to use for the \u0027secrets\u0027 command.",
-              "type": "object",
-              "properties": {
-                "list": {
-                  "description": "The options to use for the \u0027list\u0027 command.",
-                  "type": "object",
-                  "properties": {
-                    "showProjectKeys": {
-                      "description": "Only show keys used in the current project.",
-                      "type": "boolean"
-                    },
-                    "showPrivateKeys": {
-                      "description": "Show private keys in the listed keys.",
-                      "type": "boolean"
-                    }
-                  }
-                }
-              }
+            "reconcileOnUp": {
+              "description": "Wait for reconciliation to succeed on a new cluster.",
+              "type": "boolean"
             },
-            "up": {
-              "description": "The options to use for the \u0027up\u0027 command.",
-              "type": "object",
-              "properties": {
-                "lint": {
-                  "description": "Lint the manifests before applying them.",
-                  "type": "boolean"
-                },
-                "reconcile": {
-                  "description": "Wait for reconciliation to succeed.",
-                  "type": "boolean"
-                }
-              }
+            "lintOnUpdate": {
+              "description": "Lint the manifests before applying them to an existing cluster.",
+              "type": "boolean"
             },
-            "update": {
-              "description": "The options to use for the \u0027update\u0027 command.",
-              "type": "object",
-              "properties": {
-                "lint": {
-                  "description": "Lint the manifests before applying them.",
-                  "type": "boolean"
-                },
-                "reconcile": {
-                  "description": "Wait for reconciliation to succeed.",
-                  "type": "boolean"
-                }
-              }
+            "reconcileOnUpdate": {
+              "description": "Wait for reconciliation to succeed on an existing cluster.",
+              "type": "boolean"
             }
           }
         }
