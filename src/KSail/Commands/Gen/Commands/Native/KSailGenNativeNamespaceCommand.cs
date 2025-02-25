@@ -9,7 +9,7 @@ namespace KSail.Commands.Gen.Commands.Native;
 class KSailGenNativeNamespaceCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly OutputOption _outputOption = new("./namespace.yaml");
+  readonly GenericPathOption _outputOption = new("./namespace.yaml");
   readonly KSailGenNativeNamespaceCommandHandler _handler = new();
   public KSailGenNativeNamespaceCommand() : base("namespace", "Generate a 'core/v1/Namespace' resource.")
   {

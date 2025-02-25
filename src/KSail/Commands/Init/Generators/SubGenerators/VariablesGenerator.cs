@@ -10,7 +10,7 @@ class VariablesGenerator
   readonly SecretGenerator _secretGenerator = new();
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    foreach (string hook in config.Spec.KustomizeTemplate.Hooks)
+    foreach (string hook in config.Spec.Template.Kustomize.Hooks)
     {
       string hookPath = Path.Combine("k8s", hook, "variables");
       string name = hook.Replace("/", "-", StringComparison.Ordinal);

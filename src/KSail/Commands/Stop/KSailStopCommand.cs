@@ -9,11 +9,12 @@ sealed class KSailStopCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
 
-  internal KSailStopCommand(GlobalOptions globalOptions) : base("stop", "Stop a cluster")
+  internal KSailStopCommand() : base("stop", "Stop a cluster")
   {
+    AddOptions();
     this.SetHandler(async (context) =>
     {
-      var config = await KSailClusterConfigLoader.LoadWithGlobalOptionsAsync(globalOptions, context);
+      var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context);
 
       var handler = new KSailStopCommandHandler(config);
       try
@@ -35,5 +36,12 @@ sealed class KSailStopCommand : Command
         context.ExitCode = 1;
       }
     });
+  }
+
+  internal void AddOptions()
+  {
+    AddOption(CLIOptions.Metadata.NameOption);
+    AddOption(CLIOptions.Project.DistributionOption);
+    AddOption(CLIOptions.Project.EngineOption);
   }
 }

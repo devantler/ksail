@@ -2,7 +2,7 @@ using Devantler.KubernetesProvisioner.Cluster.Core;
 using Devantler.KubernetesProvisioner.Cluster.K3d;
 using Devantler.KubernetesProvisioner.Cluster.Kind;
 using KSail.Models;
-using KSail.Models.Project;
+using KSail.Models.Project.Enums;
 
 namespace KSail.Commands.Stop.Handlers;
 
@@ -16,8 +16,8 @@ class KSailStopCommandHandler
     _config = config;
     _clusterProvisioner = (_config.Spec.Project.Engine, _config.Spec.Project.Distribution) switch
     {
-      (KSailEngine.Docker, KSailKubernetesDistribution.Native) => new KindProvisioner(),
-      (KSailEngine.Docker, KSailKubernetesDistribution.K3s) => new K3dProvisioner(),
+      (KSailEngineType.Docker, KSailKubernetesDistributionType.Native) => new KindProvisioner(),
+      (KSailEngineType.Docker, KSailKubernetesDistributionType.K3s) => new K3dProvisioner(),
       _ => throw new NotSupportedException($"The distribution '{_config.Spec.Project.Distribution}' is not supported.")
     };
   }

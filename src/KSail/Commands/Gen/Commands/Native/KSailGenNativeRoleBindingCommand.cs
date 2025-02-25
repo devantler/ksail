@@ -9,7 +9,7 @@ namespace KSail.Commands.Gen.Commands.Native;
 class KSailGenNativeRoleBindingCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly OutputOption _outputOption = new("./role-binding.yaml");
+  readonly GenericPathOption _outputOption = new("./role-binding.yaml");
   readonly KSailGenNativeRoleBindingCommandHandler _handler = new();
   public KSailGenNativeRoleBindingCommand() : base("role-binding", "Generate a 'rbac.authorization.k8s.io/v1/RoleBinding' resource.")
   {

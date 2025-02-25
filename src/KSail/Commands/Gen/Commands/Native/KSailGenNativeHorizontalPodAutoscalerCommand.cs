@@ -9,7 +9,7 @@ namespace KSail.Commands.Gen.Commands.Native;
 class KSailGenNativeHorizontalPodAutoscalerCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly OutputOption _outputOption = new("./horizontal-pod-autoscaler.yaml");
+  readonly GenericPathOption _outputOption = new("./horizontal-pod-autoscaler.yaml");
   readonly KSailGenNativeHorizontalPodAutoscalerCommandHandler _handler = new();
   public KSailGenNativeHorizontalPodAutoscalerCommand() : base("horizontal-pod-autoscaler", "Generate a 'autoscaling/v2/HorizontalPodAutoscaler' resource.")
   {

@@ -9,7 +9,7 @@ namespace KSail.Commands.Gen.Commands.Native;
 class KSailGenNativePersistentVolumeClaimCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly OutputOption _outputOption = new("./persistent-volume-claim.yaml");
+  readonly GenericPathOption _outputOption = new("./persistent-volume-claim.yaml");
   readonly KSailGenNativePersistentVolumeClaimCommandHandler _handler = new();
   public KSailGenNativePersistentVolumeClaimCommand() : base("persistent-volume-claim", "Generate a 'core/v1/PersistentVolumeClaim' resource.")
   {

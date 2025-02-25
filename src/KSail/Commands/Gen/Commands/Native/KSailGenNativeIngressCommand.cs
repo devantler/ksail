@@ -9,7 +9,7 @@ namespace KSail.Commands.Gen.Commands.Native;
 class KSailGenNativeIngressCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly OutputOption _outputOption = new("./ingress.yaml");
+  readonly GenericPathOption _outputOption = new("./ingress.yaml");
   readonly KSailGenNativeIngressCommandHandler _handler = new();
   public KSailGenNativeIngressCommand() : base("ingress", "Generate a 'networking.k8s.io/v1/Ingress' resource.")
   {

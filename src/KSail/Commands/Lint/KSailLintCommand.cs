@@ -1,6 +1,5 @@
 using System.CommandLine;
 using KSail.Commands.Lint.Handlers;
-using KSail.Options;
 using KSail.Utils;
 
 namespace KSail.Commands.Lint;
@@ -8,7 +7,7 @@ namespace KSail.Commands.Lint;
 sealed class KSailLintCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  internal KSailLintCommand(GlobalOptions globalOptions) : base(
+  internal KSailLintCommand() : base(
    "lint", "Lint manifests for a cluster"
   )
   {
@@ -16,7 +15,7 @@ sealed class KSailLintCommand : Command
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadWithGlobalOptionsAsync(globalOptions, context);
+        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context);
 
         Console.WriteLine("🧹 Linting manifest files");
         var handler = new KSailLintCommandHandler();

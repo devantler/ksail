@@ -25,6 +25,7 @@ public class Startup
     }
     else
     {
+      // TODO: Set unix file mode in CLI libraries
       string runtime = RuntimeInformation.RuntimeIdentifier;
       string ageKeygenBinary = Path.Combine(AppContext.BaseDirectory, "age-keygen-" + runtime);
       string fluxBinary = Path.Combine(AppContext.BaseDirectory, "flux-" + runtime);

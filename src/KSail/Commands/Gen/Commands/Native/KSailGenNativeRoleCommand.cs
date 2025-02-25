@@ -9,7 +9,7 @@ namespace KSail.Commands.Gen.Commands.Native;
 class KSailGenNativeRoleCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly OutputOption _outputOption = new("./role.yaml");
+  readonly GenericPathOption _outputOption = new("./role.yaml");
   readonly KSailGenNativeRoleCommandHandler _handler = new();
   public KSailGenNativeRoleCommand() : base("role", "Generate a 'rbac.authorization.k8s.io/v1/Role' resource.")
   {

@@ -1,5 +1,5 @@
 using System.ComponentModel;
-using KSail.Models.Project;
+using KSail.Models.Project.Enums;
 
 namespace KSail.Models;
 
@@ -49,7 +49,7 @@ public class KSailCluster
   /// Initializes a new instance of the <see cref="KSailCluster"/> class with the specified distribution.
   /// </summary>
   /// <param name="distribution"></param>
-  public KSailCluster(KSailKubernetesDistribution distribution) =>
+  public KSailCluster(KSailKubernetesDistributionType distribution) =>
     Spec = new KSailClusterSpec(Metadata.Name, distribution);
 
   /// <summary>
@@ -57,7 +57,7 @@ public class KSailCluster
   /// </summary>
   /// <param name="name"></param>
   /// <param name="distribution"></param>
-  public KSailCluster(string name, KSailKubernetesDistribution distribution)
+  public KSailCluster(string name, KSailKubernetesDistributionType distribution)
   {
     Metadata.Name = name;
     Spec = new KSailClusterSpec(name, distribution);

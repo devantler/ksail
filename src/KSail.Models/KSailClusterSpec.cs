@@ -1,13 +1,16 @@
 using System.ComponentModel;
-using KSail.Models.CLI;
-using KSail.Models.CNI;
 using KSail.Models.Connection;
 using KSail.Models.DeploymentTool;
+using KSail.Models.Distribution;
+using KSail.Models.IngressController;
+using KSail.Models.LocalRegistry;
 using KSail.Models.MirrorRegistry;
 using KSail.Models.Project;
-using KSail.Models.Registry;
+using KSail.Models.Project.Enums;
 using KSail.Models.SecretManager;
 using KSail.Models.Template;
+using KSail.Models.Validation;
+using KSail.Models.WaypointController;
 using YamlDotNet.Serialization;
 
 namespace KSail.Models;
@@ -18,48 +21,64 @@ namespace KSail.Models;
 public class KSailClusterSpec
 {
   /// <summary>
-  /// The options for connecting to the KSail cluster.
+  /// Options for connecting to the KSail cluster.
   /// </summary>
   [Description("The options for connecting to the KSail cluster.")]
   public KSailConnection Connection { get; set; } = new();
 
   /// <summary>
-  /// The options for the KSail project.
+  /// Options for the KSail project.
   /// </summary>
   [Description("The options for the KSail project.")]
   public KSailProject Project { get; set; } = new();
 
   /// <summary>
-  /// The options for the Flux deployment tool.
+  /// Options for the Flux deployment tool.
   /// </summary>
-  [Description("The options for the Flux deployment tool.")]
-  public KSailFluxDeploymentTool FluxDeploymentTool { get; set; } = new();
+  [Description("The options for the deployment tool.")]
+  public KSailDeploymentTool DeploymentTool { get; set; } = new();
 
   /// <summary>
-  /// The options for the Kustomize template.
+  /// Options for the distribution.
   /// </summary>
-  [Description("The options for the Kustomize template.")]
-  public KSailKustomizeTemplate KustomizeTemplate { get; set; } = new();
+  public KSailDistribution Distribution { get; set; } = new();
 
   /// <summary>
-  /// The options for the SOPS Secret Manager.
+  /// Options for the template.
   /// </summary>
-  [Description("The options for the SOPS Secret Manager.")]
-  [YamlMember(Alias = "sopsSecretManager")]
-  public KSailSOPSSecretManager SOPSSecretManager { get; set; } = new();
+  [Description("The options for the template.")]
+  public KSailTemplate Template { get; set; } = new();
 
   /// <summary>
-  /// The options for the Cilium CNI.
+  /// Options for the Secret Manager.
   /// </summary>
-  [Description("The options for the Cilium CNI.")]
-  public KSailCiliumCNI CiliumCNI { get; set; } = new();
+  [Description("The options for the Secret Manager.")]
+  public KSailSecretManager SecretManager { get; set; } = new();
 
   /// <summary>
-  /// The ksail registry for storing deployment artifacts.
+  /// Options for the CNI.
   /// </summary>
-  [Description("The ksail registry for storing deployment artifacts.")]
-  [YamlMember(Alias = "ksailRegistry")]
-  public KSailRegistry KSailRegistry { get; set; } = new KSailRegistry
+  [Description("The options for the CNI.")]
+  [YamlMember(Alias = "cni")]
+  public KSailCNIType CNI { get; set; } = new();
+
+  /// <summary>
+  /// Options for the Ingress Controller.
+  /// </summary>
+  [Description("The options for the Ingress Controller.")]
+  public KSailIngressController IngressController { get; set; } = new();
+
+  /// <summary>
+  /// Options for the Waypoint Controller.
+  /// </summary>
+  [Description("The options for the Waypoint Controller.")]
+  public KSailWaypointController WaypointController { get; set; } = new();
+
+  /// <summary>
+  /// The local registry for storing deployment artifacts.
+  /// </summary>
+  [Description("The local registry for storing deployment artifacts.")]
+  public KSailLocalRegistry LocalRegistry { get; set; } = new KSailLocalRegistry
   {
     Name = "ksail-registry",
     HostPort = 5555
@@ -79,11 +98,10 @@ public class KSailClusterSpec
   ];
 
   /// <summary>
-  /// The CLI options.
+  /// Options for validating the KSail cluster.
   /// </summary>
-  [Description("The CLI options.")]
-  [YamlMember(Alias = "cli")]
-  public KSailCLI CLI { get; set; } = new();
+  [Description("Options for validating the KSail cluster.")]
+  public KSailValidation Validation { get; set; } = new();
 
   /// <summary>
   /// Initializes a new instance of the <see cref="KSailClusterSpec"/> class.
@@ -101,7 +119,7 @@ public class KSailClusterSpec
     {
       Context = $"kind-{name}"
     };
-    KustomizeTemplate = new KSailKustomizeTemplate
+    Template.Kustomize = new KSailTemplateKustomize
     {
       Root = $"k8s/clusters/{name}/flux-system"
     };
@@ -112,15 +130,15 @@ public class KSailClusterSpec
   /// </summary>
   /// <param name="name"></param>
   /// <param name="distribution"></param>
-  public KSailClusterSpec(string name, KSailKubernetesDistribution distribution) : this(name)
+  public KSailClusterSpec(string name, KSailKubernetesDistributionType distribution) : this(name)
   {
     SetOCISourceUri(distribution);
     Connection = new KSailConnection
     {
       Context = distribution switch
       {
-        KSailKubernetesDistribution.Native => $"kind-{name}",
-        KSailKubernetesDistribution.K3s => $"k3d-{name}",
+        KSailKubernetesDistributionType.Native => $"kind-{name}",
+        KSailKubernetesDistributionType.K3s => $"k3d-{name}",
         _ => $"kind-{name}"
       }
     };
@@ -129,23 +147,23 @@ public class KSailClusterSpec
       Distribution = distribution,
       DistributionConfigPath = distribution switch
       {
-        KSailKubernetesDistribution.Native => "kind-config.yaml",
-        KSailKubernetesDistribution.K3s => "k3d-config.yaml",
+        KSailKubernetesDistributionType.Native => "kind-config.yaml",
+        KSailKubernetesDistributionType.K3s => "k3d-config.yaml",
         _ => "kind-config.yaml"
       }
     };
-    KustomizeTemplate = new KSailKustomizeTemplate
+    Template.Kustomize = new KSailTemplateKustomize
     {
       Root = $"k8s/clusters/{name}/flux-system"
     };
   }
 
-  void SetOCISourceUri(KSailKubernetesDistribution distribution = KSailKubernetesDistribution.Native)
+  void SetOCISourceUri(KSailKubernetesDistributionType distribution = KSailKubernetesDistributionType.Native)
   {
-    FluxDeploymentTool = distribution switch
+    DeploymentTool.Flux = distribution switch
     {
-      KSailKubernetesDistribution.Native => new KSailFluxDeploymentTool(new Uri("oci://ksail-registry:5000/ksail-registry")),
-      KSailKubernetesDistribution.K3s => new KSailFluxDeploymentTool(new Uri("oci://host.k3d.internal:5555/ksail-registry")),
+      KSailKubernetesDistributionType.Native => new KSailFluxDeploymentTool(new Uri("oci://ksail-registry:5000/ksail-registry")),
+      KSailKubernetesDistributionType.K3s => new KSailFluxDeploymentTool(new Uri("oci://host.k3d.internal:5555/ksail-registry")),
       _ => new KSailFluxDeploymentTool(new Uri("oci://ksail-registry:5000/ksail-registry")),
     };
   }

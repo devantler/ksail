@@ -8,13 +8,14 @@ namespace KSail.Commands.Down;
 sealed class KSailDownCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  internal KSailDownCommand(GlobalOptions globalOptions) : base("down", "Destroy a cluster")
+  internal KSailDownCommand() : base("down", "Destroy a cluster")
   {
+    AddOptions();
     this.SetHandler(async (context) =>
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadWithGlobalOptionsAsync(globalOptions, context);
+        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context);
 
         var handler = new KSailDownCommandHandler(config);
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;
@@ -25,5 +26,16 @@ sealed class KSailDownCommand : Command
         context.ExitCode = 1;
       }
     });
+  }
+
+  internal void AddOptions()
+  {
+    //AddOptions(CLIOptions.MirrorRegistries.MirrorRegistryOption);
+    AddOption(CLIOptions.DeploymentTool.Flux.SourceOption);
+    AddOption(CLIOptions.Metadata.NameOption);
+    AddOption(CLIOptions.Project.DeploymentToolOption);
+    AddOption(CLIOptions.Project.DistributionOption);
+    AddOption(CLIOptions.Project.EngineOption);
+    AddOption(CLIOptions.Project.MirrorRegistriesOption);
   }
 }

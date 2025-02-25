@@ -12,7 +12,7 @@ using k8s.Models;
 using KSail.Commands.Lint.Handlers;
 using KSail.Models;
 using KSail.Models.MirrorRegistry;
-using KSail.Models.Project;
+using KSail.Models.Project.Enums;
 using KSail.Utils;
 
 namespace KSail.Commands.Up.Handlers;
@@ -31,18 +31,18 @@ class KSailUpCommandHandler
   {
     _engineProvisioner = config.Spec.Project.Engine switch
     {
-      KSailEngine.Docker => new DockerProvisioner(),
+      KSailEngineType.Docker => new DockerProvisioner(),
       _ => throw new NotSupportedException($"The container engine '{config.Spec.Project.Engine}' is not supported.")
     };
     _clusterProvisioner = (config.Spec.Project.Engine, config.Spec.Project.Distribution) switch
     {
-      (KSailEngine.Docker, KSailKubernetesDistribution.Native) => new KindProvisioner(),
-      (KSailEngine.Docker, KSailKubernetesDistribution.K3s) => new K3dProvisioner(),
+      (KSailEngineType.Docker, KSailKubernetesDistributionType.Native) => new KindProvisioner(),
+      (KSailEngineType.Docker, KSailKubernetesDistributionType.K3s) => new K3dProvisioner(),
       _ => throw new NotSupportedException($"The distribution '{config.Spec.Project.Distribution}' is not supported.")
     };
     _deploymentTool = config.Spec.Project.DeploymentTool switch
     {
-      KSailDeploymentTool.Flux => new FluxProvisioner(config.Spec.Connection.Context),
+      KSailDeploymentToolType.Flux => new FluxProvisioner(config.Spec.Connection.Context),
       _ => throw new NotSupportedException($"The Deployment tool '{config.Spec.Project.DeploymentTool}' is not supported.")
     };
     _config = config;
@@ -70,7 +70,7 @@ class KSailUpCommandHandler
     await BootstrapSecretManager(_config, cancellationToken).ConfigureAwait(false);
     await BootstrapDeploymentTool(_config, cancellationToken).ConfigureAwait(false);
 
-    if (_config.Spec.CLI.Up.Reconcile)
+    if (_config.Spec.Validation.ReconcileOnUp)
     {
       Console.WriteLine("🔄 Reconciling kustomizations");
       await _deploymentTool.ReconcileAsync(_config.Spec.Connection.Timeout, cancellationToken).ConfigureAwait(false);
@@ -83,7 +83,7 @@ class KSailUpCommandHandler
   {
     string engineEmoji = _config.Spec.Project.Engine switch
     {
-      KSailEngine.Docker => "🐳",
+      KSailEngineType.Docker => "🐳",
       _ => throw new KSailException($"The container engine '{_config.Spec.Project.Engine}' is not supported.")
     };
     Console.WriteLine($"{engineEmoji} Checking {_config.Spec.Project.Engine} is running");
@@ -105,14 +105,14 @@ class KSailUpCommandHandler
 
   async Task CreateOCISourceRegistry(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    if (config.Spec.Project.Engine == KSailEngine.Docker && config.Spec.Project.DeploymentTool == KSailDeploymentTool.Flux)
+    if (config.Spec.Project.Engine == KSailEngineType.Docker && config.Spec.Project.DeploymentTool == KSailDeploymentToolType.Flux)
     {
       Console.WriteLine("📥 Create OCI source registry");
-      Console.WriteLine($"► creating '{config.Spec.FluxDeploymentTool.Source.Url}' as OCI source registry");
+      Console.WriteLine($"► creating '{config.Spec.DeploymentTool.Flux.Source.Url}' as OCI source registry");
       await _engineProvisioner
        .CreateRegistryAsync(
-        config.Spec.KSailRegistry.Name,
-        config.Spec.KSailRegistry.HostPort,
+        config.Spec.LocalRegistry.Name,
+        config.Spec.LocalRegistry.HostPort,
         cancellationToken: cancellationToken
       ).ConfigureAwait(false);
       Console.WriteLine("✔ OCI source registry created");
@@ -138,7 +138,7 @@ class KSailUpCommandHandler
 
   async Task<bool> Lint(KSailCluster config, CancellationToken cancellationToken = default)
   {
-    if (config.Spec.CLI.Up.Lint)
+    if (config.Spec.Validation.LintOnUp)
     {
       Console.WriteLine("🔍 Linting manifests");
       bool success = await _ksailLintCommandHandler.HandleAsync(cancellationToken).ConfigureAwait(false);
@@ -159,7 +159,7 @@ class KSailUpCommandHandler
   {
     switch ((config.Spec.Project.Engine, config.Spec.Project.Distribution))
     {
-      case (KSailEngine.Docker, KSailKubernetesDistribution.Native):
+      case (KSailEngineType.Docker, KSailKubernetesDistributionType.Native):
         Console.WriteLine("🔼 Botstrapping OCI source registry");
         Console.WriteLine($"► connect OCI source registry to 'kind-{config.Metadata.Name}' network");
         var dockerClient = _engineProvisioner.Client;
@@ -167,7 +167,7 @@ class KSailUpCommandHandler
         var kindNetworks = dockerNetworks.Where(x => x.Name.Contains("kind", StringComparison.OrdinalIgnoreCase));
         foreach (var kindNetwork in kindNetworks)
         {
-          string containerId = await _engineProvisioner.GetContainerIdAsync(config.Spec.FluxDeploymentTool.Source.Url.Segments.Last(), cancellationToken);
+          string containerId = await _engineProvisioner.GetContainerIdAsync(config.Spec.DeploymentTool.Flux.Source.Url.Segments.Last(), cancellationToken);
           await dockerClient.Networks.ConnectNetworkAsync(kindNetwork.ID, new NetworkConnectParameters
           {
             Container = containerId
@@ -187,7 +187,7 @@ class KSailUpCommandHandler
     {
       switch ((config.Spec.Project.Engine, config.Spec.Project.Distribution))
       {
-        case (KSailEngine.Docker, KSailKubernetesDistribution.Native):
+        case (KSailEngineType.Docker, KSailKubernetesDistributionType.Native):
           Console.WriteLine("🔼 Bootstrapping mirror registries");
           string[] args = [
           "get",
@@ -228,7 +228,7 @@ class KSailUpCommandHandler
           Console.WriteLine($"✔ mirror registries connected to 'kind' networks");
           Console.WriteLine();
           break;
-        case (KSailEngine.Docker, KSailKubernetesDistribution.K3s):
+        case (KSailEngineType.Docker, KSailKubernetesDistributionType.K3s):
           break;
         default:
           break;
@@ -259,14 +259,14 @@ class KSailUpCommandHandler
     Console.WriteLine($"► creating 'flux-system' namespace (--context={config.Spec.Connection.Context})");
     await CreateFluxSystemNamespace(resourceProvisioner, cancellationToken).ConfigureAwait(false);
 
-    string scheme = config.Spec.FluxDeploymentTool.Source.Url.Scheme;
+    string scheme = config.Spec.DeploymentTool.Flux.Source.Url.Scheme;
     string host = "localhost";
-    string absolutePath = config.Spec.FluxDeploymentTool.Source.Url.AbsolutePath;
-    var sourceUrlFromHost = new Uri($"{scheme}://{host}:{config.Spec.KSailRegistry.HostPort}{absolutePath}");
+    string absolutePath = config.Spec.DeploymentTool.Flux.Source.Url.AbsolutePath;
+    var sourceUrlFromHost = new Uri($"{scheme}://{host}:{config.Spec.LocalRegistry.HostPort}{absolutePath}");
     await _deploymentTool.PushManifestsAsync(sourceUrlFromHost, "k8s", cancellationToken: cancellationToken).ConfigureAwait(false);
     await _deploymentTool.BootstrapAsync(
-      config.Spec.FluxDeploymentTool.Source.Url,
-      config.Spec.KustomizeTemplate.Root.Replace("k8s/", "", StringComparison.OrdinalIgnoreCase),
+      config.Spec.DeploymentTool.Flux.Source.Url,
+      config.Spec.Template.Kustomize.Root.Replace("k8s/", "", StringComparison.OrdinalIgnoreCase),
       true,
       cancellationToken
     ).ConfigureAwait(false);
@@ -276,7 +276,7 @@ class KSailUpCommandHandler
   async Task BootstrapSecretManager(KSailCluster config, CancellationToken cancellationToken)
   {
     using var resourceProvisioner = new KubernetesResourceProvisioner(config.Spec.Connection.Context);
-    if (config.Spec.Project.SecretManager == KSailSecretManager.SOPS)
+    if (config.Spec.Project.SecretManager == KSailSecretManagerType.SOPS)
     {
       Console.WriteLine("🔼 Bootstrapping SOPS secret manager");
       Console.WriteLine($"► creating 'flux-system' namespace (--context={config.Spec.Connection.Context})");

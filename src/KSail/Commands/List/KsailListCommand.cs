@@ -1,6 +1,5 @@
 using System.CommandLine;
 using KSail.Commands.List.Handlers;
-using KSail.Commands.List.Options;
 using KSail.Options;
 using KSail.Utils;
 
@@ -9,19 +8,16 @@ namespace KSail.Commands.List;
 sealed class KSailListCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly AllOption _allOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  internal KSailListCommand(GlobalOptions globalOptions) : base("list", "List active clusters")
+  internal KSailListCommand() : base("list", "List active clusters")
   {
-    AddOption(_allOption);
+    AddOptions();
     this.SetHandler(async (context) =>
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadWithGlobalOptionsAsync(globalOptions, context);
-        config.UpdateConfig("Spec.CLI.List.All", context.ParseResult.GetValueForOption(_allOption));
+        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context);
         var cancellationToken = context.GetCancellationToken();
         var handler = new KSailListCommandHandler(config);
-
         _ = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
       }
       catch (Exception ex)
@@ -30,5 +26,12 @@ sealed class KSailListCommand : Command
         context.ExitCode = 1;
       }
     });
+  }
+
+  internal void AddOptions()
+  {
+    AddOption(CLIOptions.Project.EngineOption);
+    AddOption(CLIOptions.Project.DistributionOption);
+    AddOption(CLIOptions.Distribution.ShowAllClustersInListings);
   }
 }

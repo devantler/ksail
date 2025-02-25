@@ -3,7 +3,7 @@ using System.ComponentModel;
 namespace KSail.Models.DeploymentTool;
 
 /// <summary>
-/// The options for the KSail Flux Deployment Tool.
+/// Options for the Flux Deployment Tool.
 /// </summary>
 public class KSailFluxDeploymentTool
 {
@@ -20,14 +20,14 @@ public class KSailFluxDeploymentTool
   public bool PostBuildVariables { get; set; }
 
   /// <summary>
-  /// Initializes a new instance of the <see cref="KSailFluxDeploymentTool"/> class.
+  /// Initializes a new instance of the <see cref="KSailDeploymentTool"/> class.
   /// </summary>
   public KSailFluxDeploymentTool()
   {
   }
 
   /// <summary>
-  /// Initializes a new instance of the <see cref="KSailFluxDeploymentTool"/> class with the specified GitOps source URL.
+  /// Initializes a new instance of the <see cref="KSailDeploymentTool"/> class with the specified GitOps source URL.
   /// </summary>
   /// <param name="gitOpsSourceUrl"></param>
   public KSailFluxDeploymentTool(Uri gitOpsSourceUrl) => Source = new KSailRepository(gitOpsSourceUrl);

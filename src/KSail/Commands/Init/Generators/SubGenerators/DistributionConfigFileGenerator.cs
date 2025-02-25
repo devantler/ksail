@@ -6,7 +6,7 @@ using Devantler.KubernetesGenerator.Kind;
 using Devantler.KubernetesGenerator.Kind.Models;
 using k8s.Models;
 using KSail.Models;
-using KSail.Models.Project;
+using KSail.Models.Project.Enums;
 
 namespace KSail.Commands.Init.Generators.SubGenerators;
 
@@ -25,10 +25,10 @@ class DistributionConfigFileGenerator
     }
     switch (config.Spec.Project.Engine, config.Spec.Project.Distribution)
     {
-      case (KSailEngine.Docker, KSailKubernetesDistribution.Native):
+      case (KSailEngineType.Docker, KSailKubernetesDistributionType.Native):
         await GenerateKindConfigFile(config, configPath, cancellationToken).ConfigureAwait(false);
         break;
-      case (KSailEngine.Docker, KSailKubernetesDistribution.K3s):
+      case (KSailEngineType.Docker, KSailKubernetesDistributionType.K3s):
         await GenerateK3DConfigFile(config, configPath, cancellationToken).ConfigureAwait(false);
         break;
       default:

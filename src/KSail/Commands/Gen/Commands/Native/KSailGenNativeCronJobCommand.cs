@@ -9,7 +9,7 @@ namespace KSail.Commands.Gen.Commands.Native;
 class KSailGenNativeWorkloadsCronJobCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly OutputOption _outputOption = new("./cron-job.yaml");
+  readonly GenericPathOption _outputOption = new("./cron-job.yaml");
   readonly KSailGenNativeWorkloadsCronJobCommandHandler _handler = new();
   public KSailGenNativeWorkloadsCronJobCommand() : base("cron-job", "Generate a 'batch/v1/CronJob' resource.")
   {

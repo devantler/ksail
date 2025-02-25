@@ -1,7 +1,7 @@
 using KSail.Commands.Init.Generators;
 using KSail.Commands.Init.Generators.SubGenerators;
 using KSail.Models;
-using KSail.Models.Project;
+using KSail.Models.Project.Enums;
 
 namespace KSail.Commands.Init.Handlers;
 
@@ -25,7 +25,7 @@ class KSailInitCommandHandler(KSailCluster config)
       cancellationToken
     ).ConfigureAwait(false);
 
-    if (_config.Spec.Project.SecretManager == KSailSecretManager.SOPS)
+    if (_config.Spec.Project.SecretManager == KSailSecretManagerType.SOPS)
     {
       await _sopsConfigFileGenerator.GenerateAsync(
         _config,

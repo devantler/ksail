@@ -180,7 +180,7 @@ public partial class KSailInitCommandTests : IAsyncLifetime
       "--name", "ksail-advanced-native",
       "--secret-manager", "sops",
       "--flux-post-build-variables",
-      "--kustomize-hooks", "clusters/ksail-advanced-native", "distributions/native", "shared"
+      "--kustomize-hook", "clusters/ksail-advanced-native", "distributions/native", "shared"
     ]);
 
     //Assert
@@ -227,13 +227,15 @@ public partial class KSailInitCommandTests : IAsyncLifetime
       "--name", "ksail-advanced-native",
       "--secret-manager", "sops",
       "--flux-post-build-variables",
-      "--kustomize-hooks", "clusters/ksail-advanced-native", "distributions/native", "shared"
+      "--kustomize-hook", "clusters/ksail-advanced-native",
+      "--kustomize-hook", "distributions/native",
+      "--kustomize-hook", "shared"
     ]);
     int exitCodeRun2 = await ksailCommand.InvokeAsync(["init",
       "--name", "ksail-advanced-native",
       "--secret-manager", "sops",
       "--flux-post-build-variables",
-      "--kustomize-hooks", "clusters/ksail-advanced-native","distributions/native", "shared"
+      "--kustomize-hook", "clusters/ksail-advanced-native","distributions/native", "shared"
     ]);
 
     //Assert
@@ -282,14 +284,14 @@ public partial class KSailInitCommandTests : IAsyncLifetime
       "--secret-manager", "sops",
       "--flux-post-build-variables",
       "--distribution", "native",
-      "--kustomize-hooks", "clusters/cluster1", "distributions/native", "shared"
+      "--kustomize-hook", "clusters/cluster1", "distributions/native", "shared"
     ]);
     int exitCodeRun2 = await ksailCommand.InvokeAsync(["init",
       "--name", "cluster2",
       "--secret-manager", "sops",
       "--flux-post-build-variables",
       "--distribution", "k3s",
-      "--kustomize-hooks", "clusters/cluster2", "distributions/k3s", "shared"
+      "--kustomize-hook", "clusters/cluster2", "distributions/k3s", "shared"
     ]);
 
     //Assert

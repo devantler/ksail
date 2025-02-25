@@ -3,7 +3,7 @@ using Devantler.KubernetesProvisioner.Cluster.Core;
 using Devantler.KubernetesProvisioner.Cluster.K3d;
 using Devantler.KubernetesProvisioner.Cluster.Kind;
 using KSail.Models;
-using KSail.Models.Project;
+using KSail.Models.Project.Enums;
 
 namespace KSail.Commands.Down.Handlers;
 
@@ -18,13 +18,13 @@ class KSailDownCommandHandler
     _config = config;
     _engineProvisioner = _config.Spec.Project.Engine switch
     {
-      KSailEngine.Docker => new DockerProvisioner(),
+      KSailEngineType.Docker => new DockerProvisioner(),
       _ => throw new KSailException($"Engine '{_config.Spec.Project.Engine}' is not supported.")
     };
     _kubernetesDistributionProvisioner = _config.Spec.Project.Distribution switch
     {
-      KSailKubernetesDistribution.K3s => new K3dProvisioner(),
-      KSailKubernetesDistribution.Native => new KindProvisioner(),
+      KSailKubernetesDistributionType.K3s => new K3dProvisioner(),
+      KSailKubernetesDistributionType.Native => new KindProvisioner(),
       _ => throw new KSailException($"Kubernetes distribution '{_config.Spec.Project.Engine}' is not supported.")
     };
   }
@@ -40,9 +40,9 @@ class KSailDownCommandHandler
   {
     switch (_config.Spec.Project.DeploymentTool)
     {
-      case KSailDeploymentTool.Flux:
+      case KSailDeploymentToolType.Flux:
         Console.WriteLine("► Deleting OCI source registry");
-        string containerName = _config.Spec.FluxDeploymentTool.Source.Url.Segments.Last();
+        string containerName = _config.Spec.DeploymentTool.Flux.Source.Url.Segments.Last();
         bool ksailRegistryExists = await _engineProvisioner.CheckContainerExistsAsync(containerName, cancellationToken).ConfigureAwait(false);
         if (ksailRegistryExists)
         {

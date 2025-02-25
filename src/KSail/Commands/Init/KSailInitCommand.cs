@@ -1,6 +1,5 @@
 using System.CommandLine;
 using KSail.Commands.Init.Handlers;
-using KSail.Commands.Init.Options;
 using KSail.Options;
 using KSail.Utils;
 
@@ -9,11 +8,8 @@ namespace KSail.Commands.Init;
 sealed class KSailInitCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly FluxDeploymentToolPostBuildVariablesOption _fluxDeploymentToolPostBuildVariablesOption = new() { Arity = ArgumentArity.ZeroOrOne };
-  readonly KustomizeTemplateFlowsOption _kustomizeTemplateKustomizationsOption = new() { Arity = ArgumentArity.ZeroOrMore, AllowMultipleArgumentsPerToken = true };
-  readonly KustomizeTemplateHooksOption _kustomizeTemplateKustomizationHooksOption = new() { Arity = ArgumentArity.ZeroOrMore, AllowMultipleArgumentsPerToken = true };
 
-  public KSailInitCommand(GlobalOptions globalOptions) : base("init", "Initialize a cluster")
+  public KSailInitCommand() : base("init", "Initialize a cluster")
   {
     AddOptions();
 
@@ -21,10 +17,7 @@ sealed class KSailInitCommand : Command
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadWithGlobalOptionsAsync(globalOptions, context);
-        config.UpdateConfig("Spec.FluxDeploymentTool.PostBuildVariables", context.ParseResult.GetValueForOption(_fluxDeploymentToolPostBuildVariablesOption));
-        config.UpdateConfig("Spec.KustomizeTemplate.Flows", context.ParseResult.GetValueForOption(_kustomizeTemplateKustomizationsOption));
-        config.UpdateConfig("Spec.KustomizeTemplate.Hooks", context.ParseResult.GetValueForOption(_kustomizeTemplateKustomizationHooksOption));
+        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context);
         var handler = new KSailInitCommandHandler(config);
         Console.WriteLine($"📁 Initializing new cluster '{config.Metadata.Name}' in './' with the '{config.Spec.Project.Template}' template.");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
@@ -40,8 +33,15 @@ sealed class KSailInitCommand : Command
 
   void AddOptions()
   {
-    AddOption(_fluxDeploymentToolPostBuildVariablesOption);
-    AddOption(_kustomizeTemplateKustomizationHooksOption);
-    AddOption(_kustomizeTemplateKustomizationsOption);
+    AddOption(CLIOptions.DeploymentTool.Flux.PostBuildVariablesOption);
+    AddOption(CLIOptions.Metadata.NameOption);
+    AddOption(CLIOptions.Project.DistributionConfigPathOption);
+    AddOption(CLIOptions.Project.DistributionOption);
+    AddOption(CLIOptions.Project.EngineOption);
+    AddOption(CLIOptions.Project.MirrorRegistriesOption);
+    AddOption(CLIOptions.Project.SecretManagerOption);
+    AddOption(CLIOptions.Template.Kustomize.FlowOption);
+    AddOption(CLIOptions.Template.Kustomize.HookOption);
+    AddOption(CLIOptions.Template.Kustomize.RootOption);
   }
 }

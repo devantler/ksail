@@ -9,7 +9,7 @@ namespace KSail.Commands.Gen.Commands.Kustomize;
 class KSailGenKustomizeKustomizationCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
-  readonly OutputOption _outputOption = new("./kustomization.yaml");
+  readonly GenericPathOption _outputOption = new("./kustomization.yaml");
   readonly KSailGenKustomizeKustomizationCommandHandler _handler = new();
   public KSailGenKustomizeKustomizationCommand() : base("kustomization", "Generate a 'kustomize.config.k8s.io/v1beta1/Kustomization' resource.")
   {
