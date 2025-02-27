@@ -65,12 +65,6 @@
                 "Kustomize"
               ]
             },
-            "engine": {
-              "description": "The engine to use for running the KSail cluster.",
-              "enum": [
-                "Docker"
-              ]
-            },
             "distribution": {
               "description": "The Kubernetes distribution to use.",
               "enum": [
@@ -104,6 +98,16 @@
                 "Vim"
               ]
             },
+            "engine": {
+              "description": "The engine to use for running the KSail cluster.",
+              "enum": [
+                "Docker"
+              ]
+            },
+            "kubernetesDirectoryPath": {
+              "description": "The directory where the Kubernetes manifests are stored.",
+              "type": "string"
+            },
             "mirrorRegistries": {
               "description": "Whether to set up mirror registries for the project.",
               "type": "boolean"
@@ -127,16 +131,13 @@
                       "format": "uri"
                     }
                   }
-                },
-                "postBuildVariables": {
-                  "description": "Enable Flux post-build variables.",
-                  "type": "boolean"
                 }
               }
             }
           }
         },
         "distribution": {
+          "description": "The options for the distribution.",
           "type": "object",
           "properties": {
             "showAllClustersInListings": {
@@ -155,26 +156,6 @@
                 "root": {
                   "description": "The root directory.",
                   "type": "string"
-                },
-                "flows": {
-                  "description": "The flows to include. The first depends on the next, and so on.",
-                  "type": "array",
-                  "items": {
-                    "type": [
-                      "string",
-                      "null"
-                    ]
-                  }
-                },
-                "hooks": {
-                  "description": "The kustomization hooks to use. Each kustomization hook includes an extension to the kustomization allowing you to customize that kustomization at a specific point in the kustomize build process.",
-                  "type": "array",
-                  "items": {
-                    "type": [
-                      "string",
-                      "null"
-                    ]
-                  }
                 }
               }
             }

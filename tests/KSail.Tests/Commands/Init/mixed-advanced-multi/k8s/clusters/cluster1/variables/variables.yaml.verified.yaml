@@ -1,7 +1,0 @@
-﻿---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: variables-clusters-cluster1
-  namespace: flux-system
-data: {}

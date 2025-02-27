@@ -16,7 +16,7 @@ sealed class KSailStartCommand : Command
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context);
+        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context).ConfigureAwait(false);
         var handler = new KSailStartCommandHandler(config);
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
       }

@@ -25,7 +25,7 @@ sealed class KSailSecretsExportCommand : Command
       {
         commandResult.ErrorMessage = $"✗ Option '{_outputFilePathOption.Name}' is required";
       }
-      else if (outputFilePath != null && Path.GetFileName(outputFilePath) == string.Empty)
+      else if (outputFilePath != null && string.IsNullOrEmpty(Path.GetFileName(outputFilePath)))
       {
         commandResult.ErrorMessage = $"✗ '{outputFilePath}' is not a valid file path";
       }
@@ -34,7 +34,7 @@ sealed class KSailSecretsExportCommand : Command
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context);
+        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context).ConfigureAwait(false);
         string publicKey = context.ParseResult.GetValueForArgument(_publicKeyArgument);
         string outputPath = context.ParseResult.GetValueForOption(_outputFilePathOption) ?? throw new KSailException("output path is required");
 

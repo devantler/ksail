@@ -2,19 +2,9 @@ using KSail.Models;
 
 namespace KSail.Utils;
 
-/// <summary>
-/// Extension methods for the <see cref="KSailCluster"/> class.
-/// </summary>
-public static class KSailClusterExtensions
+
+internal static class KSailClusterExtensions
 {
-  /// <summary>
-  /// Updates a property on the <see cref="KSailCluster"/> object.
-  /// </summary>
-  /// <typeparam name="T"></typeparam>
-  /// <param name="config"></param>
-  /// <param name="propertyPath"></param>
-  /// <param name="value"></param>
-  /// <exception cref="ArgumentException"></exception>
   public static void UpdateConfig<T>(this KSailCluster config, string propertyPath, T value)
   {
     string[] properties = propertyPath.Split('.');
@@ -34,7 +24,7 @@ public static class KSailClusterExtensions
 
         if (value != null && !Equals(currentValue, value) && !Equals(value, defaultValue))
         {
-          if (value is IEnumerable<string> enumerableValue && enumerableValue.Count() == 0)
+          if (value is IEnumerable<string> enumerableValue && !enumerableValue.Any())
             continue;
           property.SetValue(currentObject, value);
         }

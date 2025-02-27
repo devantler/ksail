@@ -5,9 +5,7 @@ using KSail.Commands.Root;
 
 namespace KSail.Tests.Commands.Debug;
 
-/// <summary>
-/// Tests for the <see cref="KSailDebugCommand"/> class.
-/// </summary>
+
 public class KSailDebugCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
@@ -15,9 +13,7 @@ public class KSailDebugCommandTests : IAsyncLifetime
   /// <inheritdoc/>
   public Task InitializeAsync() => Task.CompletedTask;
 
-  /// <summary>
-  /// Tests that the 'ksail debug --help'
-  /// </summary>
+
   [Fact]
   public async Task KSailDebugHelp_SucceedsAndPrintsIntroductionAndHelp()
   {

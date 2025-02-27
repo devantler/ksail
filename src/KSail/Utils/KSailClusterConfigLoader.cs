@@ -37,7 +37,6 @@ static class KSailClusterConfigLoader
     config.UpdateConfig("Spec.Connection.Timeout", context.ParseResult.GetValueForOption(CLIOptions.Connection.TimeoutOption));
 
     // DeploymentTool
-    config.UpdateConfig("Spec.DeploymentTool.Flux.PostBuildVariables", context.ParseResult.GetValueForOption(CLIOptions.DeploymentTool.Flux.PostBuildVariablesOption));
     config.UpdateConfig("Spec.DeploymentTool.Flux.Source", context.ParseResult.GetValueForOption(CLIOptions.DeploymentTool.Flux.SourceOption));
 
     // Distribution
@@ -59,6 +58,7 @@ static class KSailClusterConfigLoader
     config.UpdateConfig("Spec.Project.DistributionConfigPath", context.ParseResult.GetValueForOption(CLIOptions.Project.DistributionConfigPathOption));
     config.UpdateConfig("Spec.Project.Editor", context.ParseResult.GetValueForOption(CLIOptions.Project.EditorOption));
     config.UpdateConfig("Spec.Project.Engine", context.ParseResult.GetValueForOption(CLIOptions.Project.EngineOption));
+    config.UpdateConfig("Spec.Project.KubernetesDirectoryPath", context.ParseResult.GetValueForOption(CLIOptions.Project.KubernetesDirectoryPathOption));
     config.UpdateConfig("Spec.Project.MirrorRegistries", context.ParseResult.GetValueForOption(CLIOptions.Project.MirrorRegistriesOption));
     config.UpdateConfig("Spec.Project.SecretManager", context.ParseResult.GetValueForOption(CLIOptions.Project.SecretManagerOption));
     config.UpdateConfig("Spec.Project.Template", context.ParseResult.GetValueForOption(CLIOptions.Project.TemplateOption));
@@ -70,8 +70,6 @@ static class KSailClusterConfigLoader
     config.UpdateConfig("Spec.SecretManager.SOPS.ShowPrivateKeysInListings", context.ParseResult.GetValueForOption(CLIOptions.SecretManager.SOPS.ShowPrivateKeysInListingsOption));
 
     // Template
-    config.UpdateConfig("Spec.Template.Kustomize.Flows", context.ParseResult.GetValueForOption(CLIOptions.Template.Kustomize.FlowOption));
-    config.UpdateConfig("Spec.Template.Kustomize.Hooks", context.ParseResult.GetValueForOption(CLIOptions.Template.Kustomize.HookOption));
     config.UpdateConfig("Spec.Template.Kustomize.Root", context.ParseResult.GetValueForOption(CLIOptions.Template.Kustomize.RootOption));
 
     // Validation

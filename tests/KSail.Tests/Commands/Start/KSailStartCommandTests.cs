@@ -5,9 +5,7 @@ using KSail.Commands.Start;
 
 namespace KSail.Tests.Commands.Start;
 
-/// <summary>
-/// Tests for the <see cref="KSailStartCommand"/> class.
-/// </summary>
+
 public class KSailStartCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
@@ -15,9 +13,7 @@ public class KSailStartCommandTests : IAsyncLifetime
   /// <inheritdoc/>
   public Task InitializeAsync() => Task.CompletedTask;
 
-  /// <summary>
-  /// Tests that the 'ksail start --help'
-  /// </summary>
+
   [Fact]
   public async Task KSailStartHelp_SucceedsAndPrintsIntroductionAndHelp()
   {

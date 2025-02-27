@@ -61,7 +61,7 @@ class KSailSecretsListCommandHandler(KSailCluster config, ISecretManager<AgeKey>
   static string Obscure(AgeKey key)
   {
     string keyString = key.ToString();
-    keyString = keyString.Replace(keyString[keyString.LastIndexOf('\n')..], "\nAGE-SECRET-KEY-" + new string('*', 59));
+    keyString = keyString.Replace(keyString[keyString.LastIndexOf('\n')..], "\nAGE-SECRET-KEY-" + new string('*', 59), StringComparison.Ordinal);
     return keyString;
   }
 }

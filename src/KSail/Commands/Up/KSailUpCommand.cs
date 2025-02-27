@@ -16,7 +16,7 @@ sealed class KSailUpCommand : Command
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context);
+        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context).ConfigureAwait(false);
         var handler = new KSailUpCommandHandler(config);
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
       }
@@ -40,6 +40,7 @@ sealed class KSailUpCommand : Command
     AddOption(CLIOptions.Project.DistributionConfigPathOption);
     AddOption(CLIOptions.Project.DistributionOption);
     AddOption(CLIOptions.Project.EngineOption);
+    AddOption(CLIOptions.Project.KubernetesDirectoryPathOption);
     AddOption(CLIOptions.Project.MirrorRegistriesOption);
     AddOption(CLIOptions.Project.SecretManagerOption);
     AddOption(CLIOptions.Template.Kustomize.RootOption);

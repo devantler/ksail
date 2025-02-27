@@ -1,16 +1,18 @@
 using Devantler.KubernetesValidator.ClientSide.Schemas;
 using Devantler.KubernetesValidator.ClientSide.YamlSyntax;
+using KSail.Models;
 
 namespace KSail.Commands.Lint.Handlers;
 
-class KSailLintCommandHandler()
+class KSailLintCommandHandler(KSailCluster config)
 {
   readonly YamlSyntaxValidator _yamlSyntaxValidator = new();
   readonly SchemaValidator _schemaValidator = new();
+  readonly KSailCluster _config = config;
 
   internal async Task<bool> HandleAsync(CancellationToken cancellationToken = default)
   {
-    string kubernetesDirectory = Path.Combine(Directory.GetCurrentDirectory(), "k8s");
+    string kubernetesDirectory = Path.Combine(Directory.GetCurrentDirectory(), _config.Spec.Project.KubernetesDirectoryPath);
     if (!Directory.Exists(kubernetesDirectory) || Directory.GetFiles(kubernetesDirectory, "*.yaml", SearchOption.AllDirectories).Length == 0)
     {
       throw new KSailException($"no manifest files found in '{kubernetesDirectory}'.");

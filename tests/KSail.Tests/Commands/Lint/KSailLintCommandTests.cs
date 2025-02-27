@@ -5,15 +5,11 @@ using KSail.Commands.Root;
 
 namespace KSail.Tests.Commands.Lint;
 
-/// <summary>
-/// Tests for the <see cref="KSailLintCommand"/> class.
-/// </summary>
+
 [Collection("KSail.Tests")]
 public class KSailLintCommandTests : IDisposable
 {
-  /// <summary>
-  /// Tests that the 'ksail lint --help'
-  /// </summary>
+
   [Fact]
   public async Task KSailLintHelp_SucceedsAndPrintsIntroductionAndHelp()
   {
@@ -29,9 +25,7 @@ public class KSailLintCommandTests : IDisposable
     _ = await Verify(console.Error.ToString() + console.Out);
   }
 
-  /// <summary>
-  /// Tests that the 'ksail lint' command succeeds when given a valid path.
-  /// </summary>
+
   [Fact]
   public async Task KSailLint_GivenValidPath_Succeeds()
   {
@@ -48,9 +42,7 @@ public class KSailLintCommandTests : IDisposable
     Assert.Equal(0, lintExitCode);
   }
 
-  /// <summary>
-  /// Tests that the 'ksail lint' command skips when given an invalid path or a path with no YAML files.
-  /// </summary>
+
   [Fact]
   public async Task KSailLint_GivenInvalidPathOrNoYaml_ThrowsKSailException()
   {
@@ -65,9 +57,7 @@ public class KSailLintCommandTests : IDisposable
     Assert.Equal(1, lintExitCode);
   }
 
-  /// <summary>
-  /// Tests that the 'ksail lint' command succeeds when given a valid path.
-  /// </summary>
+
   [Fact]
   public async Task KSailLint_GivenInvalidYaml_Fails()
   {
@@ -94,27 +84,35 @@ public class KSailLintCommandTests : IDisposable
   }
 
   /// <inheritdoc/>
-  public void Dispose()
+  protected virtual void Dispose(bool disposing)
   {
-    if (Directory.Exists("k8s"))
+    if (disposing)
     {
-      Directory.Delete("k8s", true);
-    }
-
-    string[] filePaths =
-    [
-      "ksail-config.yaml",
-      "kind-config.yaml",
-      "k3d-config.yaml",
-      ".sops.yaml"
-    ];
-    foreach (string filePath in filePaths)
-    {
-      if (File.Exists(filePath))
+      if (Directory.Exists("k8s"))
       {
-        File.Delete(filePath);
+        Directory.Delete("k8s", true);
+      }
+
+      string[] filePaths =
+      [
+        "ksail-config.yaml",
+        "kind-config.yaml",
+        "k3d-config.yaml",
+        ".sops.yaml"
+      ];
+      foreach (string filePath in filePaths)
+      {
+        if (File.Exists(filePath))
+        {
+          File.Delete(filePath);
+        }
       }
     }
+  }
+
+  public void Dispose()
+  {
+    Dispose(true);
     GC.SuppressFinalize(this);
   }
 }

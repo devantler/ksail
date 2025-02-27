@@ -5,19 +5,15 @@ using KSail.Commands.Up;
 
 namespace KSail.Tests.Commands.Up;
 
-/// <summary>
-/// Tests for the <see cref="KSailUpCommand"/> class.
-/// </summary>
+
 public class KSailUpCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
-  public async Task DisposeAsync() => await Task.CompletedTask;
+  public async Task DisposeAsync() => await Task.CompletedTask.ConfigureAwait(false);
   /// <inheritdoc/>
-  public async Task InitializeAsync() => await Task.CompletedTask;
+  public async Task InitializeAsync() => await Task.CompletedTask.ConfigureAwait(false);
 
-  /// <summary>
-  /// Tests that the 'ksail up --help'
-  /// </summary>
+
   [Fact]
   public async Task KSailUpHelp_SucceedsAndPrintsIntroductionAndHelp()
   {

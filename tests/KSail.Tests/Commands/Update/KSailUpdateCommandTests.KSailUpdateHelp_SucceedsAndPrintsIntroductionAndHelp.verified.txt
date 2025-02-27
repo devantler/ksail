@@ -5,8 +5,9 @@ Usage:
   testhost update [options]
 
 Options:
-  -l, --lint       Lit manifests. [default: True]
-  -r, --reconcile  Reconcile manifests. [default: True]
-  -?, -h, --help   Show help and usage information
+  -kd, --kubernetes-directory <kubernetes-directory>  The path to the kubernetes directory. [default: k8s]
+  -l, --lint                                          Lit manifests. [default: True]
+  -r, --reconcile                                     Reconcile manifests. [default: True]
+  -?, -h, --help                                      Show help and usage information
 
 

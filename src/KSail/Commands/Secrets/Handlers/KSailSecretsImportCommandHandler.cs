@@ -16,7 +16,7 @@ class KSailSecretsImportCommandHandler(KSailCluster config, string key, ISecretM
     string key = _key;
     if (File.Exists(key))
     {
-      key = File.ReadAllText(key);
+      key = await File.ReadAllTextAsync(key, cancellationToken).ConfigureAwait(false);
     }
     var ageKey = new AgeKey(key.Trim());
     _ = await _secretManager.ImportKeyAsync(ageKey, cancellationToken).ConfigureAwait(false);

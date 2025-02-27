@@ -7,18 +7,14 @@ using KSail.Utils;
 
 namespace KSail.Tests.E2E;
 
-/// <summary>
-/// E2E tests for the various distributions.
-/// </summary>
+
 [Collection("KSail.Tests")]
 public class E2ETests : IAsyncLifetime
 {
   /// <inheritdoc/>
   public Task InitializeAsync() => Task.CompletedTask;
 
-  /// <summary>
-  /// Tests that the 'ksail up' command is executed successfully with various configurations.
-  /// </summary>
+
   [Theory]
   [InlineData(["init", "-d", "native"])]
   [InlineData(["init", "--name", "ksail-advanced-native", "--distribution", "native", "--secret-manager", "sops", "--flux-post-build-variables"])]
@@ -59,12 +55,12 @@ public class E2ETests : IAsyncLifetime
     var secretsManager = new SOPSLocalAgeSecretManager();
     if (File.Exists(".sops.yaml"))
     {
-      var sopsConfig = await SopsConfigLoader.LoadAsync();
+      var sopsConfig = await SopsConfigLoader.LoadAsync().ConfigureAwait(false);
       foreach (string? publicKey in sopsConfig.CreationRules.Select(rule => rule.Age))
       {
         try
         {
-          _ = await secretsManager.DeleteKeyAsync(publicKey);
+          _ = await secretsManager.DeleteKeyAsync(publicKey).ConfigureAwait(false);
         }
         catch (Exception)
         {
