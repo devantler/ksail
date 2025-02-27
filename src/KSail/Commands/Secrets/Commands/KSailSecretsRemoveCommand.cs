@@ -18,7 +18,7 @@ sealed class KSailSecretsRemoveCommand : Command
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context);
+        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context).ConfigureAwait(false);
         string publicKey = context.ParseResult.GetValueForArgument(_publicKeyArgument);
         var cancellationToken = context.GetCancellationToken();
         KSailSecretsRemoveCommandHandler handler;

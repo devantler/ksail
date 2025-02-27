@@ -5,6 +5,7 @@ Usage:
   testhost lint [options]
 
 Options:
-  -?, -h, --help  Show help and usage information
+  -kd, --kubernetes-directory <kubernetes-directory>  The path to the kubernetes directory. [default: k8s]
+  -?, -h, --help                                      Show help and usage information
 
 

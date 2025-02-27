@@ -5,19 +5,15 @@ using KSail.Commands.Secrets;
 
 namespace KSail.Tests.Commands.Secrets;
 
-/// <summary>
-/// Tests for the <see cref="KSailSecretsCommand"/> class.
-/// </summary>
+
 public class KSailSecretsCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
-  public async Task DisposeAsync() => await Task.CompletedTask;
+  public async Task DisposeAsync() => await Task.CompletedTask.ConfigureAwait(false);
   /// <inheritdoc/>
-  public async Task InitializeAsync() => await Task.CompletedTask;
+  public async Task InitializeAsync() => await Task.CompletedTask.ConfigureAwait(false);
 
-  /// <summary>
-  /// Tests that the 'ksail up --help'
-  /// </summary>
+
   [Theory]
   [InlineData(["secrets", "--help"])]
   [InlineData(["secrets", "encrypt", "--help"])]

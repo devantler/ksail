@@ -5,9 +5,7 @@ using KSail.Commands.Root;
 
 namespace KSail.Tests.Commands.Down;
 
-/// <summary>
-/// Tests for the <see cref="KSailDownCommand"/> class.
-/// </summary>
+
 public class KSailDownCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
@@ -15,9 +13,7 @@ public class KSailDownCommandTests : IAsyncLifetime
   /// <inheritdoc/>
   public Task InitializeAsync() => Task.CompletedTask;
 
-  /// <summary>
-  /// Tests that the 'ksail down --help'
-  /// </summary>
+
   [Fact]
   public async Task KSailDownHelp_SucceedsAndPrintsIntroductionAndHelp()
   {

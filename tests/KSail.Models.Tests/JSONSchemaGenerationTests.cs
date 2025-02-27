@@ -8,15 +8,9 @@ using System.Text.Json.Serialization.Metadata;
 
 namespace KSail.Models.Tests;
 
-/// <summary>
-/// Tests that a JSONSchema is generate from the <see cref="KSailCluster"/> object
-/// </summary>
-public class KSailClusterJSONSchemaGeneration
+
+public class KSailClusterJSONSchemaGenerationTests
 {
-  /// <summary>
-  /// Tests that a JSONSchema is generated from the <see cref="KSailCluster"/> object.
-  /// </summary>
-  /// <returns></returns>
   [Fact]
   public async Task GenerateJSONSchemaFromKSailCluster_ShouldReturnJSONSchema()
   {

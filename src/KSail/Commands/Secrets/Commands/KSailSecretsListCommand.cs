@@ -18,7 +18,7 @@ sealed class KSailSecretsListCommand : Command
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context);
+        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context).ConfigureAwait(false);
 
         var cancellationToken = context.GetCancellationToken();
         KSailSecretsListCommandHandler handler;

@@ -22,7 +22,7 @@ sealed class KSailSecretsEncryptCommand : Command
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context);
+        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context).ConfigureAwait(false);
         string path = context.ParseResult.GetValueForArgument(_pathArgument);
         string? output = context.ParseResult.GetValueForOption(_outputOption);
         var cancellationToken = context.GetCancellationToken();

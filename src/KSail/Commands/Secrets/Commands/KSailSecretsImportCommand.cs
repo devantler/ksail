@@ -17,7 +17,7 @@ sealed class KSailSecretsImportCommand : Command
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context);
+        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context).ConfigureAwait(false);
         string key = context.ParseResult.GetValueForArgument(_keyArgument);
 
         var cancellationToken = context.GetCancellationToken();

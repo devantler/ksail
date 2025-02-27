@@ -18,7 +18,7 @@ sealed class KSailUpdateCommand : Command
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context);
+        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context).ConfigureAwait(false);
         var handler = new KSailUpdateCommandHandler(config);
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false) ? 0 : 1;
       }
@@ -32,6 +32,7 @@ sealed class KSailUpdateCommand : Command
 
   void AddOptions()
   {
+    AddOption(CLIOptions.Project.KubernetesDirectoryPathOption);
     AddOption(CLIOptions.Validation.LintOnUpdateOption);
     AddOption(CLIOptions.Validation.ReconcileOnUpdateOption);
   }

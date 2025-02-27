@@ -17,7 +17,7 @@ sealed class KSailInitCommand : Command
     {
       try
       {
-        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context);
+        var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context).ConfigureAwait(false);
         var handler = new KSailInitCommandHandler(config);
         Console.WriteLine($"📁 Initializing new cluster '{config.Metadata.Name}' in './' with the '{config.Spec.Project.Template}' template.");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
@@ -33,15 +33,13 @@ sealed class KSailInitCommand : Command
 
   void AddOptions()
   {
-    AddOption(CLIOptions.DeploymentTool.Flux.PostBuildVariablesOption);
     AddOption(CLIOptions.Metadata.NameOption);
     AddOption(CLIOptions.Project.DistributionConfigPathOption);
     AddOption(CLIOptions.Project.DistributionOption);
     AddOption(CLIOptions.Project.EngineOption);
+    AddOption(CLIOptions.Project.KubernetesDirectoryPathOption);
     AddOption(CLIOptions.Project.MirrorRegistriesOption);
     AddOption(CLIOptions.Project.SecretManagerOption);
-    AddOption(CLIOptions.Template.Kustomize.FlowOption);
-    AddOption(CLIOptions.Template.Kustomize.HookOption);
     AddOption(CLIOptions.Template.Kustomize.RootOption);
   }
 }

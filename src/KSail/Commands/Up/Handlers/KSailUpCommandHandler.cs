@@ -25,10 +25,11 @@ class KSailUpCommandHandler
   readonly FluxProvisioner _deploymentTool;
   readonly IKubernetesClusterProvisioner _clusterProvisioner;
   readonly KSailCluster _config;
-  readonly KSailLintCommandHandler _ksailLintCommandHandler = new();
+  readonly KSailLintCommandHandler _ksailLintCommandHandler;
 
   internal KSailUpCommandHandler(KSailCluster config)
   {
+    _ksailLintCommandHandler = new KSailLintCommandHandler(config);
     _engineProvisioner = config.Spec.Project.Engine switch
     {
       KSailEngineType.Docker => new DockerProvisioner(),
@@ -97,7 +98,7 @@ class KSailUpCommandHandler
         Console.WriteLine();
         return true;
       }
-      await Task.Delay(1000, cancellationToken);
+      await Task.Delay(1000, cancellationToken).ConfigureAwait(false);
     }
     Console.WriteLine();
     throw new KSailException($"{_config.Spec.Project.Engine} is not running after multiple attempts.");
@@ -163,11 +164,11 @@ class KSailUpCommandHandler
         Console.WriteLine("🔼 Botstrapping OCI source registry");
         Console.WriteLine($"► connect OCI source registry to 'kind-{config.Metadata.Name}' network");
         var dockerClient = _engineProvisioner.Client;
-        var dockerNetworks = await dockerClient.Networks.ListNetworksAsync(cancellationToken: cancellationToken);
+        var dockerNetworks = await dockerClient.Networks.ListNetworksAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
         var kindNetworks = dockerNetworks.Where(x => x.Name.Contains("kind", StringComparison.OrdinalIgnoreCase));
         foreach (var kindNetwork in kindNetworks)
         {
-          string containerId = await _engineProvisioner.GetContainerIdAsync(config.Spec.DeploymentTool.Flux.Source.Url.Segments.Last(), cancellationToken);
+          string containerId = await _engineProvisioner.GetContainerIdAsync(config.Spec.DeploymentTool.Flux.Source.Url.Segments.Last(), cancellationToken).ConfigureAwait(false);
           await dockerClient.Networks.ConnectNetworkAsync(kindNetwork.ID, new NetworkConnectParameters
           {
             Container = containerId
@@ -206,7 +207,7 @@ class KSailUpCommandHandler
             {
               string containerName = node;
               Console.WriteLine($"► adding '{mirrorRegistry.Name}' as containerd mirror registry to '{node}'");
-              await AddMirrorRegistryToContainerd(containerName, mirrorRegistry, cancellationToken);
+              await AddMirrorRegistryToContainerd(containerName, mirrorRegistry, cancellationToken).ConfigureAwait(false);
             }
             Console.WriteLine($"✔ '{node}' containerd mirror registries bootstrapped.");
           }
@@ -214,11 +215,11 @@ class KSailUpCommandHandler
           {
             Console.WriteLine($"► connect '{mirrorRegistry.Name}' to 'kind-{config.Metadata.Name}' network");
             var dockerClient = _engineProvisioner.Client;
-            var dockerNetworks = await dockerClient.Networks.ListNetworksAsync(cancellationToken: cancellationToken);
+            var dockerNetworks = await dockerClient.Networks.ListNetworksAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
             var kindNetworks = dockerNetworks.Where(x => x.Name.Contains("kind", StringComparison.OrdinalIgnoreCase));
             foreach (var kindNetwork in kindNetworks)
             {
-              string containerId = await _engineProvisioner.GetContainerIdAsync(mirrorRegistry.Name, cancellationToken);
+              string containerId = await _engineProvisioner.GetContainerIdAsync(mirrorRegistry.Name, cancellationToken).ConfigureAwait(false);
               await dockerClient.Networks.ConnectNetworkAsync(kindNetwork.ID, new NetworkConnectParameters
               {
                 Container = containerId
@@ -239,7 +240,7 @@ class KSailUpCommandHandler
     {
       // https://github.com/containerd/containerd/blob/main/docs/hosts.md
       string registryDir = $"/etc/containerd/certs.d/{mirrorRegistry.Name}";
-      await _engineProvisioner.CreateDirectoryInContainerAsync(containerName, registryDir, true, cancellationToken);
+      await _engineProvisioner.CreateDirectoryInContainerAsync(containerName, registryDir, true, cancellationToken).ConfigureAwait(false);
       string host = $"{mirrorRegistry.Name}:5000";
       string hostsToml = $"""
       server = "{mirrorRegistry.Proxy.Url}"
@@ -248,7 +249,7 @@ class KSailUpCommandHandler
         capabilities = ["pull", "resolve"]
         skip_verify = true
       """;
-      await _engineProvisioner.CreateFileInContainerAsync(containerName, $"{registryDir}/hosts.toml", hostsToml, cancellationToken);
+      await _engineProvisioner.CreateFileInContainerAsync(containerName, $"{registryDir}/hosts.toml", hostsToml, cancellationToken).ConfigureAwait(false);
     }
   }
 
@@ -263,10 +264,10 @@ class KSailUpCommandHandler
     string host = "localhost";
     string absolutePath = config.Spec.DeploymentTool.Flux.Source.Url.AbsolutePath;
     var sourceUrlFromHost = new Uri($"{scheme}://{host}:{config.Spec.LocalRegistry.HostPort}{absolutePath}");
-    await _deploymentTool.PushManifestsAsync(sourceUrlFromHost, "k8s", cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _deploymentTool.PushManifestsAsync(sourceUrlFromHost, config.Spec.Project.KubernetesDirectoryPath, cancellationToken: cancellationToken).ConfigureAwait(false);
     await _deploymentTool.BootstrapAsync(
       config.Spec.DeploymentTool.Flux.Source.Url,
-      config.Spec.Template.Kustomize.Root.Replace("k8s/", "", StringComparison.OrdinalIgnoreCase),
+      config.Spec.Template.Kustomize.Root.Replace($"{config.Spec.Project.KubernetesDirectoryPath}/", "", StringComparison.OrdinalIgnoreCase),
       true,
       cancellationToken
     ).ConfigureAwait(false);
@@ -312,7 +313,7 @@ class KSailUpCommandHandler
   // TODO: Move to generic method on KubernetesResourceProvisioner
   static async Task CreateFluxSystemNamespace(KubernetesResourceProvisioner resourceProvisioner, CancellationToken cancellationToken)
   {
-    var namespaceList = await resourceProvisioner.ListNamespaceAsync(cancellationToken: cancellationToken);
+    var namespaceList = await resourceProvisioner.ListNamespaceAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
     bool namespaceExists = namespaceList.Items.Any(x => x.Metadata.Name == "flux-system");
     if (namespaceExists)
     {

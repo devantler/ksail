@@ -5,9 +5,7 @@ using KSail.Commands.Update;
 
 namespace KSail.Tests.Commands.Update;
 
-/// <summary>
-/// Tests for the <see cref="KSailUpdateCommand"/> class.
-/// </summary>
+
 public class KSailUpdateCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
@@ -15,9 +13,7 @@ public class KSailUpdateCommandTests : IAsyncLifetime
   /// <inheritdoc/>
   public Task InitializeAsync() => Task.CompletedTask;
 
-  /// <summary>
-  /// Tests that the 'ksail update --help'
-  /// </summary>
+
   [Fact]
   public async Task KSailUpdateHelp_SucceedsAndPrintsIntroductionAndHelp()
   {

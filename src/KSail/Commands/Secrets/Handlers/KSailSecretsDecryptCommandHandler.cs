@@ -15,11 +15,11 @@ class KSailSecretsDecryptCommandHandler(KSailCluster config, string path, string
     string encrypted = await _secretManager.DecryptAsync(_path, cancellationToken).ConfigureAwait(false);
     if (config.Spec.SecretManager.SOPS.InPlace)
     {
-      await File.WriteAllTextAsync(_path, encrypted, cancellationToken);
+      await File.WriteAllTextAsync(_path, encrypted, cancellationToken).ConfigureAwait(false);
     }
     if (!string.IsNullOrEmpty(_output))
     {
-      await File.WriteAllTextAsync(_output, encrypted, cancellationToken);
+      await File.WriteAllTextAsync(_output, encrypted, cancellationToken).ConfigureAwait(false);
     }
 
     return 0;

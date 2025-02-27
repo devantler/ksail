@@ -6,16 +6,12 @@ using KSail.Utils;
 
 namespace KSail;
 
-/// <summary>
-/// Starts the KSail CLI.
-/// </summary>
-public class Startup
+
+internal class Startup
 {
   readonly ExceptionHandler _exceptionHandler = new();
   readonly KSailRootCommand _ksailCommand = new(new SystemConsole());
-  /// <summary>
-  /// Runs the KSail CLI asynchronously.
-  /// </summary>
+
   public async Task<int> RunAsync(string[] args)
   {
     if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("WINDOWS_TEST")))
@@ -45,7 +41,7 @@ public class Startup
       File.SetUnixFileMode(kustomizeBinary, UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute);
       File.SetUnixFileMode(sopsBinary, UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute);
 
-      int exitCode = await _ksailCommand.InvokeAsync(args);
+      int exitCode = await _ksailCommand.InvokeAsync(args).ConfigureAwait(false);
       return exitCode;
     }
   }

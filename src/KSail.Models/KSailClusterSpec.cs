@@ -15,68 +15,38 @@ using YamlDotNet.Serialization;
 
 namespace KSail.Models;
 
-/// <summary>
-/// The KSail cluster specification.
-/// </summary>
+
 public class KSailClusterSpec
 {
-  /// <summary>
-  /// Options for connecting to the KSail cluster.
-  /// </summary>
+
   [Description("The options for connecting to the KSail cluster.")]
   public KSailConnection Connection { get; set; } = new();
 
-  /// <summary>
-  /// Options for the KSail project.
-  /// </summary>
   [Description("The options for the KSail project.")]
   public KSailProject Project { get; set; } = new();
 
-  /// <summary>
-  /// Options for the Flux deployment tool.
-  /// </summary>
   [Description("The options for the deployment tool.")]
   public KSailDeploymentTool DeploymentTool { get; set; } = new();
 
-  /// <summary>
-  /// Options for the distribution.
-  /// </summary>
+  [Description("The options for the distribution.")]
   public KSailDistribution Distribution { get; set; } = new();
 
-  /// <summary>
-  /// Options for the template.
-  /// </summary>
   [Description("The options for the template.")]
   public KSailTemplate Template { get; set; } = new();
 
-  /// <summary>
-  /// Options for the Secret Manager.
-  /// </summary>
   [Description("The options for the Secret Manager.")]
   public KSailSecretManager SecretManager { get; set; } = new();
 
-  /// <summary>
-  /// Options for the CNI.
-  /// </summary>
   [Description("The options for the CNI.")]
   [YamlMember(Alias = "cni")]
   public KSailCNIType CNI { get; set; } = new();
 
-  /// <summary>
-  /// Options for the Ingress Controller.
-  /// </summary>
   [Description("The options for the Ingress Controller.")]
   public KSailIngressController IngressController { get; set; } = new();
 
-  /// <summary>
-  /// Options for the Waypoint Controller.
-  /// </summary>
   [Description("The options for the Waypoint Controller.")]
   public KSailWaypointController WaypointController { get; set; } = new();
 
-  /// <summary>
-  /// The local registry for storing deployment artifacts.
-  /// </summary>
   [Description("The local registry for storing deployment artifacts.")]
   public KSailLocalRegistry LocalRegistry { get; set; } = new KSailLocalRegistry
   {
@@ -84,9 +54,6 @@ public class KSailClusterSpec
     HostPort = 5555
   };
 
-  /// <summary>
-  /// The mirror registries to create for the KSail cluster.
-  /// </summary>
   [Description("The mirror registries to create for the KSail cluster.")]
   public IEnumerable<KSailMirrorRegistry> MirrorRegistries { get; set; } = [
     new KSailMirrorRegistry { Name = "registry.k8s.io-proxy", HostPort = 5556, Proxy = new KSailMirrorRegistryProxy { Url = new Uri("https://registry.k8s.io") } },
@@ -97,21 +64,11 @@ public class KSailClusterSpec
     new KSailMirrorRegistry { Name = "quay.io-proxy", HostPort = 5561, Proxy = new KSailMirrorRegistryProxy { Url = new Uri("https://quay.io") } },
   ];
 
-  /// <summary>
-  /// Options for validating the KSail cluster.
-  /// </summary>
   [Description("Options for validating the KSail cluster.")]
   public KSailValidation Validation { get; set; } = new();
 
-  /// <summary>
-  /// Initializes a new instance of the <see cref="KSailClusterSpec"/> class.
-  /// </summary>
   public KSailClusterSpec() => SetOCISourceUri();
 
-  /// <summary>
-  /// Initializes a new instance of the <see cref="KSailClusterSpec"/> class.
-  /// </summary>
-  /// <param name="name"></param>
   public KSailClusterSpec(string name)
   {
     SetOCISourceUri();
@@ -125,11 +82,6 @@ public class KSailClusterSpec
     };
   }
 
-  /// <summary>
-  /// Initializes a new instance of the <see cref="KSailClusterSpec"/> class with the specified distribution.
-  /// </summary>
-  /// <param name="name"></param>
-  /// <param name="distribution"></param>
   public KSailClusterSpec(string name, KSailKubernetesDistributionType distribution) : this(name)
   {
     SetOCISourceUri(distribution);

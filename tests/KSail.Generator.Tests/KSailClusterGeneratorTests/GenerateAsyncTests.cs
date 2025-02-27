@@ -4,15 +4,11 @@ using KSail.Models.Project.Enums;
 
 namespace KSail.Generator.Tests.KSailClusterGeneratorTests;
 
-/// <summary>
-/// Tests for <see cref="KSailClusterGenerator"/>.
-/// </summary>
+
 public partial class GenerateAsyncTests
 {
   readonly KSailClusterGenerator _generator = new();
-  /// <summary>
-  /// Tests that <see cref="KSailClusterGenerator"/> generates a valid KSail Cluster configuration with all properties set.
-  /// </summary>
+
   [Fact]
   public async Task GenerateAsync_WithPropertiesSet_ShouldGenerateAValidKSailClusterFile()
   {
@@ -34,9 +30,7 @@ public partial class GenerateAsyncTests
     File.Delete(outputPath);
   }
 
-  /// <summary>
-  /// Tests that <see cref="KSailClusterGenerator"/> generates a valid KSail cluster configuration with minimal properties set.
-  /// </summary>
+
   /// <returns></returns>
   [Fact]
   public async Task GenerateAsync_WithNoPropertiesSet_ShouldGenerateAValidKSailClusterFile()

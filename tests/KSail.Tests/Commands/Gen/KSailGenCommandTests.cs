@@ -7,9 +7,7 @@ using KSail.Commands.Root;
 
 namespace KSail.Tests.Commands.Gen;
 
-/// <summary>
-/// Tests for the <see cref="KSailGenCommand"/> class.
-/// </summary>
+
 [ExcludeFromCodeCoverage]
 public partial class KSailGenCommandTests : IAsyncLifetime
 {
@@ -18,9 +16,7 @@ public partial class KSailGenCommandTests : IAsyncLifetime
   /// <inheritdoc/>
   public Task InitializeAsync() => Task.CompletedTask;
 
-  /// <summary>
-  /// Tests that the 'ksail gen' command succeeds and returns the help text.
-  /// </summary>
+
   [Theory]
   [MemberData(nameof(KSailGenCommandTestsTheoryData.HelpTheoryData), MemberType = typeof(KSailGenCommandTestsTheoryData))]
   public async Task KSailGen_SucceedsAndPrintsHelp(string[] command)
@@ -37,9 +33,7 @@ public partial class KSailGenCommandTests : IAsyncLifetime
     _ = await Verify(console.Error.ToString() + console.Out).UseFileName($"ksail {string.Join(" ", command)}");
   }
 
-  /// <summary>
-  /// Tests that the 'ksail gen' command generates a resource.
-  /// </summary>
+
   /// <returns></returns>
   [Theory]
   [MemberData(nameof(KSailGenCommandTestsTheoryData.GenerateCertManagerResourceTheoryData), MemberType = typeof(KSailGenCommandTestsTheoryData))]

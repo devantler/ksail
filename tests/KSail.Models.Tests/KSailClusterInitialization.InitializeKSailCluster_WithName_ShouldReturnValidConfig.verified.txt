@@ -14,20 +14,20 @@
       ConfigPath: ksail-config.yaml,
       DistributionConfigPath: kind-config.yaml,
       Template: Kustomize,
-      Engine: Docker,
       Distribution: Native,
       DeploymentTool: Flux,
       SecretManager: None,
       CNI: Default,
       Editor: Nano,
+      Engine: Docker,
+      KubernetesDirectoryPath: k8s,
       MirrorRegistries: true
     },
     DeploymentTool: {
       Flux: {
         Source: {
           Url: oci://testhost:5555/ksail-registry
-        },
-        PostBuildVariables: false
+        }
       }
     },
     Distribution: {
@@ -35,13 +35,7 @@
     },
     Template: {
       Kustomize: {
-        Root: k8s/clusters/my-cluster/flux-system,
-        Flows: [
-          apps,
-          infrastructure/configs,
-          infrastructure/controllers
-        ],
-        Hooks: []
+        Root: k8s/clusters/my-cluster/flux-system
       }
     },
     SecretManager: {

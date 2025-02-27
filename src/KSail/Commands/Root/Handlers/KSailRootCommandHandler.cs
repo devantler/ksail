@@ -2,15 +2,11 @@ using System.CommandLine;
 
 namespace KSail.Commands.Root.Handlers;
 
-/// <summary>
-/// Handles the KSail root command.
-/// </summary>
+
 class KSailRootCommandHandler
 {
-  /// <summary>
-  /// Handles the KSail root command.
-  /// </summary>
-  /// <param name="console"></param>
+
+
   internal static bool Handle(IConsole console)
   {
     PrintIntroduction(console);
@@ -43,30 +39,30 @@ class KSailRootCommandHandler
     Console.ForegroundColor = ConsoleColor.Blue;
     console.WriteLine(lines[4]);
     Console.ForegroundColor = ConsoleColor.DarkGreen;
-    console.Write(lines[5][..(lines[5].IndexOf("/__") + 4)]);
+    console.Write(lines[5][..(lines[5].IndexOf("/__", StringComparison.Ordinal) + 4)]);
     Console.ForegroundColor = ConsoleColor.DarkBlue;
-    console.WriteLine(lines[5][(lines[5].IndexOf("/__") + 4)..]);
+    console.WriteLine(lines[5][(lines[5].IndexOf("/__", StringComparison.Ordinal) + 4)..]);
 
 
     Console.ForegroundColor = ConsoleColor.DarkGreen;
-    console.Write(lines[6][..(lines[6].IndexOf('|') + 1)]);
+    console.Write(lines[6][..(lines[6].IndexOf('|', StringComparison.Ordinal) + 1)]);
     Console.ForegroundColor = ConsoleColor.DarkCyan;
-    console.Write(lines[6][(lines[6].IndexOf('|') + 1)..(lines[6].IndexOf("_|_") + 1)]);
+    console.Write(lines[6][(lines[6].IndexOf('|', StringComparison.Ordinal) + 1)..(lines[6].IndexOf("_|_", StringComparison.Ordinal) + 1)]);
     Console.ForegroundColor = ConsoleColor.DarkBlue;
-    console.Write(lines[6][(lines[6].IndexOf("_|_") + 1)..(lines[6].IndexOf("_|_") + 2)]);
+    console.Write(lines[6][(lines[6].IndexOf("_|_", StringComparison.Ordinal) + 1)..(lines[6].IndexOf("_|_", StringComparison.Ordinal) + 2)]);
     Console.ForegroundColor = ConsoleColor.DarkCyan;
-    console.WriteLine(lines[6][(lines[6].IndexOf("_|_") + 2)..]);
+    console.WriteLine(lines[6][(lines[6].IndexOf("_|_", StringComparison.Ordinal) + 2)..]);
 
     Console.ForegroundColor = ConsoleColor.DarkGreen;
-    console.Write(lines[7][..lines[7].IndexOf(',')]);
+    console.Write(lines[7][..lines[7].IndexOf(',', StringComparison.Ordinal)]);
     Console.ForegroundColor = ConsoleColor.DarkCyan;
-    console.WriteLine(lines[7][lines[7].IndexOf(',')..]);
+    console.WriteLine(lines[7][lines[7].IndexOf(',', StringComparison.Ordinal)..]);
 
 
     Console.ForegroundColor = ConsoleColor.DarkGreen;
-    console.Write(lines[8][..lines[8].IndexOf("|  ^")]);
+    console.Write(lines[8][..lines[8].IndexOf("|  ^", StringComparison.Ordinal)]);
     Console.ForegroundColor = ConsoleColor.DarkCyan;
-    console.WriteLine(lines[8][lines[8].IndexOf("|  ^")..]);
+    console.WriteLine(lines[8][lines[8].IndexOf("|  ^", StringComparison.Ordinal)..]);
 
     Console.ForegroundColor = ConsoleColor.DarkBlue;
     console.WriteLine(lines[9]);

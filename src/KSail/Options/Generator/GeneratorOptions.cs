@@ -1,9 +1,7 @@
 namespace KSail.Options.Generator;
 
-/// <summary>
-/// Options for code generation.
-/// </summary>
-public class GeneratorOptions()
+
+internal class GeneratorOptions()
 {
 }
 

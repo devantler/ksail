@@ -4,10 +4,8 @@ using KSail.Models.Project.Enums;
 
 namespace KSail.Options.Project;
 
-/// <summary>
-/// The distribution to use for the cluster.
-/// </summary>
-public class ProjectDistributionOption(KSailCluster config)
+
+internal class ProjectDistributionOption(KSailCluster config)
  : Option<KSailKubernetesDistributionType>(
     ["-d", "--distribution"],
     $"The distribution to use for the cluster. [default: {config.Spec.Project.Distribution}]"

@@ -12,28 +12,23 @@ spec:
     configPath: ksail-config.yaml
     distributionConfigPath: kind-config.yaml
     template: Kustomize
-    engine: Docker
     distribution: Native
     deploymentTool: Flux
     secretManager: None
     cni: Default
     editor: Nano
+    engine: Docker
+    kubernetesDirectoryPath: k8s
     mirrorRegistries: true
   deploymentTool:
     flux:
       source:
         url: <url>
-      postBuildVariables: false
   distribution:
     showAllClustersInListings: false
   template:
     kustomize:
       root: k8s/clusters/ksail-default/flux-system
-      flows:
-      - apps
-      - infrastructure/configs
-      - infrastructure/controllers
-      hooks: []
   secretManager:
     sops:
       inPlace: false

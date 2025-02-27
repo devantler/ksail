@@ -14,7 +14,7 @@ sealed class KSailStopCommand : Command
     AddOptions();
     this.SetHandler(async (context) =>
     {
-      var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context);
+      var config = await KSailClusterConfigLoader.LoadWithoptionsAsync(context).ConfigureAwait(false);
 
       var handler = new KSailStopCommandHandler(config);
       try

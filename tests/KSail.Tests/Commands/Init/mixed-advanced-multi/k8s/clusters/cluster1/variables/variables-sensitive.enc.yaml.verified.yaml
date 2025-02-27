@@ -1,7 +1,0 @@
-﻿---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: variables-clusters-cluster1-sensitive
-  namespace: flux-system
-stringData: {}

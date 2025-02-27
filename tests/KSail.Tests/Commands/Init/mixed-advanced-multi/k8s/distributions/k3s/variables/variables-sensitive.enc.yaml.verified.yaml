@@ -1,7 +1,0 @@
-﻿---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: variables-distributions-k3s-sensitive
-  namespace: flux-system
-stringData: {}

@@ -1,13 +1,10 @@
 using System.CommandLine;
 using System.CommandLine.IO;
 using KSail.Commands.Root;
-using KSail.Commands.Stop;
 
 namespace KSail.Tests.Commands.Stop;
 
-/// <summary>
-/// Tests for the <see cref="KSailStopCommand"/> class.
-/// </summary>
+
 public class KSailStopCommandTests : IAsyncLifetime
 {
   /// <inheritdoc/>
@@ -15,9 +12,7 @@ public class KSailStopCommandTests : IAsyncLifetime
   /// <inheritdoc/>
   public Task InitializeAsync() => Task.CompletedTask;
 
-  /// <summary>
-  /// Tests that the 'ksail stop --help'
-  /// </summary>
+
   [Fact]
   public async Task KSailStopHelp_SucceedsAndPrintsIntroductionAndHelp()
   {
