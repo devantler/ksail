@@ -4,7 +4,7 @@ using KSail.Models.Project.Enums;
 namespace KSail.Models.Tests;
 
 
-public class KSailClusterInitialization
+public class KSailClusterInitializationTests
 {
 
   [Fact]
