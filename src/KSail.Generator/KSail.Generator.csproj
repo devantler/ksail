@@ -7,11 +7,11 @@
     <AnalysisMode>All</AnalysisMode>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
+    <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Devantler.KubernetesGenerator.Native" Version="1.5.1" />
+    <PackageReference Include="Devantler.KubernetesGenerator.Core" Version="1.5.2" />
   </ItemGroup>
 
   <ItemGroup>

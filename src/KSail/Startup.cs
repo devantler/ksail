@@ -7,7 +7,7 @@ using KSail.Utils;
 namespace KSail;
 
 
-internal class Startup
+class Startup
 {
   readonly ExceptionHandler _exceptionHandler = new();
   readonly KSailRootCommand _ksailCommand = new(new SystemConsole());
