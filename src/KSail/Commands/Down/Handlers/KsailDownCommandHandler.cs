@@ -42,7 +42,7 @@ class KSailDownCommandHandler
     {
       case KSailDeploymentToolType.Flux:
         Console.WriteLine("► Deleting OCI source registry");
-        string containerName = _config.Spec.DeploymentTool.Flux.Source.Url.Segments.Last();
+        string containerName = _config.Spec.LocalRegistry.Name;
         bool ksailRegistryExists = await _engineProvisioner.CheckContainerExistsAsync(containerName, cancellationToken).ConfigureAwait(false);
         if (ksailRegistryExists)
         {
