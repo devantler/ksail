@@ -56,7 +56,7 @@ class KSailDownCommandHandler
     if (_config.Spec.Project.MirrorRegistries)
     {
       Console.WriteLine("► Deleting mirror registries");
-      foreach (var mirrorRegistry in _config.Spec.MirrorRegistries)
+      var deleteTasks = _config.Spec.MirrorRegistries.Select(async mirrorRegistry =>
       {
         bool mirrorRegistryExists = await _engineProvisioner.CheckContainerExistsAsync(mirrorRegistry.Name, cancellationToken).ConfigureAwait(false);
         if (mirrorRegistryExists)
@@ -64,7 +64,8 @@ class KSailDownCommandHandler
           await _engineProvisioner.DeleteRegistryAsync(mirrorRegistry.Name, cancellationToken).ConfigureAwait(false);
           Console.WriteLine($"✓ '{mirrorRegistry.Name}' deleted.");
         }
-      }
+      });
+      await Task.WhenAll(deleteTasks).ConfigureAwait(false);
     }
   }
 }

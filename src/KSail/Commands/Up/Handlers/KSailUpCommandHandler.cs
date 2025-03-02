@@ -126,12 +126,14 @@ class KSailUpCommandHandler
     if (config.Spec.Project.MirrorRegistries)
     {
       Console.WriteLine("🧮 Creating mirror registries");
-      foreach (var mirrorRegistry in config.Spec.MirrorRegistries)
+      var tasks = config.Spec.MirrorRegistries.Select(async mirrorRegistry =>
       {
         Console.WriteLine($"► creating mirror registry '{mirrorRegistry.Name}' for '{mirrorRegistry.Proxy?.Url}'");
         await _engineProvisioner
          .CreateRegistryAsync(mirrorRegistry.Name, mirrorRegistry.HostPort, mirrorRegistry.Proxy?.Url, cancellationToken).ConfigureAwait(false);
-      }
+      });
+
+      await Task.WhenAll(tasks).ConfigureAwait(false);
       Console.WriteLine("✔ mirror registries created");
       Console.WriteLine();
     }
