@@ -168,11 +168,12 @@ class KSailUpCommandHandler
         var kindNetworks = dockerNetworks.Where(x => x.Name.Contains("kind", StringComparison.OrdinalIgnoreCase));
         foreach (var kindNetwork in kindNetworks)
         {
-          string containerId = await _engineProvisioner.GetContainerIdAsync(config.Spec.DeploymentTool.Flux.Source.Url.Segments.Last(), cancellationToken).ConfigureAwait(false);
-          if (kindNetwork.Containers.Any(x => x == containerId))
+          string containerName = config.Spec.DeploymentTool.Flux.Source.Url.Segments.Last();
+          if (kindNetwork.Containers.Values.Any(x => x.Name == containerName))
           {
             continue;
           }
+          string containerId = await _engineProvisioner.GetContainerIdAsync(containerName, cancellationToken).ConfigureAwait(false);
           await dockerClient.Networks.ConnectNetworkAsync(kindNetwork.ID, new NetworkConnectParameters
           {
             Container = containerId
