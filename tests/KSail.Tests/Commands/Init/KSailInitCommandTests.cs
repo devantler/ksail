@@ -2,7 +2,6 @@ using System.CommandLine;
 using System.CommandLine.IO;
 using System.Text.RegularExpressions;
 using Devantler.SecretManager.SOPS.LocalAge;
-using KSail.Commands.Init;
 using KSail.Commands.Root;
 using KSail.Utils;
 
