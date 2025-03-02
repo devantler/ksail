@@ -169,7 +169,6 @@ class KSailUpCommandHandler
         foreach (var kindNetwork in kindNetworks)
         {
           string containerId = await _engineProvisioner.GetContainerIdAsync(config.Spec.DeploymentTool.Flux.Source.Url.Segments.Last(), cancellationToken).ConfigureAwait(false);
-          // check if container is already connected to network
           if (kindNetwork.Containers.Any(x => x == containerId))
           {
             continue;
