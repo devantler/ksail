@@ -126,12 +126,14 @@ class KSailUpCommandHandler
     if (config.Spec.Project.MirrorRegistries)
     {
       Console.WriteLine("🧮 Creating mirror registries");
-      foreach (var mirrorRegistry in config.Spec.MirrorRegistries)
+      var tasks = config.Spec.MirrorRegistries.Select(async mirrorRegistry =>
       {
         Console.WriteLine($"► creating mirror registry '{mirrorRegistry.Name}' for '{mirrorRegistry.Proxy?.Url}'");
         await _engineProvisioner
          .CreateRegistryAsync(mirrorRegistry.Name, mirrorRegistry.HostPort, mirrorRegistry.Proxy?.Url, cancellationToken).ConfigureAwait(false);
-      }
+      });
+
+      await Task.WhenAll(tasks).ConfigureAwait(false);
       Console.WriteLine("✔ mirror registries created");
       Console.WriteLine();
     }
@@ -168,7 +170,12 @@ class KSailUpCommandHandler
         var kindNetworks = dockerNetworks.Where(x => x.Name.Contains("kind", StringComparison.OrdinalIgnoreCase));
         foreach (var kindNetwork in kindNetworks)
         {
-          string containerId = await _engineProvisioner.GetContainerIdAsync(config.Spec.DeploymentTool.Flux.Source.Url.Segments.Last(), cancellationToken).ConfigureAwait(false);
+          string containerName = config.Spec.DeploymentTool.Flux.Source.Url.Segments.Last();
+          if (kindNetwork.Containers.Values.Any(x => x.Name == containerName))
+          {
+            continue;
+          }
+          string containerId = await _engineProvisioner.GetContainerIdAsync(containerName, cancellationToken).ConfigureAwait(false);
           await dockerClient.Networks.ConnectNetworkAsync(kindNetwork.ID, new NetworkConnectParameters
           {
             Container = containerId
@@ -264,10 +271,12 @@ class KSailUpCommandHandler
     string host = "localhost";
     string absolutePath = config.Spec.DeploymentTool.Flux.Source.Url.AbsolutePath;
     var sourceUrlFromHost = new Uri($"{scheme}://{host}:{config.Spec.LocalRegistry.HostPort}{absolutePath}");
-    await _deploymentTool.PushManifestsAsync(sourceUrlFromHost, config.Spec.Project.KubernetesDirectoryPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+    string kubernetesDirectory = config.Spec.Project.KustomizationPath.TrimStart('.', '/').Split('/').First();
+    await _deploymentTool.PushManifestsAsync(sourceUrlFromHost, kubernetesDirectory, cancellationToken: cancellationToken).ConfigureAwait(false);
+    string ociKustomizationPath = config.Spec.Project.KustomizationPath[kubernetesDirectory.Length..].TrimStart('/');
     await _deploymentTool.BootstrapAsync(
       config.Spec.DeploymentTool.Flux.Source.Url,
-      config.Spec.Template.Kustomize.Root.Replace($"{config.Spec.Project.KubernetesDirectoryPath}/", "", StringComparison.OrdinalIgnoreCase),
+      ociKustomizationPath,
       true,
       cancellationToken
     ).ConfigureAwait(false);
