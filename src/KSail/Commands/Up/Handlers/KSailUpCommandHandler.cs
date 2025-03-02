@@ -273,9 +273,7 @@ class KSailUpCommandHandler
       .Replace("./", string.Empty, StringComparison.OrdinalIgnoreCase)
       .Split('/', StringSplitOptions.RemoveEmptyEntries).First();
     await _deploymentTool.PushManifestsAsync(sourceUrlFromHost, kubernetesDirectory, cancellationToken: cancellationToken).ConfigureAwait(false);
-    string ociKustomizationPath = config.Spec.Project.KustomizationPath
-      .Replace(kubernetesDirectory, string.Empty, StringComparison.OrdinalIgnoreCase)
-      .Replace("//", "/", StringComparison.OrdinalIgnoreCase);
+    string ociKustomizationPath = config.Spec.Project.KustomizationPath[kubernetesDirectory.Length..].TrimStart('/');
     await _deploymentTool.BootstrapAsync(
       config.Spec.DeploymentTool.Flux.Source.Url,
       ociKustomizationPath,
