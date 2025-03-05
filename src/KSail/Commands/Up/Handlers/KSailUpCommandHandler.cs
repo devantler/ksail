@@ -290,7 +290,7 @@ class KSailUpCommandHandler
     switch (config.Spec.Project.CNI)
     {
       case KSailCNIType.Cilium:
-        Console.WriteLine("🔼 Bootstrapping Cilium CNI");
+        Console.WriteLine("🐝 Installing Cilium CNI");
         await _cniProvisioner.InstallAsync(config.Spec.Connection.Context, cancellationToken).ConfigureAwait(false);
         Console.WriteLine("✔ Cilium CNI installed");
         Console.WriteLine();
