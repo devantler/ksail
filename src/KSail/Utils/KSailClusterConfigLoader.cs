@@ -42,6 +42,9 @@ static class KSailClusterConfigLoader
     // Distribution
     config.UpdateConfig("Spec.Distribution.ShowAllClustersInListings", context.ParseResult.GetValueForOption(CLIOptions.Distribution.ShowAllClustersInListings));
 
+    // Generator
+    config.UpdateConfig(c => c.Spec.Generator.Overwrite, context.ParseResult.GetValueForOption(CLIOptions.Generator.OverwriteOption));
+
     // IngressController
     // TODO: Implement IngressController CLIOptions
 

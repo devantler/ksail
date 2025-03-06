@@ -2,6 +2,7 @@ using System.ComponentModel;
 using KSail.Models.Connection;
 using KSail.Models.DeploymentTool;
 using KSail.Models.Distribution;
+using KSail.Models.Generator;
 using KSail.Models.IngressController;
 using KSail.Models.LocalRegistry;
 using KSail.Models.MirrorRegistry;
@@ -49,6 +50,9 @@ public class KSailClusterSpec
     Name = "ksail-registry",
     HostPort = 5555
   };
+
+  [Description("The options for the generator.")]
+  public KSailGenerator Generator { get; set; } = new();
 
   [Description("The mirror registries to create for the KSail cluster.")]
   public IEnumerable<KSailMirrorRegistry> MirrorRegistries { get; set; } = [
