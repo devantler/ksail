@@ -30,7 +30,7 @@ spec:
       inPlace: false
       showAllKeysInListings: false
       showPrivateKeysInListings: false
-  cni: Default
+  cni: {}
   ingressController: {}
   waypointController: {}
   localRegistry:
