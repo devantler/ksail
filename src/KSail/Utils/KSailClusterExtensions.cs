@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using KSail.Models;
 
 namespace KSail.Utils;
@@ -5,18 +6,27 @@ namespace KSail.Utils;
 
 static class KSailClusterExtensions
 {
-  public static void UpdateConfig<T>(this KSailCluster config, string propertyPath, T value)
+  public static void UpdateConfig<T>(this KSailCluster config, Expression<Func<KSailCluster, T>> propertyExpression, T value)
   {
-    string[] properties = propertyPath.Split('.');
+    var memberExpression = propertyExpression.Body as MemberExpression ?? throw new ArgumentException("Expression must be a member expression");
+    var propertyPath = new Stack<string>();
+
+    while (memberExpression != null)
+    {
+      propertyPath.Push(memberExpression.Member.Name);
+      memberExpression = memberExpression.Expression as MemberExpression;
+    }
+
     object? currentObject = config;
     object? defaultObject = new KSailCluster();
 
-    for (int i = 0; i < properties.Length; i++)
+    while (propertyPath.Count > 0)
     {
-      string propertyName = properties[i];
+      string propertyName = propertyPath.Pop();
       var property = (currentObject?.GetType().GetProperty(propertyName)) ?? throw new ArgumentException($"Property '{propertyName}' not found on type '{currentObject?.GetType().FullName}'.");
       var defaultProperty = (defaultObject?.GetType().GetProperty(propertyName)) ?? throw new ArgumentException($"Property '{propertyName}' not found on type '{defaultObject?.GetType().FullName}'.");
-      if (i == properties.Length - 1)
+
+      if (propertyPath.Count == 0)
       {
         // If it's the last property in the path, set the value
         object? currentValue = property.GetValue(currentObject);
