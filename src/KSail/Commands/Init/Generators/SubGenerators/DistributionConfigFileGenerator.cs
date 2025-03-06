@@ -103,7 +103,10 @@ class DistributionConfigFileGenerator
           [
             new K3dOptionsK3sExtraArg
             {
-              Arg = "--flannel-backend=none"
+              Arg = "--flannel-backend=none",
+              NodeFilters = [
+                "server:*"
+              ]
             }
           ]
         }
