@@ -40,7 +40,7 @@
         ShowPrivateKeysInListings: false
       }
     },
-    CNI: Default,
+    CNI: {},
     IngressController: {},
     WaypointController: {},
     LocalRegistry: {

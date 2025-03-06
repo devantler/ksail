@@ -26,21 +26,21 @@ static class KSailClusterConfigLoader
       context.ParseResult.GetValueForOption(CLIOptions.Project.DistributionOption)
     ).ConfigureAwait(false);
     // Metadata
-    config.UpdateConfig("Metadata.Name", context.ParseResult.GetValueForOption(CLIOptions.Metadata.NameOption));
+    config.UpdateConfig(c => c.Metadata.Name, context.ParseResult.GetValueForOption(CLIOptions.Metadata.NameOption));
 
     // CNI
     // TODO: Implement CNI CLIOptions
 
     // Connection
-    config.UpdateConfig("Spec.Connection.Context", context.ParseResult.GetValueForOption(CLIOptions.Connection.ContextOption));
-    config.UpdateConfig("Spec.Connection.Kubeconfig", context.ParseResult.GetValueForOption(CLIOptions.Connection.KubeconfigOption));
-    config.UpdateConfig("Spec.Connection.Timeout", context.ParseResult.GetValueForOption(CLIOptions.Connection.TimeoutOption));
+    config.UpdateConfig(c => c.Spec.Connection.Context, context.ParseResult.GetValueForOption(CLIOptions.Connection.ContextOption));
+    config.UpdateConfig(c => c.Spec.Connection.Kubeconfig, context.ParseResult.GetValueForOption(CLIOptions.Connection.KubeconfigOption));
+    config.UpdateConfig(c => c.Spec.Connection.Timeout, context.ParseResult.GetValueForOption(CLIOptions.Connection.TimeoutOption));
 
     // DeploymentTool
-    config.UpdateConfig("Spec.DeploymentTool.Flux.Source", context.ParseResult.GetValueForOption(CLIOptions.DeploymentTool.Flux.SourceOption));
+    config.UpdateConfig(c => c.Spec.DeploymentTool.Flux.Source.Url, context.ParseResult.GetValueForOption(CLIOptions.DeploymentTool.Flux.SourceOption));
 
     // Distribution
-    config.UpdateConfig("Spec.Distribution.ShowAllClustersInListings", context.ParseResult.GetValueForOption(CLIOptions.Distribution.ShowAllClustersInListings));
+    config.UpdateConfig(c => c.Spec.Distribution.ShowAllClustersInListings, context.ParseResult.GetValueForOption(CLIOptions.Distribution.ShowAllClustersInListings));
 
     // IngressController
     // TODO: Implement IngressController CLIOptions
@@ -52,27 +52,28 @@ static class KSailClusterConfigLoader
     // TODO: Implement MirrorRegistries CLIOptions
 
     // Project
-    config.UpdateConfig("Spec.Project.ConfigPath", context.ParseResult.GetValueForOption(CLIOptions.Project.ConfigPathOption));
-    config.UpdateConfig("Spec.Project.DeploymentTool", context.ParseResult.GetValueForOption(CLIOptions.Project.DeploymentToolOption));
-    config.UpdateConfig("Spec.Project.Distribution", context.ParseResult.GetValueForOption(CLIOptions.Project.DistributionOption));
-    config.UpdateConfig("Spec.Project.DistributionConfigPath", context.ParseResult.GetValueForOption(CLIOptions.Project.DistributionConfigPathOption));
-    config.UpdateConfig("Spec.Project.Editor", context.ParseResult.GetValueForOption(CLIOptions.Project.EditorOption));
-    config.UpdateConfig("Spec.Project.Engine", context.ParseResult.GetValueForOption(CLIOptions.Project.EngineOption));
-    config.UpdateConfig("Spec.Project.KustomizationPath", context.ParseResult.GetValueForOption(CLIOptions.Project.KustomizationPathOption));
-    config.UpdateConfig("Spec.Project.MirrorRegistries", context.ParseResult.GetValueForOption(CLIOptions.Project.MirrorRegistriesOption));
-    config.UpdateConfig("Spec.Project.SecretManager", context.ParseResult.GetValueForOption(CLIOptions.Project.SecretManagerOption));
+    config.UpdateConfig(c => c.Spec.Project.CNI, context.ParseResult.GetValueForOption(CLIOptions.Project.CNIOption));
+    config.UpdateConfig(c => c.Spec.Project.ConfigPath, context.ParseResult.GetValueForOption(CLIOptions.Project.ConfigPathOption));
+    config.UpdateConfig(c => c.Spec.Project.DeploymentTool, context.ParseResult.GetValueForOption(CLIOptions.Project.DeploymentToolOption));
+    config.UpdateConfig(c => c.Spec.Project.Distribution, context.ParseResult.GetValueForOption(CLIOptions.Project.DistributionOption));
+    config.UpdateConfig(c => c.Spec.Project.DistributionConfigPath, context.ParseResult.GetValueForOption(CLIOptions.Project.DistributionConfigPathOption));
+    config.UpdateConfig(c => c.Spec.Project.Editor, context.ParseResult.GetValueForOption(CLIOptions.Project.EditorOption));
+    config.UpdateConfig(c => c.Spec.Project.Engine, context.ParseResult.GetValueForOption(CLIOptions.Project.EngineOption));
+    config.UpdateConfig(c => c.Spec.Project.KustomizationPath, context.ParseResult.GetValueForOption(CLIOptions.Project.KustomizationPathOption));
+    config.UpdateConfig(c => c.Spec.Project.MirrorRegistries, context.ParseResult.GetValueForOption(CLIOptions.Project.MirrorRegistriesOption));
+    config.UpdateConfig(c => c.Spec.Project.SecretManager, context.ParseResult.GetValueForOption(CLIOptions.Project.SecretManagerOption));
 
     // SecretManager
-    config.UpdateConfig("Spec.SecretManager.SOPS.InPlace", context.ParseResult.GetValueForOption(CLIOptions.SecretManager.SOPS.InPlaceOption));
-    config.UpdateConfig("Spec.SecretManager.SOPS.PublicKey", context.ParseResult.GetValueForOption(CLIOptions.SecretManager.SOPS.PublicKeyOption));
-    config.UpdateConfig("Spec.SecretManager.SOPS.ShowAllKeysInListings", context.ParseResult.GetValueForOption(CLIOptions.SecretManager.SOPS.ShowAllKeysInListingsOption));
-    config.UpdateConfig("Spec.SecretManager.SOPS.ShowPrivateKeysInListings", context.ParseResult.GetValueForOption(CLIOptions.SecretManager.SOPS.ShowPrivateKeysInListingsOption));
+    config.UpdateConfig(c => c.Spec.SecretManager.SOPS.InPlace, context.ParseResult.GetValueForOption(CLIOptions.SecretManager.SOPS.InPlaceOption));
+    config.UpdateConfig(c => c.Spec.SecretManager.SOPS.PublicKey, context.ParseResult.GetValueForOption(CLIOptions.SecretManager.SOPS.PublicKeyOption));
+    config.UpdateConfig(c => c.Spec.SecretManager.SOPS.ShowAllKeysInListings, context.ParseResult.GetValueForOption(CLIOptions.SecretManager.SOPS.ShowAllKeysInListingsOption));
+    config.UpdateConfig(c => c.Spec.SecretManager.SOPS.ShowPrivateKeysInListings, context.ParseResult.GetValueForOption(CLIOptions.SecretManager.SOPS.ShowPrivateKeysInListingsOption));
 
     // Validation
-    config.UpdateConfig("Spec.Validation.LintOnUp", context.ParseResult.GetValueForOption(CLIOptions.Validation.LintOnUpOption));
-    config.UpdateConfig("Spec.Validation.LintOnUpdate", context.ParseResult.GetValueForOption(CLIOptions.Validation.LintOnUpdateOption));
-    config.UpdateConfig("Spec.Validation.ReconcileOnUp", context.ParseResult.GetValueForOption(CLIOptions.Validation.ReconcileOnUpOption));
-    config.UpdateConfig("Spec.Validation.ReconcileOnUpdate", context.ParseResult.GetValueForOption(CLIOptions.Validation.ReconcileOnUpdateOption));
+    config.UpdateConfig(c => c.Spec.Validation.LintOnUp, context.ParseResult.GetValueForOption(CLIOptions.Validation.LintOnUpOption));
+    config.UpdateConfig(c => c.Spec.Validation.LintOnUpdate, context.ParseResult.GetValueForOption(CLIOptions.Validation.LintOnUpdateOption));
+    config.UpdateConfig(c => c.Spec.Validation.ReconcileOnUp, context.ParseResult.GetValueForOption(CLIOptions.Validation.ReconcileOnUpOption));
+    config.UpdateConfig(c => c.Spec.Validation.ReconcileOnUpdate, context.ParseResult.GetValueForOption(CLIOptions.Validation.ReconcileOnUpdateOption));
 
     // WaypointController
     // TODO: Implement WaypointController CLIOptions

@@ -34,6 +34,7 @@ sealed class KSailInitCommand : Command
   void AddOptions()
   {
     AddOption(CLIOptions.Metadata.NameOption);
+    AddOption(CLIOptions.Project.CNIOption);
     AddOption(CLIOptions.Project.DistributionConfigPathOption);
     AddOption(CLIOptions.Project.DistributionOption);
     AddOption(CLIOptions.Project.EngineOption);

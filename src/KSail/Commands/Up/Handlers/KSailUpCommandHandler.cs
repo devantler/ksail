@@ -3,6 +3,7 @@ using Devantler.ContainerEngineProvisioner.Docker;
 using Devantler.KubernetesProvisioner.Cluster.Core;
 using Devantler.KubernetesProvisioner.Cluster.K3d;
 using Devantler.KubernetesProvisioner.Cluster.Kind;
+using Devantler.KubernetesProvisioner.CNI.Cilium;
 using Devantler.KubernetesProvisioner.GitOps.Flux;
 using Devantler.KubernetesProvisioner.Resources.Native;
 using Devantler.SecretManager.SOPS.LocalAge;
@@ -19,11 +20,11 @@ namespace KSail.Commands.Up.Handlers;
 
 class KSailUpCommandHandler
 {
-  //TODO: readonly CiliumProvisioner _cniProvisioner = new();
   readonly SOPSLocalAgeSecretManager _secretManager = new();
   readonly DockerProvisioner _engineProvisioner;
   readonly FluxProvisioner _deploymentTool;
   readonly IKubernetesClusterProvisioner _clusterProvisioner;
+  readonly CiliumProvisioner? _cniProvisioner;
   readonly KSailCluster _config;
   readonly KSailLintCommandHandler _ksailLintCommandHandler;
 
@@ -40,6 +41,12 @@ class KSailUpCommandHandler
       (KSailEngineType.Docker, KSailKubernetesDistributionType.Native) => new KindProvisioner(),
       (KSailEngineType.Docker, KSailKubernetesDistributionType.K3s) => new K3dProvisioner(),
       _ => throw new NotSupportedException($"The distribution '{config.Spec.Project.Distribution}' is not supported.")
+    };
+    _cniProvisioner = config.Spec.Project.CNI switch
+    {
+      KSailCNIType.Cilium => new CiliumProvisioner(),
+      KSailCNIType.Default => null,
+      _ => throw new NotSupportedException($"The CNI '{config.Spec.Project.CNI}' is not supported.")
     };
     _deploymentTool = config.Spec.Project.DeploymentTool switch
     {
@@ -68,6 +75,7 @@ class KSailUpCommandHandler
 
     await BootstrapOCISourceRegistry(_config, cancellationToken).ConfigureAwait(false);
     await BootstrapMirrorRegistries(_config, cancellationToken).ConfigureAwait(false);
+    await BootstrapCNI(_config, cancellationToken).ConfigureAwait(false);
     await BootstrapSecretManager(_config, cancellationToken).ConfigureAwait(false);
     await BootstrapDeploymentTool(_config, cancellationToken).ConfigureAwait(false);
 
@@ -280,6 +288,19 @@ class KSailUpCommandHandler
       true,
       cancellationToken
     ).ConfigureAwait(false);
+    Console.WriteLine();
+  }
+
+  async Task BootstrapCNI(KSailCluster config, CancellationToken cancellationToken)
+  {
+    if (config.Spec.Project.CNI == KSailCNIType.Default || _cniProvisioner == null)
+    {
+      return;
+    }
+
+    Console.WriteLine($"⬡ Installing {config.Spec.Project.CNI} CNI");
+    await _cniProvisioner.InstallAsync(config.Spec.Connection.Context, cancellationToken).ConfigureAwait(false);
+    Console.WriteLine("✔ Cilium CNI installed");
     Console.WriteLine();
   }
 
