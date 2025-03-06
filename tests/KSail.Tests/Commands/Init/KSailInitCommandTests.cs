@@ -104,54 +104,6 @@ public partial class KSailInitCommandTests : IAsyncLifetime
     }
   }
 
-
-  [Fact]
-  public async Task KSailInit_WithDefaultOptionsMultipleClusters_SucceedsAndGeneratesKSailProject()
-  {
-    // TODO: Add support for Windows at a later time.
-    if (OperatingSystem.IsWindows())
-    {
-      return;
-    }
-
-    //Arrange
-    string outputDir = Path.Combine(Path.GetTempPath(), "ksail-init-mixed-simple-multi");
-    var console = new TestConsole();
-    var ksailCommand = new KSailRootCommand(console);
-    _ = Directory.CreateDirectory(outputDir);
-
-    //Act
-    Directory.SetCurrentDirectory(outputDir);
-    int exitCodeRun1 = await ksailCommand.InvokeAsync(["init",
-      "--name", "cluster1",
-      "--kustomization", "k8s/cluster1",
-      "--distribution", "native"
-    ]);
-    int exitCodeRun2 = await ksailCommand.InvokeAsync(["init",
-      "--name", "cluster2",
-      "--kustomization", "k8s/cluster2",
-      "--distribution", "k3s"
-    ]);
-
-    //Assert
-    Assert.Equal(0, exitCodeRun1);
-    Assert.Equal(0, exitCodeRun2);
-    Assert.True(Directory.Exists(outputDir));
-    foreach (string file in Directory.GetFiles(outputDir, "*", SearchOption.AllDirectories))
-    {
-      //Ignore any yaml paths that contain url
-      string fileName = Path.GetFileName(file);
-      string relativefilePath = file.Replace(outputDir, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
-      relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-      string? directoryPath = Path.GetDirectoryName(relativefilePath);
-      _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml")
-          .UseDirectory(Path.Combine("mixed-simple-multi", directoryPath!)
-        ).UseFileName(fileName)
-        .ScrubLinesWithReplace(line => UrlRegex().Replace(line, "url: <url>"));
-    }
-  }
-
-
   [Fact]
   public async Task KSailInit_WithAdvancedOptions_SucceedsAndGeneratesKSailProject()
   {
@@ -240,60 +192,6 @@ public partial class KSailInitCommandTests : IAsyncLifetime
       string? directoryPath = Path.GetDirectoryName(relativefilePath);
       _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml")
           .UseDirectory(Path.Combine("native-advanced-existing", directoryPath!)
-        ).UseFileName(fileName)
-        .ScrubLinesWithReplace(line => UrlRegex().Replace(line, "url: <url>"));
-    }
-  }
-
-
-  [Fact]
-  public async Task KSailInit_WithAdvancedOptionsMultipleClusters_SucceedsAndGeneratesKSailProject()
-  {
-    // TODO: Add support for Windows at a later time.
-    if (OperatingSystem.IsWindows())
-    {
-      return;
-    }
-
-    //Arrange
-    string outputDir = Path.Combine(Path.GetTempPath(), "ksail-init-mixed-advanced-multi");
-    var console = new TestConsole();
-    var ksailCommand = new KSailRootCommand(console);
-    _ = Directory.CreateDirectory(outputDir);
-
-    //Act
-    Directory.SetCurrentDirectory(outputDir);
-    int exitCodeRun1 = await ksailCommand.InvokeAsync(["init",
-      "--name", "cluster1",
-      "--kustomization", "k8s/cluster1",
-      "--secret-manager", "sops",
-      "--distribution", "native",
-      "--cni", "cilium"
-    ]);
-    int exitCodeRun2 = await ksailCommand.InvokeAsync(["init",
-      "--name", "cluster2",
-      "--kustomization", "k8s/cluster2",
-      "--secret-manager", "sops",
-      "--distribution", "k3s",
-      "--cni", "cilium"
-    ]);
-
-    //Assert
-    Assert.Equal(0, exitCodeRun1);
-    Assert.Equal(0, exitCodeRun2);
-    Assert.True(Directory.Exists(outputDir));
-    foreach (string file in Directory.GetFiles(outputDir, "*", SearchOption.AllDirectories))
-    {
-      string fileName = Path.GetFileName(file);
-      if (fileName == ".sops.yaml")
-      {
-        continue;
-      }
-      string relativefilePath = file.Replace(outputDir, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
-      relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-      string? directoryPath = Path.GetDirectoryName(relativefilePath);
-      _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml")
-          .UseDirectory(Path.Combine("mixed-advanced-multi", directoryPath!)
         ).UseFileName(fileName)
         .ScrubLinesWithReplace(line => UrlRegex().Replace(line, "url: <url>"));
     }

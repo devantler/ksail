@@ -37,6 +37,8 @@ spec:
     name: ksail-registry
     hostPort: 5555
     provider: Docker
+  generator:
+    overwrite: false
   mirrorRegistries:
   - proxy:
       url: <url>

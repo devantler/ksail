@@ -221,6 +221,15 @@
             "name"
           ]
         },
+        "generator": {
+          "description": "The options for the generator.",
+          "type": "object",
+          "properties": {
+            "overwrite": {
+              "type": "boolean"
+            }
+          }
+        },
         "mirrorRegistries": {
           "description": "The mirror registries to create for the KSail cluster.",
           "type": "array",

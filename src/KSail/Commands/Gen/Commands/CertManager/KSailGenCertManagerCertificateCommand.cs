@@ -12,7 +12,7 @@ class KSailGenCertManagerCertificateCommand : Command
   readonly GenericPathOption _outputOption = new("./certificate.yaml");
   public KSailGenCertManagerCertificateCommand() : base("certificate", "Generate a 'cert-manager.io/v1/Certificate' resource.")
   {
-    this.AddOption(_outputOption);
+    AddOption(_outputOption);
 
     this.SetHandler(async (context) =>
       {

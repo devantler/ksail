@@ -21,11 +21,6 @@ class DistributionConfigFileGenerator
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
     string configPath = Path.Combine(config.Spec.Project.DistributionConfigPath);
-    if (File.Exists(configPath))
-    {
-      Console.WriteLine($"✔ skipping '{configPath}', as it already exists.");
-      return;
-    }
     switch (config.Spec.Project.Engine, config.Spec.Project.Distribution)
     {
       case (KSailEngineType.Docker, KSailKubernetesDistributionType.Native):
@@ -41,7 +36,19 @@ class DistributionConfigFileGenerator
 
   async Task GenerateKindConfigFile(KSailCluster config, string outputPath, CancellationToken cancellationToken = default)
   {
-    Console.WriteLine($"✚ generating '{outputPath}'");
+    if (File.Exists(outputPath) && !config.Spec.Generator.Overwrite)
+    {
+      Console.WriteLine($"✔ skipping '{outputPath}', as it already exists.");
+      return;
+    }
+    else if (File.Exists(outputPath) && config.Spec.Generator.Overwrite)
+    {
+      Console.WriteLine($"✚ overwriting '{outputPath}'");
+    }
+    else
+    {
+      Console.WriteLine($"✚ generating '{outputPath}'");
+    }
     var kindConfig = new KindConfig
     {
       Name = config.Metadata.Name,
@@ -61,7 +68,7 @@ class DistributionConfigFileGenerator
       };
     }
 
-    await _kindConfigKubernetesGenerator.GenerateAsync(kindConfig, outputPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _kindConfigKubernetesGenerator.GenerateAsync(kindConfig, outputPath, config.Spec.Generator.Overwrite, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 
   async Task GenerateK3DConfigFile(KSailCluster config, string outputPath, CancellationToken cancellationToken = default)

@@ -5,6 +5,7 @@ Usage:
   testhost init [options]
 
 Options:
+  -o, --overwrite                                   Overwrite existing files. [default: False]
   -n, --name <name>                                 The name of the cluster. [default: ksail-default]
   --cni <Cilium|Default>                            The CNI to use. [default: Default]
   -dc, --distribution-config <distribution-config>  Path to the distribution configuration file. [default: kind-config.yaml]
