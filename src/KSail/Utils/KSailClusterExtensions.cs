@@ -6,27 +6,18 @@ namespace KSail.Utils;
 
 static class KSailClusterExtensions
 {
-  public static void UpdateConfig<T>(this KSailCluster config, Expression<Func<KSailCluster, T>> propertyExpression, T value)
+  public static void UpdateConfig<T>(this KSailCluster config, Expression<Func<KSailCluster, T>> propertyPathExpression, T value)
   {
-    var memberExpression = propertyExpression.Body as MemberExpression ?? throw new ArgumentException("Expression must be a member expression");
-    var propertyPath = new Stack<string>();
-
-    while (memberExpression != null)
-    {
-      propertyPath.Push(memberExpression.Member.Name);
-      memberExpression = memberExpression.Expression as MemberExpression;
-    }
-
+    string[] properties = [.. propertyPathExpression.Body.ToString().Split('.').Skip(1).Select(p => p.Split(',')[0].Trim())];
     object? currentObject = config;
     object? defaultObject = new KSailCluster();
 
-    while (propertyPath.Count > 0)
+    for (int i = 0; i < properties.Length; i++)
     {
-      string propertyName = propertyPath.Pop();
-      var property = (currentObject?.GetType().GetProperty(propertyName)) ?? throw new ArgumentException($"Property '{propertyName}' not found on type '{currentObject?.GetType().FullName}'.");
-      var defaultProperty = (defaultObject?.GetType().GetProperty(propertyName)) ?? throw new ArgumentException($"Property '{propertyName}' not found on type '{defaultObject?.GetType().FullName}'.");
-
-      if (propertyPath.Count == 0)
+      string propertyName = properties[i];
+      var property = (currentObject?.GetType().GetProperty(propertyName)) ?? throw new ArgumentException($"Property '{propertyName}' not found on type '{currentObject?.GetType().FullName}'");
+      var defaultProperty = (defaultObject?.GetType().GetProperty(propertyName)) ?? throw new ArgumentException($"Property '{propertyName}' not found on type '{defaultObject?.GetType().FullName}'");
+      if (i == properties.Length - 1)
       {
         // If it's the last property in the path, set the value
         object? currentValue = property.GetValue(currentObject);
