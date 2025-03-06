@@ -174,10 +174,7 @@
         },
         "cni": {
           "description": "The options for the CNI.",
-          "enum": [
-            "Default",
-            "Cilium"
-          ]
+          "type": "object"
         },
         "ingressController": {
           "description": "The options for the Ingress Controller.",
