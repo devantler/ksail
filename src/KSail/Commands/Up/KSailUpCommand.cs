@@ -36,6 +36,7 @@ sealed class KSailUpCommand : Command
     //AddOption(CLIOptions.LocalRegistry.LocalRegistryOption);
     AddOption(CLIOptions.Metadata.NameOption);
     //AddOption(CLIOptions.MirrorRegistries.MirrorRegistryOption);
+    AddOption(CLIOptions.Project.CNIOption);
     AddOption(CLIOptions.Project.DeploymentToolOption);
     AddOption(CLIOptions.Project.DistributionConfigPathOption);
     AddOption(CLIOptions.Project.DistributionOption);

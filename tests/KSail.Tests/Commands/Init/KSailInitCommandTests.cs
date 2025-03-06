@@ -171,7 +171,8 @@ public partial class KSailInitCommandTests : IAsyncLifetime
     Directory.SetCurrentDirectory(outputDir);
     int exitCode = await ksailCommand.InvokeAsync(["init",
       "--name", "ksail-advanced-native",
-      "--secret-manager", "sops"
+      "--secret-manager", "sops",
+      "--cni", "cilium"
     ]);
 
     //Assert
@@ -214,11 +215,13 @@ public partial class KSailInitCommandTests : IAsyncLifetime
     Directory.SetCurrentDirectory(outputDir);
     int exitCodeRun1 = await ksailCommand.InvokeAsync(["init",
       "--name", "ksail-advanced-native",
-      "--secret-manager", "sops"
+      "--secret-manager", "sops",
+      "--cni", "cilium"
     ]);
     int exitCodeRun2 = await ksailCommand.InvokeAsync(["init",
       "--name", "ksail-advanced-native",
-      "--secret-manager", "sops"
+      "--secret-manager", "sops",
+      "--cni", "cilium"
     ]);
 
     //Assert
@@ -264,13 +267,15 @@ public partial class KSailInitCommandTests : IAsyncLifetime
       "--name", "cluster1",
       "--kustomization", "k8s/cluster1",
       "--secret-manager", "sops",
-      "--distribution", "native"
+      "--distribution", "native",
+      "--cni", "cilium"
     ]);
     int exitCodeRun2 = await ksailCommand.InvokeAsync(["init",
       "--name", "cluster2",
       "--kustomization", "k8s/cluster2",
       "--secret-manager", "sops",
-      "--distribution", "k3s"
+      "--distribution", "k3s",
+      "--cni", "cilium"
     ]);
 
     //Assert

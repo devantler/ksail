@@ -14,7 +14,7 @@ spec:
     distribution: Native
     deploymentTool: Flux
     secretManager: SOPS
-    cni: Default
+    cni: Cilium
     editor: Nano
     engine: Docker
     kustomizationPath: k8s/cluster1
@@ -30,7 +30,7 @@ spec:
       inPlace: false
       showAllKeysInListings: false
       showPrivateKeysInListings: false
-  cni: Default
+  cni: {}
   ingressController: {}
   waypointController: {}
   localRegistry:

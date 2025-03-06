@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using KSail.Models.CNI;
 using KSail.Models.Connection;
 using KSail.Models.DeploymentTool;
 using KSail.Models.Distribution;
@@ -36,7 +37,7 @@ public class KSailClusterSpec
 
   [Description("The options for the CNI.")]
   [YamlMember(Alias = "cni")]
-  public KSailCNIType CNI { get; set; } = new();
+  public KSailCNI CNI { get; set; } = new();
 
   [Description("The options for the Ingress Controller.")]
   public KSailIngressController IngressController { get; set; } = new();

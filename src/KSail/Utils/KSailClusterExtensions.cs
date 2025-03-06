@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using KSail.Models;
 
 namespace KSail.Utils;
@@ -5,17 +6,17 @@ namespace KSail.Utils;
 
 static class KSailClusterExtensions
 {
-  public static void UpdateConfig<T>(this KSailCluster config, string propertyPath, T value)
+  public static void UpdateConfig<T>(this KSailCluster config, Expression<Func<KSailCluster, T>> propertyPathExpression, T value)
   {
-    string[] properties = propertyPath.Split('.');
+    string[] properties = [.. propertyPathExpression.Body.ToString().Split('.').Skip(1).Select(p => p.Split(',')[0].Trim())];
     object? currentObject = config;
     object? defaultObject = new KSailCluster();
 
     for (int i = 0; i < properties.Length; i++)
     {
       string propertyName = properties[i];
-      var property = (currentObject?.GetType().GetProperty(propertyName)) ?? throw new ArgumentException($"Property '{propertyName}' not found on type '{currentObject?.GetType().FullName}'.");
-      var defaultProperty = (defaultObject?.GetType().GetProperty(propertyName)) ?? throw new ArgumentException($"Property '{propertyName}' not found on type '{defaultObject?.GetType().FullName}'.");
+      var property = (currentObject?.GetType().GetProperty(propertyName)) ?? throw new ArgumentException($"Property '{propertyName}' not found on type '{currentObject?.GetType().FullName}'");
+      var defaultProperty = (defaultObject?.GetType().GetProperty(propertyName)) ?? throw new ArgumentException($"Property '{propertyName}' not found on type '{defaultObject?.GetType().FullName}'");
       if (i == properties.Length - 1)
       {
         // If it's the last property in the path, set the value
