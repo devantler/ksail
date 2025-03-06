@@ -24,7 +24,7 @@ class KSailUpCommandHandler
   readonly DockerProvisioner _engineProvisioner;
   readonly FluxProvisioner _deploymentTool;
   readonly IKubernetesClusterProvisioner _clusterProvisioner;
-  readonly CiliumProvisioner _cniProvisioner;
+  readonly CiliumProvisioner? _cniProvisioner;
   readonly KSailCluster _config;
   readonly KSailLintCommandHandler _ksailLintCommandHandler;
 
@@ -45,6 +45,7 @@ class KSailUpCommandHandler
     _cniProvisioner = config.Spec.Project.CNI switch
     {
       KSailCNIType.Cilium => new CiliumProvisioner(),
+      KSailCNIType.Default => null,
       _ => throw new NotSupportedException($"The CNI '{config.Spec.Project.CNI}' is not supported.")
     };
     _deploymentTool = config.Spec.Project.DeploymentTool switch
@@ -292,19 +293,17 @@ class KSailUpCommandHandler
 
   async Task BootstrapCNI(KSailCluster config, CancellationToken cancellationToken)
   {
-    switch (config.Spec.Project.CNI)
+    if (config.Spec.Project.CNI == KSailCNIType.Default || _cniProvisioner == null)
     {
-      case KSailCNIType.Cilium:
-        Console.WriteLine("🐝 Installing Cilium CNI");
-        await _cniProvisioner.InstallAsync(config.Spec.Connection.Context, cancellationToken).ConfigureAwait(false);
-        Console.WriteLine("✔ Cilium CNI installed");
-        Console.WriteLine();
-        break;
-      case KSailCNIType.Default:
-      default:
-        break;
+      return;
     }
+
+    Console.WriteLine($"⬡ Installing {config.Spec.Project.CNI} CNI");
+    await _cniProvisioner.InstallAsync(config.Spec.Connection.Context, cancellationToken).ConfigureAwait(false);
+    Console.WriteLine("✔ Cilium CNI installed");
+    Console.WriteLine();
   }
+
   async Task BootstrapSecretManager(KSailCluster config, CancellationToken cancellationToken)
   {
     using var resourceProvisioner = new KubernetesResourceProvisioner(config.Spec.Connection.Context);
