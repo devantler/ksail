@@ -52,6 +52,7 @@ static class KSailClusterConfigLoader
     // TODO: Implement MirrorRegistries CLIOptions
 
     // Project
+    config.UpdateConfig("Spec.Project.CNI", context.ParseResult.GetValueForOption(CLIOptions.Project.CNIOption));
     config.UpdateConfig("Spec.Project.ConfigPath", context.ParseResult.GetValueForOption(CLIOptions.Project.ConfigPathOption));
     config.UpdateConfig("Spec.Project.DeploymentTool", context.ParseResult.GetValueForOption(CLIOptions.Project.DeploymentToolOption));
     config.UpdateConfig("Spec.Project.Distribution", context.ParseResult.GetValueForOption(CLIOptions.Project.DistributionOption));

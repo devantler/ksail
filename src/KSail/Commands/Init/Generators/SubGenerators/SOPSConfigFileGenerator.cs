@@ -16,10 +16,11 @@ class SOPSConfigFileGenerator
     string sopsConfigPath = Path.Combine(".sops.yaml");
     if (!File.Exists(sopsConfigPath) || string.IsNullOrEmpty(await File.ReadAllTextAsync(sopsConfigPath, cancellationToken).ConfigureAwait(false)))
     {
+      var ageKey = await SOPSLocalAgeSecretManager.CreateKeyAsync(cancellationToken).ConfigureAwait(false);
       await GenerateNewSOPSConfigFile(
         sopsConfigPath,
         config.Metadata.Name,
-        await SOPSLocalAgeSecretManager.CreateKeyAsync(cancellationToken).ConfigureAwait(false),
+        ageKey,
         cancellationToken
       ).ConfigureAwait(false);
     }
