@@ -10,7 +10,6 @@ class KSailGenConfigSOPSCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
   readonly GenericPathOption _outputOption = new("./.sops.yaml");
-  readonly KSailGenConfigSOPSCommandHandler _handler = new();
   public KSailGenConfigSOPSCommand() : base("sops", "Generate a SOPS configuration file.")
   {
     AddOption(_outputOption);
@@ -18,9 +17,11 @@ class KSailGenConfigSOPSCommand : Command
       {
         try
         {
-          string outputFile = context.ParseResult.GetValueForOption(_outputOption) ?? throw new ArgumentNullException(nameof(_outputOption));
+          string outputFile = context.ParseResult.GetValueForOption(_outputOption) ?? "./.sops.yaml";
+          bool overwrite = context.ParseResult.RootCommandResult.GetValueForOption(CLIOptions.Generator.OverwriteOption) ?? false;
           Console.WriteLine($"✚ generating {outputFile}");
-          context.ExitCode = await _handler.HandleAsync(outputFile, context.GetCancellationToken()).ConfigureAwait(false);
+          var handler = new KSailGenConfigSOPSCommandHandler(outputFile, overwrite);
+          context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         }
         catch (Exception ex)
         {

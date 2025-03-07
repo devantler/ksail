@@ -4,9 +4,8 @@ using k8s.Models;
 
 namespace KSail.Commands.Gen.Handlers.Config;
 
-class KSailGenConfigK3dCommandHandler(string outputFile)
+class KSailGenConfigK3dCommandHandler(string outputFile, bool overwrite)
 {
-  readonly string _outputFile = outputFile;
   readonly K3dConfigGenerator _generator = new();
 
   public async Task<int> HandleAsync(CancellationToken cancellationToken = default)
@@ -19,7 +18,7 @@ class KSailGenConfigK3dCommandHandler(string outputFile)
       }
     };
 
-    await _generator.GenerateAsync(k3dConfig, _outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _generator.GenerateAsync(k3dConfig, outputFile, overwrite, cancellationToken: cancellationToken).ConfigureAwait(false);
     return 0;
   }
 }

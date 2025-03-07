@@ -18,8 +18,9 @@ class KSailGenConfigK3dCommand : Command
     {
       try
       {
-        string outputFile = context.ParseResult.RootCommandResult.GetValueForOption(_outputOption)!;
-        var handler = new KSailGenConfigK3dCommandHandler(outputFile);
+        string outputFile = context.ParseResult.RootCommandResult.GetValueForOption(_outputOption) ?? "./k3d-config.yaml";
+        bool overwrite = context.ParseResult.RootCommandResult.GetValueForOption(CLIOptions.Generator.OverwriteOption) ?? false;
+        var handler = new KSailGenConfigK3dCommandHandler(outputFile, overwrite);
         Console.WriteLine($"✚ generating {outputFile}");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
       }

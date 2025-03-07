@@ -19,10 +19,11 @@ class KSailGenCertManagerClusterIssuerCommand : Command
       {
         try
         {
-          string outputFile = context.ParseResult.RootCommandResult.GetValueForOption(_outputOption)!;
-          var handler = new KSailGenCertManagerClusterIssuerCommandHandler();
+          string outputFile = context.ParseResult.RootCommandResult.GetValueForOption(_outputOption) ?? "./cluster-issuer.yaml";
+          bool overwrite = context.ParseResult.RootCommandResult.GetValueForOption(CLIOptions.Generator.OverwriteOption) ?? false;
+          var handler = new KSailGenCertManagerClusterIssuerCommandHandler(outputFile, overwrite);
           Console.WriteLine($"✚ generating {outputFile}");
-          context.ExitCode = await handler.HandleAsync(outputFile, context.GetCancellationToken()).ConfigureAwait(false);
+          context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         }
         catch (Exception ex)
         {

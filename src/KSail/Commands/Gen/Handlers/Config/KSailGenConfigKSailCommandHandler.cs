@@ -3,13 +3,13 @@ using KSail.Models;
 
 namespace KSail.Commands.Gen.Handlers.Config;
 
-class KSailGenConfigKSailCommandHandler
+class KSailGenConfigKSailCommandHandler(string outputFile, bool overwrite)
 {
   readonly KSailClusterGenerator _ksailClusterGenerator = new();
-  internal async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken = default)
+  internal async Task<int> HandleAsync(CancellationToken cancellationToken = default)
   {
     var ksailCluster = new KSailCluster();
-    await _ksailClusterGenerator.GenerateAsync(ksailCluster, outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _ksailClusterGenerator.GenerateAsync(ksailCluster, outputFile, overwrite, cancellationToken: cancellationToken).ConfigureAwait(false);
     return 0;
   }
 }

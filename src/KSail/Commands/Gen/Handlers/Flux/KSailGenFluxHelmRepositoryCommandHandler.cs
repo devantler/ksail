@@ -4,10 +4,10 @@ using Devantler.KubernetesGenerator.Flux.Models.HelmRepository;
 
 namespace KSail.Commands.Gen.Handlers.Flux;
 
-class KSailGenFluxHelmRepositoryCommandHandler
+class KSailGenFluxHelmRepositoryCommandHandler(string outputFile, bool overwrite)
 {
   readonly FluxHelmRepositoryGenerator _generator = new();
-  internal async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken = default)
+  internal async Task<int> HandleAsync(CancellationToken cancellationToken = default)
   {
     var helmRepository = new FluxHelmRepository()
     {
@@ -21,7 +21,7 @@ class KSailGenFluxHelmRepositoryCommandHandler
         Url = new Uri("https://charts.example.com/charts")
       }
     };
-    await _generator.GenerateAsync(helmRepository, outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _generator.GenerateAsync(helmRepository, outputFile, overwrite, cancellationToken: cancellationToken).ConfigureAwait(false);
     return 0;
   }
 }

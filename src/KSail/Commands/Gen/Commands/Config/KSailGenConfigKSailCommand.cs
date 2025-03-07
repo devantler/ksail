@@ -10,7 +10,6 @@ class KSailGenConfigKSailCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
   readonly GenericPathOption _outputOption = new("./ksail-config.yaml");
-  readonly KSailGenConfigKSailCommandHandler _handler = new();
   public KSailGenConfigKSailCommand() : base("ksail", "Generate a 'ksail.io/v1alpha1/Cluster' resource.")
   {
     AddOption(_outputOption);
@@ -18,9 +17,11 @@ class KSailGenConfigKSailCommand : Command
       {
         try
         {
-          string outputFile = context.ParseResult.GetValueForOption(_outputOption)!;
+          string outputFile = context.ParseResult.GetValueForOption(_outputOption) ?? "./ksail-config.yaml";
+          bool overwrite = context.ParseResult.RootCommandResult.GetValueForOption(CLIOptions.Generator.OverwriteOption) ?? false;
           Console.WriteLine($"✚ generating {outputFile}");
-          context.ExitCode = await _handler.HandleAsync(outputFile, context.GetCancellationToken()).ConfigureAwait(false);
+          var handler = new KSailGenConfigKSailCommandHandler(outputFile, overwrite);
+          context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         }
         catch (Exception ex)
         {

@@ -10,7 +10,6 @@ class KSailGenFluxHelmRepositoryCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
   readonly GenericPathOption _outputOption = new("./helm-repository.yaml");
-  readonly KSailGenFluxHelmRepositoryCommandHandler _handler = new();
   public KSailGenFluxHelmRepositoryCommand() : base("helm-repository", "Generate a 'source.toolkit.fluxcd.io/v1/HelmRepository' resource.")
   {
     AddOption(_outputOption);
@@ -19,9 +18,11 @@ class KSailGenFluxHelmRepositoryCommand : Command
       {
         try
         {
-          string outputFile = context.ParseResult.GetValueForOption(_outputOption) ?? throw new ArgumentNullException(nameof(_outputOption));
+          string outputFile = context.ParseResult.GetValueForOption(_outputOption) ?? "./helm-repository.yaml";
+          bool overwrite = context.ParseResult.RootCommandResult.GetValueForOption(CLIOptions.Generator.OverwriteOption) ?? false;
           Console.WriteLine($"✚ generating {outputFile}");
-          context.ExitCode = await _handler.HandleAsync(outputFile, context.GetCancellationToken()).ConfigureAwait(false);
+          var handler = new KSailGenFluxHelmRepositoryCommandHandler(outputFile, overwrite);
+          context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
