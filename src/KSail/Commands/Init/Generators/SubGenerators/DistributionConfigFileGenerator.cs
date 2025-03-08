@@ -41,6 +41,10 @@ class DistributionConfigFileGenerator
       $"✚ overwriting '{outputPath}'" :
       $"✔ skipping '{outputPath}', as it already exists.") :
       $"✚ generating '{outputPath}'");
+    if (File.Exists(outputPath) && !overwrite)
+    {
+      return;
+    }
     var kindConfig = new KindConfig
     {
       Name = config.Metadata.Name,
@@ -65,7 +69,15 @@ class DistributionConfigFileGenerator
 
   async Task GenerateK3DConfigFile(KSailCluster config, string outputPath, CancellationToken cancellationToken = default)
   {
-    Console.WriteLine($"✚ generating '{outputPath}'");
+    bool overwrite = config.Spec.Generator.Overwrite;
+    Console.WriteLine(File.Exists(outputPath) ? (overwrite ?
+      $"✚ overwriting '{outputPath}'" :
+      $"✔ skipping '{outputPath}', as it already exists.") :
+      $"✚ generating '{outputPath}'");
+    if (File.Exists(outputPath) && !overwrite)
+    {
+      return;
+    }
     var mirrors = new StringBuilder();
     mirrors = mirrors.AppendLine("mirrors:");
     foreach (var registry in config.Spec.MirrorRegistries)

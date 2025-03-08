@@ -18,8 +18,8 @@ class KSailGenConfigK3dCommand : Command
     {
       try
       {
-        string outputFile = context.ParseResult.RootCommandResult.GetValueForOption(_outputOption) ?? "./k3d-config.yaml";
-        bool overwrite = context.ParseResult.RootCommandResult.GetValueForOption(CLIOptions.Generator.OverwriteOption) ?? false;
+        string outputFile = context.ParseResult.CommandResult.GetValueForOption(_outputOption) ?? "./k3d-config.yaml";
+        bool overwrite = context.ParseResult.CommandResult.GetValueForOption(CLIOptions.Generator.OverwriteOption) ?? false;
         Console.WriteLine(File.Exists(outputFile) ? (overwrite ?
           $"✚ overwriting '{outputFile}'" :
           $"✔ skipping '{outputFile}', as it already exists.") :

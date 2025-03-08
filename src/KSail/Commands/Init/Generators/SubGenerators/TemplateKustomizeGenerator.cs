@@ -27,6 +27,10 @@ class TemplateKustomizeGenerator
       $"✚ overwriting '{outputPath}'" :
       $"✔ skipping '{outputPath}', as it already exists.") :
       $"✚ generating '{outputPath}'");
+    if (File.Exists(outputPath) && !overwrite)
+    {
+      return;
+    }
     var kustomization = new KustomizeKustomization()
     {
       Resources = []

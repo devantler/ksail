@@ -14,6 +14,10 @@ class KSailClusterConfigGenerator
       $"✚ overwriting '{outputPath}'" :
       $"✔ skipping '{outputPath}', as it already exists.") :
       $"✚ generating '{outputPath}'");
+    if (File.Exists(outputPath) && !overwrite)
+    {
+      return;
+    }
     await _ksailClusterGenerator.GenerateAsync(config, outputPath, config.Spec.Generator.Overwrite, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 }

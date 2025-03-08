@@ -19,11 +19,15 @@ class KSailGenNativePriorityClassCommand : Command
         try
         {
           string outputFile = context.ParseResult.GetValueForOption(_outputOption) ?? "./priority-class.yaml";
-          bool overwrite = context.ParseResult.RootCommandResult.GetValueForOption(CLIOptions.Generator.OverwriteOption) ?? false;
+          bool overwrite = context.ParseResult.CommandResult.GetValueForOption(CLIOptions.Generator.OverwriteOption) ?? false;
           Console.WriteLine(File.Exists(outputFile) ? (overwrite ?
             $"✚ overwriting '{outputFile}'" :
             $"✔ skipping '{outputFile}', as it already exists.") :
             $"✚ generating '{outputFile}'");
+          if (File.Exists(outputFile) && !overwrite)
+          {
+            return;
+          }
           KSailGenNativePriorityClassCommandHandler handler = new(outputFile, overwrite);
           context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         }

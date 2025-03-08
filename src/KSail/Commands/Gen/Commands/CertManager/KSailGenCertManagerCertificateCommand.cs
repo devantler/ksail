@@ -24,6 +24,10 @@ class KSailGenCertManagerCertificateCommand : Command
             $"✚ overwriting '{outputFile}'" :
             $"✔ skipping '{outputFile}', as it already exists.") :
             $"✚ generating '{outputFile}'");
+          if (File.Exists(outputFile) && !overwrite)
+          {
+            return;
+          }
           var handler = new KSailGenCertManagerCertificateCommandHandler(outputFile, overwrite);
           context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         }
