@@ -17,7 +17,7 @@ class KSailGenNativeWorkloadsStatefulSetCommand : Command
       {
         try
         {
-          string outputFile = context.ParseResult.GetValueForOption(_outputOption) ?? throw new ArgumentNullException(nameof(_outputOption));
+          string outputFile = context.ParseResult.GetValueForOption(_outputOption) ?? "./stateful-set.yaml";
           bool overwrite = context.ParseResult.RootCommandResult.GetValueForOption(CLIOptions.Generator.OverwriteOption) ?? false;
           if (overwrite)
           {
