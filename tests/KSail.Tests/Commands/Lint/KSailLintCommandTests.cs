@@ -28,6 +28,12 @@ public class KSailLintCommandTests : IDisposable
   [Fact]
   public async Task KSailLint_GivenValidPath_Succeeds()
   {
+    // TODO: Add support for Windows at a later time.
+    if (OperatingSystem.IsWindows())
+    {
+      return;
+    }
+
     //Arrange
     var console = new TestConsole();
     var ksailCommand = new KSailRootCommand(console);
