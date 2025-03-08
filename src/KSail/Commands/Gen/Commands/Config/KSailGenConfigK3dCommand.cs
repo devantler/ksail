@@ -20,8 +20,11 @@ class KSailGenConfigK3dCommand : Command
       {
         string outputFile = context.ParseResult.RootCommandResult.GetValueForOption(_outputOption) ?? "./k3d-config.yaml";
         bool overwrite = context.ParseResult.RootCommandResult.GetValueForOption(CLIOptions.Generator.OverwriteOption) ?? false;
+        Console.WriteLine(File.Exists(outputFile) ? (overwrite ?
+          $"✚ overwriting '{outputFile}'" :
+          $"✔ skipping '{outputFile}', as it already exists.") :
+          $"✚ generating '{outputFile}'");
         var handler = new KSailGenConfigK3dCommandHandler(outputFile, overwrite);
-        Console.WriteLine($"✚ generating {outputFile}");
         context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
       }
       catch (Exception ex)

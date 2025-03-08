@@ -36,19 +36,11 @@ class DistributionConfigFileGenerator
 
   async Task GenerateKindConfigFile(KSailCluster config, string outputPath, CancellationToken cancellationToken = default)
   {
-    if (File.Exists(outputPath) && !config.Spec.Generator.Overwrite)
-    {
-      Console.WriteLine($"✔ skipping '{outputPath}', as it already exists.");
-      return;
-    }
-    else if (File.Exists(outputPath) && config.Spec.Generator.Overwrite)
-    {
-      Console.WriteLine($"✚ overwriting '{outputPath}'");
-    }
-    else
-    {
-      Console.WriteLine($"✚ generating '{outputPath}'");
-    }
+    bool overwrite = config.Spec.Generator.Overwrite;
+    Console.WriteLine(File.Exists(outputPath) ? (overwrite ?
+      $"✚ overwriting '{outputPath}'" :
+      $"✔ skipping '{outputPath}', as it already exists.") :
+      $"✚ generating '{outputPath}'");
     var kindConfig = new KindConfig
     {
       Name = config.Metadata.Name,

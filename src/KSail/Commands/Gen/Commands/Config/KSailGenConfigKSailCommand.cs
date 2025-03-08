@@ -19,7 +19,10 @@ class KSailGenConfigKSailCommand : Command
         {
           string outputFile = context.ParseResult.GetValueForOption(_outputOption) ?? "./ksail-config.yaml";
           bool overwrite = context.ParseResult.RootCommandResult.GetValueForOption(CLIOptions.Generator.OverwriteOption) ?? false;
-          Console.WriteLine($"✚ generating {outputFile}");
+          Console.WriteLine(File.Exists(outputFile) ? (overwrite ?
+            $"✚ overwriting '{outputFile}'" :
+            $"✔ skipping '{outputFile}', as it already exists.") :
+            $"✚ generating '{outputFile}'");
           var handler = new KSailGenConfigKSailCommandHandler(outputFile, overwrite);
           context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         }

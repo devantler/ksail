@@ -20,7 +20,10 @@ class KSailGenCertManagerCertificateCommand : Command
         {
           string outputFile = context.ParseResult.CommandResult.GetValueForOption(_outputOption) ?? "./certificate.yaml";
           bool overwrite = context.ParseResult.CommandResult.GetValueForOption(CLIOptions.Generator.OverwriteOption) ?? false;
-          Console.WriteLine($"✚ generating {outputFile}");
+          Console.WriteLine(File.Exists(outputFile) ? (overwrite ?
+            $"✚ overwriting '{outputFile}'" :
+            $"✔ skipping '{outputFile}', as it already exists.") :
+            $"✚ generating '{outputFile}'");
           var handler = new KSailGenCertManagerCertificateCommandHandler(outputFile, overwrite);
           context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         }

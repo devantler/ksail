@@ -19,26 +19,18 @@ class TemplateKustomizeGenerator
     await GenerateKustomization(config, outputDirectory, cancellationToken).ConfigureAwait(false);
   }
 
-  async Task GenerateKustomization(KSailCluster config, string path, CancellationToken cancellationToken = default)
+  async Task GenerateKustomization(KSailCluster config, string outputPath, CancellationToken cancellationToken = default)
   {
-    path = Path.Combine(path, "kustomization.yaml");
-    if (File.Exists(path) && !config.Spec.Generator.Overwrite)
-    {
-      Console.WriteLine($"✔ skipping '{path}', as it already exists.");
-      return;
-    }
-    else if (File.Exists(path) && config.Spec.Generator.Overwrite)
-    {
-      Console.WriteLine($"✚ overwriting '{path}'");
-    }
-    else
-    {
-      Console.WriteLine($"✚ generating '{path}'");
-    }
+    outputPath = Path.Combine(outputPath, "kustomization.yaml");
+    bool overwrite = config.Spec.Generator.Overwrite;
+    Console.WriteLine(File.Exists(outputPath) ? (overwrite ?
+      $"✚ overwriting '{outputPath}'" :
+      $"✔ skipping '{outputPath}', as it already exists.") :
+      $"✚ generating '{outputPath}'");
     var kustomization = new KustomizeKustomization()
     {
       Resources = []
     };
-    await _kustomizeKustomizationGenerator.GenerateAsync(kustomization, path, config.Spec.Generator.Overwrite, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _kustomizeKustomizationGenerator.GenerateAsync(kustomization, outputPath, config.Spec.Generator.Overwrite, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 }
