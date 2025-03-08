@@ -31,8 +31,12 @@ public partial class KSailInitCommandTests : IAsyncLifetime
   }
 
 
-  [Fact]
-  public async Task KSailInit_WithDefaultOptions_SucceedsAndGeneratesKSailProject()
+  [Theory]
+  [InlineData("ksail-init-native-simple", new string[] { "init" })]
+  [InlineData("ksail-init-native-advanced", new string[] { "init", "--name", "ksail-advanced-native", "--secret-manager", "sops", "--cni", "cilium" })]
+  [InlineData("ksail-init-k3s-simple", new string[] { "init", "--distribution", "k3s" })]
+  [InlineData("ksail-init-k3s-advanced", new string[] { "init", "--name", "ksail-advanced-k3s", "--distribution", "k3s", "--secret-manager", "sops", "--cni", "cilium" })]
+  public async Task KSailInit_WithVariousOptions_SucceedsAndGeneratesKSailProject(string outputDirName, string[] args)
   {
     // TODO: Add support for Windows at a later time.
     if (OperatingSystem.IsWindows())
@@ -41,91 +45,14 @@ public partial class KSailInitCommandTests : IAsyncLifetime
     }
 
     //Arrange
-    string outputDir = Path.Combine(Path.GetTempPath(), "ksail-init-native-simple");
+    string outputDir = Path.Combine(Path.GetTempPath(), outputDirName);
     var console = new TestConsole();
     var ksailCommand = new KSailRootCommand(console);
     _ = Directory.CreateDirectory(outputDir);
 
     //Act
     Directory.SetCurrentDirectory(outputDir);
-    int exitCode = await ksailCommand.InvokeAsync(["init"]);
-
-    //Assert
-    Assert.Equal(0, exitCode);
-    Assert.True(Directory.Exists(outputDir));
-    foreach (string file in Directory.GetFiles(outputDir, "*", SearchOption.AllDirectories))
-    {
-      string fileName = Path.GetFileName(file);
-      string relativefilePath = file.Replace(outputDir, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
-      relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-      string? directoryPath = Path.GetDirectoryName(relativefilePath);
-      _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml")
-        .UseDirectory(Path.Combine("native-simple", directoryPath!))
-        .UseFileName(fileName)
-        .ScrubLinesWithReplace(line => UrlRegex().Replace(line, "url: <url>"));
-    }
-  }
-
-
-  [Fact]
-  public async Task KSailInit_WithDefaultOptionsOnTopOfExistingProject_SucceedsAndGeneratesKSailProject()
-  {
-    // TODO: Add support for Windows at a later time.
-    if (OperatingSystem.IsWindows())
-    {
-      return;
-    }
-
-    //Arrange
-    string outputDir = Path.Combine(Path.GetTempPath(), "ksail-init-native-simple-existing");
-    var console = new TestConsole();
-    var ksailCommand = new KSailRootCommand(console);
-    _ = Directory.CreateDirectory(outputDir);
-
-    //Act
-    Directory.SetCurrentDirectory(outputDir);
-    int exitCodeRun1 = await ksailCommand.InvokeAsync(["init"]);
-    int exitCodeRun2 = await ksailCommand.InvokeAsync(["init"]);
-
-    //Assert
-    Assert.Equal(0, exitCodeRun1);
-    Assert.Equal(0, exitCodeRun2);
-    Assert.True(Directory.Exists(outputDir));
-    foreach (string file in Directory.GetFiles(outputDir, "*", SearchOption.AllDirectories))
-    {
-      string fileName = Path.GetFileName(file);
-      string relativefilePath = file.Replace(outputDir, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
-      relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-      string? directoryPath = Path.GetDirectoryName(relativefilePath);
-      _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml")
-        .UseDirectory(Path.Combine("native-simple-existing", directoryPath!))
-        .UseFileName(fileName)
-        .ScrubLinesWithReplace(line => UrlRegex().Replace(line, "url: <url>"));
-    }
-  }
-
-  [Fact]
-  public async Task KSailInit_WithAdvancedOptions_SucceedsAndGeneratesKSailProject()
-  {
-    // TODO: Add support for Windows at a later time.
-    if (OperatingSystem.IsWindows())
-    {
-      return;
-    }
-
-    //Arrange
-    string outputDir = Path.Combine(Path.GetTempPath(), "ksail-init-native-advanced");
-    var console = new TestConsole();
-    var ksailCommand = new KSailRootCommand(console);
-    _ = Directory.CreateDirectory(outputDir);
-
-    //Act
-    Directory.SetCurrentDirectory(outputDir);
-    int exitCode = await ksailCommand.InvokeAsync(["init",
-      "--name", "ksail-advanced-native",
-      "--secret-manager", "sops",
-      "--cni", "cilium"
-    ]);
+    int exitCode = await ksailCommand.InvokeAsync(args);
 
     //Assert
     Assert.Equal(0, exitCode);
@@ -141,59 +68,9 @@ public partial class KSailInitCommandTests : IAsyncLifetime
       relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
       string? directoryPath = Path.GetDirectoryName(relativefilePath);
       _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml")
-          .UseDirectory(Path.Combine("native-advanced", directoryPath!)
-        ).UseFileName(fileName)
-        .ScrubLinesWithReplace(line => UrlRegex().Replace(line, "url: <url>"));
-    }
-  }
-
-
-  [Fact]
-  public async Task KSailInit_WithAdvancedOptionsOnTopOfExistingProject_SucceedsAndGeneratesKSailProject()
-  {
-    // TODO: Add support for Windows at a later time.
-    if (OperatingSystem.IsWindows())
-    {
-      return;
-    }
-
-    //Arrange
-    string outputDir = Path.Combine(Path.GetTempPath(), "ksail-init-native-advanced-existing");
-    var console = new TestConsole();
-    var ksailCommand = new KSailRootCommand(console);
-    _ = Directory.CreateDirectory(outputDir);
-
-    //Act
-    Directory.SetCurrentDirectory(outputDir);
-    int exitCodeRun1 = await ksailCommand.InvokeAsync(["init",
-      "--name", "ksail-advanced-native",
-      "--secret-manager", "sops",
-      "--cni", "cilium"
-    ]);
-    int exitCodeRun2 = await ksailCommand.InvokeAsync(["init",
-      "--name", "ksail-advanced-native",
-      "--secret-manager", "sops",
-      "--cni", "cilium"
-    ]);
-
-    //Assert
-    Assert.Equal(0, exitCodeRun1);
-    Assert.Equal(0, exitCodeRun2);
-    Assert.True(Directory.Exists(outputDir));
-    foreach (string file in Directory.GetFiles(outputDir, "*", SearchOption.AllDirectories))
-    {
-      string fileName = Path.GetFileName(file);
-      if (fileName == ".sops.yaml")
-      {
-        continue;
-      }
-      string relativefilePath = file.Replace(outputDir, "", StringComparison.OrdinalIgnoreCase).TrimStart(Path.DirectorySeparatorChar);
-      relativefilePath = relativefilePath.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-      string? directoryPath = Path.GetDirectoryName(relativefilePath);
-      _ = await Verify(await File.ReadAllTextAsync(file), extension: "yaml")
-          .UseDirectory(Path.Combine("native-advanced-existing", directoryPath!)
-        ).UseFileName(fileName)
-        .ScrubLinesWithReplace(line => UrlRegex().Replace(line, "url: <url>"));
+          .UseDirectory(Path.Combine(outputDirName, directoryPath!))
+          .UseFileName(fileName)
+          .ScrubLinesWithReplace(line => UrlRegex().Replace(line, "url: <url>"));
     }
   }
 

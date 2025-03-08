@@ -2,19 +2,19 @@
 apiVersion: ksail.io/v1alpha1
 kind: Cluster
 metadata:
-  name: ksail-default
+  name: ksail-advanced-k3s
 spec:
   connection:
     kubeconfig: ~/.kube/config
-    context: kind-ksail-default
+    context: k3d-ksail-advanced-k3s
     timeout: 5m
   project:
     configPath: ksail-config.yaml
-    distributionConfigPath: kind-config.yaml
-    distribution: Native
+    distributionConfigPath: k3d-config.yaml
+    distribution: K3s
     deploymentTool: Flux
-    secretManager: None
-    cni: Default
+    secretManager: SOPS
+    cni: Cilium
     editor: Nano
     engine: Docker
     kustomizationPath: k8s
