@@ -10,17 +10,25 @@ class KSailGenNativePersistentVolumeCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
   readonly GenericPathOption _outputOption = new("./persistent-volume.yaml");
-  readonly KSailGenNativePersistentVolumeCommandHandler _handler = new();
   public KSailGenNativePersistentVolumeCommand() : base("persistent-volume", "Generate a 'core/v1/PersistentVolume' resource.")
   {
     AddOption(_outputOption);
     this.SetHandler(async (context) =>
       {
-        string outputFile = context.ParseResult.GetValueForOption(_outputOption) ?? throw new ArgumentNullException(nameof(_outputOption));
         try
         {
-          Console.WriteLine($"✚ generating {outputFile}");
-          context.ExitCode = await _handler.HandleAsync(outputFile, context.GetCancellationToken()).ConfigureAwait(false);
+          string outputFile = context.ParseResult.GetValueForOption(_outputOption) ?? throw new ArgumentNullException(nameof(_outputOption));
+          bool overwrite = context.ParseResult.RootCommandResult.GetValueForOption(CLIOptions.Generator.OverwriteOption) ?? false;
+          if (overwrite)
+          {
+            Console.WriteLine($"✚ overwriting {outputFile}");
+          }
+          else
+          {
+            Console.WriteLine($"✚ generating {outputFile}");
+          }
+          KSailGenNativePersistentVolumeCommandHandler handler = new(outputFile, overwrite);
+          context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         }
         catch (Exception ex)
         {

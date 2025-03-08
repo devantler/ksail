@@ -3,10 +3,10 @@ using k8s.Models;
 
 namespace KSail.Commands.Gen.Handlers.Native;
 
-class KSailGenNativeClusterRoleCommandHandler
+class KSailGenNativeClusterRoleCommandHandler(string outputFile, bool overwrite)
 {
   readonly ClusterRoleGenerator _generator = new();
-  internal async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken = default)
+  internal async Task<int> HandleAsync(CancellationToken cancellationToken = default)
   {
     var model = new V1ClusterRole()
     {
@@ -26,7 +26,7 @@ class KSailGenNativeClusterRoleCommandHandler
         }
       ]
     };
-    await _generator.GenerateAsync(model, outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _generator.GenerateAsync(model, outputFile, overwrite, cancellationToken: cancellationToken).ConfigureAwait(false);
     return 0;
   }
 }
