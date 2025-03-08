@@ -5,8 +5,9 @@ Usage:
   testhost gen config [command] [options]
 
 Options:
-  --version       Show version information
-  -?, -h, --help  Show help and usage information
+  --version        Show version information
+  -?, -h, --help   Show help and usage information
+  -o, --overwrite  Overwrite existing files. [default: False]
 
 Commands:
   k3d    Generate a 'k3d.io/v1alpha5/Simple' resource.

@@ -10,17 +10,25 @@ class KSailGenNativeRoleCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
   readonly GenericPathOption _outputOption = new("./role.yaml");
-  readonly KSailGenNativeRoleCommandHandler _handler = new();
   public KSailGenNativeRoleCommand() : base("role", "Generate a 'rbac.authorization.k8s.io/v1/Role' resource.")
   {
     AddOption(_outputOption);
     this.SetHandler(async (context) =>
       {
-        string outputFile = context.ParseResult.GetValueForOption(_outputOption) ?? throw new ArgumentNullException(nameof(_outputOption));
         try
         {
-          Console.WriteLine($"✚ generating {outputFile}");
-          context.ExitCode = await _handler.HandleAsync(outputFile, context.GetCancellationToken()).ConfigureAwait(false);
+          string outputFile = context.ParseResult.GetValueForOption(_outputOption) ?? "./role.yaml";
+          bool overwrite = context.ParseResult.CommandResult.GetValueForOption(CLIOptions.Generator.OverwriteOption) ?? false;
+          Console.WriteLine(File.Exists(outputFile) ? (overwrite ?
+            $"✚ overwriting '{outputFile}'" :
+            $"✔ skipping '{outputFile}', as it already exists.") :
+            $"✚ generating '{outputFile}'");
+          if (File.Exists(outputFile) && !overwrite)
+          {
+            return;
+          }
+          KSailGenNativeRoleCommandHandler handler = new(outputFile, overwrite);
+          context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         }
         catch (Exception ex)
         {

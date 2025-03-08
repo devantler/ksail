@@ -10,7 +10,6 @@ sealed class KSailGenFluxKustomizationCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
   readonly GenericPathOption _outputOption = new("./flux-kustomization.yaml");
-  readonly KSailGenFluxKustomizationCommandHandler _handler = new();
   internal KSailGenFluxKustomizationCommand() : base("kustomization", "Generate a 'kustomize.toolkit.fluxcd.io/v1/Kustomization' resource.")
   {
     AddOption(_outputOption);
@@ -19,9 +18,18 @@ sealed class KSailGenFluxKustomizationCommand : Command
       {
         try
         {
-          string outputFile = context.ParseResult.GetValueForOption(_outputOption) ?? throw new ArgumentNullException(nameof(_outputOption));
-          Console.WriteLine($"✚ generating {outputFile}");
-          context.ExitCode = await _handler.HandleAsync(outputFile, context.GetCancellationToken()).ConfigureAwait(false);
+          string outputFile = context.ParseResult.GetValueForOption(_outputOption) ?? "./flux-kustomization.yaml";
+          bool overwrite = context.ParseResult.CommandResult.GetValueForOption(CLIOptions.Generator.OverwriteOption) ?? false;
+          Console.WriteLine(File.Exists(outputFile) ? (overwrite ?
+            $"✚ overwriting '{outputFile}'" :
+            $"✔ skipping '{outputFile}', as it already exists.") :
+            $"✚ generating '{outputFile}'");
+          if (File.Exists(outputFile) && !overwrite)
+          {
+            return;
+          }
+          var handler = new KSailGenFluxKustomizationCommandHandler(outputFile, overwrite);
+          context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         }
         catch (Exception ex)
         {

@@ -3,10 +3,10 @@ using Devantler.KubernetesGenerator.Kustomize.Models;
 
 namespace KSail.Commands.Gen.Handlers.Kustomize;
 
-class KSailGenKustomizeKustomizationCommandHandler
+class KSailGenKustomizeKustomizationCommandHandler(string outputFile, bool overwrite)
 {
   readonly KustomizeKustomizationGenerator _generator = new();
-  public async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken = default)
+  public async Task<int> HandleAsync(CancellationToken cancellationToken = default)
   {
     var kustomization = new KustomizeKustomization
     {
@@ -16,7 +16,7 @@ class KSailGenKustomizeKustomizationCommandHandler
       SecretGenerator = [],
       Components = []
     };
-    await _generator.GenerateAsync(kustomization, outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _generator.GenerateAsync(kustomization, outputFile, overwrite, cancellationToken: cancellationToken).ConfigureAwait(false);
     return 0;
   }
 }

@@ -5,11 +5,11 @@ using k8s.Models;
 
 namespace KSail.Commands.Gen.Handlers.CertManager;
 
-class KSailGenCertManagerCertificateCommandHandler
+class KSailGenCertManagerCertificateCommandHandler(string outputFile, bool overwrite)
 {
   readonly CertManagerCertificateGenerator _generator = new();
 
-  internal async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken = default)
+  internal async Task<int> HandleAsync(CancellationToken cancellationToken = default)
   {
     var certificate = new CertManagerCertificate
     {
@@ -31,7 +31,7 @@ class KSailGenCertManagerCertificateCommandHandler
         }
       }
     };
-    await _generator.GenerateAsync(certificate, outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _generator.GenerateAsync(certificate, outputFile, overwrite, cancellationToken: cancellationToken).ConfigureAwait(false);
     return 0;
   }
 }

@@ -3,11 +3,11 @@ using k8s.Models;
 
 namespace KSail.Commands.Gen.Handlers.Native;
 
-class KSailGenNativeRoleBindingCommandHandler
+class KSailGenNativeRoleBindingCommandHandler(string outputFile, bool overwrite)
 {
   readonly RoleBindingGenerator _generator = new();
 
-  internal async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken = default)
+  internal async Task<int> HandleAsync(CancellationToken cancellationToken = default)
   {
     var model = new V1RoleBinding()
     {
@@ -34,7 +34,7 @@ class KSailGenNativeRoleBindingCommandHandler
         ApiGroup = "rbac.authorization.k8s.io",
       }
     };
-    await _generator.GenerateAsync(model, outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _generator.GenerateAsync(model, outputFile, overwrite, cancellationToken: cancellationToken).ConfigureAwait(false);
     return 0;
   }
 }

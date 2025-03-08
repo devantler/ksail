@@ -2,11 +2,11 @@
 apiVersion: ksail.io/v1alpha1
 kind: Cluster
 metadata:
-  name: cluster1
+  name: ksail-advanced-native
 spec:
   connection:
     kubeconfig: ~/.kube/config
-    context: kind-cluster1
+    context: kind-ksail-advanced-native
     timeout: 5m
   project:
     configPath: ksail-config.yaml
@@ -17,7 +17,7 @@ spec:
     cni: Cilium
     editor: Nano
     engine: Docker
-    kustomizationPath: k8s/cluster1
+    kustomizationPath: k8s
     mirrorRegistries: true
   deploymentTool:
     flux:
@@ -37,6 +37,8 @@ spec:
     name: ksail-registry
     hostPort: 5555
     provider: Docker
+  generator:
+    overwrite: false
   mirrorRegistries:
   - proxy:
       url: <url>

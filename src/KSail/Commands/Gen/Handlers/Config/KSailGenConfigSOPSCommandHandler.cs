@@ -3,10 +3,10 @@ using Devantler.SecretManager.SOPS.LocalAge.Utils;
 
 namespace KSail.Commands.Gen.Handlers.Config;
 
-class KSailGenConfigSOPSCommandHandler
+class KSailGenConfigSOPSCommandHandler(string outputFile, bool overwrite)
 {
   readonly SOPSConfigHelper _configHelper = new();
-  internal async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken = default)
+  internal async Task<int> HandleAsync(CancellationToken cancellationToken = default)
   {
     var sopsConfig = new SOPSConfig
     {
@@ -21,7 +21,7 @@ class KSailGenConfigSOPSCommandHandler
         }
       ]
     };
-    await _configHelper.CreateSOPSConfigAsync(outputFile, sopsConfig, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _configHelper.CreateSOPSConfigAsync(outputFile, sopsConfig, overwrite, cancellationToken: cancellationToken).ConfigureAwait(false);
     return 0;
   }
 }

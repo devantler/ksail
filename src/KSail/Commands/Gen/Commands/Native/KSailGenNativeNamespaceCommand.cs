@@ -10,17 +10,25 @@ class KSailGenNativeNamespaceCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
   readonly GenericPathOption _outputOption = new("./namespace.yaml");
-  readonly KSailGenNativeNamespaceCommandHandler _handler = new();
   public KSailGenNativeNamespaceCommand() : base("namespace", "Generate a 'core/v1/Namespace' resource.")
   {
     AddOption(_outputOption);
     this.SetHandler(async (context) =>
       {
-        string outputFile = context.ParseResult.GetValueForOption(_outputOption) ?? throw new ArgumentNullException(nameof(_outputOption));
         try
         {
-          Console.WriteLine($"✚ generating {outputFile}");
-          context.ExitCode = await _handler.HandleAsync(outputFile, context.GetCancellationToken()).ConfigureAwait(false);
+          string outputFile = context.ParseResult.GetValueForOption(_outputOption) ?? "./namespace.yaml";
+          bool overwrite = context.ParseResult.CommandResult.GetValueForOption(CLIOptions.Generator.OverwriteOption) ?? false;
+          Console.WriteLine(File.Exists(outputFile) ? (overwrite ?
+            $"✚ overwriting '{outputFile}'" :
+            $"✔ skipping '{outputFile}', as it already exists.") :
+            $"✚ generating '{outputFile}'");
+          if (File.Exists(outputFile) && !overwrite)
+          {
+            return;
+          }
+          KSailGenNativeNamespaceCommandHandler handler = new(outputFile, overwrite);
+          context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         }
         catch (Exception ex)
         {

@@ -12,16 +12,24 @@ class KSailGenCertManagerCertificateCommand : Command
   readonly GenericPathOption _outputOption = new("./certificate.yaml");
   public KSailGenCertManagerCertificateCommand() : base("certificate", "Generate a 'cert-manager.io/v1/Certificate' resource.")
   {
-    this.AddOption(_outputOption);
+    AddOption(_outputOption);
 
     this.SetHandler(async (context) =>
       {
         try
         {
           string outputFile = context.ParseResult.CommandResult.GetValueForOption(_outputOption) ?? "./certificate.yaml";
-          var handler = new KSailGenCertManagerCertificateCommandHandler();
-          Console.WriteLine($"✚ generating {outputFile}");
-          context.ExitCode = await handler.HandleAsync(outputFile, context.GetCancellationToken()).ConfigureAwait(false);
+          bool overwrite = context.ParseResult.CommandResult.GetValueForOption(CLIOptions.Generator.OverwriteOption) ?? false;
+          Console.WriteLine(File.Exists(outputFile) ? (overwrite ?
+            $"✚ overwriting '{outputFile}'" :
+            $"✔ skipping '{outputFile}', as it already exists.") :
+            $"✚ generating '{outputFile}'");
+          if (File.Exists(outputFile) && !overwrite)
+          {
+            return;
+          }
+          var handler = new KSailGenCertManagerCertificateCommandHandler(outputFile, overwrite);
+          context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         }
         catch (Exception ex)
         {

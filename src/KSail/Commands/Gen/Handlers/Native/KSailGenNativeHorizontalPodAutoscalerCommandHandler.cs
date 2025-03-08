@@ -3,10 +3,10 @@ using k8s.Models;
 
 namespace KSail.Commands.Gen.Handlers.Native;
 
-class KSailGenNativeHorizontalPodAutoscalerCommandHandler
+class KSailGenNativeHorizontalPodAutoscalerCommandHandler(string outputFile, bool overwrite)
 {
   readonly HorizontalPodAutoscalerGenerator _generator = new();
-  internal async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken = default)
+  internal async Task<int> HandleAsync(CancellationToken cancellationToken = default)
   {
     var model = new V2HorizontalPodAutoscaler()
     {
@@ -30,7 +30,7 @@ class KSailGenNativeHorizontalPodAutoscalerCommandHandler
         Metrics = []
       }
     };
-    await _generator.GenerateAsync(model, outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _generator.GenerateAsync(model, outputFile, overwrite, cancellationToken: cancellationToken).ConfigureAwait(false);
     return 0;
   }
 }

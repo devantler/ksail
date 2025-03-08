@@ -10,17 +10,25 @@ class KSailGenNativeWorkloadsDaemonSetCommand : Command
 {
   readonly ExceptionHandler _exceptionHandler = new();
   readonly GenericPathOption _outputOption = new("./daemon-set.yaml");
-  readonly KSailGenNativeWorkloadsDaemonSetCommandHandler _handler = new();
   public KSailGenNativeWorkloadsDaemonSetCommand() : base("daemon-set", "Generate a 'apps/v1/DaemonSet' resource.")
   {
     AddOption(_outputOption);
     this.SetHandler(async (context) =>
       {
-        string outputFile = context.ParseResult.GetValueForOption(_outputOption) ?? throw new ArgumentNullException(nameof(_outputOption));
         try
         {
-          Console.WriteLine($"✚ generating {outputFile}");
-          context.ExitCode = await _handler.HandleAsync(outputFile, context.GetCancellationToken()).ConfigureAwait(false);
+          string outputFile = context.ParseResult.GetValueForOption(_outputOption) ?? "./daemon-set.yaml";
+          bool overwrite = context.ParseResult.CommandResult.GetValueForOption(CLIOptions.Generator.OverwriteOption) ?? false;
+          Console.WriteLine(File.Exists(outputFile) ? (overwrite ?
+            $"✚ overwriting '{outputFile}'" :
+            $"✔ skipping '{outputFile}', as it already exists.") :
+            $"✚ generating '{outputFile}'");
+          if (File.Exists(outputFile) && !overwrite)
+          {
+            return;
+          }
+          KSailGenNativeWorkloadsDaemonSetCommandHandler handler = new(outputFile, overwrite);
+          context.ExitCode = await handler.HandleAsync(context.GetCancellationToken()).ConfigureAwait(false);
         }
         catch (Exception ex)
         {

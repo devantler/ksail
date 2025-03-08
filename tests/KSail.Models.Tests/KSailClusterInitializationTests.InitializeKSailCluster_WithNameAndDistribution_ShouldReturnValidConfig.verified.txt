@@ -50,6 +50,9 @@
       Password: null,
       Provider: Docker
     },
+    Generator: {
+      Overwrite: false
+    },
     MirrorRegistries: [
       {
         Proxy: {

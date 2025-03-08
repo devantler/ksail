@@ -5,7 +5,8 @@ Usage:
   testhost gen flux [command] [options]
 
 Options:
-  -?, -h, --help  Show help and usage information
+  -o, --overwrite  Overwrite existing files. [default: False]
+  -?, -h, --help   Show help and usage information
 
 Commands:
   helm-release     Generate a 'helm.toolkit.fluxcd.io/v2/HelmRelease' resource.

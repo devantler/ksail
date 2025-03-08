@@ -28,7 +28,7 @@ static class CLIOptions
 
   public static readonly DistributionOptions Distribution = new(_config);
 
-  public static readonly GeneratorOptions Generator = new();
+  public static readonly GeneratorOptions Generator = new(_config);
 
   public static readonly IngressControllerOptions IngressController = new();
 

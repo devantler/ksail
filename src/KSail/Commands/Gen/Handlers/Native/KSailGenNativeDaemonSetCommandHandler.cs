@@ -3,10 +3,10 @@ using k8s.Models;
 
 namespace KSail.Commands.Gen.Handlers.Native;
 
-class KSailGenNativeWorkloadsDaemonSetCommandHandler
+class KSailGenNativeWorkloadsDaemonSetCommandHandler(string outputFile, bool overwrite)
 {
   readonly DaemonSetGenerator _generator = new();
-  internal async Task<int> HandleAsync(string outputFile, CancellationToken cancellationToken = default)
+  internal async Task<int> HandleAsync(CancellationToken cancellationToken = default)
   {
     var model = new V1DaemonSet
     {
@@ -50,7 +50,7 @@ class KSailGenNativeWorkloadsDaemonSetCommandHandler
         }
       }
     };
-    await _generator.GenerateAsync(model, outputFile, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _generator.GenerateAsync(model, outputFile, overwrite, cancellationToken: cancellationToken).ConfigureAwait(false);
     return 0;
   }
 }

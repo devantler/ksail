@@ -9,12 +9,15 @@ class KSailClusterConfigGenerator
   internal async Task GenerateAsync(KSailCluster config, CancellationToken cancellationToken = default)
   {
     string outputPath = Path.Combine(config.Spec.Project.ConfigPath);
-    if (File.Exists(outputPath))
+    bool overwrite = config.Spec.Generator.Overwrite;
+    Console.WriteLine(File.Exists(outputPath) ? (overwrite ?
+      $"✚ overwriting '{outputPath}'" :
+      $"✔ skipping '{outputPath}', as it already exists.") :
+      $"✚ generating '{outputPath}'");
+    if (File.Exists(outputPath) && !overwrite)
     {
-      Console.WriteLine($"✔ skipping '{outputPath}', as it already exists.");
       return;
     }
-    Console.WriteLine($"✚ generating '{outputPath}'");
-    await _ksailClusterGenerator.GenerateAsync(config, outputPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+    await _ksailClusterGenerator.GenerateAsync(config, outputPath, config.Spec.Generator.Overwrite, cancellationToken: cancellationToken).ConfigureAwait(false);
   }
 }

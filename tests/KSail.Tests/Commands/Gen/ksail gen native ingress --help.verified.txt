@@ -6,6 +6,7 @@ Usage:
 
 Options:
   -o, --output <output>  A file or directory path. [default: ./ingress.yaml]
+  -o, --overwrite        Overwrite existing files. [default: False]
   -?, -h, --help         Show help and usage information
 
 
